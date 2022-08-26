@@ -6,8 +6,8 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { DataGrid } from '@mui/x-data-grid'
-
+import { DataGrid } from '@mui/x-data-grid';
+import { getLocaleText } from '../../../configs/defaultLocaleText'
 // ** Data Import
 import { Checkbox, IconButton } from '@mui/material'
 import { CloseCircle, Pencil } from 'mdi-material-ui'
@@ -195,6 +195,7 @@ const TableUsers = () => {
         pageSize={pageSize}
         rowsPerPageOptions={[7, 10, 25, 50]}
         onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+        localeText={getLocaleText()}
       />
     </Card>
   )
