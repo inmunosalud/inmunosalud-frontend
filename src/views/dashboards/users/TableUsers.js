@@ -11,71 +11,72 @@ import { DataGrid } from '@mui/x-data-grid'
 // ** Data Import
 import { Checkbox, IconButton } from '@mui/material'
 import { CloseCircle, Pencil } from 'mdi-material-ui'
+import GraphRow from './GraphRow'
 
 const columns = [
   {
     flex: 0.125,
-    field: 'first_name',
+    field: 'user',
     minWidth: 80,
-    headerName: 'Nombre',
+    headerName: 'Usuario',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.first_name}
+        {params.row.user}
       </Typography>
     )
   },
   {
     flex: 0.125,
-    field: 'last_name',
+    field: 'intake',
     minWidth: 80,
-    headerName: 'Apellido',
+    headerName: 'Consumo',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.last_name}
+        {params.row.intake}
       </Typography>
     )
   },
   {
     flex: 0.195,
-    field: 'email',
+    field: 'efectiveness',
     minWidth: 80,
-    headerName: 'Correo',
+    headerName: 'Efectividad',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.email}
+        {params.row.efectiveness}
       </Typography>
     )
   },
   {
     flex: 0.125,
-    field: 'zipcode',
+    field: 'walletWeight',
     minWidth: 80,
-    headerName: 'Códigos Postal',
+    headerName: 'Peso Cartera',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.zipcode}
+        {params.row.walletWeight}
       </Typography>
     )
   },
   {
     flex: 0.125,
-    field: 'genre',
+    field: 'score',
     minWidth: 80,
-    headerName: 'Género',
+    headerName: 'Score',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.genre}
+        {params.row.score}
       </Typography>
     )
   },
   {
     flex: 0.125,
-    field: 'state',
+    field: 'commision',
     minWidth: 80,
-    headerName: 'Estado Civil',
+    headerName: 'Comisión',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.state}
+        {params.row.commision}
       </Typography>
     )
   },
@@ -83,45 +84,85 @@ const columns = [
   {
     flex: 0.1,
     minWidth: 90,
-    field: 'is_active',
-    headerName: 'Activo',
+    field: 'performance',
+    headerName: 'Rendimiento',
     renderCell: params => {
       const { row } = params
 
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Checkbox checked={row.active} />
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.performance}
+        </Typography>
       )
     }
   },
   {
     flex: 0.175,
     minWidth: 120,
-    headerName: 'Registrado',
-    field: 'start_date',
+    headerName: 'Estatus',
+    field: 'status',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.start_date}
       </Typography>
     )
   },
+  {
+    flex: 0.175,
+    minWidth: 140,
+    headerName: 'B',
+    field: 'b',
+    renderCell: params => (
+      <Box sx={{ height: '80px' }}>
+        <GraphRow />
+      </Box>
+    )
+  },
+  {
+    flex: 0.175,
+    minWidth: 140,
+    headerName: 'C',
+    field: 'c',
+    renderCell: params => (
+      <Box sx={{ height: '80px' }}>
+        <GraphRow />
+      </Box>
+    )
+  },
+  {
+    flex: 0.175,
+    minWidth: 140,
+    headerName: 'D',
+    field: 'd',
+    renderCell: params => (
+      <Box sx={{ height: '80px' }}>
+        <GraphRow />
+      </Box>
+    )
+  },
+  {
+    flex: 0.175,
+    minWidth: 140,
+    headerName: 'E',
+    field: 'e',
+    renderCell: params => (
+      <Box sx={{ height: '80px' }}>
+        <GraphRow />
+      </Box>
+    )
+  },
 
   {
     flex: 0.125,
     minWidth: 140,
-    field: 'status',
-    headerName: 'Status',
+    field: 'antiquity',
+
+    headerName: 'Antigüedad',
     renderCell: params => {
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <IconButton aria-label='capture screenshot'>
-            <Pencil color='success' />
-          </IconButton>
-          <IconButton aria-label='capture screenshot'>
-            <CloseCircle color='error' />
-          </IconButton>
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row.antiquity}
+        </Typography>
       )
     }
   }
@@ -131,6 +172,15 @@ const rows = [
   {
     id: 1,
     active: true,
+    user: 'Miguel Valdes',
+    intake: 10_540.56,
+    efectiveness: 6,
+    walletWeight: 50456.0,
+    score: 65,
+    commision: 2345.0,
+    performance: 8195.56,
+    status: 1,
+    antiquity: '1 año',
     first_name: 'Miguel',
     last_name: 'Valdes',
     email: 'mvaldes@vainilladev.com',
@@ -139,46 +189,86 @@ const rows = [
     genre: 'Femenino',
     age: '61',
     state: 'Soltero',
-    status: 2
+    status: 2,
+    b: 1,
+    c: 1,
+    d: 1,
+    e: 1
   },
   {
     id: 7,
     active: true,
-    first_name: 'Daniel',
-    last_name: 'Robles',
+    user: 'Daniel Robles',
     email: 'drobles@vainilladev.com',
     zipcode: '44128',
     start_date: '10/15/2017',
     genre: 'Masculino',
+    antiquity: '1 año',
+
     age: '59',
     state: 'Soltero',
-    status: 3
+    status: 3,
+    intake: 10_540.56,
+    efectiveness: 6,
+    walletWeight: 50456.0,
+    score: 65,
+    commision: 2345.0,
+    performance: 8195.56,
+    status: 1,
+    b: 1,
+    c: 1,
+    d: 1,
+    e: 1
   },
   {
     id: 11,
     active: false,
-    first_name: 'Julio',
-    last_name: 'Garcia',
+    user: 'Julio Garcia',
+    antiquity: '1 año',
+
     email: 'jgarcia@vainilladev.com',
     zipcode: '44128',
     start_date: '06/12/2018',
     genre: 'Masculino',
     age: '30',
     state: 'Soltero',
-    status: 4
+    status: 4,
+    intake: 10_540.56,
+    efectiveness: 6,
+    walletWeight: 50456.0,
+    score: 65,
+    commision: 2345.0,
+    performance: 8195.56,
+    status: 1,
+    b: 1,
+    c: 1,
+    d: 1,
+    e: 1
   },
   {
     id: 3,
     active: true,
-    first_name: 'Ricardo',
-    last_name: 'Navarro',
+    user: 'Ricardo Navarro',
     email: 'rnavarro@vainilladev.com',
     zipcode: '44128',
     start_date: '03/24/2018',
+    antiquity: '1 año',
+
     genre: 'Masculino',
     age: '66',
     state: 'Soltero',
-    status: 5
+    status: 5,
+    intake: 10_540.56,
+    efectiveness: 6,
+    walletWeight: 50456.0,
+    score: 65,
+    commision: 2345.0,
+    performance: 8195.56,
+    status: 1,
+    b: 1,
+    c: 1,
+    d: 1,
+    e: 1
   }
 ]
 

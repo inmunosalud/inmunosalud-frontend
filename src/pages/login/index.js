@@ -277,9 +277,9 @@ const LoginPage = () => {
                   ¿Nuevo en la plataforma?
                 </Typography>
                 <Typography variant='body2'>
-                  <Link passHref href='/register'>
-                    <LinkStyled>Crear una cuenta</LinkStyled>
-                  </Link>
+                  {/* <Link passHref href='/register'> */}
+                  <LinkStyled>Crear una cuenta</LinkStyled>
+                  {/* </Link> */}
                 </Typography>
               </Box>
             </form>

@@ -19,16 +19,42 @@ import CalendarBlankOutline from 'mdi-material-ui/CalendarBlankOutline'
 import PackageVariantClosed from 'mdi-material-ui/PackageVariantClosed'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import CheckboxMarkedCircleOutline from 'mdi-material-ui/CheckboxMarkedCircleOutline'
+import { IconAdminPanelSettings } from '@aws-amplify/ui-react'
+import AccountSupervisor from 'mdi-material-ui/AccountSupervisor'
 
 const navigation = () => {
   return [
     {
-      title: 'Clientes',
+      title: 'Dashboard',
       icon: HomeOutline,
       children: [
         {
+          title: 'General',
+          path: '/dashboards/general'
+        },
+        {
           title: 'Usuarios',
           path: '/dashboards/users'
+        }
+      ]
+    },
+    {
+      title: 'Ecommerce',
+      icon: HomeOutline,
+      children: [
+        {
+          title: 'Productos',
+          path: '/ecommerce/products'
+        }
+      ]
+    },
+    {
+      title: 'Admin',
+      icon: AccountSupervisor,
+      children: [
+        {
+          title: 'Usuarios',
+          path: '/admin/users'
         }
       ]
     }
