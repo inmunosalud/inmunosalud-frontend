@@ -4,19 +4,15 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
 
-import CheckList from '../../../components/CheckList/CheckList'
+import { Box } from '@mui/material'
+
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import CheckList from 'src/pages/components/CheckList/CheckList'
+
 //utils
 const textValidations = [
   'Minimo 8 caracteres con letras y numeros',
@@ -27,12 +23,15 @@ const textValidations = [
 ]
 
 function PAGE() {
-  return `/pages/auth/register-06`
+  return `/register/register-06`
 }
 export default function Register05() {
   const router = useRouter()
   return (
-    <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      container
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: '3rem' }}
+    >
       <Card>
         <CardContent
           sx={{
@@ -59,6 +58,8 @@ export default function Register05() {
           {/*circle back button */}
         </CardActions>
       </Card>
-    </Grid>
+    </Box>
   )
 }
+
+Register05.getLayout = page => <BlankLayout>{page}</BlankLayout>

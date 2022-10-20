@@ -9,8 +9,11 @@ import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Account from 'mdi-material-ui/Account'
 
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import { Box } from '@mui/material'
+
 function PAGE() {
-  return `/pages/auth/register-02`
+  return `/register/register-02`
 }
 
 const HeadingStyled = styled.h2`
@@ -30,7 +33,10 @@ const WrapperButton = styled.div`
 export default function Register01() {
   const router = useRouter()
   return (
-    <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      container
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: '3rem' }}
+    >
       <Card>
         <CardContent
           sx={{
@@ -48,6 +54,8 @@ export default function Register01() {
           </WrapperButton>
         </CardContent>
       </Card>
-    </Grid>
+    </Box>
   )
 }
+
+Register01.getLayout = page => <BlankLayout>{page}</BlankLayout>

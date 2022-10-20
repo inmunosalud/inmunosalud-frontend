@@ -5,24 +5,18 @@ import styled from '@emotion/styled'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import AccountCircleOutline from 'mdi-material-ui/AccountCircleOutline'
 import CellphoneCheck from 'mdi-material-ui/CellphoneCheck'
 import AccountTie from 'mdi-material-ui/AccountTie'
+import { Box } from '@mui/material'
 
-import IconText from '../../../components/IconText/IconText'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import IconText from 'src/pages/components/IconText/IconText'
+
 function PAGE() {
-  return `/pages/auth/register-07`
+  return `/login`
 }
 
 const HeadingStyled = styled.h1`
@@ -40,7 +34,10 @@ const IconStyled = styled.span`
 const Register07 = () => {
   const router = useRouter()
   return (
-    <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      container
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: '3rem' }}
+    >
       <Card>
         <CardContent
           sx={{
@@ -73,8 +70,10 @@ const Register07 = () => {
           </Button>
         </CardActions>
       </Card>
-    </Grid>
+    </Box>
   )
 }
+
+Register07.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
 export default Register07

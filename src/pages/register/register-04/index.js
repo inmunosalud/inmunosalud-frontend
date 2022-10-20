@@ -5,20 +5,14 @@ import styled from '@emotion/styled'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
+import { Box } from '@mui/material'
+
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 function PAGE() {
-  return `/pages/auth/register-05`
+  return `/register/register-05`
 }
 
 const HeadingStyled = styled.h1`
@@ -33,10 +27,13 @@ const TextStyled = styled.p`
   text-align: center;
 `
 
-const Register02 = () => {
+const Register04 = () => {
   const router = useRouter()
   return (
-    <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      container
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', padding: '3rem' }}
+    >
       <Card>
         <CardContent
           sx={{
@@ -64,7 +61,10 @@ const Register02 = () => {
           </Button>
         </CardActions>
       </Card>
-    </Grid>
+    </Box>
   )
 }
-export default Register02
+
+Register04.getLayout = page => <BlankLayout>{page}</BlankLayout>
+
+export default Register04
