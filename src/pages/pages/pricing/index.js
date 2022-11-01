@@ -27,6 +27,7 @@ const CardContent = styled(MuiCardContent)(({ theme }) => ({
 }))
 
 const Pricing = ({ apiData }) => {
+  console.log(apiData)
   // ** States
   const [plan, setPlan] = useState('monthly')
 
