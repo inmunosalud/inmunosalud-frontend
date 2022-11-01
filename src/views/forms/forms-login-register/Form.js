@@ -1,0 +1,121 @@
+import * as React from 'react'
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import CardHeader from '@mui/material/CardHeader'
+import InputLabel from '@mui/material/InputLabel'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import CardContent from '@mui/material/CardContent'
+import FormControl from '@mui/material/FormControl'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputAdornment from '@mui/material/InputAdornment'
+import FormHelperText from '@mui/material/FormHelperText'
+
+// ** Icons Imports
+import EyeOutline from 'mdi-material-ui/EyeOutline'
+import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
+
+const Form = props => {
+  // ** States
+  const [values, setValues] = React.useState({
+    password: '',
+    showPassword: false
+  })
+
+  const [confirmPassValues, setConfirmPassValues] = React.useState({
+    password: '',
+    showPassword: false
+  })
+
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value })
+  }
+
+  const handleConfirmPassChange = prop => event => {
+    setConfirmPassValues({ ...confirmPassValues, [prop]: event.target.value })
+  }
+
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword })
+  }
+
+  const handleClickConfirmPassShow = () => {
+    setConfirmPassValues({ ...confirmPassValues, showPassword: !confirmPassValues.showPassword })
+  }
+
+  const handleMouseDownPassword = event => {
+    event.preventDefault()
+  }
+  return (
+    <Card>
+      <CardHeader title={`${props.isRegister ? 'Registrarse' : 'Acceder'}`} titleTypographyProps={{ variant: 'h6' }} />
+      <CardContent>
+        <form onSubmit={e => e.preventDefault()}>
+          <Grid container spacing={4}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                type='email'
+                label={`${props.isRegister ? 'Correo electronico' : 'Cuenta o correo electronico'}`}
+                placeholder='carterleonard@gmail.com'
+                helperText='You can use letters, numbers & periods'
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel htmlFor='form-layouts-basic-password'>Password</InputLabel>
+                <OutlinedInput
+                  label='Password'
+                  value={values.password}
+                  id='form-layouts-basic-password'
+                  onChange={handleChange('password')}
+                  type={values.showPassword ? 'text' : 'password'}
+                  aria-describedby='form-layouts-basic-password-helper'
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        aria-label='toggle password visibility'
+                      >
+                        {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <FormHelperText id='form-layouts-basic-password-helper'>
+                  {props.isRegister
+                    ? 'Aviso de privacidad.... Tus datos personales se utilizarán para respaldar tu experiencia en este sitio web, administrar el acceso a tu cuenta y para otros fines descritos en nuestro política de privacidad.'
+                    : null}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  gap: 5,
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Button type='submit' variant='contained' size='large'>
+                  {props.isRegister ? 'Registrarse' : 'Acceder'}
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
+export default Form

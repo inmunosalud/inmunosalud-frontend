@@ -112,11 +112,11 @@ const App = props => {
                 return (
                   <ThemeComponent settings={settings}>
                     <WindowWrapper>
-                      {/* <Guard authGuard={authGuard} guestGuard={guestGuard}> */}
-                      {/* <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}> */}
-                      {getLayout(<Component {...pageProps} />)}
-                      {/* </AclGuard> */}
-                      {/* </Guard> */}
+                      <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                        <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
+                          {getLayout(<Component {...pageProps} />)}
+                        </AclGuard>
+                      </Guard>
                     </WindowWrapper>
                     <ReactHotToast>
                       <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
