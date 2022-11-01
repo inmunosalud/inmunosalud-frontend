@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid'
 import { getLocaleText } from '../../../configs/defaultLocaleText'
 // ** Data Import
 import { Checkbox, IconButton } from '@mui/material'
@@ -162,6 +162,21 @@ const columns = [
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.antiquity}
+        </Typography>
+      )
+    }
+  },
+  /* edit only by Admin and rules admin and product admin */
+  {
+    flex: 0.125,
+    minWidth: 140,
+    field: 'actions',
+
+    headerName: 'Acciones',
+    renderCell: () => {
+      return (
+        <Typography variant='body2' sx={{ color: 'text.primary', cursor: 'pointer' }}>
+          <Pencil />
         </Typography>
       )
     }
