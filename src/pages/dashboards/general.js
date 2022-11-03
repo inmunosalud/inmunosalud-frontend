@@ -41,22 +41,16 @@ const General = () => {
         <Grid item xs={12} sm={6} md={3}>
           <WalletAverage />
         </Grid>
-        <Grid item xs={12} md={4}>
-          <SimpleBarCard title='C' />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <SimpleBarCard title='D' />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <SimpleBarCard title='D' />
-        </Grid>
+
         <Grid item xs={12} md={6}>
           <AverageEfectiveness />
         </Grid>
         <Grid item xs={12} md={6}>
           <CardNumber data={data[2]} />
         </Grid>
-
+        <Grid item xs={12}>
+          <TableUsers />
+        </Grid>
         {/* <Grid item xs={12}>
           <TableUsers />
         </Grid> */}
