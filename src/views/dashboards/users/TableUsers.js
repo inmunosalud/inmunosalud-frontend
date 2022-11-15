@@ -1,6 +1,6 @@
 // ** React Import
-import { useState } from 'react'
-
+import * as React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -13,15 +13,17 @@ import { Checkbox, IconButton } from '@mui/material'
 import { CloseCircle, Pencil } from 'mdi-material-ui'
 import GraphRow from './GraphRow'
 
+import { usersList } from 'src/store/users/index'
+
 const columns = [
   {
     flex: 0.125,
-    field: 'user',
+    field: 'firstName',
     minWidth: 80,
     headerName: 'Usuario',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.user}
+        {params.row.firstName}
       </Typography>
     )
   },
@@ -38,23 +40,23 @@ const columns = [
   },
   {
     flex: 0.195,
-    field: 'efectiveness',
+    field: 'efficiency',
     minWidth: 80,
     headerName: 'Efectividad',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.efectiveness}
+        {params.row.efficiency}
       </Typography>
     )
   },
   {
     flex: 0.125,
-    field: 'walletWeight',
+    field: 'weight',
     minWidth: 80,
     headerName: 'Peso Cartera',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.walletWeight}
+        {params.row.portfolio.weight}
       </Typography>
     )
   },
@@ -65,7 +67,7 @@ const columns = [
     headerName: 'Score',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.score}
+        {params.row.portfolio.score}
       </Typography>
     )
   },
@@ -183,119 +185,127 @@ const columns = [
   }
 ]
 
-const rows = [
-  {
-    id: 1,
-    active: true,
-    user: 'Miguel Valdes',
-    intake: 10_540.56,
-    efectiveness: 6,
-    walletWeight: 50456.0,
-    score: 65,
-    commision: 2345.0,
-    performance: 8195.56,
-    status: 1,
-    antiquity: '1 año',
-    first_name: 'Miguel',
-    last_name: 'Valdes',
-    email: 'mvaldes@vainilladev.com',
-    zipcode: '44128',
-    start_date: '09/23/2016',
-    genre: 'Femenino',
-    age: '61',
-    state: 'Soltero',
-    status: 2,
-    b: 1,
-    c: 1,
-    d: 1,
-    e: 1
-  },
-  {
-    id: 7,
-    active: true,
-    user: 'Daniel Robles',
-    email: 'drobles@vainilladev.com',
-    zipcode: '44128',
-    start_date: '10/15/2017',
-    genre: 'Masculino',
-    antiquity: '1 año',
+// const rows = [
+//   {
+//     id: 1,
+//     active: true,
+//     user: 'Miguel Valdes',
+//     intake: 10_540.56,
+//     efectiveness: 6,
+//     walletWeight: 50456.0,
+//     score: 65,
+//     commision: 2345.0,
+//     performance: 8195.56,
+//     status: 1,
+//     antiquity: '1 año',
+//     first_name: 'Miguel',
+//     last_name: 'Valdes',
+//     email: 'mvaldes@vainilladev.com',
+//     zipcode: '44128',
+//     start_date: '09/23/2016',
+//     genre: 'Femenino',
+//     age: '61',
+//     state: 'Soltero',
+//     status: 2,
+//     b: 1,
+//     c: 1,
+//     d: 1,
+//     e: 1
+//   },
+//   {
+//     id: 7,
+//     active: true,
+//     user: 'Daniel Robles',
+//     email: 'drobles@vainilladev.com',
+//     zipcode: '44128',
+//     start_date: '10/15/2017',
+//     genre: 'Masculino',
+//     antiquity: '1 año',
 
-    age: '59',
-    state: 'Soltero',
-    status: 3,
-    intake: 10_540.56,
-    efectiveness: 6,
-    walletWeight: 50456.0,
-    score: 65,
-    commision: 2345.0,
-    performance: 8195.56,
-    status: 1,
-    b: 1,
-    c: 1,
-    d: 1,
-    e: 1
-  },
-  {
-    id: 11,
-    active: false,
-    user: 'Julio Garcia',
-    antiquity: '1 año',
+//     age: '59',
+//     state: 'Soltero',
+//     status: 3,
+//     intake: 10_540.56,
+//     efectiveness: 6,
+//     walletWeight: 50456.0,
+//     score: 65,
+//     commision: 2345.0,
+//     performance: 8195.56,
+//     status: 1,
+//     b: 1,
+//     c: 1,
+//     d: 1,
+//     e: 1
+//   },
+//   {
+//     id: 11,
+//     active: false,
+//     user: 'Julio Garcia',
+//     antiquity: '1 año',
 
-    email: 'jgarcia@vainilladev.com',
-    zipcode: '44128',
-    start_date: '06/12/2018',
-    genre: 'Masculino',
-    age: '30',
-    state: 'Soltero',
-    status: 4,
-    intake: 10_540.56,
-    efectiveness: 6,
-    walletWeight: 50456.0,
-    score: 65,
-    commision: 2345.0,
-    performance: 8195.56,
-    status: 1,
-    b: 1,
-    c: 1,
-    d: 1,
-    e: 1
-  },
-  {
-    id: 3,
-    active: true,
-    user: 'Ricardo Navarro',
-    email: 'rnavarro@vainilladev.com',
-    zipcode: '44128',
-    start_date: '03/24/2018',
-    antiquity: '1 año',
+//     email: 'jgarcia@vainilladev.com',
+//     zipcode: '44128',
+//     start_date: '06/12/2018',
+//     genre: 'Masculino',
+//     age: '30',
+//     state: 'Soltero',
+//     status: 4,
+//     intake: 10_540.56,
+//     efectiveness: 6,
+//     walletWeight: 50456.0,
+//     score: 65,
+//     commision: 2345.0,
+//     performance: 8195.56,
+//     status: 1,
+//     b: 1,
+//     c: 1,
+//     d: 1,
+//     e: 1
+//   },
+//   {
+//     id: 3,
+//     active: true,
+//     user: 'Ricardo Navarro',
+//     email: 'rnavarro@vainilladev.com',
+//     zipcode: '44128',
+//     start_date: '03/24/2018',
+//     antiquity: '1 año',
 
-    genre: 'Masculino',
-    age: '66',
-    state: 'Soltero',
-    status: 5,
-    intake: 10_540.56,
-    efectiveness: 6,
-    walletWeight: 50456.0,
-    score: 65,
-    commision: 2345.0,
-    performance: 8195.56,
-    status: 1,
-    b: 1,
-    c: 1,
-    d: 1,
-    e: 1
-  }
-]
+//     genre: 'Masculino',
+//     age: '66',
+//     state: 'Soltero',
+//     status: 5,
+//     intake: 10_540.56,
+//     efectiveness: 6,
+//     walletWeight: 50456.0,
+//     score: 65,
+//     commision: 2345.0,
+//     performance: 8195.56,
+//     status: 1,
+//     b: 1,
+//     c: 1,
+//     d: 1,
+//     e: 1
+//   }
+// ]
 
 const TableUsers = () => {
-  const [pageSize, setPageSize] = useState(7)
+  const dispatch = useDispatch()
+  const [pageSize, setPageSize] = React.useState(5)
+
+  const { users } = useSelector(state => state.users)
+
+  React.useEffect(() => {
+    console.log('here useEfftect')
+    dispatch(usersList())
+  }, [dispatch])
 
   return (
     <Card>
       <CardHeader title='Usuarios' />
       <DataGrid
         autoHeight
-        rows={rows}
+        rows={users?.filter(user => user.firstName)}
         columns={columns}
         pageSize={pageSize}
         rowsPerPageOptions={[7, 10, 25, 50]}

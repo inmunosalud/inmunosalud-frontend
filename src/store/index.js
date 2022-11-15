@@ -8,6 +8,9 @@ import email from 'src/store/apps/email'
 import invoice from 'src/store/apps/invoice'
 import calendar from 'src/store/apps/calendar'
 import permissions from 'src/store/apps/permissions'
+//inmunosalud reducers
+import session from 'src/store/session'
+import users from 'src/store/users'
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +19,11 @@ export const store = configureStore({
     email,
     invoice,
     calendar,
-    permissions
+    permissions,
+
+    //new reducers
+    session,
+    users
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

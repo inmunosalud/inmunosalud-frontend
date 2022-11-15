@@ -15,25 +15,34 @@ import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
-import { loginCall } from 'src/store/session'
+import { createUser } from 'src/store/users'
 
-const Form = props => {
-  /*hooks */
+const FormRegister = props => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { loading } = useSelector(state => state.session)
+  const { newUser, loading } = useSelector(state => state.users)
+
   // ** States
   const [values, setValues] = React.useState({
     email: '',
     password: '',
+    recommenderID: '',
     showPassword: false
   })
+  const [checkedProfile, setCheckedProfile] = React.useState(false)
+
+  const handleChangeProfile = event => {
+    setCheckedProfile(event.target.checked)
+  }
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
@@ -47,15 +56,15 @@ const Form = props => {
     event.preventDefault()
   }
 
-  const submitLogin = async () => {
-    const { email, password } = values
+  const submitRegister = async () => {
+    const { email, password, recommenderID } = values
 
-    await dispatch(loginCall({ email, password }))
+    await dispatch(createUser({ email, password, recommenderID }))
     router.push('/dashboards/general/')
   }
   return (
     <Card>
-      <CardHeader title='Acceder' titleTypographyProps={{ variant: 'h6' }} />
+      <CardHeader title='Registrarse' titleTypographyProps={{ variant: 'h6' }} />
       <CardContent>
         <form onSubmit={e => e.preventDefault()}>
           <Grid container spacing={4}>
@@ -65,8 +74,8 @@ const Form = props => {
                 value={values.email}
                 onChange={handleChange('email')}
                 type='text'
-                label='Cuenta o correo electronico'
-                placeholder='joe@gmail.com'
+                label='Correo electronico'
+                placeholder='carterleonard@gmail.com'
                 helperText='Puedes usar letras, números y puntos'
               />
             </Grid>
@@ -98,6 +107,24 @@ const Form = props => {
             </Grid>
 
             <Grid item xs={12}>
+              <TextField
+                fullWidth
+                type='text'
+                label='ID recomendado'
+                onChange={handleChange('recommenderID')}
+                placeholder='85e3b573-84ec-495f-982f-8dc7063e30f8'
+                helperText='(Opcional)'
+              />
+
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={checkedProfile} onChange={handleChangeProfile} />}
+                  label='Cambiar Perfil'
+                />
+              </FormGroup>
+            </Grid>
+
+            <Grid item xs={12}>
               <Box
                 sx={{
                   gap: 5,
@@ -110,8 +137,8 @@ const Form = props => {
                 {loading === 'pending' ? (
                   <div>enviando...</div>
                 ) : (
-                  <Button type='submit' variant='contained' size='large' onClick={submitLogin}>
-                    Acceder
+                  <Button type='submit' variant='contained' size='large' onClick={submitRegister}>
+                    Registrarse
                   </Button>
                 )}
               </Box>
@@ -122,4 +149,4 @@ const Form = props => {
     </Card>
   )
 }
-export default Form
+export default FormRegister
