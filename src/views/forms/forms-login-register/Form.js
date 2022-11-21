@@ -83,45 +83,23 @@ const Form = props => {
     dispatch(loginCall({ email, password }))
     // router.push('/dashboards/general/')
   }
+
   return (
-    <Card>
-      <CardHeader title='Acceder' titleTypographyProps={{ variant: 'h6' }} />
-      <CardContent>
-        <form onSubmit={e => e.preventDefault()}>
-          <Grid container spacing={4}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                value={values.email}
-                onChange={handleChange('email')}
-                type='text'
-                label='Cuenta o correo electronico'
-                placeholder='joe@gmail.com'
-                helperText='Puedes usar letras, números y puntos'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel htmlFor='form-layouts-basic-password'>Password</InputLabel>
-                <OutlinedInput
-                  label='Contraseña'
-                  value={values.password}
-                  id='form-layouts-basic-password'
-                  onChange={handleChange('password')}
-                  type={values.showPassword ? 'text' : 'password'}
-                  aria-describedby='form-layouts-basic-password-helper'
-                  endAdornment={
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        aria-label='toggle password visibility'
-                      >
-                        {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
+    <>
+      <Card>
+        <CardHeader title='Acceder' titleTypographyProps={{ variant: 'h6' }} />
+        <CardContent>
+          <form onSubmit={e => e.preventDefault()}>
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  value={values.email}
+                  onChange={handleChange('email')}
+                  type='text'
+                  label='Cuenta o correo electronico'
+                  placeholder='joe@gmail.com'
+                  helperText='Puedes usar letras, números y puntos'
                 />
                 <FormHelperText id='form-layouts-basic-password-helper'></FormHelperText>
               </FormControl>
@@ -151,10 +129,17 @@ const Form = props => {
                 )}
               </Box>
             </Grid>
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+      <CustomSnackbar
+        open={open}
+        message={message}
+        severity={severity}
+        positioned={positioned}
+        handleClose={() => dispatch(closeSnackBar())}
+      />
+    </>
   )
 }
 export default Form

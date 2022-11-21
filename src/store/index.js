@@ -11,6 +11,7 @@ import permissions from 'src/store/apps/permissions'
 //inmunosalud reducers
 import session from 'src/store/session'
 import users from 'src/store/users'
+import notifications from 'src/store/notifications'
 
 export const store = configureStore({
   reducer: {
@@ -23,7 +24,8 @@ export const store = configureStore({
 
     //new reducers
     session,
-    users
+    users,
+    notifications
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

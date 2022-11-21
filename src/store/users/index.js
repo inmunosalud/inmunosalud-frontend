@@ -34,6 +34,7 @@ const initialState = {
   /* new User */
   newUser: {},
   loading: 'idle',
+  token: null,
   error: false,
   message: '',
   // new user
