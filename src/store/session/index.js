@@ -4,7 +4,8 @@ import { PROYECT, api_post } from '../../services/api'
 
 //actions
 export const loginCall = createAsyncThunk('/user/login', async body => {
-  const response = await api_post(`${PROYECT}/users/login`, body)
+  const headers = { 'Content-Type': 'application/json' }
+  const response = await api_post(`${PROYECT}/users/login`, body, headers)
   return response
 })
 
@@ -12,8 +13,7 @@ const initialState = {
   user: {},
   token: null,
   loading: 'idle',
-  error: false,
-  message: ''
+  error: {}
 }
 
 export const sessionSlice = createSlice({
@@ -34,8 +34,12 @@ export const sessionSlice = createSlice({
         localStorage.setItem('im-user', content.token)
       }),
       builder.addCase(loginCall.rejected, (state, action) => {
-        state.loading = 'rejected'
-        state.error = true
+        //console.log('action', action)
+        // const {
+        //   payload: { data }
+        // } = action
+        // state.loading = 'rejected'
+        // state.error = data
       })
   }
 })
