@@ -26,6 +26,7 @@ axiosInstance.interceptors.response.use(
     // window.location.href = '/login'
     //   return Promise.reject(message)
     // }
+
     console.error('Axios Response Error: ', error.response, message)
     return Promise.reject(error)
   }
@@ -52,6 +53,7 @@ export const api_post = (url, body, headers = {}) => {
         res(data)
       })
       .catch(err => {
+        console.log({ err })
         return rej(err)
       })
   })

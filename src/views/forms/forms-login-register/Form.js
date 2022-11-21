@@ -101,19 +101,44 @@ const Form = props => {
                   placeholder='joe@gmail.com'
                   helperText='Puedes usar letras, números y puntos'
                 />
-                <FormHelperText id='form-layouts-basic-password-helper'></FormHelperText>
-              </FormControl>
-              {errors ? (
-                <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
-                  {errors[0]?.msg}
-                </Alert>
-              ) : null}
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor='form-layouts-basic-password'>Password</InputLabel>
+                  <OutlinedInput
+                    label='Contraseña'
+                    value={values.password}
+                    id='form-layouts-basic-password'
+                    onChange={handleChange('password')}
+                    type={values.showPassword ? 'text' : 'password'}
+                    aria-describedby='form-layouts-basic-password-helper'
+                    endAdornment={
+                      <InputAdornment position='end'>
+                        <IconButton
+                          edge='end'
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          aria-label='toggle password visibility'
+                        >
+                          {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  <FormHelperText id='form-layouts-basic-password-helper'></FormHelperText>
+                </FormControl>
+                {errors ? (
+                  <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
+                    {errors[0]?.msg}
+                  </Alert>
+                ) : null}
+              </Grid>
             </Grid>
-
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ mt: 4 }}>
               <Box
                 sx={{
                   gap: 5,
+
                   display: 'flex',
                   flexWrap: 'wrap',
                   alignItems: 'center',
@@ -132,13 +157,6 @@ const Form = props => {
           </form>
         </CardContent>
       </Card>
-      <CustomSnackbar
-        open={open}
-        message={message}
-        severity={severity}
-        positioned={positioned}
-        handleClose={() => dispatch(closeSnackBar())}
-      />
     </>
   )
 }

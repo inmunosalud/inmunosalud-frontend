@@ -8,13 +8,11 @@ import { PROYECT, api_post } from '../../services/api'
 export const loginCall = createAsyncThunk('/user/login', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
-    console.log(Router)
+
     Router.push('/dashboards/general/')
 
     return response
   } catch (error) {
-    console.log(error.response.data)
-
     const data = error.response.data
 
     if (data.content.errors) {
@@ -25,7 +23,7 @@ export const loginCall = createAsyncThunk('/user/login', async (body, thunkApi) 
       thunkApi.dispatch(setErrors(newErrors))
     }
 
-    thunkApi.rejectWithValue(data)
+    return thunkApi.rejectWithValue('error')
   }
 })
 
