@@ -16,6 +16,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
 import Alert from '@mui/material/Alert'
+import { CircularProgress } from '@mui/material'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -23,7 +24,6 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
 import { loginCall, setErrors } from 'src/store/session'
-import { CircularProgress } from '@mui/material'
 
 const BASIC_ERRORS = {
   email: {
@@ -81,7 +81,6 @@ const Form = props => {
     }
 
     dispatch(loginCall({ email, password }))
-    // router.push('/dashboards/general/')
   }
 
   return (

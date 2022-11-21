@@ -43,6 +43,11 @@ export const sessionSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.errors = payload
+    },
+    setLogin: (state, { payload }) => {
+      state.token = payload.token
+      state.user = payload.user
+      localStorage.setItem('im-user', payload.token)
     }
   },
   extraReducers: builder => {
@@ -53,8 +58,9 @@ export const sessionSlice = createSlice({
     builder.addCase(loginCall.fulfilled, (state, { payload }) => {
       const { content } = payload
       state.isLoading = false
+      state.errors = null
       state.token = content.token
-      state.user = content?.user
+      state.user = content.user
       localStorage.setItem('im-user', content.token)
     })
     builder.addCase(loginCall.rejected, (state, action) => {
@@ -65,4 +71,4 @@ export const sessionSlice = createSlice({
 
 export default sessionSlice.reducer
 
-export const { login, setErrors } = sessionSlice.actions
+export const { login, setErrors, setLogin } = sessionSlice.actions

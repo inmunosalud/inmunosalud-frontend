@@ -14,7 +14,6 @@ const CustomSnackbar = ({
   positioned = { vertical: 'top', horizontal: 'right' },
   handleClose = () => {}
 }) => {
-  console.log(positioned)
   return (
     <Snackbar open={open} autoHideDuration={autoHideDuration} onClose={handleClose} anchorOrigin={positioned}>
       <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>

@@ -19,19 +19,37 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import Alert from '@mui/material/Alert'
+import { CircularProgress } from '@mui/material'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
-import { createUser } from 'src/store/users'
+import { createUser, setErrors } from 'src/store/users'
 import { openSnackBar, closeSnackBar } from 'src/store/notifications'
+
+const BASIC_ERRORS = {
+  email: {
+    value: '',
+    msg: 'El correo electrónico ingresado es una dirección invalida.',
+    param: 'email',
+    location: 'body'
+  },
+
+  password: {
+    value: '',
+    msg: 'La contraseña debe ser ingresada y debe contener mínimo 8 caracteres para completar la solicitud.',
+    param: 'password',
+    location: 'body'
+  }
+}
 
 const FormRegister = props => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { loading } = useSelector(state => state.users)
+  const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
   const { open, message, positioned, severity } = useSelector(state => state.notifications)
 
   // ** States
@@ -61,29 +79,20 @@ const FormRegister = props => {
 
   const submitRegister = async () => {
     const { email, password, recommenderID } = values
-    if (!email && !password) {
-      dispatch(
-        openSnackBar({
-          open: true,
-          message: 'usuario o contraseña inválidos',
-          severity: 'error'
-        })
-      )
+    const errors = []
+
+    if (!email) {
+      errors.push(BASIC_ERRORS.email)
+      dispatch(setErrors(errors))
+      return
+    }
+    if (!password) {
+      errors.push(BASIC_ERRORS.password)
+      dispatch(setErrors(errors))
       return
     }
 
-    try {
-      await dispatch(createUser({ email, password, recommenderID }))
-      router.push('/dashboards/general/')
-    } catch (error) {
-      dispatch(
-        openSnackBar({
-          open: true,
-          message: 'error..',
-          severity: 'error'
-        })
-      )
-    }
+    dispatch(createUser({ email, password, recommenderID }))
   }
   return (
     <>
@@ -146,6 +155,11 @@ const FormRegister = props => {
                     label='Cambiar Perfil'
                   />
                 </FormGroup>
+                {errors ? (
+                  <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
+                    {errors[0]?.msg}
+                  </Alert>
+                ) : null}
               </Grid>
 
               <Grid item xs={12}>
@@ -158,8 +172,8 @@ const FormRegister = props => {
                     justifyContent: 'space-between'
                   }}
                 >
-                  {loading === 'pending' ? (
-                    <div>enviando...</div>
+                  {isLoading ? (
+                    <CircularProgress size={20} />
                   ) : (
                     <Button type='submit' variant='contained' size='large' onClick={submitRegister}>
                       Registrarse
