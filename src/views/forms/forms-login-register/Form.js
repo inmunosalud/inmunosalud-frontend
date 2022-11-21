@@ -15,19 +15,37 @@ import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
+import Alert from '@mui/material/Alert'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
-import { loginCall } from 'src/store/session'
+import { loginCall, setErrors } from 'src/store/session'
+import { CircularProgress } from '@mui/material'
+
+const BASIC_ERRORS = {
+  email: {
+    value: '',
+    msg: 'El correo electrónico ingresado es una dirección invalida.',
+    param: 'email',
+    location: 'body'
+  },
+
+  password: {
+    value: '',
+    msg: 'La contraseña debe ser ingresada y debe contener mínimo 8 caracteres para completar la solicitud.',
+    param: 'password',
+    location: 'body'
+  }
+}
 
 const Form = props => {
   /*hooks */
   const dispatch = useDispatch()
   const router = useRouter()
-  const { loading } = useSelector(state => state.session)
+  const { isLoading, errors } = useSelector(state => state.session)
   // ** States
   const [values, setValues] = React.useState({
     email: '',
@@ -49,9 +67,21 @@ const Form = props => {
 
   const submitLogin = async () => {
     const { email, password } = values
+    const errors = []
 
-    await dispatch(loginCall({ email, password }))
-    router.push('/dashboards/general/')
+    if (!email) {
+      errors.push(BASIC_ERRORS.email)
+      dispatch(setErrors(errors))
+      return
+    }
+    if (!password) {
+      errors.push(BASIC_ERRORS.password)
+      dispatch(setErrors(errors))
+      return
+    }
+
+    dispatch(loginCall({ email, password }))
+    // router.push('/dashboards/general/')
   }
   return (
     <Card>
@@ -95,6 +125,11 @@ const Form = props => {
                 />
                 <FormHelperText id='form-layouts-basic-password-helper'></FormHelperText>
               </FormControl>
+              {errors ? (
+                <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
+                  {errors[0].msg}
+                </Alert>
+              ) : null}
             </Grid>
 
             <Grid item xs={12}>
@@ -107,8 +142,8 @@ const Form = props => {
                   justifyContent: 'space-between'
                 }}
               >
-                {loading === 'pending' ? (
-                  <div>enviando...</div>
+                {isLoading ? (
+                  <CircularProgress size={20} />
                 ) : (
                   <Button type='submit' variant='contained' size='large' onClick={submitLogin}>
                     Acceder

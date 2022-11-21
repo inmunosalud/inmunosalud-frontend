@@ -20,14 +20,14 @@ axiosInstance.interceptors.response.use(
         'Existe un problema con el servicio, intente de nuevo mas tarde, si el problema persiste contacte a soporte.'
     }
 
-    if (error.response.status === 401) {
-      console.error('RESPONSE 401')
-      localStorage.removeItem('persist:root')
-      window.location.href = '/login'
-      return Promise.reject(message)
-    }
+    // if (error.response.status === 401) {
+    //   console.error('RESPONSE 401')
+    // localStorage.removeItem('persist:root')
+    // window.location.href = '/login'
+    //   return Promise.reject(message)
+    // }
     console.error('Axios Response Error: ', error.response, message)
-    return Promise.reject(message)
+    return Promise.reject(error)
   }
 )
 

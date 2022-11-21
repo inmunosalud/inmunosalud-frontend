@@ -14,6 +14,19 @@ export const usersList = createAsyncThunk('user/list', async () => {
   const response = await api_get(`${PROYECT}/users`, auth)
   return response
 })
+export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  console.log(token)
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_post(`${PROYECT}/users/admin`, body, auth)
+    console.log(response)
+    return response
+  } catch (error) {
+    console.error(error)
+    thunkApi.rejectWithValue('error')
+  }
+})
 
 const initialState = {
   /* users table */
@@ -22,7 +35,9 @@ const initialState = {
   newUser: {},
   loading: 'idle',
   error: false,
-  message: ''
+  message: '',
+  // new user
+  isLoading: false
 }
 
 export const usersSlice = createSlice({
@@ -32,29 +47,39 @@ export const usersSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(createUser.pending, (state, action) => {
       state.loading = 'pending'
-    }),
-      builder.addCase(createUser.fulfilled, (state, action) => {
-        const {
-          payload: { content }
-        } = action
-        state.loading = 'resolved'
-        state.newUser = content
-      }),
-      builder.addCase(createUser.rejected, (state, action) => {
-        state.loading = 'rejected'
-        state.error = true
-      }),
-      //get users tables
-      builder.addCase(usersList.pending, (state, action) => {
-        state.loading = 'pending'
-      }),
-      builder.addCase(usersList.fulfilled, (state, action) => {
-        const {
-          payload: { content }
-        } = action
-        state.loading = 'resolved'
-        state.users = [...content]
-      })
+    })
+    builder.addCase(createUser.fulfilled, (state, action) => {
+      const {
+        payload: { content }
+      } = action
+      state.loading = 'resolved'
+      state.newUser = content
+    })
+    builder.addCase(createUser.rejected, (state, action) => {
+      state.loading = 'rejected'
+      state.error = true
+    })
+    //get users tables
+    builder.addCase(usersList.pending, (state, action) => {
+      state.loading = 'pending'
+    })
+    builder.addCase(usersList.fulfilled, (state, action) => {
+      console.log(action)
+      const {
+        payload: { content }
+      } = action
+      state.loading = 'resolved'
+      state.users = [...content]
+    })
+    builder.addCase(sendNewUser.pending, (state, action) => {
+      state.loading = true
+    })
+    builder.addCase(sendNewUser.fulfilled, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(sendNewUser.rejected, (state, action) => {
+      state.isLoading = false
+    })
   }
 })
 
