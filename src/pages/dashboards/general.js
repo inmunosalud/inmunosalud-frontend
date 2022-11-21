@@ -57,7 +57,7 @@ const General = () => {
           <CardNumber data={data[2]} />
         </Grid>
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
-          <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }} onClick={handleClick}>
+          <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }} onClick={() => handleClick()}>
             Alta de usuarios
           </Button>
         </Grid>

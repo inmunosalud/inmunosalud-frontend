@@ -33,17 +33,17 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // ** Styled Components
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useDispatch } from 'react-redux'
+import { sendNewUser } from 'src/store/users'
 
 const defaultValues = {
-  dob: null,
   email: '',
-  radio: '',
-  select: '',
+  profile: '',
   lastName: '',
   password: '',
-  textarea: '',
+  phone: '',
   firstName: '',
-  checkbox: false
+  recommenderId: ''
 }
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
@@ -51,7 +51,7 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
 })
 
 const NewUser = () => {
-  // ** States
+  const dispatch = useDispatch()
   const [state, setState] = useState({
     password: '',
     showPassword: false
@@ -71,7 +71,11 @@ const NewUser = () => {
   const handleMouseDownPassword = event => {
     event.preventDefault()
   }
-  const onSubmit = () => toast.success('Form Submitted')
+  const onSubmit = event => {
+    console.log(event)
+
+    dispatch(sendNewUser(event))
+  }
 
   return (
     <Card>
@@ -231,7 +235,7 @@ const NewUser = () => {
                   Perfil
                 </InputLabel>
                 <Controller
-                  name='select'
+                  name='profile'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -239,14 +243,12 @@ const NewUser = () => {
                       value={value}
                       label='Perfil'
                       onChange={onChange}
-                      error={Boolean(errors.select)}
-                      labelId='validation-basic-select'
-                      aria-describedby='validation-basic-select'
+                      error={Boolean(errors.profile)}
+                      labelId='validation-basic-profile'
+                      aria-describedby='validation-basic-profile'
                     >
                       <MenuItem value='admin'>Admin</MenuItem>
                       <MenuItem value='productsAdmin'>Admin de Productos</MenuItem>
-                      <MenuItem value='consumerUser'>Usuario</MenuItem>
-                      <MenuItem value='associatedUser'>Usuario Asosiado</MenuItem>
                     </Select>
                   )}
                 />
