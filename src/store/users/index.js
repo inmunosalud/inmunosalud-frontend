@@ -21,6 +21,7 @@ const initialState = {
   /* new User */
   newUser: {},
   loading: 'idle',
+  token: null,
   error: false,
   message: ''
 }
@@ -39,6 +40,7 @@ export const usersSlice = createSlice({
         } = action
         state.loading = 'resolved'
         state.newUser = content
+        state.token = content.token
       }),
       builder.addCase(createUser.rejected, (state, action) => {
         state.loading = 'rejected'

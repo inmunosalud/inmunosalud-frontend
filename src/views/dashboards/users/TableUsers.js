@@ -296,7 +296,6 @@ const TableUsers = () => {
   const { users } = useSelector(state => state.users)
 
   React.useEffect(() => {
-    console.log('here useEfftect')
     dispatch(usersList())
   }, [dispatch])
 
