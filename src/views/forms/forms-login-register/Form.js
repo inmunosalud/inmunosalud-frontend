@@ -127,7 +127,7 @@ const Form = props => {
               </FormControl>
               {errors ? (
                 <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
-                  {errors[0].msg}
+                  {errors[0]?.msg}
                 </Alert>
               ) : null}
             </Grid>
