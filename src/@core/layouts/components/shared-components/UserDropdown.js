@@ -45,7 +45,6 @@ const UserDropdown = props => {
   const { user } = useSelector(state => state.session)
   // ** Hooks
   const router = useRouter()
-  const { logout } = useAuth()
 
   // ** Vars
   const { direction } = settings
@@ -76,7 +75,6 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
-    // logout()
     router.push('/register')
     handleDropdownClose()
   }
@@ -123,12 +121,18 @@ const UserDropdown = props => {
             </Box>
           </Box>
         </Box>
-
         <Divider />
-        <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
-          <LogoutVariant sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-          Cerrar Sesión
-        </MenuItem>
+        {user?.id ? (
+          <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
+            <LogoutVariant sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            Cerrar Sesión
+          </MenuItem>
+        ) : (
+          <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
+            <LogoutVariant sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            Iniciar Sesión
+          </MenuItem>
+        )}
       </Menu>
     </Fragment>
   )

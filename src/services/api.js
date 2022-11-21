@@ -53,7 +53,6 @@ export const api_post = (url, body, headers = {}) => {
         res(data)
       })
       .catch(err => {
-        console.log({ err })
         return rej(err)
       })
   })
