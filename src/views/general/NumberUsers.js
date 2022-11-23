@@ -22,7 +22,7 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Account } from 'mdi-material-ui'
 
-const NumberUsers = () => {
+const NumberUsers = ({ data = null }) => {
   // ** Hook
   const theme = useTheme()
 
@@ -68,6 +68,14 @@ const NumberUsers = () => {
     }
   }
 
+  const getSeries = () => {
+    if (!data) {
+      return []
+    }
+
+    return [data.valid, data.invalid]
+  }
+
   return (
     <Card>
       <CardHeader
@@ -75,12 +83,6 @@ const NumberUsers = () => {
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
-
-        // action={
-        //   <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-        //     <DotsVertical />
-        //   </IconButton>
-        // }
       />
       <CardContent
         sx={{
@@ -99,7 +101,7 @@ const NumberUsers = () => {
       >
         <Grid container sx={{ my: [0, 4, 1.625] }}>
           <Grid item xs={12} sm={6} sx={{ mb: [3, 0] }}>
-            <ReactApexcharts type='donut' height={180} series={[25, 12]} options={options} />
+            <ReactApexcharts type='donut' height={180} series={getSeries()} options={options} />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
             <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
@@ -108,7 +110,7 @@ const NumberUsers = () => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Numero de usuarios</Typography>
-                <Typography variant='h6'>37</Typography>
+                <Typography variant='h6'>{data?.total}</Typography>
               </Box>
             </Box>
             <Divider sx={{ my: 4 }} />
@@ -118,7 +120,7 @@ const NumberUsers = () => {
                   <Circle sx={{ mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }} />
                   <Typography variant='body2'>Activos</Typography>
                 </Box>
-                <Typography sx={{ fontWeight: 600 }}>25</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{data?.valid}</Typography>
               </Grid>
               <Grid item xs={6} sx={{ mb: 4 }}>
                 <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center' }}>
@@ -127,7 +129,7 @@ const NumberUsers = () => {
                   />
                   <Typography variant='body2'>Inactivos</Typography>
                 </Box>
-                <Typography sx={{ fontWeight: 600 }}>12</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{data?.invalid}</Typography>
               </Grid>
             </Grid>
           </Grid>
