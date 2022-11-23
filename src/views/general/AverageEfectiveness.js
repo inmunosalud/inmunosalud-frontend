@@ -25,7 +25,7 @@ const columnColors = {
   series2: '#d2b0ff'
 }
 
-const AverageEfectiveness = () => {
+const AverageEfectiveness = ({ score = 0 }) => {
   const [endDate, setEndDate] = useState(null)
   const [startDate, setStartDate] = useState(new Date())
 
@@ -88,19 +88,15 @@ const AverageEfectiveness = () => {
 
   const series = [
     {
-      name: 'Activos',
-      data: [10]
-    },
-    {
-      name: 'Inactivos',
-      data: [5]
+      name: 'Score',
+      data: [score]
     }
   ]
 
   return (
     <Card>
       <CardHeader
-        title='Efectividad promedio'
+        title='Score'
         titleTypographyProps={{ variant: 'h6' }}
         subheaderTypographyProps={{ variant: 'caption' }}
         sx={{

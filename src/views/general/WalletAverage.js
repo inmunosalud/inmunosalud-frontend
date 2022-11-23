@@ -14,7 +14,7 @@ const donutColors = {
   series5: '#ffa1a1'
 }
 
-const WalletAverage = () => {
+const WalletAverage = ({ title = '', subtitle = '', percentage = 0 }) => {
   //   const options = {
   //     legend: {
   //       show: true,
@@ -145,14 +145,14 @@ const WalletAverage = () => {
     },
     labels: ['Average Results']
   }
-  const series = [85]
+  const series = [percentage]
 
   return (
     <Card>
       <CardHeader
-        title='Peso cartera'
+        title={title}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader='Promedio entre todos los niveles'
+        subheader={subtitle}
         subheaderTypographyProps={{ variant: 'caption', sx: { color: 'text.disabled' } }}
       />
       <CardContent

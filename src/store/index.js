@@ -1,5 +1,5 @@
 // ** Toolkit imports
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
 import chat from 'src/store/apps/chat'
@@ -12,6 +12,7 @@ import permissions from 'src/store/apps/permissions'
 import session from 'src/store/session'
 import users from 'src/store/users'
 import notifications from 'src/store/notifications'
+import general from 'src/store/dashboard/generalSlice'
 
 export const store = configureStore({
   reducer: {
@@ -25,7 +26,8 @@ export const store = configureStore({
     //new reducers
     session,
     users,
-    notifications
+    notifications,
+    dashboard: combineReducers({ general })
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

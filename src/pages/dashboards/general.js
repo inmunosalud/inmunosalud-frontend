@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -12,50 +14,65 @@ import CardNumber from 'src/views/general/CardNumber'
 import AverageEfectiveness from 'src/views/general/AverageEfectiveness'
 import WalletAverage from 'src/views/general/WalletAverage'
 import TableUsers from 'src/views/dashboards/users/TableUsers'
+import { loadGeneralData } from 'src/store/dashboard/generalSlice'
 
-const data = [
-  {
-    stats: '$57,300.90',
-    title: 'Consumo promedio'
-  },
-  {
-    stats: '1 año 2 meses',
-    title: 'Antigüedad promedio'
-  },
-  {
-    stats: '$1,240.56',
-    title: 'Rendimiento promedio por cartera'
-  }
-]
+const subtitle = 'Porcentaje de usuarios activos en el aplicación'
 
 const General = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const { data } = useSelector(state => state.dashboard.general)
+
+  console.log(data)
 
   const handleClick = () => {
     router.push('/admin/users/new-user')
   }
 
+  const antiquity = {
+    stats: data?.antiquity,
+    title: 'Antigüedad promedio'
+  }
+  const performance = {
+    stats: data?.performance,
+    title: 'Rendimiento'
+  }
+  const nextConsumption = {
+    stats: data?.nextConsumption,
+    title: 'Saldo por cobrar'
+  }
+  const nextComission = {
+    stats: data?.nextConsumption,
+    title: 'Saldo por entregar'
+  }
+
+  useEffect(() => {
+    dispatch(loadGeneralData())
+  }, [])
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6}>
-          <NumberUsers />
+          <NumberUsers data={data?.users} />
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
-          <CardNumber data={data[0]} />
+          <CardNumber data={performance} />
 
-          <CardNumber data={data[1]} />
+          <CardNumber data={antiquity} />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <WalletAverage />
+        <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
+          <CardNumber data={nextConsumption} />
+
+          <CardNumber data={nextComission} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <WalletAverage title='Estatus' subtitle={subtitle} percentage={data?.status} />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <AverageEfectiveness score={data?.score} />
         </Grid>
 
-        <Grid item xs={12} md={6}>
-          <AverageEfectiveness />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <CardNumber data={data[2]} />
-        </Grid>
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
           <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }} onClick={() => handleClick()}>
             Alta de usuarios
