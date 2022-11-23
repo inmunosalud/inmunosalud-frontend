@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   open: false,
   message: '',
+  severity: '',
   handleClose: () => {}
 }
 
@@ -11,6 +12,7 @@ export const snackbarsSlice = createSlice({
   initialState,
   reducers: {
     openSnackBar(state, action) {
+      console.log('action notifications', action)
       const {
         payload: { message, open, severity }
       } = action

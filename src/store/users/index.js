@@ -4,6 +4,8 @@ import Router from 'next/router'
 import { PROYECT, api_post, api_get } from '../../services/api'
 import { setLogin } from '../session'
 
+import { openSnackBar } from '../notifications'
+
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
@@ -47,17 +49,19 @@ export const usersList = createAsyncThunk('user/list', async () => {
   const response = await api_get(`${PROYECT}/users`, auth)
   return response
 })
+
 export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  console.log(token)
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_post(`${PROYECT}/users/admin`, body, auth)
-    console.log(response)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    Router.push('/dashboards/general/')
     return response
   } catch (error) {
-    console.error(error)
-    thunkApi.rejectWithValue('error')
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
   }
 })
 
@@ -67,14 +71,13 @@ const initialState = {
   registerErrors: null,
   /* users table */
   users: [],
-  /* new User */
-  newUser: {},
   loading: 'idle',
   token: null,
   error: false,
   message: '',
   // new user
-  isLoading: false
+  isLoading: 'idle',
+  newUser: {}
 }
 
 export const usersSlice = createSlice({
@@ -102,21 +105,24 @@ export const usersSlice = createSlice({
       state.loading = 'pending'
     })
     builder.addCase(usersList.fulfilled, (state, action) => {
-      console.log(action)
       const {
         payload: { content }
       } = action
       state.loading = 'resolved'
       state.users = [...content]
     })
+    //create user
     builder.addCase(sendNewUser.pending, (state, action) => {
-      state.loading = true
+      state.isLoading = 'pending'
     })
-    builder.addCase(sendNewUser.fulfilled, (state, action) => {
-      state.isLoading = false
+    builder.addCase(sendNewUser.fulfilled, (state, { payload }) => {
+      const newUser = payload.content
+      const values = [...state.users, newUser]
+      state.isLoading = 'resolved'
+      state.users = values
     })
     builder.addCase(sendNewUser.rejected, (state, action) => {
-      state.isLoading = false
+      state.isLoading = 'rejected'
     })
   }
 })

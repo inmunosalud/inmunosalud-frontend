@@ -1,6 +1,6 @@
 // ** React Imports
-import { forwardRef, useState } from 'react'
-
+import { forwardRef, useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -21,20 +21,24 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import { CircularProgress } from '@mui/material'
+
 
 // ** Third Party Imports
-import toast from 'react-hot-toast'
-import DatePicker from 'react-datepicker'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
+
 // ** Styled Components
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { sendNewUser } from 'src/store/users'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import GoBackButton from 'src/views/components/goback/GoBack'
+
+import { closeSnackBar } from 'src/store/notifications'
 
 const defaultValues = {
   email: '',
@@ -46,12 +50,12 @@ const defaultValues = {
   recommenderId: ''
 }
 
-const CustomInput = forwardRef(({ ...props }, ref) => {
-  return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />
-})
-
 const NewUser = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
+  const { isLoading } = useSelector(state => state.users)
+  const { open, message, severity } = useSelector(state => state.notifications)
+  
   const [state, setState] = useState({
     password: '',
     showPassword: false
@@ -61,6 +65,7 @@ const NewUser = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({ defaultValues })
 
@@ -71,15 +76,38 @@ const NewUser = () => {
   const handleMouseDownPassword = event => {
     event.preventDefault()
   }
-  const onSubmit = event => {
-    console.log(event)
-
-    dispatch(sendNewUser(event))
+  const onSubmit = values => {
+    dispatch(sendNewUser(values))
   }
 
+  const handleChangePage = () => {
+    router.push('/dashboards/general/')
+  }
+
+  const resetValues = () => {
+    reset({
+      email: '',
+      profile: '',
+      lastName: '',
+      password: '',
+      phone: '',
+      firstName: '',
+      recommenderId: ''
+    });
+  }
+  
+  useEffect(() => {
+    isLoading === 'resolved' && resetValues()
+  }, [isLoading])
+
   return (
-    <Card>
-      <CardHeader title='Nuevo Usuario' titleTypographyProps={{ variant: 'h6' }} />
+    <>
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <CardHeader title='Nuevo Usuario' titleTypographyProps={{ variant: 'h6' }} />
+          <GoBackButton onChangePage={handleChangePage} />
+        </div>
+      
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={5}>
@@ -88,7 +116,7 @@ const NewUser = () => {
                 <Controller
                   name='firstName'
                   control={control}
-                  rules={{ required: true }}
+                  rules={{ required: true, maxLength: 20 }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       value={value}
@@ -100,11 +128,12 @@ const NewUser = () => {
                     />
                   )}
                 />
-                {errors.firstName && (
+                {errors.firstName?.type === "required" && (
                   <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
                     El campo es requerido
                   </FormHelperText>
-                )}
+                  )}
+                  
               </FormControl>
             </Grid>
 
@@ -164,7 +193,7 @@ const NewUser = () => {
                 <Controller
                   name='phone'
                   control={control}
-                  rules={{ required: true }}
+                  rules={{ required: true, maxLength: 10 }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       type='tel'
@@ -177,9 +206,14 @@ const NewUser = () => {
                     />
                   )}
                 />
-                {errors.phone && (
+                {errors.phone?.type === "required" && (
                   <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
                     El campo es requerido
+                  </FormHelperText>
+                  )}
+                  {errors.phone?.type === "maxLength" && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
+                    El telefono debe tener 10 caracteres
                   </FormHelperText>
                 )}
               </FormControl>
@@ -193,7 +227,7 @@ const NewUser = () => {
                 <Controller
                   name='password'
                   control={control}
-                  rules={{ required: true }}
+                  rules={{ required: true , minLength: 8}}
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
@@ -217,9 +251,14 @@ const NewUser = () => {
                     />
                   )}
                 />
-                {errors.password && (
+                {errors.password?.type === "required" && (
                   <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-password'>
                     El campo es requerido
+                  </FormHelperText>
+                  )}
+                  {errors.password?.type === "minLength" && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-password'>
+                    La contraseña debe contener al menos 8 caracteres
                   </FormHelperText>
                 )}
               </FormControl>
@@ -279,14 +318,25 @@ const NewUser = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Button size='large' type='submit' variant='contained'>
-                Crear
-              </Button>
+              {isLoading === "pending" ? (
+                <CircularProgress size={20} />
+              ) : (
+                <Button size='large' type='submit' variant='contained'>
+                  Crear
+                </Button>
+              )}
             </Grid>
           </Grid>
         </form>
       </CardContent>
-    </Card>
+      </Card>
+      <CustomSnackbar
+        open={open}
+        message={message}
+        severity={severity}
+        handleClose={() => dispatch(closeSnackBar())}
+      />
+    </>
   )
 }
 
