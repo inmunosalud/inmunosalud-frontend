@@ -5,22 +5,24 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Hooks Import
-import { useAuth } from 'src/hooks/useAuth'
+import { useSelector } from 'react-redux'
 
 const GuestGuard = props => {
   const { children, fallback } = props
-  const auth = useAuth()
+
+  const { user, isLoading } = useSelector(state => state.session)
+
   const router = useRouter()
   useEffect(() => {
     if (!router.isReady) {
       return
     }
-    if (window.localStorage.getItem('userData')) {
-      router.replace('/')
-    }
+    // if (window.localStorage.getItem('userData')) {
+    //   router.replace('/')
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.route])
-  if (auth.loading || (!auth.loading && auth.user !== null)) {
+  if (isLoading) {
     return fallback
   }
 

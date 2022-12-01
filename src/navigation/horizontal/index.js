@@ -6,6 +6,11 @@ const navigation = () => {
   return [
     {
       icon: HomeOutline,
+      title: 'Home',
+      path: '/landig-page/home'
+    },
+    {
+      icon: HomeOutline,
       title: 'Clientes',
       children: [
         {

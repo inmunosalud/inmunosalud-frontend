@@ -50,5 +50,6 @@ const Welcome = () => {
   )
 }
 Welcome.getLayout = page => <BlankLayout>{page}</BlankLayout>
+Welcome.guestGuard = true
 
 export default Welcome

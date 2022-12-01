@@ -21,43 +21,56 @@ import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import CheckboxMarkedCircleOutline from 'mdi-material-ui/CheckboxMarkedCircleOutline'
 import { IconAdminPanelSettings } from '@aws-amplify/ui-react'
 import AccountSupervisor from 'mdi-material-ui/AccountSupervisor'
+import { PERMISSIONS } from 'src/configs/profiles'
 
 const navigation = () => {
   return [
     {
+      icon: HomeOutline,
+      title: 'Home',
+      path: '/landing-page/home',
+      permission: PERMISSIONS.home
+    },
+    {
       title: 'Dashboard',
       icon: HomeOutline,
+      permission: 'dashboard',
       children: [
         {
           title: 'General',
-          path: '/dashboards/general'
+          path: '/dashboards/general',
+          permission: PERMISSIONS.dashboardGeneral
         },
         {
           title: 'Usuarios',
-          path: '/dashboards/users'
+          path: '/dashboards/users',
+          permission: PERMISSIONS.dashboardUsers
         }
       ]
     },
     {
       title: 'Ecommerce',
       icon: HomeOutline,
+      permission: 'ecommerce',
       children: [
         {
           title: 'Productos',
-          path: '/ecommerce/products'
-        }
-      ]
-    },
-    {
-      title: 'Admin',
-      icon: AccountSupervisor,
-      children: [
-        {
-          title: 'Usuarios',
-          path: '/admin/users'
+          path: '/ecommerce/products',
+          permission: PERMISSIONS.ecommerceProducts
         }
       ]
     }
+    // {
+    //   title: 'Admin',
+    //   icon: AccountSupervisor,
+    //   permission: "home",
+    //   children: [
+    //     {
+    //       title: 'Usuarios',
+    //       path: '/admin/users'
+    //     }
+    //   ]
+    // }
   ]
 }
 

@@ -5,32 +5,45 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Hooks Import
-import { useAuth } from 'src/hooks/useAuth'
+import { useSelector } from 'react-redux'
+import { PROFILES, ROUTES_PERMISSION } from 'src/configs/profiles'
+
+const resolveProfile = (user, path) => {
+  const userProfile = user?.profile ? PROFILES[user.profile] : PROFILES.default
+
+  const permission = ROUTES_PERMISSION[path]
+
+  console.log(permission)
+
+  return userProfile.includes(permission)
+}
 
 const AuthGuard = props => {
   const { children, fallback } = props
-  const auth = useAuth()
+  const { user, isLoading } = useSelector(state => state.session)
   const router = useRouter()
+
   useEffect(
     () => {
       if (!router.isReady) {
         return
       }
-      if (auth.user === null && !window.localStorage.getItem('userData')) {
+      console.log(router)
+      if (!resolveProfile(user, router.pathname)) {
         if (router.asPath !== '/') {
           router.replace({
-            pathname: '/login',
-            query: { returnUrl: router.asPath }
+            pathname: '/landing-page/home'
+            // query: { returnUrl: router.asPath }
           })
         } else {
-          router.replace('/login')
+          router.replace('/landing-page/home')
         }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.route]
   )
-  if (auth.loading || auth.user === null) {
+  if (isLoading || user === null) {
     return fallback
   }
 

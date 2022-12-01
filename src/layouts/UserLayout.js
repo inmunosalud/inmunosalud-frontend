@@ -68,7 +68,6 @@ const UserLayout = ({ children }) => {
           })}
     >
       {children}
-      
     </Layout>
   )
 }

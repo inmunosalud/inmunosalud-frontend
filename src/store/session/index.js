@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { PROYECT, api_post } from '../../services/api'
 
 //actions
-export const loginCall = createAsyncThunk('/user/login', async (body, thunkApi) => {
+export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
 
@@ -60,7 +60,7 @@ export const sessionSlice = createSlice({
       state.isLoading = false
       state.errors = null
       state.token = content.token
-      state.user = content.user
+      state.user = content.restOfUser
       localStorage.setItem('im-user', content.token)
     })
     builder.addCase(loginCall.rejected, (state, action) => {
