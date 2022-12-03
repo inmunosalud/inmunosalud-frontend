@@ -9,7 +9,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
 
-    Router.push('/dashboards/general/')
+    Router.push('/ecommerce/products')
 
     return response
   } catch (error) {
