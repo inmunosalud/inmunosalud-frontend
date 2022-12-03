@@ -32,11 +32,11 @@ const AuthGuard = props => {
       if (!resolveProfile(user, router.pathname)) {
         if (router.asPath !== '/') {
           router.replace({
-            pathname: '/landing-page/home'
+            pathname: '/ecommerce/products'
             // query: { returnUrl: router.asPath }
           })
         } else {
-          router.replace('/landing-page/home')
+          router.replace('/ecommerce/products')
         }
       }
     },
