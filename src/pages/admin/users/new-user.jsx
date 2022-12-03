@@ -198,7 +198,7 @@ const NewUser = () => {
                     <TextField
                       type='tel'
                       value={value}
-                      label='Phone'
+                      label='Telefono'
                       onChange={onChange}
                       error={Boolean(errors.phone)}
                       placeholder='4434343434'

@@ -1,10 +1,12 @@
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+
+//util
+const useGrapConfig =
+  (network = {}) =>
+  (type = '') => {
+    return network[type]
+  }
 
 const columnColors = {
   bg: '#f8d3ff',
@@ -12,7 +14,10 @@ const columnColors = {
   series2: '#d2b0ff'
 }
 
-const GraphRow = ({}) => {
+const GraphRow = ({ type, params = {} }) => {
+  const { network } = params?.row
+  const values = useGrapConfig(network)(type)
+
   const options = {
     chart: {
       offsetX: -10,
@@ -92,14 +97,13 @@ const GraphRow = ({}) => {
   const series = [
     {
       name: 'Activos',
-      data: [10]
+      data: [values?.valid || 1]
     },
     {
       name: 'Inactivos',
-      data: [5]
+      data: [values?.invalid || 1]
     }
   ]
-
   return <ReactApexcharts options={options} series={series} type='bar' height={75} />
 }
 

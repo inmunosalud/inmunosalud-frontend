@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post, api_get } from '../../services/api'
+import { PROYECT, api_post, api_get, api_put, api_delete } from '../../services/api'
 import { setLogin } from '../session'
 
 import { openSnackBar } from '../notifications'
@@ -10,9 +10,6 @@ import { openSnackBar } from '../notifications'
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users`, body)
-
-    console.log(response)
-
     const newUser = {
       user: {
         profile: response.content.profile,
@@ -38,7 +35,6 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
       newErrors.push({ msg: data.message })
       thunkApi.dispatch(setErrors(newErrors))
     }
-
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -65,19 +61,53 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   }
 })
 
+export const updateUser = createAsyncThunk('user/updateUser', async (body, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_put(`${PROYECT}/users/${body.id}`, body, auth)
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(usersList())
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const deleteUser = createAsyncThunk('user/deleteUser', async (body, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
   registerErrors: null,
   /* users table */
   users: [],
-  loading: 'idle',
+  loading: false,
   token: null,
   error: false,
   message: '',
   // new user
   isLoading: 'idle',
-  newUser: {}
+  newUser: {},
+  //edit user
+  showModal: false,
+  modalRow: null
 }
 
 export const usersSlice = createSlice({
@@ -86,6 +116,12 @@ export const usersSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.registerErrors = payload
+    },
+    setModal: (state, { payload }) => {
+      state.showModal = payload
+    },
+    setModalRow: (state, { payload }) => {
+      state.modalRow = payload
     }
   },
   extraReducers: builder => {
@@ -102,13 +138,13 @@ export const usersSlice = createSlice({
     })
     //get users tables
     builder.addCase(usersList.pending, (state, action) => {
-      state.loading = 'pending'
+      state.loading = true
     })
     builder.addCase(usersList.fulfilled, (state, action) => {
       const {
         payload: { content }
       } = action
-      state.loading = 'resolved'
+      state.loading = false
       state.users = [...content]
     })
     //create user
@@ -124,9 +160,21 @@ export const usersSlice = createSlice({
     builder.addCase(sendNewUser.rejected, (state, action) => {
       state.isLoading = 'rejected'
     })
+    //update user
+    builder.addCase(updateUser.pending, (state, action) => {})
+    builder.addCase(updateUser.fulfilled, (state, { payload }) => {
+      const updatedUser = payload?.content
+      const users = state.users.filter(usr => usr.id !== updatedUser.id)
+      const values = [...users, updateUser]
+      state.users = values
+    })
+    builder.addCase(updateUser.rejected, (state, action) => {})
+    builder.addCase(deleteUser.pending, (state, action) => {})
+    builder.addCase(deleteUser.fulfilled, (state, { payload }) => {})
+    builder.addCase(deleteUser.rejected, (state, action) => {})
   }
 })
 
 export default usersSlice.reducer
 
-export const { setErrors } = usersSlice.actions
+export const { setErrors, setModal, setModalRow } = usersSlice.actions
