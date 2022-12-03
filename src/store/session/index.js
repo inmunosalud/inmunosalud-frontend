@@ -60,7 +60,7 @@ export const sessionSlice = createSlice({
       state.isLoading = false
       state.errors = null
       state.token = content.token
-      state.user = content.restOfUser
+      state.user = content.user
       localStorage.setItem('im-user', content.token)
     })
     builder.addCase(loginCall.rejected, (state, action) => {
