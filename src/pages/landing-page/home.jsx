@@ -153,7 +153,7 @@ const Pricing = () => {
         <PricingCTA />
       </Card>
       <FAQs data={questions} />
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
