@@ -96,14 +96,14 @@ const Form = props => {
                   value={values.email}
                   onChange={handleChange('email')}
                   type='text'
-                  label='Cuenta o correo electronico'
+                  label='Cuenta o correo electrónico'
                   placeholder='joe@gmail.com'
                   helperText='Puedes usar letras, números y puntos'
                 />
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor='form-layouts-basic-password'>Password</InputLabel>
+                  <InputLabel htmlFor='form-layouts-basic-password'>Contraseña</InputLabel>
                   <OutlinedInput
                     label='Contraseña'
                     value={values.password}

@@ -107,14 +107,14 @@ const FormRegister = props => {
                   value={values.email}
                   onChange={handleChange('email')}
                   type='text'
-                  label='Correo electronico'
+                  label='Correo electrónico'
                   placeholder='carterleonard@gmail.com'
                   helperText='Puedes usar letras, números y puntos'
                 />
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor='form-layouts-basic-password'>Password</InputLabel>
+                  <InputLabel htmlFor='form-layouts-basic-password'>Contraseña</InputLabel>
                   <OutlinedInput
                     label='Contraseña'
                     value={values.password}
@@ -143,7 +143,7 @@ const FormRegister = props => {
                 <TextField
                   fullWidth
                   type='text'
-                  label='ID recomendado'
+                  label='Código de recomendado'
                   onChange={handleChange('recommenderID')}
                   placeholder='85e3b573-84ec-495f-982f-8dc7063e30f8'
                   helperText='(Opcional)'
@@ -152,7 +152,7 @@ const FormRegister = props => {
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox checked={checkedProfile} onChange={handleChangeProfile} />}
-                    label='Cambiar Perfil'
+                    label='Ser Socio'
                   />
                 </FormGroup>
                 {errors ? (

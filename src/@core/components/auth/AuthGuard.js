@@ -11,6 +11,9 @@ import { PROFILES, ROUTES_PERMISSION } from 'src/configs/profiles'
 const resolveProfile = (user, path) => {
   const userProfile = user?.profile ? PROFILES[user.profile] : PROFILES.default
 
+  console.log({ userProfile, path })
+  console.log(ROUTES_PERMISSION)
+
   const permission = ROUTES_PERMISSION[path]
 
   console.log(permission)
@@ -28,7 +31,7 @@ const AuthGuard = props => {
       if (!router.isReady) {
         return
       }
-      console.log(router)
+
       if (!resolveProfile(user, router.pathname)) {
         if (router.asPath !== '/') {
           router.replace({
