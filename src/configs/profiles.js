@@ -27,3 +27,10 @@ export const ROUTES_PERMISSION = {
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
   ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser
 }
+
+export const PROFILES_USER = {
+  admin: 'admin',
+  productsAdmin: 'productsAdmin',
+  consumerUser: 'consumerUser',
+  associatedUser: 'associatedUser'
+}

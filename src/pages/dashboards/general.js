@@ -75,7 +75,7 @@ const General = () => {
 
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
           <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }} onClick={() => handleClick()}>
-            Alta de usuarios
+            Nuevo administrador
           </Button>
         </Grid>
         <Grid item xs={12}>
