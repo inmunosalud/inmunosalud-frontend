@@ -102,7 +102,7 @@ const NewUser = () => {
     <>
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <CardHeader title='Nuevo Usuario' titleTypographyProps={{ variant: 'h6' }} />
+          <CardHeader title='Nuevo Administrador' titleTypographyProps={{ variant: 'h6' }} />
           <GoBackButton onChangePage={handleChangePage} />
         </div>
 

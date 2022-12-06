@@ -29,6 +29,7 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 //actions
 import { createUser, setErrors } from 'src/store/users'
 import { openSnackBar, closeSnackBar } from 'src/store/notifications'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 const BASIC_ERRORS = {
   email: {
@@ -92,7 +93,13 @@ const FormRegister = props => {
       return
     }
 
-    dispatch(createUser({ email, password, recommenderID }))
+    const body = { email, password, recommenderID }
+
+    if (checkedProfile) {
+      body.profile = PROFILES_USER.associatedUser
+    }
+
+    dispatch(createUser(body))
   }
   return (
     <>

@@ -48,6 +48,7 @@ export const columns = [
       </Typography>
     )
   },
+
   {
     flex: 0.125,
     field: 'last',
@@ -69,6 +70,21 @@ export const columns = [
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {row.performance}
+        </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.175,
+    minWidth: 120,
+    headerName: 'Perfil',
+    field: 'profile',
+    renderCell: params => {
+      const { row } = params
+
+      return (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {row.profile}
         </Typography>
       )
     }

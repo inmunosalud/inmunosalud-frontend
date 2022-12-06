@@ -6,21 +6,30 @@ import Form from 'src/views/forms/forms-login-register/Form'
 import FormRegister from 'src/views/forms/forms-login-register/FormRegister'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
+import GoBackButton from 'src/views/components/goback/GoBack'
+import { useRouter } from 'next/router'
 
 const Register = () => {
+  const router = useRouter()
+  console.log(router)
   // ** State
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '170px 60px' }}>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={6}>
-          <Form />
+    <>
+      <div style={{ display: 'flex', justifyContent: 'space-between', margin: '170px 60px' }}>
+        <Grid container spacing={6}>
+          <Grid item xs={12} display='flex' justifyContent='flex-end' style={{ marginBottom: '1rem' }}>
+            <GoBackButton onChangePage={() => router.back()} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Form />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormRegister />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <FormRegister />
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </>
   )
 }
 Register.getLayout = page => <BlankLayout>{page}</BlankLayout>

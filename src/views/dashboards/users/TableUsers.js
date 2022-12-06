@@ -65,7 +65,7 @@ const TableUsers = () => {
   return (
     <>
       <Card>
-        <CardHeader title='Usuarios' />
+        <CardHeader title='Administradores' />
         <DataGrid
           autoHeight
           rows={users}
@@ -78,7 +78,7 @@ const TableUsers = () => {
           loading={loading}
         />
       </Card>
-      <Modal label='Editar usuario' open={showModal} handleModal={handleModal} item={modalRow} />
+      <Modal label='Editar Administrador' open={showModal} handleModal={handleModal} item={modalRow} />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
