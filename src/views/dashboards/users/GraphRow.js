@@ -17,7 +17,7 @@ const columnColors = {
 const GraphRow = ({ type, params = {} }) => {
   const { network } = params?.row
   const values = useGrapConfig(network)(type)
-
+  console.log(values)
   const options = {
     chart: {
       offsetX: -10,
@@ -67,19 +67,13 @@ const GraphRow = ({ type, params = {} }) => {
       show: true,
       colors: ['transparent']
     },
-    grid: {
-      xaxis: {
-        lines: {
-          show: true
-        }
-      }
-    },
+    grid: {},
     xaxis: {
       categories: [''],
       maxHeight: 100,
       labels: {
-        style: {
-          //   fontSize: '10px'
+        formatter: function (val) {
+          return val.toFixed(0)
         }
       }
     },
@@ -89,19 +83,35 @@ const GraphRow = ({ type, params = {} }) => {
         fontSize: '8px'
       }
     },
+
     fill: {
       opacity: 1
+    },
+    noData: {
+      text: undefined,
+      align: 'center',
+      verticalAlign: 'middle',
+      offsetX: 0,
+      offsetY: 0,
+      style: {
+        color: undefined,
+        fontSize: '8px',
+        fontFamily: undefined
+      }
     }
   }
+
+  const validUsers = values?.valid
+  const invalidUsers = values?.invalid
 
   const series = [
     {
       name: 'Activos',
-      data: [values?.valid || 1]
+      data: validUsers ? [validUsers] : []
     },
     {
       name: 'Inactivos',
-      data: [values?.invalid || 1]
+      data: invalidUsers ? [invalidUsers] : []
     }
   ]
   return <ReactApexcharts options={options} series={series} type='bar' height={75} />

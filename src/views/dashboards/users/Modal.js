@@ -24,7 +24,33 @@ import { updateUser } from 'src/store/users'
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 
+const PROFILES = [
+  { label: 'Administrador General', value: 'admin' },
+  { label: 'Socio', value: 'associatedUser' },
+  { label: 'Consumidor', value: 'consumerUser' }
+]
+
+const isDisabled = profile => {
+  if (profile !== 'Socio') return true
+}
+
+const AvailableOptions = item => {
+  if (item.profile === 'Consumidor') {
+    return PROFILES.map((profile, i) => (
+      <MenuItem disabled={isDisabled(profile.label)} key={i} value={profile.value}>
+        {profile.label}
+      </MenuItem>
+    ))
+  }
+  return PROFILES.map((profile, i) => (
+    <MenuItem disabled key={i} value={profile.value}>
+      {profile.label}
+    </MenuItem>
+  ))
+}
+
 const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) => {
+  console.log('item', item)
   const dispatch = useDispatch()
 
   // ** Hooks
@@ -39,7 +65,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
       lastName: '',
       phone: '',
       profile: '',
-      recommenderID: ''
+      recommenderId: ''
     }
   })
 
@@ -59,7 +85,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
         lastName: item?.lastName,
         phone: item?.phone,
         profile: item?.profile,
-        recommenderID: item?.recommenderID
+        recommenderId: item?.recommenderId
       })
     }
   }, [item])
@@ -182,10 +208,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
                         labelId='validation-basic-profile'
                         aria-describedby='validation-basic-profile'
                       >
-                        <MenuItem value='admin'>Admin</MenuItem>
-                        <MenuItem value='productsAdmin'>Admin de Productos</MenuItem>
-                        <MenuItem value='associatedUser'>Usuario Asociado</MenuItem>
-                        <MenuItem value='consumerUser'>Usuario Consumidor</MenuItem>
+                        {item ? AvailableOptions(item) : null}
                       </Select>
                     )}
                   />
@@ -204,10 +227,11 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='RecommenderID'
+                        label='Codigo de Recomendado'
                         onChange={onChange}
                         placeholder='32u4234-234234-234234-422'
                         aria-describedby='validation-basic-recommenderId'
+                        disabled={item?.recommenderId ? true : false}
                       />
                     )}
                   />

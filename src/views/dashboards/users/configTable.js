@@ -6,12 +6,12 @@ import GraphRow from './GraphRow'
 export const columns = [
   {
     flex: 0.125,
-    field: 'firstName',
+    field: 'email',
     minWidth: 80,
     headerName: 'Usuario',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.firstName}
+        {params.row.email}
       </Typography>
     )
   },

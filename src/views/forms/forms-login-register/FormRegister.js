@@ -57,7 +57,7 @@ const FormRegister = props => {
   const [values, setValues] = React.useState({
     email: '',
     password: '',
-    recommenderID: '',
+    recommenderId: '',
     showPassword: false
   })
   const [checkedProfile, setCheckedProfile] = React.useState(false)
@@ -79,7 +79,7 @@ const FormRegister = props => {
   }
 
   const submitRegister = async () => {
-    const { email, password, recommenderID } = values
+    const { email, password, recommenderId } = values
     const errors = []
 
     if (!email) {
@@ -93,7 +93,7 @@ const FormRegister = props => {
       return
     }
 
-    const body = { email, password, recommenderID }
+    const body = { email, password, recommenderId }
 
     if (checkedProfile) {
       body.profile = PROFILES_USER.associatedUser
@@ -151,7 +151,7 @@ const FormRegister = props => {
                   fullWidth
                   type='text'
                   label='Código de recomendado'
-                  onChange={handleChange('recommenderID')}
+                  onChange={handleChange('recommenderId')}
                   placeholder='85e3b573-84ec-495f-982f-8dc7063e30f8'
                   helperText='(Opcional)'
                 />

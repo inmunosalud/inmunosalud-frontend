@@ -19,7 +19,7 @@ import { columns } from './configTable'
 
 const TableUsers = () => {
   const dispatch = useDispatch()
-  const [pageSize, setPageSize] = React.useState(5)
+  const [pageSize, setPageSize] = React.useState(10)
 
   const { showModal, modalRow } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -44,7 +44,6 @@ const TableUsers = () => {
 
   const config = [
     ...columns,
-    /* edit only by Admin and rules admin and product admin */
     {
       flex: 0.125,
       minWidth: 100,

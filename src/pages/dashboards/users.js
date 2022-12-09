@@ -1,3 +1,5 @@
+import * as React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -14,6 +16,13 @@ import NumberUsersGraph from 'src/views/dashboards/users/NumberUsersGraph'
 import NextComision from 'src/views/dashboards/users/NextComision'
 import LinearChart from 'src/views/dashboards/users/LinearChart'
 import EcommerceDashboard from 'src/views/dashboards/users/EcommerceDashboard'
+
+//actions
+import { getUserInfo } from 'src/store/users'
+import { TextField, Card, CardContent, Box, Typography, Button } from '@mui/material'
+import CustomizedTooltip from '../components/tooltip/Tooltip'
+
+//custom tooltip
 
 const data = [
   {
@@ -33,7 +42,7 @@ const data = [
 const intake = {
   series: [
     {
-      data: [550, 780, 400, 600, 1000, 800, 900]
+      data: [5, 10, 15]
     }
   ],
   categories: ['Feb-22', 'Mar-22', 'Apr-22', 'May-22', 'Jun-22', 'Jul-22', 'Aug-22']
@@ -58,15 +67,38 @@ const intakeProducts = {
 }
 
 const Users = () => {
+  const dispatch = useDispatch()
+  const { userInfo } = useSelector(state => state.users)
+  const { user } = useSelector(state => state.session)
+
+  React.useEffect(() => {
+    dispatch(getUserInfo(user?.id))
+  }, [dispatch])
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={3}>
-          <NumberUsersGraph title='Número de Usuarios en Red' />
+          <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
           <CardNumber data={data[0]} />
           <NextComision />
+        </Grid>
+        <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
+          <Card>
+            <CardContent sx={{ padding: '10px' }}>
+              <CustomizedTooltip title='Copy to Clipboard'>
+                <Button
+                  fullWidth
+                  style={{ color: 'white' }}
+                  variant='outlined'
+                  onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
+                >
+                  {user?.id}
+                </Button>
+              </CustomizedTooltip>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
           <LinearChart title='Consumo general' series={intake.series} categories={intake.categories} />
@@ -78,24 +110,6 @@ const Users = () => {
             categories={intakeProducts.categories}
           />
         </Grid>
-
-        {/* 
-        <Grid item xs={12} md={4}>
-          <SimpleBarCard title='D' />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <SimpleBarCard title='D' />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <AverageEfectiveness />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <CardNumber data={data[2]} />
-        </Grid>
-
-        <Grid item xs={12}>
-          <TableUsers />
-        </Grid> */}
       </Grid>
     </ApexChartWrapper>
   )
