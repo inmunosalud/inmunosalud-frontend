@@ -92,6 +92,14 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async (body, thunk
   }
 })
 
+//get user info
+export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const response = await api_get(`${PROYECT}/users/${id}`, auth)
+  return response
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
@@ -107,7 +115,10 @@ const initialState = {
   newUser: {},
   //edit user
   showModal: false,
-  modalRow: null
+  modalRow: null,
+
+  //user info
+  userInfo: ''
 }
 
 export const usersSlice = createSlice({
@@ -161,17 +172,19 @@ export const usersSlice = createSlice({
       state.isLoading = 'rejected'
     })
     //update user
-    builder.addCase(updateUser.pending, (state, action) => {})
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
       const updatedUser = payload?.content
       const users = state.users.filter(usr => usr.id !== updatedUser.id)
       const values = [...users, updateUser]
       state.users = values
     })
-    builder.addCase(updateUser.rejected, (state, action) => {})
-    builder.addCase(deleteUser.pending, (state, action) => {})
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {})
-    builder.addCase(deleteUser.rejected, (state, action) => {})
+    //get info user
+    builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
+      console.log('payload user info', payload)
+      const { content } = payload
+      state.userInfo = content
+    })
   }
 })
 

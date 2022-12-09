@@ -12,7 +12,21 @@ const columnColors = {
   series2: '#d2b0ff'
 }
 
-const NumberUsersGraph = ({ title = '' }) => {
+const NumberUsersGraph = ({ title = '', user = {} }) => {
+  const { network } = user
+
+  const AllNetwork = { network }
+
+  const sumValid = () => {
+    let totalValid = 0
+    let totalInvalid = 0
+    for (const property in AllNetwork) {
+      totalValid += AllNetwork[property]?.valid ?? 0
+      totalInvalid += AllNetwork[property]?.invalid ?? 0
+    }
+    return { totalValid, totalInvalid }
+  }
+
   const options = {
     chart: {
       offsetX: -10,
@@ -95,11 +109,11 @@ const NumberUsersGraph = ({ title = '' }) => {
   const series = [
     {
       name: 'Activos',
-      data: [10]
+      data: sumValid().totalValid ? [sumValid().totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: [5]
+      data: sumValid().totalInvalid ? [sumValid().totalInvalid] : []
     }
   ]
 
