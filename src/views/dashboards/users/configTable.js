@@ -3,11 +3,30 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import GraphRow from './GraphRow'
 
+const useGraphConfig =
+  (network = {}) =>
+  (type = '') => {
+    return network[type]
+  }
+
+const getValidUsers = (row, type) => {
+  if (!row.network || !row.network[type]) return 0
+
+  if (!row.network[type].valid) return 0
+
+  return row.network[type].valid
+}
+const getNumber = row => {
+  if (!row.efficiency) return 0
+
+  return Number(row.efficiency.replace('%', ''))
+}
+
 export const columns = [
   {
     flex: 0.125,
     field: 'email',
-    minWidth: 80,
+    minWidth: 140,
     headerName: 'Usuario',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -18,24 +37,31 @@ export const columns = [
   {
     flex: 0.195,
     field: 'efficiency',
-    minWidth: 80,
+    minWidth: 200,
     headerName: 'Efectividad',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.efficiency}
-      </Typography>
-    )
+    renderCell: params => {
+      const value = getNumber(params.row)
+
+      return (
+        <Box sx={{ height: '80px' }}>
+          <GraphRow type='E' params={value} />
+        </Box>
+      )
+    }
   },
   {
     flex: 0.125,
     field: 'weight',
-    minWidth: 80,
+    minWidth: 200,
     headerName: 'Peso Cartera',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row?.portfolio?.weight}
-      </Typography>
-    )
+    renderCell: params => {
+      const value = params.row?.portfolio?.weight ? params.row?.portfolio?.weight : 0
+      return (
+        <Box sx={{ height: '80px' }}>
+          <GraphRow type='E' params={value} />
+        </Box>
+      )
+    }
   },
   {
     flex: 0.125,
@@ -78,13 +104,13 @@ export const columns = [
     flex: 0.175,
     minWidth: 120,
     headerName: 'Perfil',
-    field: 'profile',
+    field: 'profileText',
     renderCell: params => {
       const { row } = params
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {row.profile}
+          {row.profileText}
         </Typography>
       )
     }
@@ -102,56 +128,77 @@ export const columns = [
   },
   {
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 80,
     headerName: 'B',
     field: 'B',
     renderCell: params => {
+      const value = getValidUsers(params.row, 'B')
+
       return (
-        <Box sx={{ height: '80px' }}>
-          <GraphRow type='B' params={params} />
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {value}
+        </Typography>
       )
     }
   },
   {
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 80,
     headerName: 'C',
     field: 'C',
     renderCell: params => {
+      const value = getValidUsers(params.row, 'C')
+
       return (
-        <Box sx={{ height: '80px' }}>
-          <GraphRow type='C' params={params} />
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {value}
+        </Typography>
       )
     }
   },
   {
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 80,
     headerName: 'D',
     field: 'D',
     renderCell: params => {
+      const value = getValidUsers(params.row, 'D')
+
       return (
-        <Box sx={{ height: '80px' }}>
-          <GraphRow type='D' params={params} />
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {value}
+        </Typography>
       )
     }
   },
   {
     flex: 0.175,
-    minWidth: 140,
+    minWidth: 80,
     headerName: 'E',
     field: 'E',
     renderCell: params => {
+      const value = getValidUsers(params.row, 'E')
+
       return (
-        <Box sx={{ height: '80px' }}>
-          <GraphRow type='E' params={params} />
-        </Box>
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {value}
+        </Typography>
       )
     }
   },
+  // {
+  //   flex: 0.175,
+  //   minWidth: 140,
+  //   headerName: 'E',
+  //   field: 'E',
+  //   renderCell: params => {
+  //     return (
+  //       <Box sx={{ height: '80px' }}>
+  //         <GraphRow type='E' params={params} />
+  //       </Box>
+  //     )
+  //   }
+  // },
   {
     flex: 0.125,
     minWidth: 140,

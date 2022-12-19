@@ -84,6 +84,7 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async (body, thunk
   try {
     const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    console.log(response)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -178,7 +179,9 @@ export const usersSlice = createSlice({
       const values = [...users, updateUser]
       state.users = values
     })
-    builder.addCase(deleteUser.fulfilled, (state, { payload }) => {})
+    builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
+      state.users = payload.content
+    })
     //get info user
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       console.log('payload user info', payload)
