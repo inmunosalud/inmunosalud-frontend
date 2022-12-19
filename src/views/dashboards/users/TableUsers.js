@@ -64,7 +64,7 @@ const TableUsers = () => {
   return (
     <>
       <Card>
-        <CardHeader title='Administradores' />
+        <CardHeader title='Usuarios en el Sistema' />
         <DataGrid
           autoHeight
           rows={users}

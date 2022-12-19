@@ -190,7 +190,7 @@ const NewUser = () => {
                   <Controller
                     name='phone'
                     control={control}
-                    rules={{ required: true, maxLength: 10 }}
+                    rules={{ required: false, maxLength: 10 }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         type='tel'

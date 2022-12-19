@@ -2,11 +2,6 @@
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 //util
-const useGrapConfig =
-  (network = {}) =>
-  (type = '') => {
-    return network[type]
-  }
 
 const columnColors = {
   bg: '#f8d3ff',
@@ -14,10 +9,7 @@ const columnColors = {
   series2: '#d2b0ff'
 }
 
-const GraphRow = ({ type, params = {} }) => {
-  const { network } = params?.row
-  const values = useGrapConfig(network)(type)
-  console.log(values)
+const GraphRow = ({ type, value }) => {
   const options = {
     chart: {
       offsetX: -10,
@@ -70,10 +62,13 @@ const GraphRow = ({ type, params = {} }) => {
     grid: {},
     xaxis: {
       categories: [''],
+
       maxHeight: 100,
+
       labels: {
         formatter: function (val) {
-          return val.toFixed(0)
+          console.log(val.toFixed(1))
+          return val.toFixed(1)
         }
       }
     },
@@ -101,18 +96,15 @@ const GraphRow = ({ type, params = {} }) => {
     }
   }
 
-  const validUsers = values?.valid
-  const invalidUsers = values?.invalid
-
   const series = [
     {
       name: 'Activos',
-      data: validUsers ? [validUsers] : []
-    },
-    {
-      name: 'Inactivos',
-      data: invalidUsers ? [invalidUsers] : []
+      data: value ? [value] : [0]
     }
+    // {
+    //   name: 'Inactivos',
+    //   data: invalidUsers ? [invalidUsers] : []
+    // }
   ]
   return <ReactApexcharts options={options} series={series} type='bar' height={75} />
 }
