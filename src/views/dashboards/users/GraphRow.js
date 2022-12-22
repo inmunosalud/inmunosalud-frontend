@@ -96,6 +96,9 @@ const GraphRow = ({ type, value }) => {
     }
   }
 
+  const validUsers = values?.valid
+  const invalidUsers = values?.invalid
+
   const series = [
     {
       name: 'Activos',

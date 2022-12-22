@@ -49,15 +49,16 @@ const BASIC_ERRORS = {
 
 const FormRegister = props => {
   const dispatch = useDispatch()
-  const router = useRouter()
   const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
   const { open, message, positioned, severity } = useSelector(state => state.notifications)
+
+  const { user } = useSelector(state => state.session)
 
   // ** States
   const [values, setValues] = React.useState({
     email: '',
     password: '',
-    recommenderId: '',
+    recommenderId: user?.id ?? '',
     showPassword: false
   })
   const [checkedProfile, setCheckedProfile] = React.useState(false)
@@ -149,6 +150,7 @@ const FormRegister = props => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
+                  value={values.recommenderId}
                   type='text'
                   label='Código de recomendado'
                   onChange={handleChange('recommenderId')}
