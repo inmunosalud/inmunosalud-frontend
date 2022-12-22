@@ -5,6 +5,7 @@ import { PROYECT, api_post, api_get, api_put, api_delete } from '../../services/
 import { setLogin } from '../session'
 
 import { openSnackBar } from '../notifications'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
@@ -22,7 +23,11 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
 
     thunkApi.dispatch(setLogin(newUser))
 
-    Router.push('/register/welcome')
+    if (body.profile === PROFILES_USER.associatedUser) {
+      Router.push('/register/address')
+    } else {
+      Router.push('/register/welcome')
+    }
 
     return response
   } catch (error) {
