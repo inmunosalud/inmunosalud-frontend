@@ -21,6 +21,7 @@ import EcommerceDashboard from 'src/views/dashboards/users/EcommerceDashboard'
 import { getUserInfo } from 'src/store/users'
 import { TextField, Card, CardContent, Box, Typography, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
+import { useRouter } from 'next/router'
 
 //custom tooltip
 
@@ -68,6 +69,7 @@ const intakeProducts = {
 
 const Users = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { userInfo } = useSelector(state => state.users)
   const { user } = useSelector(state => state.session)
 
@@ -86,8 +88,8 @@ const Users = () => {
         </Grid>
         <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
           <Card>
-            <CardContent sx={{ padding: '10px' }}>
-              <CustomizedTooltip title='Copy to Clipboard'>
+            <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
+              <CustomizedTooltip title='Copiar código de recomendado'>
                 <Button
                   fullWidth
                   style={{ color: 'white' }}
@@ -97,6 +99,10 @@ const Users = () => {
                   {user?.id}
                 </Button>
               </CustomizedTooltip>
+
+              <Button style={{ color: 'white' }} variant='outlined' onClick={() => router.push(`/register`)}>
+                {'ir a registro'}
+              </Button>
             </CardContent>
           </Card>
         </Grid>

@@ -35,7 +35,7 @@ const isDisabled = profile => {
 }
 
 const AvailableOptions = item => {
-  if (item.profile === 'Consumidor') {
+  if (item.profile === 'consumerUser') {
     return PROFILES.map((profile, i) => (
       <MenuItem disabled={isDisabled(profile.label)} key={i} value={profile.value}>
         {profile.label}

@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState, Fragment } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -16,16 +16,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
 // ** Icons Imports
-import CogOutline from 'mdi-material-ui/CogOutline'
-import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
-import EmailOutline from 'mdi-material-ui/EmailOutline'
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
-import MessageOutline from 'mdi-material-ui/MessageOutline'
-import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
-
-// ** Context
-import { useAuth } from 'src/hooks/useAuth'
+import AccountTie from 'mdi-material-ui/AccountTie'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -36,7 +28,10 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
 
+import { updateUser } from 'src/store/users'
+
 const UserDropdown = props => {
+  const dispatch = useDispatch()
   // ** Props
   const { settings } = props
 
@@ -60,22 +55,20 @@ const UserDropdown = props => {
     setAnchorEl(null)
   }
 
-  const styles = {
-    py: 2,
-    px: 4,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    color: 'text.primary',
-    textDecoration: 'none',
-    '& svg': {
-      fontSize: '1.375rem',
-      color: 'text.secondary'
-    }
-  }
-
   const handleLogout = () => {
     router.push('/register')
+    handleDropdownClose()
+  }
+
+  const handleConvertProfile = () => {
+    const body = {
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
+      phone: user.phone ?? '',
+      profile: 'associatedUser',
+      recommenderId: ''
+    }
+    dispatch(updateUser(body))
     handleDropdownClose()
   }
 
@@ -121,6 +114,10 @@ const UserDropdown = props => {
             </Box>
           </Box>
         </Box>
+        <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
+          <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+          Convertirme en Socio
+        </MenuItem>
         <Divider />
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
