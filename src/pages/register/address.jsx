@@ -194,7 +194,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={6} sm={3}>
                 <FormControl fullWidth>
                   <Controller
                     name='number'
@@ -203,9 +203,9 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Numero'
+                        label='Número Exterior'
                         onChange={onChange}
-                        placeholder='No.'
+                        placeholder='No. Ext'
                         error={Boolean(addressErrors.number)}
                         aria-describedby='validation-basic-last-name'
                       />
@@ -216,6 +216,25 @@ export default function Address() {
                       El campo es requerido
                     </FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='number'
+                    control={addressControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Número Interior'
+                        onChange={onChange}
+                        placeholder='No. Int'
+                        aria-describedby='validation-basic-last-name'
+                      />
+                    )}
+                  />
                 </FormControl>
               </Grid>
 
@@ -270,7 +289,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
                     name='state'
@@ -282,7 +301,7 @@ export default function Address() {
                         label='Estado'
                         onChange={onChange}
                         error={Boolean(addressErrors.state)}
-                        placeholder='Estado'
+                        placeholder='Entidad Federativa'
                         aria-describedby='validation-basic-state'
                       />
                     )}
@@ -295,7 +314,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
                     name='zipCode'
@@ -304,10 +323,10 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Codigo Postal'
+                        label='Código Postal'
                         onChange={onChange}
                         error={Boolean(addressErrors.zipCode)}
-                        placeholder='Codigo Posta'
+                        placeholder='Código Postal'
                         aria-describedby='validation-basic-zipCode'
                       />
                     )}
@@ -320,19 +339,20 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
                     name='country'
                     control={addressControl}
-                    rules={{ required: true }}
+                    rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Pais'
+                        label='País'
                         onChange={onChange}
-                        placeholder='Pais'
-                        aria-describedby='validation-basic-Country'
+                        error={Boolean(addressErrors.country)}
+                        placeholder='País'
+                        aria-describedby='validation-basic-country'
                       />
                     )}
                   />
@@ -341,6 +361,25 @@ export default function Address() {
                       El campo es requerido
                     </FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='reference'
+                    control={addressControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Referencia'
+                        onChange={onChange}
+                        placeholder='Referencia. Ej. Fachada blanca, herrería negra'
+                        aria-describedby='validation-basic-reference'
+                      />
+                    )}
+                  />
                 </FormControl>
               </Grid>
 
