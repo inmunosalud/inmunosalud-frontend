@@ -375,7 +375,7 @@ export default function Address() {
                         value={value}
                         label='Referencia'
                         onChange={onChange}
-                        placeholder='Referencia. Ej. Fachada blanca, herrería negra'
+                        placeholder='Referencia. Ejemplo: "Fachada blanca, herrería negra"'
                         aria-describedby='validation-basic-reference'
                       />
                     )}
