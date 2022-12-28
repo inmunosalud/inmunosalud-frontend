@@ -56,13 +56,13 @@ import { closeSnackBar } from 'src/store/notifications'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 const defaultValues = {
-  colony: '',
-  profile: '',
-  number: '',
-  state: '',
-  city: '',
   street: '',
-  recommenderId: ''
+  number: '',
+  colony: '',
+  state: '',
+  zipCode: '',
+  country: '',
+  city: '',
 }
 
 const steps = [
@@ -77,13 +77,13 @@ const steps = [
 ]
 
 const defaultAddressValues = {
-  colony: '',
-  profile: '',
-  number: '',
-  state: '',
-  city: '',
   street: '',
-  recommenderId: ''
+  number: '',
+  colony: '',
+  state: '',
+  zipCode: '',
+  country: '',
+  city: '',
 }
 
 const defaultPaymentValues = {
@@ -122,7 +122,7 @@ export default function Address() {
   const { isLoading } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
 
-  const [activeStep, setActiveStep] = useState(1)
+  const [activeStep, setActiveStep] = useState(0)
 
   // ** Hooks
   const {
@@ -157,7 +157,7 @@ export default function Address() {
   }
 
   const onSubmit = () => {
-    setActiveStep(activeStep + 1)
+    setActiveStep(prevActiveStep => prevActiveStep + 1)
     if (activeStep === steps.length - 1) {
       toast.success('Form Submitted')
     }
@@ -211,7 +211,7 @@ export default function Address() {
                       />
                     )}
                   />
-                  {addressErrors.number && (
+                  {addressErrors.number?.type === 'required' && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-last-name'>
                       El campo es requerido
                     </FormHelperText>
@@ -222,7 +222,7 @@ export default function Address() {
               <Grid item xs={6} sm={3}>
                 <FormControl fullWidth>
                   <Controller
-                    name='number'
+                    name='numberInt'
                     control={addressControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -559,7 +559,6 @@ export default function Address() {
             </Grid>
           </form>
         )
-
       default:
         return null
     }
