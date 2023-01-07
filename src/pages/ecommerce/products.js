@@ -1,13 +1,17 @@
-import { Button, Card } from '@mui/material'
+import * as React from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { Button } from '@mui/material'
 
 import PageHeader from 'src/@core/components/page-header'
 import { ProductItem } from 'src/views/dashboards/products/ProductItem'
 
-import TableUsers from 'src/views/dashboards/users/TableUsers'
+//import mocked data
+import mockProducts from './mockData.json'
+
 
 const Products = () => {
+  console.log(mockProducts)
   return (
     <Grid container spacing={6}>
       <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
@@ -17,15 +21,19 @@ const Products = () => {
           variant='contained'
           sx={{ mb: 3, whiteSpace: 'nowrap' }}
           onClick={() => {
-            handleClickOpen()
-            setDialogTitle('Add')
+            /* handleClickOpen()
+            setDialogTitle('Add') */
           }}
         >
           Alta de producto
         </Button>
       </Grid>
       <Grid item alignSelf='flex-end' xs={12}>
-        <ProductItem />
+        {mockProducts.content.map((product) => (
+          <div style={{marginTop: '25px'}}>
+            <ProductItem {...product} />
+          </div>
+        ))}
       </Grid>
     </Grid>
   )

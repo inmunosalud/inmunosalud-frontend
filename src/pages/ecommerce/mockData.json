@@ -1,0 +1,274 @@
+{
+   "folio": "6f654f35-5454-4b45-b8a7-0476cace1b1f",
+   "message": "Producto(s) encontrado(s).",
+   "content": [
+      {
+         "id": "9c241ce9-f1da-4172-836b-6adcf739dddd",
+         "name": "Producto4",
+         "dailyDose": 1,
+         "capsuleActiveMg": "10 mg",
+         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc convallis est ornare ipsum ullamcorper euismod. Nulla vestibulum eget risus non pretium.",
+         "capsuleQuantity": 30,
+         "capsuleConcentration": 28,
+         "mainComponent": "Lorem ipsum",
+         "instructions": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+         "properties": [
+            {
+               "name": "Sistema Inmune",
+               "value": 10
+            },
+            {
+               "name": "Circulación Arterial",
+               "value": 8
+            },
+            {
+               "name": "Digestión",
+               "value": 4
+            },
+            {
+               "name": "Sistema Óseo",
+               "value": 15
+            },
+            {
+               "name": "Vías Respiratorias",
+               "value": 10
+            },
+            {
+               "name": "Activación Mental",
+               "value": 12
+            },
+            {
+               "name": "Regeneración Muscular",
+               "value": 1
+            },
+            {
+               "name": "Salud Hormonal",
+               "value": 0
+            },
+            {
+               "name": "Piel, Cabello y Uñas",
+               "value": 6
+            },
+            {
+               "name": "Relajación",
+               "value": 0
+            }
+         ],
+         "characteristics": [
+            "characteristics1",
+            "characteristics2",
+            "characteristics3"
+         ],
+         "ingredients": [
+            "ingredient1",
+            "ingredient2",
+            "ingredient3"
+         ],
+         "urlImages": [
+            "img1",
+            "img2"
+         ]
+      },
+      {
+         "id": "9c241ce9-f1da-4172-836b-6adcf739cccc",
+         "name": "Producto3",
+         "dailyDose": 1,
+         "capsuleActiveMg": "10 mg",
+         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc convallis est ornare ipsum ullamcorper euismod. Nulla vestibulum eget risus non pretium.",
+         "capsuleQuantity": 30,
+         "capsuleConcentration": 28,
+         "mainComponent": "Lorem ipsum",
+         "instructions": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+         "properties": [
+            {
+               "name": "Sistema Inmune",
+               "value": 10
+            },
+            {
+               "name": "Circulación Arterial",
+               "value": 8
+            },
+            {
+               "name": "Digestión",
+               "value": 4
+            },
+            {
+               "name": "Sistema Óseo",
+               "value": 15
+            },
+            {
+               "name": "Vías Respiratorias",
+               "value": 10
+            },
+            {
+               "name": "Activación Mental",
+               "value": 12
+            },
+            {
+               "name": "Regeneración Muscular",
+               "value": 1
+            },
+            {
+               "name": "Salud Hormonal",
+               "value": 0
+            },
+            {
+               "name": "Piel, Cabello y Uñas",
+               "value": 6
+            },
+            {
+               "name": "Relajación",
+               "value": 0
+            }
+         ],
+         "characteristics": [
+            "characteristics1",
+            "characteristics2",
+            "characteristics3"
+         ],
+         "ingredients": [
+            "ingredient1",
+            "ingredient2",
+            "ingredient3"
+         ],
+         "urlImages": [
+            "img1",
+            "img2"
+         ]
+      },
+      {
+         "id": "9c241ce9-f1da-4172-836b-6adcf739bbbb",
+         "name": "Producto2",
+         "dailyDose": 1,
+         "capsuleActiveMg": "10 mg",
+         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc convallis est ornare ipsum ullamcorper euismod. Nulla vestibulum eget risus non pretium.",
+         "capsuleQuantity": 30,
+         "capsuleConcentration": 28,
+         "mainComponent": "Lorem ipsum",
+         "instructions": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+         "properties": [
+            {
+               "name": "Sistema Inmune",
+               "value": 10
+            },
+            {
+               "name": "Circulación Arterial",
+               "value": 8
+            },
+            {
+               "name": "Digestión",
+               "value": 4
+            },
+            {
+               "name": "Sistema Óseo",
+               "value": 15
+            },
+            {
+               "name": "Vías Respiratorias",
+               "value": 10
+            },
+            {
+               "name": "Activación Mental",
+               "value": 12
+            },
+            {
+               "name": "Regeneración Muscular",
+               "value": 1
+            },
+            {
+               "name": "Salud Hormonal",
+               "value": 0
+            },
+            {
+               "name": "Piel, Cabello y Uñas",
+               "value": 6
+            },
+            {
+               "name": "Relajación",
+               "value": 0
+            }
+         ],
+         "characteristics": [
+            "characteristics1",
+            "characteristics2",
+            "characteristics3"
+         ],
+         "ingredients": [
+            "ingredient1",
+            "ingredient2",
+            "ingredient3"
+         ],
+         "urlImages": [
+            "img1",
+            "img2"
+         ]
+      },
+      {
+         "id": "9c241ce9-f1da-4172-836b-6adcf739aaaa",
+         "name": "Producto1",
+         "dailyDose": 1,
+         "capsuleActiveMg": "10 mg",
+         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc convallis est ornare ipsum ullamcorper euismod. Nulla vestibulum eget risus non pretium.",
+         "capsuleQuantity": 30,
+         "capsuleConcentration": 28,
+         "mainComponent": "Lorem ipsum",
+         "instructions": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+         "properties": [
+            {
+               "name": "Sistema Inmune",
+               "value": 10
+            },
+            {
+               "name": "Circulación Arterial",
+               "value": 8
+            },
+            {
+               "name": "Digestión",
+               "value": 4
+            },
+            {
+               "name": "Sistema Óseo",
+               "value": 15
+            },
+            {
+               "name": "Vías Respiratorias",
+               "value": 10
+            },
+            {
+               "name": "Activación Mental",
+               "value": 12
+            },
+            {
+               "name": "Regeneración Muscular",
+               "value": 1
+            },
+            {
+               "name": "Salud Hormonal",
+               "value": 0
+            },
+            {
+               "name": "Piel, Cabello y Uñas",
+               "value": 6
+            },
+            {
+               "name": "Relajación",
+               "value": 0
+            }
+         ],
+         "characteristics": [
+            "characteristics1",
+            "characteristics2",
+            "characteristics3"
+         ],
+         "ingredients": [
+            "ingredient1",
+            "ingredient2",
+            "ingredient3"
+         ],
+         "urlImages": [
+            "img1",
+            "img2"
+         ]
+      }
+   ]
+}
