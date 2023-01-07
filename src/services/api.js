@@ -1,5 +1,5 @@
 import axios from 'axios'
-export const PROYECT = 'https://jl940cvgf1.execute-api.us-east-1.amazonaws.com'
+export const PROYECT = 'https://7wcx345m58.execute-api.us-east-1.amazonaws.com'
 const axiosInstance = axios.create({
   baseURL: ''
 })
