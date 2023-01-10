@@ -3,21 +3,38 @@ export const PERMISSIONS = {
   dashboardUsers: 'dashboard/users',
   dashboardGeneral: 'dashboard/general',
   ecommerceProducts: 'ecommerce/products',
+  ecommerceCart: 'ecommerce/cart',
   adminUsersNewUser: 'admin/user/new-user'
 }
 
 export const PROFILES = {
-  consumerUser: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts],
-  associatedUser: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts],
-  productsAdmin: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts],
+  consumerUser: [
+    PERMISSIONS.home,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart
+  ],
+  associatedUser: [
+    PERMISSIONS.home,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart
+  ],
+  productsAdmin: [
+    PERMISSIONS.home,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart
+  ],
   admin: [
     PERMISSIONS.home,
     PERMISSIONS.dashboardGeneral,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.adminUsersNewUser
+    PERMISSIONS.adminUsersNewUser,
+    PERMISSIONS.ecommerceCart
   ],
-  default: [PERMISSIONS.home, PERMISSIONS.ecommerceProducts]
+  default: [PERMISSIONS.home, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart]
 }
 
 export const ROUTES_PERMISSION = {
@@ -25,6 +42,7 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/general']: PERMISSIONS.dashboardGeneral,
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
+  ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
   ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser
 }
 
