@@ -40,6 +40,40 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   }
 }))
 
+// Styled Card component
+const BoxCustomized = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  backgroundColor: theme.palette.mode === 'light'
+    ? '#D8DEDF'
+    : '',
+  width: '100px',
+  height: '90px',
+  borderRadius: '5px',
+  padding: '5px',
+  color: theme.palette.mode === 'light'
+    ? '#000000'
+    : '#F0F8FF',
+}))
+
+const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  backgroundColor: theme.palette.mode === 'light'
+    ? ''
+    : '',
+  width: '100px',
+  height: 'auto',
+  borderRadius: '5px',
+  padding: '5px',
+  border: '1px solid #D8DEDF',
+  color: theme.palette.mode === 'light'
+    ? '#000000'
+    : '#F0F8FF',
+}))
+
 // carousel product
 const CarouselProducts = ({ images = [] }) => {
   return (
@@ -66,7 +100,6 @@ const CarouselProducts = ({ images = [] }) => {
 
 export const ProductItem = (props) => {
   const theme = useTheme()
-
   const options = {
     chart: {
       parentHeightOffset: 0,
@@ -114,7 +147,9 @@ export const ProductItem = (props) => {
   }
 
   const propertiesByProduct = () => {
-    return props.properties.map(property => property.value)
+    return [...props.properties]
+      .filter(property => property.value)
+      .map(property => property.value)
   }
 
   const series = [
@@ -123,6 +158,7 @@ export const ProductItem = (props) => {
       data: propertiesByProduct()
     }
   ]
+
 
   return (
     <Card >
@@ -173,17 +209,7 @@ export const ProductItem = (props) => {
               justifyContent: 'space-between',
               marginTop: 15
             }}>
-              <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                backgroundColor: '#D8DEDF',
-                width: '100px',
-                height: '90px',
-                borderRadius: 1,
-                padding: '5px'
-              }}>
-
+              <BoxCustomized>
                 <Typography sx={{
                   fontSize: '12px',
                 }}>
@@ -200,18 +226,8 @@ export const ProductItem = (props) => {
                 }}>
                   <strong>{`${props.capsuleQuantity}`}</strong>{` cápsulas`}
                 </Typography>
-              </Box>
-              <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                backgroundColor: 'white',
-                width: '100px',
-                height: 'auto',
-                borderRadius: 1,
-                padding: '5px',
-                border: '1px solid #D8DEDF'
-              }}>
+              </BoxCustomized>
+              <BoxCustomizedInfo>
                 <Typography sx={{
                   fontSize: '12px',
                 }}>
@@ -222,7 +238,7 @@ export const ProductItem = (props) => {
                 }}>
                   {`${props.mainComponent}`}
                 </Typography>
-              </Box>
+              </BoxCustomizedInfo>
             </div>
 
 

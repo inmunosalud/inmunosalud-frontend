@@ -11,7 +11,6 @@ import mockProducts from './mockData.json'
 
 
 const Products = () => {
-  console.log(mockProducts)
   return (
     <Grid container spacing={6}>
       <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
@@ -29,7 +28,7 @@ const Products = () => {
         </Button>
       </Grid>
       <Grid item alignSelf='flex-end' xs={12}>
-        {mockProducts.content.map((product) => (
+        {[...mockProducts.content].map((product) => (
           <div style={{marginTop: '25px'}}>
             <ProductItem {...product} />
           </div>
