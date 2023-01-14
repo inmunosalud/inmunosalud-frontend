@@ -62,7 +62,7 @@ const defaultValues = {
   state: '',
   zipCode: '',
   country: '',
-  city: '',
+  city: ''
 }
 
 const steps = [
@@ -83,7 +83,7 @@ const defaultAddressValues = {
   state: '',
   zipCode: '',
   country: '',
-  city: '',
+  city: ''
 }
 
 const defaultPaymentValues = {
@@ -151,9 +151,7 @@ export default function Address() {
   }
 
   const handleReset = () => {
-    setActiveStep(0)
-    addressReset({ email: '', username: '', password: '', 'confirm-password': '' })
-    paymentReset({ country: '', language: [], 'last-name': '', 'first-name': '' })
+    router.push('/ecommerce/cart')
   }
 
   const onSubmit = () => {
@@ -571,7 +569,7 @@ export default function Address() {
           <Typography>Todos los pasos han sido completados</Typography>
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
             <Button size='large' variant='contained' onClick={handleReset}>
-              Reiniciar
+              Continuar
             </Button>
           </Box>
         </Fragment>

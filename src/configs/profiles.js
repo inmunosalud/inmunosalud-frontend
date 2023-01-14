@@ -8,25 +8,15 @@ export const PERMISSIONS = {
 }
 
 export const PROFILES = {
-  consumerUser: [
+  Consumidor: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart],
+  Socio: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart],
+  'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart
   ],
-  associatedUser: [
-    PERMISSIONS.home,
-    PERMISSIONS.dashboardUsers,
-    PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart
-  ],
-  productsAdmin: [
-    PERMISSIONS.home,
-    PERMISSIONS.dashboardUsers,
-    PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart
-  ],
-  admin: [
+  'Administrador General': [
     PERMISSIONS.home,
     PERMISSIONS.dashboardGeneral,
     PERMISSIONS.dashboardUsers,
@@ -47,8 +37,8 @@ export const ROUTES_PERMISSION = {
 }
 
 export const PROFILES_USER = {
-  admin: 'admin',
-  productsAdmin: 'productsAdmin',
-  consumerUser: 'consumerUser',
-  associatedUser: 'associatedUser'
+  admin: 'Administrador General',
+  productsAdmin: 'Administrador de Productos',
+  consumerUser: 'Consumidor',
+  associatedUser: 'Socio'
 }
