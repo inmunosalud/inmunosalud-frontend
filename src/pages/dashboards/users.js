@@ -76,6 +76,9 @@ const Users = () => {
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
   }, [dispatch])
+  const handlePaste = () => {
+    navigator.clipboard.writeText(`http://localhost:3000/register?id=${user?.id}`)
+  }
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -89,19 +92,19 @@ const Users = () => {
         <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
           <Card>
             <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
-              <CustomizedTooltip title='Copiar código de recomendado'>
+              <CustomizedTooltip title='Copy to clipboard'>
                 <Button
                   fullWidth
                   style={{ color: 'white' }}
                   variant='outlined'
                   onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
                 >
-                  {user?.id}
+                  Copiar código de recomendado
                 </Button>
               </CustomizedTooltip>
 
-              <Button style={{ color: 'white' }} variant='outlined' onClick={() => router.push(`/register`)}>
-                {'ir a registro'}
+              <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
+                ir a registro
               </Button>
             </CardContent>
           </Card>

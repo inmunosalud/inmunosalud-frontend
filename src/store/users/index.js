@@ -88,11 +88,13 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async (body, thunk
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
+    thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     console.log(response)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
@@ -124,7 +126,10 @@ const initialState = {
   modalRow: null,
 
   //user info
-  userInfo: ''
+  userInfo: '',
+
+  //detele modal
+  showDelete: false
 }
 
 export const usersSlice = createSlice({
@@ -139,6 +144,9 @@ export const usersSlice = createSlice({
     },
     setModalRow: (state, { payload }) => {
       state.modalRow = payload
+    },
+    setModalDelete: (state, { payload }) => {
+      state.showDelete = payload
     }
   },
   extraReducers: builder => {
@@ -198,4 +206,4 @@ export const usersSlice = createSlice({
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow } = usersSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete } = usersSlice.actions
