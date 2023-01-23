@@ -3,7 +3,6 @@ import { useState, forwardRef } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
-import Table from '@mui/material/Table'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Tooltip from '@mui/material/Tooltip'
@@ -16,12 +15,8 @@ import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import InputAdornment from '@mui/material/InputAdornment'
-import TableContainer from '@mui/material/TableContainer'
 import { styled, alpha, useTheme } from '@mui/material/styles'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import TableCell from '@mui/material/TableCell'
+
 import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
@@ -39,18 +34,13 @@ import Repeater from 'src/@core/components/repeater'
 
 // ** Styles
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useDispatch, useSelector } from 'react-redux'
+import { StackExchange } from 'mdi-material-ui'
+import { updateCart } from 'src/store/cart'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
 })
-
-const MUITableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 0,
-  paddingLeft: '0 !important',
-  paddingRight: '0 !important',
-  paddingTop: `${theme.spacing(1)} !important`,
-  paddingBottom: `${theme.spacing(1)} !important`
-}))
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -95,14 +85,12 @@ const InvoiceAction = styled(Box)(({ theme }) => ({
   borderLeft: `1px solid ${theme.palette.divider}`
 }))
 
-const CustomSelectItem = styled(MenuItem)(({ theme }) => ({
-  backgroundColor: 'transparent !important',
-  '&:hover': { backgroundColor: `${alpha(theme.palette.success.main, 0.1)} !important` }
-}))
 const now = new Date()
 const tomorrowDate = now.setDate(now.getDate() + 7)
 
 const AddCard = props => {
+  // ** Hooks
+  const dispatch = useDispatch()
   // ** Props
   const { clients, invoiceNumber, selectedClient, setSelectedClient, toggleAddCustomerDrawer } = props
 
@@ -111,6 +99,9 @@ const AddCard = props => {
   const [selected, setSelected] = useState('')
   const [issueDate, setIssueDate] = useState(new Date())
   const [dueDate, setDueDate] = useState(new Date(tomorrowDate))
+
+  // ** Selectors
+  const { total, products, id } = useSelector(state => state.cart)
 
   // ** Hook
   const theme = useTheme()
@@ -123,16 +114,18 @@ const AddCard = props => {
     e.target.closest('.repeater-wrapper').remove()
   }
 
-  // ** Handle Invoice To Change
-  const handleInvoiceChange = event => {
-    setSelected(event.target.value)
-    if (clients !== undefined) {
-      setSelectedClient(clients.filter(i => i.name === event.target.value)[0])
-    }
-  }
-
   const handleAddNewCustomer = () => {
     toggleAddCustomerDrawer()
+  }
+
+  const handleUpdate = (idProduct, quantity) => {
+    const body = {
+      id: idProduct,
+      quantity
+    }
+
+    console.log(body)
+    dispatch(updateCart({ id, body }))
   }
 
   return (
@@ -227,88 +220,79 @@ const AddCard = props => {
       <Divider />
 
       <RepeaterWrapper>
-        <Repeater count={count}>
-          {i => {
-            const Tag = i === 0 ? Box : Collapse
+        {products.map((product, index) => {
+          const Tag = index === 0 ? Box : Collapse
 
-            return (
-              <Tag key={i} className='repeater-wrapper' {...(i !== 0 ? { in: true } : {})}>
-                <Grid container>
-                  <RepeatingContent item xs={12}>
-                    <Grid container sx={{ py: 4, width: '100%', pr: { lg: 0, xs: 4 } }}>
-                      <Grid item lg={6} md={5} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                        <Typography
-                          variant='body2'
-                          className='col-title'
-                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                        >
-                          Articulo
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <img width={40} height={50} alt='Apple iPhone 11 Pro' src='/images/cards/iPhone-11-pro.png' />
-                          <Typography sx={{ ml: 3 }}>Producto 1</Typography>
-                        </Box>
-                        {/* <Select fullWidth size='small' defaultValue='App Design'>
-                          <MenuItem value='App Design'>App Design</MenuItem>
-                          <MenuItem value='App Customization'>App Customization</MenuItem>
-                          <MenuItem value='ABC Template'>ABC Template</MenuItem>
-                          <MenuItem value='App Development'>App Development</MenuItem>
-                        </Select> */}
-                      </Grid>
-                      <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                        <Typography
-                          variant='body2'
-                          className='col-title'
-                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                        >
-                          Precio
-                        </Typography>
-                        <TextField
-                          size='small'
-                          type='number'
-                          placeholder='24'
-                          defaultValue='24'
-                          InputProps={{ inputProps: { min: 0 } }}
-                        />
-                      </Grid>
-                      <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                        <Typography
-                          variant='body2'
-                          className='col-title'
-                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                        >
-                          Cantidad
-                        </Typography>
-                        <TextField
-                          size='small'
-                          type='number'
-                          placeholder='1'
-                          defaultValue='1'
-                          InputProps={{ inputProps: { min: 0 } }}
-                        />
-                      </Grid>
-                      <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
-                        <Typography
-                          variant='body2'
-                          className='col-title'
-                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                        >
-                          Total
-                        </Typography>
-                        <Typography>$24.00</Typography>
-                      </Grid>
+          return (
+            <Tag key={product.id} className='repeater-wrapper' {...(index !== 0 ? { in: true } : {})}>
+              <Grid container>
+                <RepeatingContent item xs={12}>
+                  <Grid container sx={{ py: 4, width: '100%', pr: { lg: 0, xs: 4 } }}>
+                    <Grid item lg={6} md={5} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
+                      <Typography
+                        variant='body2'
+                        className='col-title'
+                        sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
+                      >
+                        Articulo
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
+                        <Typography sx={{ ml: 3 }}>{product.product}</Typography>
+                      </Box>
                     </Grid>
-                    <InvoiceAction>
+                    <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
+                      <Typography
+                        variant='body2'
+                        className='col-title'
+                        sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
+                      >
+                        Precio
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography sx={{ ml: 3 }}>${product.price}</Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
+                      <Typography
+                        variant='body2'
+                        className='col-title'
+                        sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
+                      >
+                        Cantidad
+                      </Typography>
+                      <TextField
+                        size='small'
+                        type='number'
+                        placeholder='1'
+                        defaultValue={product.quantity}
+                        InputProps={{ inputProps: { min: 0 } }}
+                        onChange={ev => handleUpdate(product.id, ev.target.value)}
+                      />
+                    </Grid>
+                    <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
+                      <Typography
+                        variant='body2'
+                        className='col-title'
+                        sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
+                      >
+                        Total
+                      </Typography>
+                      <Typography>${product.total}</Typography>
+                    </Grid>
+                  </Grid>
+                  <InvoiceAction>
+                    {product.canBeRemoved ? (
                       <IconButton size='small' onClick={deleteForm}>
                         <Close fontSize='small' />
                       </IconButton>
-                    </InvoiceAction>
-                  </RepeatingContent>
-                </Grid>
-              </Tag>
-            )
-          }}
-        </Repeater>
+                    ) : null}
+                  </InvoiceAction>
+                </RepeatingContent>
+              </Grid>
+            </Tag>
+          )
+        })}
 
         <Grid container sx={{ mt: 4 }}>
           <Grid item xs={12} sx={{ px: 0 }}>
@@ -332,26 +316,26 @@ const AddCard = props => {
             <CalcWrapper>
               <Typography variant='body2'>Subtotal:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                $1800
+                ${total.subtotal}
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
               <Typography variant='body2'>Descuento:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                $28
+                ${total.descuento}
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
               <Typography variant='body2'>IVA:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                21%
+                ${total.iva}
               </Typography>
             </CalcWrapper>
             <Divider />
             <CalcWrapper>
               <Typography variant='body2'>Total:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                $1690
+                ${total.total}
               </Typography>
             </CalcWrapper>
           </Grid>

@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 
 const Register = () => {
   const router = useRouter()
-  console.log(router)
+
   // ** State
 
   return (

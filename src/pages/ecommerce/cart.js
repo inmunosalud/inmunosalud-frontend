@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -11,13 +12,24 @@ import AddNewCustomers from 'src/views/apps/invoice/add/AddNewCustomer'
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
 import CartActions from 'src/views/ecommerce/CartAcctions'
+import CardsModal from 'src/views/ecommerce/CardsModal'
+import { useDispatch } from 'react-redux'
+import { getPackages } from 'src/store/cart'
 
 const Cart = () => {
+  const router = useRouter()
+  const dispatch = useDispatch()
   // ** State
   const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
   const [clients, setClients] = useState([])
   const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
+
+  // useEffect(() => {
+  //   if (router.query.type === 'associated') {
+  //     dispatch(getPackages())
+  //   }
+  // }, [router])
 
   return (
     <>
@@ -35,6 +47,7 @@ const Cart = () => {
           <CartActions />
         </Grid>
       </Grid>
+      {/* <CardsModal /> */}
     </>
   )
 }

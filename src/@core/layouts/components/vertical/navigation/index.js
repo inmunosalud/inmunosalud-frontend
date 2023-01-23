@@ -33,7 +33,6 @@ const StyledBoxForShadow = styled(Box)(({ theme }) => ({
 }))
 
 const Navigation = props => {
-  console.log(props)
   // ** Props
   const {
     hidden,

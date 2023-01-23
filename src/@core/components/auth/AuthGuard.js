@@ -11,12 +11,7 @@ import { PROFILES, ROUTES_PERMISSION } from 'src/configs/profiles'
 const resolveProfile = (user, path) => {
   const userProfile = user?.profile ? PROFILES[user.profile] : PROFILES.default
 
-  console.log({ userProfile, path })
-  console.log(ROUTES_PERMISSION)
-
   const permission = ROUTES_PERMISSION[path]
-
-  console.log(permission)
 
   return userProfile.includes(permission)
 }
