@@ -151,7 +151,7 @@ export default function Address() {
   }
 
   const handleReset = () => {
-    router.push('/ecommerce/cart')
+    router.push({ pathname: '/ecommerce/cart', query: { type: 'associated' } })
   }
 
   const onSubmit = () => {

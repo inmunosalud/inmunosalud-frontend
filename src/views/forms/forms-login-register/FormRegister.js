@@ -101,7 +101,7 @@ const FormRegister = props => {
     }
     dispatch(createUser(body))
   }
-  console.log()
+
   React.useEffect(() => {
     if (query && query.id) {
       setValues({

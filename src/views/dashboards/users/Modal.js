@@ -50,7 +50,6 @@ const AvailableOptions = item => {
 }
 
 const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) => {
-  console.log('item', item)
   const dispatch = useDispatch()
 
   // ** Hooks

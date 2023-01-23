@@ -3,13 +3,31 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { PROYECT, api_post, api_get } from '../../services/api'
 
 //actions
+export const loadSession = createAsyncThunk('general/loadSession', async (body, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${PROYECT}/users/data-user`, auth)
+
+    return response.content
+  } catch (error) {
+    const data = error.response.data
+
+    if (data.content.errors) {
+      console.log('error')
+    } else {
+      const newErrors = []
+      newErrors.push({ msg: data.message })
+    }
+
+    return thunkApi.rejectWithValue('error')
+  }
+})
 export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${PROYECT}/users/dashboard`, auth)
-
-    console.log(response)
 
     return response
   } catch (error) {
@@ -30,7 +48,9 @@ export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async
 const initialState = {
   isLoading: false,
   errors: null,
-  data: null
+  data: null,
+  isLoadingSession: false,
+  user: null
 }
 
 export const generalSlice = createSlice({
@@ -53,6 +73,19 @@ export const generalSlice = createSlice({
     })
     builder.addCase(loadGeneralData.rejected, (state, action) => {
       state.isLoading = false
+    })
+    // session
+    builder.addCase(loadSession.pending, (state, action) => {
+      state.isLoadingSession = true
+      state.errors = null
+    })
+    builder.addCase(loadSession.fulfilled, (state, { payload }) => {
+      state.isLoadingSession = false
+      state.errors = null
+      state.user = payload.user
+    })
+    builder.addCase(loadSession.rejected, (state, action) => {
+      state.isLoadingSession = false
     })
   }
 })

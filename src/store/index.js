@@ -13,6 +13,7 @@ import session from 'src/store/session'
 import users from 'src/store/users'
 import notifications from 'src/store/notifications'
 import general from 'src/store/dashboard/generalSlice'
+import cart from 'src/store/cart'
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,7 @@ export const store = configureStore({
     invoice,
     calendar,
     permissions,
-
+    cart,
     //new reducers
     session,
     users,

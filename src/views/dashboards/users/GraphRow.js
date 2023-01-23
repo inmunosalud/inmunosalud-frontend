@@ -67,7 +67,6 @@ const GraphRow = ({ type, value }) => {
 
       labels: {
         formatter: function (val) {
-          console.log(val.toFixed(1))
           return val.toFixed(1)
         }
       }
