@@ -118,10 +118,14 @@ const AddCard = props => {
     toggleAddCustomerDrawer()
   }
 
-  const handleUpdate = (idProduct, quantity) => {
+  const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
       id: idProduct,
       quantity
+    }
+
+    if (!canBeRemoved && quantity >= 0) {
+      return
     }
 
     console.log(body)
@@ -267,7 +271,7 @@ const AddCard = props => {
                         placeholder='1'
                         defaultValue={product.quantity}
                         InputProps={{ inputProps: { min: 0 } }}
-                        onChange={ev => handleUpdate(product.id, ev.target.value)}
+                        onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
                       />
                     </Grid>
                     <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
