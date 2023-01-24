@@ -4,17 +4,19 @@ export const PERMISSIONS = {
   dashboardGeneral: 'dashboard/general',
   ecommerceProducts: 'ecommerce/products',
   ecommerceCart: 'ecommerce/cart',
-  adminUsersNewUser: 'admin/user/new-user'
+  adminUsersNewUser: 'admin/user/new-user',
+  ecommerceAddProduct: 'ecommerce/products/add-product'
 }
 
 export const PROFILES = {
-  Consumidor: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart],
-  Socio: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart],
+  Consumidor: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct],
+  Socio: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct],
   'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceAddProduct
   ],
   'Administrador General': [
     PERMISSIONS.home,
@@ -22,9 +24,10 @@ export const PROFILES = {
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.adminUsersNewUser,
-    PERMISSIONS.ecommerceCart
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceAddProduct
   ],
-  default: [PERMISSIONS.home, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart]
+  default: [PERMISSIONS.home, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct]
 }
 
 export const ROUTES_PERMISSION = {
@@ -33,7 +36,8 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
-  ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser
+  ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser,
+  ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct,
 }
 
 export const PROFILES_USER = {

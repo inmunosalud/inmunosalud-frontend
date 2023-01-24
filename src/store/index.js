@@ -15,6 +15,8 @@ import notifications from 'src/store/notifications'
 import general from 'src/store/dashboard/generalSlice'
 import cart from 'src/store/cart'
 
+import products from 'src/store/products'
+
 export const store = configureStore({
   reducer: {
     user,
@@ -28,6 +30,7 @@ export const store = configureStore({
     session,
     users,
     notifications,
+    products,
     dashboard: combineReducers({ general })
   },
   middleware: getDefaultMiddleware =>
@@ -35,3 +38,6 @@ export const store = configureStore({
       serializableCheck: false
     })
 })
+
+
+
