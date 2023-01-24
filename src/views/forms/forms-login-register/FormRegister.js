@@ -47,7 +47,7 @@ const BASIC_ERRORS = {
   }
 }
 
-const FormRegister = props => {
+const FormRegister = () => {
   const dispatch = useDispatch()
   const { query } = useRouter()
 

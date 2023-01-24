@@ -147,7 +147,7 @@ export const ProductItem = (props) => {
   }
 
   const propertiesByProduct = () => {
-    return [...props.properties]
+    return props?.properties
       .filter(property => property.value)
       .map(property => property.value)
   }
@@ -158,7 +158,6 @@ export const ProductItem = (props) => {
       data: propertiesByProduct()
     }
   ]
-
 
   return (
     <Card >
@@ -211,11 +210,6 @@ export const ProductItem = (props) => {
             }}>
               <BoxCustomized>
                 <Typography sx={{
-                  fontSize: '12px',
-                }}>
-                  <strong>{`${props.dailyDose}`}</strong> {` dosis diaria`}
-                </Typography>
-                <Typography sx={{
                   fontSize: '11px',
                 }}>
                   <strong>{`${props.capsuleActiveMg}`}</strong>{` Activos en Cápsula`}
@@ -224,7 +218,7 @@ export const ProductItem = (props) => {
                 <Typography sx={{
                   fontSize: '12px',
                 }}>
-                  <strong>{`${props.capsuleQuantity}`}</strong>{` cápsulas`}
+                  <strong>{`${props.capsuleQuantity}`}</strong>
                 </Typography>
               </BoxCustomized>
               <BoxCustomizedInfo>
