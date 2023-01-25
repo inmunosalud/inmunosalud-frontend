@@ -124,7 +124,7 @@ const AddCard = props => {
       quantity
     }
 
-    if (!canBeRemoved && quantity >= 0) {
+    if (!canBeRemoved && quantity <= 0) {
       return
     }
 
