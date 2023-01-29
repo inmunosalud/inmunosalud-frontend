@@ -11,6 +11,7 @@ import ModeToggler from 'src/@core/layouts/components/shared-components/ModeTogg
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
+import CartButton from 'src/@core/layouts/components/shared-components/CartButton'
 
 const AppBarContent = props => {
   // ** Props
@@ -27,7 +28,7 @@ const AppBarContent = props => {
       </Box>
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-
+        <CartButton />
         <UserDropdown settings={settings} />
       </Box>
     </Box>
