@@ -21,7 +21,7 @@ const OptionsWrapper = styled(Box)(() => ({
   justifyContent: 'space-between'
 }))
 
-const CartActions = () => {
+const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) => {
   return (
     <Box>
       <Card sx={{ mb: 4 }}>
@@ -29,12 +29,12 @@ const CartActions = () => {
           <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />}>
             Checkout
           </Button>
-          <Link href='/apps/invoice/preview/4987' passHref>
-            <Button fullWidth component='a' sx={{ mb: 3.5 }} variant='outlined'>
-              Seleccionar metodo de pago
-            </Button>
-          </Link>
-          <Button fullWidth variant='outlined' sx={{ mb: 3.5 }}>
+
+          <Button fullWidth sx={{ mb: 3.5 }} variant='outlined' onClick={onMethodClick}>
+            Seleccionar metodo de pago
+          </Button>
+
+          <Button fullWidth variant='outlined' sx={{ mb: 3.5 }} onClick={onAddressClick}>
             Seleccionar direccion
           </Button>
         </CardContent>

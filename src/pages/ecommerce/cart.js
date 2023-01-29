@@ -15,6 +15,7 @@ import CartActions from 'src/views/ecommerce/CartAcctions'
 import CardsModal from 'src/views/ecommerce/CardsModal'
 import { useDispatch } from 'react-redux'
 import { getPackages } from 'src/store/cart'
+import AddressModal from 'src/views/ecommerce/AddressModal'
 
 const Cart = () => {
   const router = useRouter()
@@ -23,6 +24,8 @@ const Cart = () => {
   const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
   const [clients, setClients] = useState([])
+  const [openCardModal, setOpenCardModal] = useState(false)
+  const [openAddressModal, setOpenAddressModal] = useState(false)
   const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
 
   // useEffect(() => {
@@ -44,10 +47,11 @@ const Cart = () => {
           />
         </Grid>
         <Grid item xl={3} md={4} xs={12}>
-          <CartActions />
+          <CartActions onMethodClick={() => setOpenCardModal(true)} onAddressClick={() => setOpenAddressModal(true)} />
         </Grid>
       </Grid>
-      {/* <CardsModal /> */}
+      <CardsModal open={openCardModal} onClose={() => setOpenCardModal(false)} />
+      <AddressModal open={openAddressModal} onClose={() => setOpenAddressModal(false)} />
     </>
   )
 }

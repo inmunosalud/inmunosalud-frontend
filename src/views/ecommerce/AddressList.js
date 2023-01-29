@@ -47,7 +47,8 @@ const Sub = styled('sub')({
 const data = [
   {
     cardCvc: '587',
-    name: 'Tom McBride',
+    name: 'Direccion 1',
+
     expiryDate: '12/24',
     imgAlt: 'Mastercard',
     cardNumber: '5577 0000 5577 9865',
@@ -55,7 +56,7 @@ const data = [
   },
   {
     cardCvc: '681',
-    imgAlt: 'Visa card',
+    imgAlt: 'Direccion 2',
     expiryDate: '02/24',
     name: 'Mildred Wagner',
     cardNumber: '4532 3616 2070 5678',
@@ -64,14 +65,14 @@ const data = [
   {
     cardCvc: '3845',
     expiryDate: '08/20',
-    name: 'Lester Jennings',
+    name: 'Direccion 3',
     imgAlt: 'American Express card',
     cardNumber: '3700 000000 00002',
     imgSrc: '/images/logos/american-express.png'
   }
 ]
 
-export const PaymentMethods = () => {
+export const AddressList = () => {
   // ** States
   const [cvc, setCvc] = useState('')
   const [name, setName] = useState('')
@@ -95,24 +96,6 @@ export const PaymentMethods = () => {
     setOpenEditCard(true)
   }
 
-  const handleAddCardClickOpen = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
-    setOpenEditCard(true)
-  }
-
-  const handleEditCardClose = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
-    setOpenEditCard(false)
-  }
-
   // Handle Upgrade Plan dialog
   const handleUpgradePlansClickOpen = () => setOpenUpgradePlans(true)
   const handleUpgradePlansClose = () => setOpenUpgradePlans(false)
@@ -133,17 +116,6 @@ export const PaymentMethods = () => {
 
   return (
     <>
-      {/* <CardHeader
-          title='Payment Methods'
-          titleTypographyProps={{ variant: 'h6' }}
-          action={
-            <Button variant='contained' onClick={handleAddCardClickOpen}>
-              <Plus sx={{ mr: 1, fontSize: '1.125rem' }} />
-              Add Card
-            </Button>
-          }
-        /> */}
-
       {data.map((item, index) => (
         <Box
           key={index}
@@ -159,7 +131,6 @@ export const PaymentMethods = () => {
           }}
         >
           <div>
-            <img height='20' alt={item.imgAlt} src={item.imgSrc} />
             <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
               <Typography sx={{ fontWeight: 500 }}>{item.name}</Typography>
               {item.cardStatus ? (
@@ -172,18 +143,17 @@ export const PaymentMethods = () => {
                 />
               ) : null}
             </Box>
-            <Typography variant='body2'>
-              **** **** **** {item.cardNumber.substring(item.cardNumber.length - 4)}
-            </Typography>
+            <Typography variant='body2'>Mexicaltzingo 1539, Col. Moderna, Guadalajara</Typography>
+            <Typography variant='body2'>CP. 45660</Typography>
+            <Typography variant='body2'>Guadalajara</Typography>
           </div>
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-            <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(index)}>
+            <Button variant='outlined' sx={{ ml: 3 }} onClick={() => handleEditCardClickOpen(index)}>
               Seleccionar
             </Button>
-
             <Typography variant='body2' sx={{ mt: 5 }}>
-              Expira el {item.expiryDate}
+              Jalisco
             </Typography>
           </Box>
         </Box>

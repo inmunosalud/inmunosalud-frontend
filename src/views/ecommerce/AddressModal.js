@@ -9,8 +9,9 @@ import DialogActions from '@mui/material/DialogActions'
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
 import { PaymentMethods } from './PaymentMethods'
+import { AddressList } from './AddressList'
 
-const CardsModal = ({ open = false, onClose = () => {} }) => {
+const AddressModal = ({ open = false, onClose = () => {} }) => {
   // ** Ref
   const descriptionElementRef = useRef(null)
 
@@ -33,9 +34,9 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
       >
-        <DialogTitle id='scroll-dialog-title'>Metodos de pago</DialogTitle>
+        <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
         <DialogContent dividers={'paper'}>
-          <PaymentMethods />
+          <AddressList />
           <DialogContentText
             id='scroll-dialog-description'
             ref={descriptionElementRef}
@@ -51,4 +52,4 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
   )
 }
 
-export default CardsModal
+export default AddressModal
