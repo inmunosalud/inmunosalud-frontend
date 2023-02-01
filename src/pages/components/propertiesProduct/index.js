@@ -110,6 +110,7 @@ const ListProperties = ({values, handleChangeProperties}) => {
             value={values.saludHormonal}
             onChange={handleChangeProperties('saludHormonal')}
             type='number' 
+            label='Valor'
           />
         </ListItemSecondaryAction>
       </ListItem>

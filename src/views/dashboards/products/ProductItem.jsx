@@ -1,4 +1,12 @@
-import React from 'react'
+import * as React from 'react'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
+
+import Dialog from '@mui/material/Dialog'
+import Button from '@mui/material/Button'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
 import Card from '@mui/material/Card'
 import Divider from '@mui/material/Divider'
 import { useTheme } from '@mui/material/styles'
@@ -7,17 +15,19 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
+import { DotsVertical } from 'mdi-material-ui';
 
-// ** Icons Imports
-import DotsVertical from 'mdi-material-ui/DotsVertical'
 
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
+import MenuBasic from 'src/views/components/menu/MenuBasic'
 
 import { Swiper, SwiperSlide } from "swiper/react";
 // import required modules
 import { Navigation } from "swiper";
+
+import { setEdit, deleteProduct } from 'src/store/products'
 
 // Import Swiper styles
 import "swiper/css";
@@ -75,7 +85,7 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 }))
 
 // carousel product
-const CarouselProducts = ({ images = [] }) => {
+const CarouselProducts = () => {
   return (
     <>
       <Swiper
@@ -99,7 +109,45 @@ const CarouselProducts = ({ images = [] }) => {
 }
 
 export const ProductItem = (props) => {
+  console.log({ props });
+  const dispatch = useDispatch()
+  const router = useRouter()
   const theme = useTheme()
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showModalDelete, setShowModalDelete] = React.useState(false);
+
+  const handleModalClose = () => {
+    setShowModalDelete(false)
+  }
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleEdit = () => {
+    dispatch(setEdit(props));
+    handleRedirectEdit()
+  };
+
+  const handleDelete = () => {
+    setShowModalDelete(true)
+  }
+
+  const submitDelete = () => {
+    dispatch(deleteProduct(props.id))
+    handleModalClose()
+    setAnchorEl(null)
+  }
+
+  const handleRedirectEdit = () => {
+    router.push('/ecommerce/add-product')
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   const options = {
     chart: {
       parentHeightOffset: 0,
@@ -159,87 +207,124 @@ export const ProductItem = (props) => {
     }
   ]
 
+  const listMenuProps = {
+    anchorEl,
+    handleClose,
+    handleEdit,
+    handleDelete,
+  }
+
   return (
-    <Card >
-      <CardHeader
-        title={props.name}
-        titleTypographyProps={{
-          sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
-        }}
-        action={
-          <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-            <DotsVertical />
-          </IconButton>
-        }
-      />
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <StyledGrid item md={5} xs={12}>
-            <CardContent sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-
-              <CarouselProducts images={props.urlImages} />
-              <Typography sx={{
-                fontSize: '15px',
-                padding: '30px',
+    <>
+      <Card >
+        <CardHeader
+          title={props.name}
+          titleTypographyProps={{
+            sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+          }}
+          action={
+            <IconButton>
+              <DotsVertical onClick={props.isEdit ? handleClick : null} />
+            </IconButton>
+          }
+        />
+        <MenuBasic {...listMenuProps} />
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <StyledGrid item md={5} xs={12}>
+              <CardContent sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}>
-                {`${props.description}`}
+
+                <CarouselProducts images={props.urlImages} />
+                <Typography sx={{
+                  fontSize: '15px',
+                  padding: '30px',
+                }}>
+                  {`${props.description}`}
+                </Typography>
+
+
+              </CardContent>
+            </StyledGrid>
+            <InfoProduct >
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%'
+              }}>
+                <Typography variant='h5' sx={{ marginBottom: '60px' }}>
+                  <strong>{`${props.product}`}</strong>
+                </Typography>
+                <Typography variant='h5' sx={{ marginBottom: '60px' }}>
+                  <strong>{`$${props.price}`}</strong>
+                </Typography>
+              </div>
+
+              <Typography sx={{
+                fontSize: '13px',
+                marginBottom: '7px'
+              }}>
+                <strong>INSTRUCCIONES: </strong>{`${props.instructions}`}
               </Typography>
+              <Divider sx={{ my: 1 }} />
 
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: 15
+              }}>
+                <BoxCustomized>
+                  <Typography sx={{
+                    fontSize: '11px',
+                  }}>
+                    <strong>{`${props.capsuleActiveMg}`}</strong>{` Activos en Cápsula`}
+                  </Typography>
 
-            </CardContent>
-          </StyledGrid>
-          <InfoProduct >
-            <Typography sx={{
-              fontSize: '13px',
-              marginBottom: '7px'
-            }}>
-              <strong>INSTRUCCIONES: </strong>{`${props.instructions}`}
-            </Typography>
-            <Divider sx={{ my: 1 }} />
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginTop: 15
-            }}>
-              <BoxCustomized>
-                <Typography sx={{
-                  fontSize: '11px',
-                }}>
-                  <strong>{`${props.capsuleActiveMg}`}</strong>{` Activos en Cápsula`}
-                </Typography>
-
-                <Typography sx={{
-                  fontSize: '12px',
-                }}>
-                  <strong>{`${props.capsuleQuantity}`}</strong>
-                </Typography>
-              </BoxCustomized>
-              <BoxCustomizedInfo>
-                <Typography sx={{
-                  fontSize: '12px',
-                }}>
-                  <strong>{`${props.capsuleConcentration}`}</strong>{` concentración de cápsulas`}
-                </Typography>
-                <Typography sx={{
-                  fontSize: '12px',
-                }}>
-                  {`${props.mainComponent}`}
-                </Typography>
-              </BoxCustomizedInfo>
-            </div>
-
-
-          </InfoProduct>
-          <ReactApexcharts type='radar' height={200} series={series} options={options} />
-        </Box>
-      </CardContent>
-    </Card>
+                  <Typography sx={{
+                    fontSize: '12px',
+                  }}>
+                    <strong>{`${props.capsuleQuantity}`}</strong>
+                  </Typography>
+                </BoxCustomized>
+                <BoxCustomizedInfo>
+                  <Typography sx={{
+                    fontSize: '12px',
+                  }}>
+                    <strong>{`${props.capsuleConcentration}`}</strong>{` concentración de cápsulas`}
+                  </Typography>
+                  <Typography sx={{
+                    fontSize: '12px',
+                  }}>
+                    {`${props.mainComponent}`}
+                  </Typography>
+                </BoxCustomizedInfo>
+              </div>
+            </InfoProduct>
+            <ReactApexcharts type='radar' height={200} series={series} options={options} />
+          </Box>
+        </CardContent>
+      </Card>
+      <Dialog
+        open={showModalDelete}
+        onClose={handleModalClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Seguro de eliminar el producto seleccionado ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className='dialog-actions-dense'>
+          <Button onClick={handleModalClose}>Cancelar</Button>
+          <Button onClick={submitDelete}>Eliminar</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }

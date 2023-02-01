@@ -1,44 +1,39 @@
 import * as React from 'react'
 import { useRouter } from 'next/router'
-
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material'
-
-import PageHeader from 'src/@core/components/page-header'
-import { ProductItem } from 'src/views/dashboards/products/ProductItem'
-
-//import mocked data
-import mockProducts from './mockData.json'
 import { useDispatch, useSelector } from 'react-redux'
 
+import Grid from '@mui/material/Grid'
+import PageHeader from 'src/@core/components/page-header'
+import Typography from '@mui/material/Typography'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import { ProductItem } from 'src/views/dashboards/products/ProductItem'
+import { Button } from '@mui/material'
 import {
   getProducts
 } from 'src/store/products'
-
+import { PROFILES_USER } from 'src/configs/profiles'
+import { closeSnackBar } from 'src/store/notifications'
 
 const Products = () => {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const {products} = useSelector(state => state.products)
-  console.log('products from store', products)
+  const { products } = useSelector(state => state.products)
+  const { user } = useSelector(state => state.session)
+    const { open, message, severity } = useSelector(state => state.notifications)
   const handleAddProduct = () => {
     router.push('/ecommerce/add-product')
   }
 
-  //load data
+  //load products
   React.useEffect(() => {
-    console.log('entro')
     dispatch(getProducts())
   }, [dispatch])
 
 
-  return (
-    <Grid container spacing={6}>
-      <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
-
-      <Grid item display='flex' justifyContent='flex-end' xs={12}>
+  const showAddProductButton = () => {
+    if (user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) {
+    return (
         <Button
           variant='contained'
           sx={{ mb: 3, whiteSpace: 'nowrap' }}
@@ -46,18 +41,39 @@ const Products = () => {
         >
           Alta de producto
         </Button>
+    )
+    }
+  }
+  
+  const displayMapProducts = () => {
+    const { content } = products
+    return (
+    <React.Fragment>
+      {content?.map((product, i) => (
+      <div key={i} style={{marginTop: '25px'}}>
+          <ProductItem
+            isEdit={(user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) ? true: false}
+            {...product}
+        />
+      </div>
+      ))}
+    </React.Fragment>
+    )
+  }
+
+  return (
+    <>
+    <Grid container spacing={6}>
+      <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
+      <Grid item display='flex' justifyContent='flex-end' xs={12}>
+        {showAddProductButton()}
       </Grid>
       <Grid item alignSelf='flex-end' xs={12}>
-        {products?.content?.map((product, i) => (
-          <div style={{marginTop: '25px'}}>
-            <ProductItem
-              key={i}
-              {...product}
-            />
-          </div>
-        ))}
+        {displayMapProducts()}
       </Grid>
     </Grid>
+    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+    </>
   )
 }
 
