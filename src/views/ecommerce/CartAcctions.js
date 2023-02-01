@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Icons Imports
 import SendOutline from 'mdi-material-ui/SendOutline'
+import { useRouter } from 'next/router'
 
 const OptionsWrapper = styled(Box)(() => ({
   display: 'flex',
@@ -22,11 +23,19 @@ const OptionsWrapper = styled(Box)(() => ({
 }))
 
 const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) => {
+  const router = useRouter()
+
   return (
     <Box>
       <Card sx={{ mb: 4 }}>
         <CardContent>
-          <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />}>
+          <Button
+            fullWidth
+            sx={{ mb: 3.5 }}
+            variant='contained'
+            startIcon={<SendOutline />}
+            onClick={() => router.push('/ecommerce/checkout')}
+          >
             Checkout
           </Button>
 

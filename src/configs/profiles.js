@@ -4,18 +4,34 @@ export const PERMISSIONS = {
   dashboardGeneral: 'dashboard/general',
   ecommerceProducts: 'ecommerce/products',
   ecommerceCart: 'ecommerce/cart',
+  ecommerceCheckout: 'ecommerce/checkout',
   adminUsersNewUser: 'admin/user/new-user',
   ecommerceAddProduct: 'ecommerce/products/add-product'
 }
 
 export const PROFILES = {
-  Consumidor: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct],
-  Socio: [PERMISSIONS.home, PERMISSIONS.dashboardUsers, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct],
+  Consumidor: [
+    PERMISSIONS.home,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceAddProduct
+  ],
+  Socio: [
+    PERMISSIONS.home,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceAddProduct
+  ],
   'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
     PERMISSIONS.ecommerceAddProduct
   ],
   'Administrador General': [
@@ -25,9 +41,16 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.adminUsersNewUser,
     PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
     PERMISSIONS.ecommerceAddProduct
   ],
-  default: [PERMISSIONS.home, PERMISSIONS.ecommerceProducts, PERMISSIONS.ecommerceCart, PERMISSIONS.ecommerceAddProduct]
+  default: [
+    PERMISSIONS.home,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceCheckout
+  ]
 }
 
 export const ROUTES_PERMISSION = {
@@ -36,8 +59,9 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
+  ['/ecommerce/checkout']: PERMISSIONS.ecommerceCheckout,
   ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser,
-  ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct,
+  ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct
 }
 
 export const PROFILES_USER = {
