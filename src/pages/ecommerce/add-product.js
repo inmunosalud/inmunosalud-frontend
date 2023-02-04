@@ -25,7 +25,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import ListProperties from '../components/propertiesProduct';
 //import utils fns
 import { getCustomStructure } from 'src/utils/functions';
-import { createProduct, updateProduct } from 'src/store/products';
+import { createProduct, setRemoveEdit, updateProduct } from 'src/store/products';
 import { parseDataToEdit } from 'src/utils/functions';
 import { closeSnackBar } from 'src/store/notifications'
 
@@ -60,7 +60,6 @@ const AddProduct = () => {
 
   const { editItem } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
-  console.log({editItem});
   
   const {
     control,
@@ -166,19 +165,11 @@ const AddProduct = () => {
       setValues((prevValues) => ({ ...prevValues, [prop]: newValue }));
     }
   }
-
-  const handleChangeProperties = (fieldName) => (event) => {
-  const newValue = event.target.value;
-
-  if (newValue >= 0 && newValue <= 10) {
-    setValues((prevValues) => ({ ...prevValues, [fieldName]: newValue }));
-  }
-};
   
   React.useEffect(() => {
     return () => {
       setIngredientsState([])
-      //dispatch(setRemoveEdit()) //TODO
+      dispatch(setRemoveEdit())//cleaning edit values
      }
   }, [dispatch])
 
