@@ -224,7 +224,7 @@ export const ProductItem = (props) => {
           }}
           action={
             <IconButton>
-              <DotsVertical onClick={props.isEdit ? handleClick : null} />
+              {props.isEdit ? <DotsVertical onClick={handleClick} /> : null}
             </IconButton>
           }
         />
@@ -306,7 +306,15 @@ export const ProductItem = (props) => {
               </div>
             </InfoProduct>
             <ReactApexcharts type='radar' height={200} series={series} options={options} />
+
           </Box>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}>
+            <Button variant='contained'>Agregar al carrito</Button>
+          </div>
         </CardContent>
       </Card>
       <Dialog
