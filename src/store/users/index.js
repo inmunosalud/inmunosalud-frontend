@@ -73,7 +73,7 @@ export const updateUser = createAsyncThunk('user/updateUser', async (body, thunk
     const response = await api_put(`${PROYECT}/users/${body.id}`, body, auth)
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(usersList())
+    //thunkApi.dispatch(usersList())
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -188,16 +188,14 @@ export const usersSlice = createSlice({
     //update user
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
       const updatedUser = payload?.content
-      const users = state.users.filter(usr => usr.id !== updatedUser.id)
-      const values = [...users, updateUser]
-      state.users = values
+      console.log({ updatedUser });
+      state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
     })
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
       state.users = payload.content
     })
     //get info user
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
-      console.log('payload user info', payload)
       const { content } = payload
       state.userInfo = content
     })

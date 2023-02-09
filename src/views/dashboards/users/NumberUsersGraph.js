@@ -15,16 +15,16 @@ const columnColors = {
 const NumberUsersGraph = ({ title = '', user = {} }) => {
   const { network } = user
 
-  const AllNetwork = { network }
-
-  const sumValid = () => {
+  const sumValid = (key) => {
     let totalValid = 0
     let totalInvalid = 0
-    for (const property in AllNetwork) {
-      totalValid += AllNetwork[property]?.valid ?? 0
-      totalInvalid += AllNetwork[property]?.invalid ?? 0
+    for (const prop in network) {
+      if (key === prop) {
+        totalValid += network[key]?.valid ?? 0
+        totalInvalid += network[key]?.invalid ?? 0
+      }
     }
-    return { totalValid, totalInvalid }
+    return {totalValid, totalInvalid }
   }
 
   const options = {
@@ -109,11 +109,43 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
   const series = [
     {
       name: 'Activos',
-      data: sumValid().totalValid ? [sumValid().totalValid] : []
+      data: sumValid('B').totalValid ? [sumValid('B').totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: sumValid().totalInvalid ? [sumValid().totalInvalid] : []
+      data: sumValid('B').totalInvalid ? [sumValid('B').totalInvalid] : []
+    }
+  ]
+
+  const seriesC = [
+    {
+      name: 'Activos',
+      data: sumValid('C').totalValid ? [sumValid('C').totalValid] : []
+    },
+    {
+      name: 'Inactivos',
+      data: sumValid('C').totalInvalid ? [sumValid('C').totalInvalid] : []
+    }
+  ]
+
+  const seriesD = [
+    {
+      name: 'Activos',
+      data: sumValid('D').totalValid ? [sumValid('D').totalValid] : []
+    },
+    {
+      name: 'Inactivos',
+      data: sumValid('D').totalInvalid ? [sumValid('D').totalInvalid] : []
+    }
+  ]
+  const seriesE = [
+    {
+      name: 'Activos',
+      data: sumValid('E').totalValid ? [sumValid('E').totalValid] : []
+    },
+    {
+      name: 'Inactivos',
+      data: sumValid('E').totalInvalid ? [sumValid('E').totalInvalid] : []
     }
   ]
 
@@ -132,9 +164,9 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
       />
       <CardContent>
         <ReactApexcharts options={options} series={series} type='bar' height={80} />
-        <ReactApexcharts options={optionsC} series={series} type='bar' height={80} />
-        <ReactApexcharts options={optionsD} series={series} type='bar' height={80} />
-        <ReactApexcharts options={optionsE} series={series} type='bar' height={80} />
+        <ReactApexcharts options={optionsC} series={seriesC} type='bar' height={80} />
+        <ReactApexcharts options={optionsD} series={seriesD} type='bar' height={80} />
+        <ReactApexcharts options={optionsE} series={seriesE} type='bar' height={80} />
       </CardContent>
     </Card>
   )
