@@ -15,7 +15,6 @@ import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
-import { CircularProgress } from '@mui/material'
 
 import { CloseCircle } from 'mdi-material-ui'
 
@@ -25,23 +24,13 @@ import { updateUser } from 'src/store/users'
 import { useForm, Controller } from 'react-hook-form'
 
 const PROFILES = [
-  { label: 'Administrador General', value: 'admin' },
-  { label: 'Socio', value: 'associatedUser' },
-  { label: 'Consumidor', value: 'consumerUser' }
+  { label: 'Administrador General', value: 'Administrador General' },
+  { label: 'Administrador de Productos', value: 'Administrador de Productos' },
+  { label: 'Socio', value: 'Socio' },
+  { label: 'Consumidor', value: 'Consumidor' }
 ]
 
-const isDisabled = profile => {
-  if (profile !== 'Socio') return true
-}
-
-const AvailableOptions = item => {
-  if (item.profile === 'consumerUser') {
-    return PROFILES.map((profile, i) => (
-      <MenuItem disabled={isDisabled(profile.label)} key={i} value={profile.value}>
-        {profile.label}
-      </MenuItem>
-    ))
-  }
+const AvailableOptions = () => {
   return PROFILES.map((profile, i) => (
     <MenuItem disabled key={i} value={profile.value}>
       {profile.label}
@@ -49,9 +38,9 @@ const AvailableOptions = item => {
   ))
 }
 
-const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) => {
+const Modal = ({ label = '', open = false, handleModal = () => { }, item = {} }) => {
+  //console.log({item})
   const dispatch = useDispatch()
-
   // ** Hooks
   const {
     control,
@@ -87,7 +76,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
         recommenderId: item?.recommenderId
       })
     }
-  }, [item])
+  }, [item]);
 
   return (
     <React.Fragment>
@@ -110,7 +99,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
                   <Controller
                     name='firstName'
                     control={control}
-                    rules={{ required: true, maxLength: 20 }}
+                    rules={{ required: true, maxLength: 60 }}
                     render={({ field: { value, onChange } }) => {
                       return (
                         <TextField
@@ -195,6 +184,7 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
                     Perfil
                   </InputLabel>
                   <Controller
+                    disabled
                     name='profile'
                     control={control}
                     rules={{ required: true }}
@@ -206,8 +196,9 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {} }) 
                         error={Boolean(errors.profile)}
                         labelId='validation-basic-profile'
                         aria-describedby='validation-basic-profile'
+                        disabled={() => (item && item.profile !== 'Consumidor') ? true:false}
                       >
-                        {item ? AvailableOptions(item) : null}
+                        {item && Object.keys(item).length ? AvailableOptions() : null}
                       </Select>
                     )}
                   />

@@ -22,9 +22,8 @@ const TableUsers = () => {
   const dispatch = useDispatch()
   const [pageSize, setPageSize] = React.useState(10)
 
-  const { showModal, modalRow, showDelete } = useSelector(state => state.users)
+  const { showModal, modalRow, showDelete, users, loading } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { users, loading } = useSelector(state => state.users)
 
   React.useEffect(() => {
     dispatch(usersList())

@@ -5,25 +5,16 @@ import Grid from '@mui/material/Grid'
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
-
-import NumberUsers from 'src/views/general/NumberUsers'
 import CardNumber from 'src/views/general/CardNumber'
-import AverageEfectiveness from 'src/views/general/AverageEfectiveness'
-import WalletAverage from 'src/views/general/WalletAverage'
-import TableUsers from 'src/views/dashboards/users/TableUsers'
-import SimpleBarCard from 'src/views/general/SimpleBarCard'
 import NumberUsersGraph from 'src/views/dashboards/users/NumberUsersGraph'
 import NextComision from 'src/views/dashboards/users/NextComision'
 import LinearChart from 'src/views/dashboards/users/LinearChart'
-import EcommerceDashboard from 'src/views/dashboards/users/EcommerceDashboard'
 
 //actions
 import { getUserInfo } from 'src/store/users'
-import { TextField, Card, CardContent, Box, Typography, Button } from '@mui/material'
+import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { useRouter } from 'next/router'
-
-//custom tooltip
 
 const data = [
   {
@@ -75,9 +66,10 @@ const Users = () => {
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
-  }, [dispatch])
+  }, [dispatch]);
+  
   const handlePaste = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/register?id=${user?.id}`)
+    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
   }
   return (
     <ApexChartWrapper>
@@ -104,7 +96,7 @@ const Users = () => {
               </CustomizedTooltip>
 
               <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
-                ir a registro
+                Copiar liga para registro de un recomendado
               </Button>
             </CardContent>
           </Card>
