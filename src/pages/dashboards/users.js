@@ -14,7 +14,6 @@ import LinearChart from 'src/views/dashboards/users/LinearChart'
 import { getUserInfo } from 'src/store/users'
 import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
-import { useRouter } from 'next/router'
 
 const data = [
   {
@@ -60,7 +59,6 @@ const intakeProducts = {
 
 const Users = () => {
   const dispatch = useDispatch()
-  const router = useRouter()
   const { userInfo } = useSelector(state => state.users)
   const { user } = useSelector(state => state.session)
 
@@ -71,14 +69,16 @@ const Users = () => {
   const handlePaste = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
   }
-  return (
-    <ApexChartWrapper>
-      <Grid container spacing={6}>
+
+  const renderCharts = () => {
+    if (userInfo.profile !== 'Consumidor') {
+      return (
+        <>
         <Grid item xs={12} md={3}>
           <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
-          <CardNumber data={data[0]} />
+          <CardNumber data={data[0]} userInfo={userInfo} />
           <NextComision />
         </Grid>
         <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
@@ -100,7 +100,16 @@ const Users = () => {
               </Button>
             </CardContent>
           </Card>
-        </Grid>
+            </Grid>
+          </>
+      )
+    }
+  }
+
+  return (
+    <ApexChartWrapper>
+      <Grid container spacing={6}>
+        {renderCharts()}
         <Grid item xs={12} sm={6}>
           <LinearChart title='Consumo general' series={intake.series} categories={intake.categories} />
         </Grid>
