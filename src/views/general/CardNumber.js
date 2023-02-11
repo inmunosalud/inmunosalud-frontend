@@ -16,19 +16,38 @@ const Img = styled('img')({
   position: 'absolute'
 })
 
-const CardNumber = ({ data }) => {
+const CardNumber = ({ data, userInfo }) => {
   // ** Vars
   const { title, chipColor, chipText, src, stats, trend, trendNumber } = data
+  const {valid} = userInfo
+  const isActive = 'Usuario Activo'
+  const isInactive = 'Usuario Inactivo'
 
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
       <CardContent>
-        <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{title}</Typography>
-        <Box sx={{ mb: 1.5, rowGap: 1, width: '100%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{title}</Typography>
+          <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{valid ? isActive: isInactive}</Typography>
+        </div>
+        <Box sx={{ 
+          mb: 1.5, 
+          rowGap: 1, 
+          width: '100%', 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          alignItems: 'flex-start',
+          justifyContent: 'space-between'
+          }}>
           <Typography variant='h5' sx={{ mr: 1.5 }}>
             {stats}
           </Typography>
+          
         </Box>
+        
       </CardContent>
     </Card>
   )
