@@ -29,6 +29,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 
 import { updateUser } from 'src/store/users'
+import { Account } from 'mdi-material-ui'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -55,6 +56,10 @@ const UserDropdown = props => {
     setAnchorEl(null)
   }
 
+  const handleGoTo = path => {
+    router.push(path)
+    handleDropdownClose()
+  }
   const handleLogout = () => {
     router.push('/register')
     handleDropdownClose()
@@ -114,6 +119,13 @@ const UserDropdown = props => {
             </Box>
           </Box>
         </Box>
+        {user?.id ? (
+          <MenuItem sx={{ py: 2 }} onClick={() => handleGoTo('/profile')}>
+            <Account sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            Perfil
+          </MenuItem>
+        ) : null}
+
         <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
           <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
           Convertirme en Socio
