@@ -203,7 +203,7 @@ export const ProductItem = (props) => {
   const series = [
     {
       name: 'Income',
-      data: propertiesByProduct()
+      data: [] || propertiesByProduct()
     }
   ]
 
