@@ -20,7 +20,10 @@ const Products = () => {
 
   const { products } = useSelector(state => state.products)
   const { user } = useSelector(state => state.session)
-    const { open, message, severity } = useSelector(state => state.notifications)
+  const { open, message, severity } = useSelector(state => state.notifications)
+  const isProductAdmin = user.profile === PROFILES_USER['productsAdmin']
+  const isAdmin = user.profile === PROFILES_USER['admin']
+
   const handleAddProduct = () => {
     router.push('/ecommerce/add-product')
   }
@@ -32,7 +35,7 @@ const Products = () => {
 
 
   const showAddProductButton = () => {
-    if (user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) {
+    if (isProductAdmin || isAdmin) {
     return (
         <Button
           variant='contained'
@@ -41,7 +44,7 @@ const Products = () => {
         >
           Alta de producto
         </Button>
-    )
+      )
     }
   }
   
@@ -52,7 +55,7 @@ const Products = () => {
       {content?.map((product, i) => (
       <div key={i} style={{marginTop: '25px'}}>
           <ProductItem
-            isEdit={(user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) ? true: false}
+            isEdit={(isProductAdmin || isAdmin) ? true: false}
             {...product}
         />
       </div>
@@ -62,7 +65,7 @@ const Products = () => {
   }
 
   return (
-    <>
+    <React.Fragment>
     <Grid container spacing={6}>
       <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
       <Grid item display='flex' justifyContent='flex-end' xs={12}>
@@ -73,7 +76,7 @@ const Products = () => {
       </Grid>
     </Grid>
     <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
-    </>
+    </React.Fragment>
   )
 }
 
