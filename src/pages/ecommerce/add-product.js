@@ -10,57 +10,31 @@ import {
   Grid,
   TextField,
   Divider,
-  Select,
-  MenuItem,
   Button,
   Typography,
-  FormControl,
-  InputLabel,
-  Box,
-  Chip,
   InputAdornment
 } from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import ListProperties from '../components/propertiesProduct';
 //import utils fns
-import { getCustomStructure } from 'src/utils/functions';
-import { createProduct, setRemoveEdit, updateProduct } from 'src/store/products';
+import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
+import { createProduct, getMainComponents, setRemoveEdit, updateProduct } from 'src/store/products';
 import { parseDataToEdit } from 'src/utils/functions';
 import { closeSnackBar } from 'src/store/notifications'
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
+import Plus from 'mdi-material-ui/Plus'
 
 
-const ingredients = [
-  "Aceite de coco extra virgen",
-  "Oxido de zinc",
-  "Oxido de magnesio",
-  "Vitamina D3 (colecalciferol)",
-  "Vitaminas K2 (menaquinona)",
-  "Grenetina",
-  "Agua purificada",
-  "Glicerina",
-  "Dióxido de titanio"
-]
 
-/* edit form */
+
+
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const { editItem } = useSelector(state => state.products)
+  const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
-  
   const {
     control,
     reset,
@@ -69,20 +43,18 @@ const AddProduct = () => {
   } = useForm({
     defaultValues: {
       product: '',
-      capsuleActiveMg: '',
       description: '',
       capsuleQuantity: '',
       capsuleConcentration: '',
-      mainComponent: '',
       instructions: '',
+      ingredients: '',
       price: '',
       quantity: '',
    }
   });
+
   /* images state */
-  const [images, setImages] = React.useState({ link1: null, link2: null })
-  /* ingredients state */
-  const [ingredientsState, setIngredientsState] = React.useState([])
+  const [images, setImages] = React.useState({ link1: '', link2: '' })
   /* properties */
   const [values, setValues] = React.useState({
     viasRespiratorias: '',
@@ -96,47 +68,68 @@ const AddProduct = () => {
     sistemaInmune: '',
     circulaciónArterial: '',
   })
-  const onSubmit = (data) => {
-    const newProperties = getCustomStructure(values);
+  /* fields of main components property - value form */
+  const [fields, setFields] = React.useState([]);
 
-    const body = {
-      product: data?.product ,
-      capsuleActiveMg: data?.capsuleActiveMg,
-      description: data?.description,
-      capsuleQuantity: data?.capsuleQuantity,
-      capsuleConcentration: data?.capsuleConcentration,
-      mainComponent: data?.mainComponent,
-      instructions: data?.instructions,
-      price: data?.price,
-      quantity: 1,
-      properties: newProperties,
-      ingredients: ingredientsState,
-      urlImages: setLinks()
-    }
-     dispatch(createProduct(body))
+  const [mainComponentValue, setMainComponentValue] = React.useState([])
+  /* the new option for select */
+  const [newOption, setNewOption] = React.useState('');
+
+  /* main component handle on change select */
+  const handleOptionChange = ({ target }) => {
+    const selectedValues = target.value;
+    let newFields = [];
+
+    // Map through the selected values and create a new field object for each one
+    selectedValues.forEach((value) => {
+      newFields.push({
+        property: value.value,
+        value: '',
+      });
+    });
+
+    // Update state with the new fields and selected values
+    setFields(newFields);
+    setMainComponentValue(selectedValues);
   };
 
-  const onSubmitUpdate = (data) => {
-    const newProperties = getCustomStructure(values);
+  const handleNewOptionChange = (event) => {
+    setNewOption(event.target.value)
+  }
 
-    const body = {
-      product: data?.product ,
-      capsuleActiveMg: data?.capsuleActiveMg,
-      description: data?.description,
-      capsuleQuantity: data?.capsuleQuantity,
-      capsuleConcentration: data?.capsuleConcentration,
-      mainComponent: data?.mainComponent,
-      instructions: data?.instructions,
-      price: data?.price,
-      quantity: 1,
-      properties: newProperties,
-      ingredients: ingredientsState,
-      urlImages: setLinks(),
-      id: editItem?.id
-    } 
+  const handleFieldChange = (index, field, value) => {
+    const newFields = [...fields];
+    newFields[index][field] = value;
+    setFields(newFields);
+  };
 
-    dispatch(updateProduct(body))
-  } 
+  const handleAddOption = () => {
+      // Check if the new option is already in the options list
+    const existingOption = mainComponents.find((option) => option.value === newOption);
+
+    if (existingOption) {
+      // If the new option already exists, set it as the selected option
+      setMainComponentValue([...mainComponentValue, existingOption]);
+    } else {
+      // If the new option doesn't exist, add it to the options list and set it as the selected option
+      const newOptionObject = { value: newOption };
+      setMainComponentValue([...mainComponentValue, newOptionObject]);
+    }
+      
+    // Update the last input field's property with the new option
+    setFields((prevFields) => [
+      ...prevFields,
+      { property: newOption.trim(), value: '' }
+    ]);
+
+    // Clear the new option text field
+    setNewOption('');
+  }
+
+  const handleCleanOptions = () => { 
+    setMainComponentValue([])
+    setFields([])
+  }
 
   const setLinks = () => {
     return Object.values(images)
@@ -148,17 +141,7 @@ const AddProduct = () => {
       [prop]: event.target.value
     })
   }
-
-  const handleChangeIngredients = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setIngredientsState(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
-
+  
   const handlePropertiesList = (prop) => (event) => {
     const newValue = event.target.value;
     if (newValue >= 0 && newValue <= 10) {
@@ -166,9 +149,36 @@ const AddProduct = () => {
     }
   }
   
+  const onSubmit = (data) => {
+    const newProperties = getCustomStructure(values);
+
+    const body = {
+      product: data?.product ,
+      description: data?.description,
+      capsuleQuantity: data?.capsuleQuantity,
+      capsuleConcentration: data?.capsuleConcentration,
+      mainComponents: fields,
+      instructions: data?.instructions,
+      price: data?.price,
+      ingredients: data?.ingredients,
+      quantity: 1,
+      properties: newProperties,
+      urlImages: setLinks(),
+      id: editItem?.id ?? ''
+    }
+    if (Boolean(editItem)) {
+      dispatch(updateProduct(body))
+    } else {
+      dispatch(createProduct(body))
+    }
+  };
+
+  React.useEffect(() => {
+    dispatch(getMainComponents())
+  }, [dispatch])
+  
   React.useEffect(() => {
     return () => {
-      setIngredientsState([])
       dispatch(setRemoveEdit())//cleaning edit values
      }
   }, [dispatch])
@@ -177,23 +187,24 @@ const AddProduct = () => {
     if (editItem) {
       reset({
         product: editItem.product,
-        capsuleActiveMg: editItem.capsuleActiveMg,
         description: editItem.description,
         capsuleQuantity: editItem.capsuleQuantity,
         capsuleConcentration: editItem.capsuleConcentration,
-        mainComponent: editItem.mainComponent,
+        mainComponents: editItem.mainComponent,
         instructions: editItem.instructions,
         price: editItem.price,
+        ingredients: editItem.ingredients,
         quantity: 1,
       })
-
-      setIngredientsState(editItem.ingredients)
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
       setImages({
         link1: editItem.urlImages[0],
         link2: editItem.urlImages[1],
       })
+      setFields(editItem?.mainComponents)
+      const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
+      setMainComponentValue(defaultMainComponents)
     }
    }, [editItem])
   
@@ -204,7 +215,7 @@ const AddProduct = () => {
       <Grid item xs={12}>
         <Divider />
       </Grid>
-      <form onSubmit={handleSubmit(Boolean(editItem) ? onSubmitUpdate : onSubmit)} >
+      <form onSubmit={handleSubmit(onSubmit)} >
       <CardContent>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
@@ -214,8 +225,7 @@ const AddProduct = () => {
                 rules={{ required: true }}
                 render={({
                   field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
+                  fieldState,
                 }) => (
                   <TextField
                     error={!!errors.product}
@@ -227,34 +237,14 @@ const AddProduct = () => {
               />
               
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name='capsuleActiveMg'
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
-                }) => (
-                  <TextField
-                    error={!!errors.capsuleActiveMg}
-                    label='Mg Activos en Cápsula'
-                    fullWidth 
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} >
               <Controller
                 control={control}
                 name="description"
                 rules={{ required: true }}
                 render={({
                   field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
+                  fieldState,
                 }) => (
                   <TextField
                     error={!!errors.description}
@@ -272,8 +262,7 @@ const AddProduct = () => {
                 rules={{ required: true }}
                 render={({
                   field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
+                  fieldState,
                 }) => (
                   <TextField
                     error={!!errors.capsuleQuantity}
@@ -291,8 +280,7 @@ const AddProduct = () => {
                 rules={{ required: true }}
                 render={({
                   field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
+                  fieldState,
                 }) => (
                   <TextField
                     error={!!errors.capsuleConcentration}
@@ -306,31 +294,11 @@ const AddProduct = () => {
             <Grid item xs={12} sm={6}>
               <Controller
                 control={control}
-                name="mainComponent"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
-                }) => (
-                  <TextField
-                    error={!!errors.mainComponent}
-                    label='Componente principal'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
                 name="instructions"
                 rules={{ required: true }}
                 render={({
                   field,
-                  fieldState: { invalid, isTouched, isDirty, error },
-                  formState,
+                  fieldState,
                 }) => (
                   <TextField
                     error={!!errors.instructions}
@@ -340,8 +308,26 @@ const AddProduct = () => {
                   />
                 )}
               />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+              <Controller
+                control={control}
+                name="ingredients"
+                rules={{ required: true }}
+                render={({
+                  field,
+                  fieldState,
+                }) => (
+                  <TextField
+                    error={!!errors.ingredients}
+                    label='Ingredientes'
+                    fullWidth
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Controller
                 control={control}
                 name="price"
@@ -375,35 +361,63 @@ const AddProduct = () => {
                     );
                   }
                 }}
-              />
-            </Grid>   
-            
-            <Grid item xs={12} >
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-select-label'>Ingredientes</InputLabel>
-                <Select
-                  value={ingredientsState}
-                  onChange={(e) => handleChangeIngredients(e)}
-                  multiple
-                  label='Ingredientes'
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  )}
-                  MenuProps={MenuProps}
+                />
+                <Grid item xs={12} sx={{marginTop: '15px'}}>
+                  {/* create here dropdown dynammic */}
+                  <Typography
+                    sx={{ margin: 'auto 0px' }}
+                    variant='h6'
                   >
-                  {ingredients.map((item, i) => (
-                    <MenuItem key={i} value={item}>{item}</MenuItem>
-                  )) }
-                </Select>
-              </FormControl>
-            </Grid>
+                    Seleccionar componentes principales
+                  </Typography>
+                  <MultiSelectWithAddOption
+                    //handle select
+                    options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
+                    onOptionChange={handleOptionChange}
+                    value={mainComponentValue}
+                    //handle text
+                    newOption={newOption}
+                    onHandleNewOptionChange={handleNewOptionChange}
+                    onHandleAddOption={handleAddOption}
+
+                    onCleanOptions={handleCleanOptions}
+                  />
+                </Grid>
+                {/* main components fields */}
+                <Typography sx={{margin: '8px 0px'}} variant='h6'>Componentes principales</Typography>
+                {fields.map((field, index) => (
+                <Grid container item xs={12} spacing={5} key={index}>
+                  <Grid item xs={6} sx={{marginTop: '10px'}}>
+                      <TextField
+                        label="Property"
+                        variant="outlined"
+                        value={field.property}
+                        fullWidth
+                        onChange={(e) =>
+                          handleFieldChange(index, "property", e.target.value)
+                        }
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{marginTop: '10px'}}>
+                    <TextField
+                      label="Value"
+                      variant="outlined"
+                      value={field.value}
+                      fullWidth
+                      onChange={(e) =>
+                        handleFieldChange(index, "value", e.target.value)
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                ))}
+                <Grid item sx={{ marginTop: '10px' }}>
+                </Grid>
+              </Grid>
             <Grid item xs={12} >
               <Typography sx={{margin: 'auto 0px'}} variant='h6'>Propiedades</Typography>
-            </Grid>
+              </Grid>
+              
             <ListProperties
               values={values}
               handleChangeProperties={handlePropertiesList}

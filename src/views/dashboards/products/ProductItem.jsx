@@ -59,7 +59,7 @@ const BoxCustomized = styled(Box)(({ theme }) => ({
     ? '#D8DEDF'
     : '',
   width: '100px',
-  height: '90px',
+  height: '120px',
   borderRadius: '5px',
   padding: '5px',
   color: theme.palette.mode === 'light'
@@ -74,7 +74,7 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light'
     ? ''
     : '',
-  width: '100px',
+  width: '150px',
   height: 'auto',
   borderRadius: '5px',
   padding: '5px',
@@ -85,9 +85,10 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 }))
 
 // carousel product
-const CarouselProducts = () => {
-  return (
-    <>
+const CarouselProducts = ({ images }) => {
+  const [url1, url2] = images ?? []
+  if (url1 || url2) {
+    return (
       <Swiper
         spaceBetween={2}
         slidesPerView={1}
@@ -98,18 +99,19 @@ const CarouselProducts = () => {
         }}
       >
         <SwiperSlide >
-          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='Apple iPhone 11 Pro' src='/images/cards/iPhone-11-pro.png' />
+          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='primer imagen' src={url1} />
         </SwiperSlide>
         <SwiperSlide>
-          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='Apple iPhone 11 Pro' src='/images/cards/iPhone-11-pro.png' />
+          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='segunda imagen' src={url2} />
         </SwiperSlide>
       </Swiper>
-    </>
-  )
+    )
+  }
+  return null
 }
 
 export const ProductItem = (props) => {
-  console.log({ props });
+  //debugger
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
@@ -239,7 +241,6 @@ export const ProductItem = (props) => {
                 alignItems: 'center',
                 justifyContent: 'space-between'
               }}>
-
                 <CarouselProducts images={props.urlImages} />
                 <Typography sx={{
                   fontSize: '15px',
@@ -281,12 +282,16 @@ export const ProductItem = (props) => {
                 <BoxCustomized>
                   <Typography sx={{
                     fontSize: '11px',
+                    margin: '5px 0px',
+                    wordBreak: 'break-all',
+                    textOverflow: 'ellipsis',
                   }}>
-                    <strong>{`${props.capsuleActiveMg}`}</strong>{` Activos en Cápsula`}
+                    {`${props.ingredients}`}
                   </Typography>
 
                   <Typography sx={{
                     fontSize: '12px',
+                    margin: '10px 0px'
                   }}>
                     <strong>{`${props.capsuleQuantity}`}</strong>
                   </Typography>
