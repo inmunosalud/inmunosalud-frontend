@@ -23,8 +23,6 @@ const General = () => {
   const dispatch = useDispatch()
   const { data } = useSelector(state => state.dashboard.general)
 
-  console.log(data)
-
   const handleClick = () => {
     router.push('/admin/users/new-user')
   }

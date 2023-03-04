@@ -18,7 +18,8 @@ const resolveProfile = (user, path) => {
 
 const AuthGuard = props => {
   const { children, fallback } = props
-  const { user, isLoading } = useSelector(state => state.session)
+  const { isLoading } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
   const router = useRouter()
 
   useEffect(

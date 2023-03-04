@@ -8,9 +8,7 @@ import Typography from '@mui/material/Typography'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { ProductItem } from 'src/views/dashboards/products/ProductItem'
 import { Button } from '@mui/material'
-import {
-  getProducts
-} from 'src/store/products'
+import { getProducts } from 'src/store/products'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { closeSnackBar } from 'src/store/notifications'
 
@@ -19,8 +17,8 @@ const Products = () => {
   const dispatch = useDispatch()
 
   const { products } = useSelector(state => state.products)
-  const { user } = useSelector(state => state.session)
-    const { open, message, severity } = useSelector(state => state.notifications)
+  const { user } = useSelector(state => state.dashboard.general)
+  const { open, message, severity } = useSelector(state => state.notifications)
   const handleAddProduct = () => {
     router.push('/ecommerce/add-product')
   }
@@ -30,49 +28,48 @@ const Products = () => {
     dispatch(getProducts())
   }, [dispatch])
 
-
   const showAddProductButton = () => {
     if (user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) {
-    return (
-        <Button
-          variant='contained'
-          sx={{ mb: 3, whiteSpace: 'nowrap' }}
-          onClick={handleAddProduct}
-        >
+      return (
+        <Button variant='contained' sx={{ mb: 3, whiteSpace: 'nowrap' }} onClick={handleAddProduct}>
           Alta de producto
         </Button>
-    )
+      )
     }
   }
-  
+
   const displayMapProducts = () => {
     const { content } = products
     return (
-    <React.Fragment>
-      {content?.map((product, i) => (
-      <div key={i} style={{marginTop: '25px'}}>
-          <ProductItem
-            isEdit={(user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']) ? true: false}
-            {...product}
-        />
-      </div>
-      ))}
-    </React.Fragment>
+      <React.Fragment>
+        {content?.map((product, i) => (
+          <div key={i} style={{ marginTop: '25px' }}>
+            <ProductItem
+              isEdit={
+                user.profile === PROFILES_USER['productsAdmin'] || user.profile === PROFILES_USER['admin']
+                  ? true
+                  : false
+              }
+              {...product}
+            />
+          </div>
+        ))}
+      </React.Fragment>
     )
   }
 
   return (
     <>
-    <Grid container spacing={6}>
-      <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
-      <Grid item display='flex' justifyContent='flex-end' xs={12}>
-        {showAddProductButton()}
+      <Grid container spacing={6}>
+        <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
+        <Grid item display='flex' justifyContent='flex-end' xs={12}>
+          {showAddProductButton()}
+        </Grid>
+        <Grid item alignSelf='flex-end' xs={12}>
+          {displayMapProducts()}
+        </Grid>
       </Grid>
-      <Grid item alignSelf='flex-end' xs={12}>
-        {displayMapProducts()}
-      </Grid>
-    </Grid>
-    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
 }

@@ -54,16 +54,9 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 import { closeSnackBar } from 'src/store/notifications'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
-
-const defaultValues = {
-  street: '',
-  number: '',
-  colony: '',
-  state: '',
-  zipCode: '',
-  country: '',
-  city: ''
-}
+import { createAddress } from 'src/store/address'
+import { setActiveStep } from 'src/store/register'
+import { createMethod } from 'src/store/paymentMethods'
 
 const steps = [
   {
@@ -78,38 +71,60 @@ const steps = [
 
 const defaultAddressValues = {
   street: '',
-  number: '',
+  extNumber: '',
+  intNumber: '',
   colony: '',
-  state: '',
+  federalEntity: '',
   zipCode: '',
   country: '',
-  city: ''
+  city: '',
+  refer: ''
 }
 
 const defaultPaymentValues = {
   alias: '',
   month: '',
   year: '',
+  nameOnCard: '',
   cardNumber: '',
-  cardName: ''
+  cvc: ''
 }
 
 const addressSchema = yup.object().shape({
   colony: yup.string().required(),
   zipCode: yup.string().required(),
-  number: yup.string().required(),
-  state: yup.string().required(),
+  extNumber: yup.string().required(),
+  intNumber: yup.string(),
+  federalEntity: yup.string().required(),
   city: yup.string().required(),
   street: yup.string().required(),
-  country: yup.string().required()
+  country: yup.string().required(),
+  refer: yup.string().required()
 })
 
 const paymentSchema = yup.object().shape({
   alias: yup.string().required(),
   month: yup.string().required(),
-  year: yup.string().required(),
-  cardNumber: yup.string().required(),
-  cardName: yup.string().required()
+  year: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(4, 'Deben ser 4 digitos')
+    .max(4, 'Deben ser 4 digitos'),
+  cardNumber: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(16, 'Deben ser 16 digitos')
+    .max(16, 'Deben ser 16 digitos'),
+
+  nameOnCard: yup.string().required(),
+  cvc: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(3, 'Deben ser 3 digitos')
+    .max(3, 'Deben ser 3 digitos')
 })
 
 function PAGE() {
@@ -119,10 +134,12 @@ function PAGE() {
 export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
+  const { user } = useSelector(state => state.session)
   const { isLoading } = useSelector(state => state.users)
+  const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
 
-  const [activeStep, setActiveStep] = useState(0)
+  // const [activeStep, setActiveStep] = useState(0)
 
   // ** Hooks
   const {
@@ -147,25 +164,34 @@ export default function Address() {
 
   // Handle Stepper
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1)
+    const newStep = activeStep - 1
+    if (newStep >= 0) {
+      dispatch(setActiveStep(newStep))
+    }
   }
 
   const handleReset = () => {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'associated' } })
   }
 
-  const onSubmit = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1)
-    if (activeStep === steps.length - 1) {
-      toast.success('Form Submitted')
+  const onAddressSubmit = values => {
+    dispatch(createAddress({ body: values, uuid: user.id }))
+  }
+  const onPaymentSubmit = values => {
+    const body = {
+      ...values,
+      cardUse: 'Cobro',
+      expDate: `${values.month}/${values.year}`
     }
+
+    dispatch(createMethod({ body, uuid: user.id }))
   }
 
   const getStepContent = step => {
     switch (step) {
       case 0:
         return (
-          <form key={0} onSubmit={handleAddressSubmit(onSubmit)}>
+          <form key={0} onSubmit={handleAddressSubmit(onAddressSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -195,7 +221,7 @@ export default function Address() {
               <Grid item xs={6} sm={3}>
                 <FormControl fullWidth>
                   <Controller
-                    name='number'
+                    name='extNumber'
                     control={addressControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -204,12 +230,12 @@ export default function Address() {
                         label='Número Exterior'
                         onChange={onChange}
                         placeholder='No. Ext'
-                        error={Boolean(addressErrors.number)}
+                        error={Boolean(addressErrors.extNumber)}
                         aria-describedby='validation-basic-last-name'
                       />
                     )}
                   />
-                  {addressErrors.number?.type === 'required' && (
+                  {addressErrors.extNumber?.type === 'required' && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-last-name'>
                       El campo es requerido
                     </FormHelperText>
@@ -220,9 +246,9 @@ export default function Address() {
               <Grid item xs={6} sm={3}>
                 <FormControl fullWidth>
                   <Controller
-                    name='numberInt'
+                    name='intNumber'
                     control={addressControl}
-                    rules={{ required: true }}
+                    rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
@@ -290,7 +316,7 @@ export default function Address() {
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
-                    name='state'
+                    name='federalEntity'
                     control={addressControl}
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
@@ -298,13 +324,13 @@ export default function Address() {
                         value={value}
                         label='Estado'
                         onChange={onChange}
-                        error={Boolean(addressErrors.state)}
+                        error={Boolean(addressErrors.federalEntity)}
                         placeholder='Entidad Federativa'
                         aria-describedby='validation-basic-state'
                       />
                     )}
                   />
-                  {addressErrors.state?.type === 'required' && (
+                  {addressErrors.federalEntity?.type === 'required' && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-state'>
                       El campo es requerido
                     </FormHelperText>
@@ -346,7 +372,7 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='C'
+                        label='País'
                         onChange={onChange}
                         error={Boolean(addressErrors.country)}
                         placeholder='País'
@@ -365,7 +391,7 @@ export default function Address() {
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='reference'
+                    name='refer'
                     control={addressControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -378,6 +404,11 @@ export default function Address() {
                       />
                     )}
                   />
+                  {addressErrors.refer?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-refer'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -394,7 +425,7 @@ export default function Address() {
         )
       case 1:
         return (
-          <form key={1} onSubmit={handlePaymentSubmit(onSubmit)}>
+          <form key={1} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -482,9 +513,9 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='AA'
+                        label='AAAA'
                         onChange={onChange}
-                        placeholder='AA'
+                        placeholder='AAAA'
                         error={Boolean(paymentErrors['year'])}
                         aria-describedby='stepper-linear-payment-year'
                       />
@@ -492,12 +523,12 @@ export default function Address() {
                   />
                   {paymentErrors['year'] && (
                     <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-year'>
-                      El campo es requerido
+                      {paymentErrors['year'] ? paymentErrors['year'].message : 'El campo es requerido'}
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={8}>
                 <FormControl fullWidth>
                   <Controller
                     name='cardNumber'
@@ -516,7 +547,31 @@ export default function Address() {
                   />
                   {paymentErrors['cardNumber'] && (
                     <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardNumber'>
-                      El campo es requerido
+                      {paymentErrors['cardNumber'] ? paymentErrors['cardNumber'].message : 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='cvc'
+                    control={paymentControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='CVV'
+                        onChange={onChange}
+                        placeholder='000'
+                        error={Boolean(paymentErrors['cvc'])}
+                        aria-describedby='stepper-linear-payment-cvc'
+                      />
+                    )}
+                  />
+                  {paymentErrors['cvc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cvc'>
+                      {paymentErrors['cvc'] ? paymentErrors['cvc'].message : 'El campo es requerido'}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -524,7 +579,7 @@ export default function Address() {
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='cardName'
+                    name='nameOnCard'
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -533,13 +588,13 @@ export default function Address() {
                         label='Titular de la tarjeta'
                         onChange={onChange}
                         placeholder='Titular de la tarjeta'
-                        error={Boolean(paymentErrors['cardName'])}
-                        aria-describedby='stepper-linear-payment-cardName'
+                        error={Boolean(paymentErrors['nameOnCard'])}
+                        aria-describedby='stepper-linear-payment-nameOnCard'
                       />
                     )}
                   />
-                  {paymentErrors['cardName'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardName'>
+                  {paymentErrors['nameOnCard'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-nameOnCard'>
                       El campo es requerido
                     </FormHelperText>
                   )}
@@ -598,9 +653,11 @@ export default function Address() {
                     labelProps.error = false
                     if (
                       (addressErrors.street ||
-                        addressErrors.number ||
+                        addressErrors.extNumber ||
+                        addressErrors.intNumber ||
                         addressErrors.colony ||
-                        addressErrors.state ||
+                        addressErrors.federalEntity ||
+                        addressErrors.refer ||
                         addressErrors.zipCode ||
                         addressErrors.country ||
                         addressErrors.city) &&
@@ -611,6 +668,7 @@ export default function Address() {
                       (paymentErrors.alias ||
                         paymentErrors.month ||
                         paymentErrors.year ||
+                        paymentErrors.cvc ||
                         paymentErrors.cardNumber ||
                         paymentErrors.cardName) &&
                       activeStep === 1

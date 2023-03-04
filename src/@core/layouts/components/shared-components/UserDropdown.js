@@ -38,7 +38,7 @@ const UserDropdown = props => {
 
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
   // ** Hooks
   const router = useRouter()
 

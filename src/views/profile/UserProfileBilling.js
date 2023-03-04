@@ -66,38 +66,13 @@ const Sub = styled('sub')({
   alignSelf: 'flex-end'
 })
 
-const data = [
-  {
-    cardCvc: '587',
-    name: 'Tom McBride',
-    expiryDate: '12/24',
-    imgAlt: 'Mastercard',
-    badgeColor: 'primary',
-    cardStatus: 'Primary',
-    cardNumber: '5577 0000 5577 9865',
-    imgSrc: '/images/logos/mastercard.png'
-  },
-  {
-    cardCvc: '681',
-    imgAlt: 'Visa card',
-    expiryDate: '02/24',
-    name: 'Mildred Wagner',
-    cardNumber: '4532 3616 2070 5678',
-    imgSrc: '/images/logos/visa.png'
-  },
-  {
-    cardCvc: '3845',
-    expiryDate: '08/20',
-    badgeColor: 'error',
-    cardStatus: 'Expired',
-    name: 'Lester Jennings',
-    imgAlt: 'American Express card',
-    cardNumber: '3700 000000 00002',
-    imgSrc: '/images/logos/american-express.png'
-  }
-]
+const CARD_LOGOS = {
+  VISA: '/images/logos/visa.png',
+  AMEX: '/images/logos/american-express.png',
+  MASTERCARD: '/images/logos/mastercard.png'
+}
 
-const UserProfileBilling = () => {
+const UserProfileBilling = ({ methods = [] }) => {
   // ** States
   const [cvc, setCvc] = useState('')
   const [name, setName] = useState('')
@@ -109,6 +84,8 @@ const UserProfileBilling = () => {
   const [openEditCard, setOpenEditCard] = useState(false)
   const [openAddressCard, setOpenAddressCard] = useState(false)
   const [openUpgradePlans, setOpenUpgradePlans] = useState(false)
+
+  console.log(methods)
 
   // Handle Edit Card dialog and get card ID
   const handleEditCardClickOpen = id => {
@@ -171,7 +148,7 @@ const UserProfileBilling = () => {
           }
         />
         <CardContent>
-          {data.map((item, index) => (
+          {methods.map((item, index) => (
             <Box
               key={index}
               sx={{
@@ -181,18 +158,16 @@ const UserProfileBilling = () => {
                 flexDirection: ['column', 'row'],
                 justifyContent: ['space-between'],
                 alignItems: ['flex-start', 'center'],
-                mb: index !== data.length - 1 ? 4 : undefined,
+                mb: index !== methods.length - 1 ? 4 : undefined,
                 border: theme => `1px solid ${theme.palette.divider}`
               }}
             >
               <div>
-                <img height='25' alt={item.imgAlt} src={item.imgSrc} />
+                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
                 <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ fontWeight: 500 }}>{item.name}</Typography>
+                  <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
                 </Box>
-                <Typography variant='body2'>
-                  **** **** **** {item.cardNumber.substring(item.cardNumber.length - 4)}
-                </Typography>
+                <Typography variant='body2'>{item.cardNumber}</Typography>
               </div>
 
               <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
@@ -203,14 +178,14 @@ const UserProfileBilling = () => {
                   Eliminar
                 </Button>
                 <Typography variant='body2' sx={{ mt: 5 }}>
-                  Expira el {item.expiryDate}
+                  Expira el {item.expDate}
                 </Typography>
               </Box>
             </Box>
           ))}
         </CardContent>
 
-        <Dialog
+        {/* <Dialog
           open={openEditCard}
           onClose={handleEditCardClose}
           aria-labelledby='user-view-billing-edit-card'
@@ -324,7 +299,7 @@ const UserProfileBilling = () => {
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </Card>
     </Fragment>
   )

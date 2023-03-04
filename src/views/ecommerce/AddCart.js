@@ -128,7 +128,6 @@ const AddCard = props => {
       return
     }
 
-    console.log(body)
     dispatch(updateCart({ id, body }))
   }
 

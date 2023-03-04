@@ -3,11 +3,14 @@ import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
 import { PROYECT, api_post } from '../../services/api'
+import { setUser } from '../dashboard/generalSlice'
 
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
+
+    thunkApi.dispatch(setUser(payload.user))
 
     Router.push('/ecommerce/products')
 
