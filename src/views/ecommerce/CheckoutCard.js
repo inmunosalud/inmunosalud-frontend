@@ -45,12 +45,12 @@ const CalcWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
-const CheckoutCard = ({}) => {
+const CheckoutCard = ({data}) => {
   // ** Hook
   const theme = useTheme()
 
   // ** Selectors
-  const { total, products, id } = useSelector(state => state.cart)
+  const { total, products } = data
 
   console.log(products)
 

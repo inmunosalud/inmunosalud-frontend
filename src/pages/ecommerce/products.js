@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import PageHeader from 'src/@core/components/page-header'
 import Typography from '@mui/material/Typography'
@@ -18,7 +19,7 @@ const Products = () => {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const { products } = useSelector(state => state.products)
+  const { products, isLoading } = useSelector(state => state.products)
   const { user } = useSelector(state => state.session)
   const { open, message, severity } = useSelector(state => state.notifications)
   const isProductAdmin = user.profile === PROFILES_USER['productsAdmin']
@@ -32,6 +33,14 @@ const Products = () => {
   React.useEffect(() => {
     dispatch(getProducts())
   }, [dispatch])
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex',justifyContent: "center", alignItems: "center", marginTop: "100px" }}>
+        <Typography>Cargando productos...</Typography>
+      </Box>
+    )
+  }
 
 
   const showAddProductButton = () => {

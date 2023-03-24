@@ -16,6 +16,7 @@ import general from 'src/store/dashboard/generalSlice'
 import cart from 'src/store/cart'
 
 import products from 'src/store/products'
+import orders from 'src/store/orders'
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const store = configureStore({
     users,
     notifications,
     products,
+    orders,
     dashboard: combineReducers({ general })
   },
   middleware: getDefaultMiddleware =>

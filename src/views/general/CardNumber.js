@@ -16,10 +16,9 @@ const Img = styled('img')({
   position: 'absolute'
 })
 
-const CardNumber = ({ data, userInfo }) => {
+const CardNumber = ({ data, userInfo = {} }) => {
   // ** Vars
   const { title, chipColor, chipText, src, stats, trend, trendNumber } = data
-  const {valid} = userInfo
   const isActive = 'Usuario Activo'
   const isInactive = 'Usuario Inactivo'
 
@@ -31,7 +30,7 @@ const CardNumber = ({ data, userInfo }) => {
           justifyContent: 'space-between'
         }}>
           <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{title}</Typography>
-          <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{valid ? isActive: isInactive}</Typography>
+          <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{userInfo?.valid ? isActive: isInactive}</Typography>
         </div>
         <Box sx={{ 
           mb: 1.5, 
