@@ -1,6 +1,7 @@
 export const PERMISSIONS = {
   home: 'home',
   dashboardUsers: 'dashboard/users',
+  dashboardComissions: 'dashboard/comissions',
   dashboardProfile: 'profile',
   dashboardGeneral: 'dashboard/general',
   ecommerceProducts: 'ecommerce/products',
@@ -51,6 +52,7 @@ export const PROFILES = {
     PERMISSIONS.dashboardGeneral,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.dashboardUsers,
+    PERMISSIONS.dashboardComissions,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.adminUsersNewUser,
     PERMISSIONS.ecommerceCart,
@@ -74,6 +76,7 @@ export const ROUTES_PERMISSION = {
   ['/landing-page/home']: PERMISSIONS.home,
   ['/dashboards/general']: PERMISSIONS.dashboardGeneral,
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
+  ['/dashboards/comissions']: PERMISSIONS.dashboardComissions,
   ['/profile']: PERMISSIONS.dashboardProfile,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
