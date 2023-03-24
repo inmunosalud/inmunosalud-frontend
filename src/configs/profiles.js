@@ -7,7 +7,9 @@ export const PERMISSIONS = {
   ecommerceCart: 'ecommerce/cart',
   ecommerceCheckout: 'ecommerce/checkout',
   adminUsersNewUser: 'admin/user/new-user',
-  ecommerceAddProduct: 'ecommerce/products/add-product'
+  ecommerceAddProduct: 'ecommerce/products/add-product',
+  ecommerceOrders: 'ecommerce/orders',
+  ecommerceEditOrders: 'ecommerce/edit-order',
 }
 
 export const PROFILES = {
@@ -18,7 +20,9 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
   ],
   Socio: [
     PERMISSIONS.home,
@@ -27,7 +31,9 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
   ],
   'Administrador de Productos': [
     PERMISSIONS.home,
@@ -36,7 +42,9 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders
   ],
   'Administrador General': [
     PERMISSIONS.home,
@@ -47,14 +55,18 @@ export const PROFILES = {
     PERMISSIONS.adminUsersNewUser,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
   ],
   default: [
     PERMISSIONS.home,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceCheckout
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders
   ]
 }
 
@@ -67,7 +79,9 @@ export const ROUTES_PERMISSION = {
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
   ['/ecommerce/checkout']: PERMISSIONS.ecommerceCheckout,
   ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser,
-  ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct
+  ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct,
+  ['/ecommerce/orders']: PERMISSIONS.ecommerceOrders,
+  ['/ecommerce/edit-order']: PERMISSIONS.ecommerceEditOrders,
 }
 
 export const PROFILES_USER = {

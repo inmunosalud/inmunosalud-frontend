@@ -1,32 +1,45 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
-
-// ** Next Import
-import Link from 'next/link'
-
+import {useDispatch, useSelector} from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import Alert from '@mui/material/Alert'
-
-// ** Third Party Components
-import axios from 'axios'
-
-// ** Demo Components Imports
-import PreviewCard from 'src/views/apps/invoice/preview/PreviewCard'
-import PreviewActions from 'src/views/apps/invoice/preview/PreviewActions'
-
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
+import { createOrder } from 'src/store/orders'
 
-const InvoicePreview = ({}) => {
+const InvoicePreview = ({ }) => {
+  const dispatch = useDispatch()
   // ** State
   const [error, setError] = useState(false)
-  const [data, setData] = useState(null)
   const [addPaymentOpen, setAddPaymentOpen] = useState(false)
   const [sendInvoiceOpen, setSendInvoiceOpen] = useState(false)
 
   const toggleSendInvoiceDrawer = () => setSendInvoiceOpen(!sendInvoiceOpen)
   const toggleAddPaymentDrawer = () => setAddPaymentOpen(!addPaymentOpen)
+
+
+  
+  const { total, products, id } = useSelector(state => state.cart)
+  const { user } = useSelector(state => state.session)
+
+
+  const data = {
+    products,
+    total,
+  }
+
+
+  const handleConfirmOrder = () => {
+    console.log("send order");
+   /*  const body = {
+      idAddress,
+      idPaymentMethod,
+      products,
+      idUser: user?.id
+    }
+
+    dispatch(createOrder(body)) */
+  }
 
   return (
     <>
@@ -35,7 +48,7 @@ const InvoicePreview = ({}) => {
           <CheckoutCard data={data} />
         </Grid>
         <Grid item xl={3} md={4} xs={12}>
-          <CheckoutActions />
+          <CheckoutActions onHandleConfirmOrder={handleConfirmOrder} />
           {/* <PreviewActions
             id={id}
             toggleAddPaymentDrawer={toggleAddPaymentDrawer}
