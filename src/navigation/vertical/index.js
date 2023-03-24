@@ -24,6 +24,11 @@ const navigation = () => {
           title: 'Usuarios',
           path: '/dashboards/users',
           permission: PERMISSIONS.dashboardUsers
+        },
+        {
+          title: 'Comisiones',
+          path: '/dashboards/comissions',
+          permission: PERMISSIONS.dashboardComissions
         }
       ]
     },

@@ -16,6 +16,7 @@ import general from 'src/store/dashboard/generalSlice'
 import cart from 'src/store/cart'
 
 import products from 'src/store/products'
+import comissions from 'src/store/comissions'
 import orders from 'src/store/orders'
 
 export const store = configureStore({
@@ -32,6 +33,7 @@ export const store = configureStore({
     users,
     notifications,
     products,
+    comissions,
     orders,
     dashboard: combineReducers({ general })
   },
