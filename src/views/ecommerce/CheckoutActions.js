@@ -10,11 +10,13 @@ import CardContent from '@mui/material/CardContent'
 import SendOutline from 'mdi-material-ui/SendOutline'
 import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
 
-const CheckoutActions = ({}) => {
+const CheckoutActions = ({
+  onHandleConfirmOrder = () => {}
+}) => {
   return (
     <Card>
       <CardContent>
-        <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />}>
+        <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />} onClick={onHandleConfirmOrder}>
           Confirmar
         </Button>
       </CardContent>

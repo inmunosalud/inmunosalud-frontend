@@ -19,6 +19,8 @@ import register from 'src/store/register'
 import cart from 'src/store/cart'
 
 import products from 'src/store/products'
+import comissions from 'src/store/comissions'
+import orders from 'src/store/orders'
 
 export const store = configureStore({
   reducer: {
@@ -34,9 +36,8 @@ export const store = configureStore({
     users,
     notifications,
     products,
-    register,
-    address,
-    paymentMethods,
+    comissions,
+    orders,
     dashboard: combineReducers({ general })
   },
   middleware: getDefaultMiddleware =>

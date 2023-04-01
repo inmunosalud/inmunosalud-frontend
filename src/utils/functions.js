@@ -22,6 +22,9 @@ const propertiesName = {
     circulaciónArterial,
   }
 }
+export function getCustomStructureMainComponents(obj) {
+  return obj.map((o, index) => ({label: o.property, value: o.property, fieldIndex: index}));
+}
 export function getCustomStructure(obj) {
   return Object.entries(obj).map(([property, value]) => ({property: propertiesName.parse[property], value: value}));
 }

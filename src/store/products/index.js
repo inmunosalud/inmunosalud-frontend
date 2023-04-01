@@ -19,6 +19,21 @@ export const getProducts = createAsyncThunk(
   } 
 )
 
+export const getMainComponents = createAsyncThunk(
+  "product/getMainComponents",
+  async (thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+      const response = await api_get(`${PROYECT_PRODUCTS}/products/mainComponents`, auth)
+      return response;
+    } catch (error) {
+      console.log(error) 
+      return thunkApi.rejectWithValue('error')
+    }
+  } 
+)
+
 export const createProduct = createAsyncThunk(
   "product/createProduct",
   async (body, thunkApi) => {
@@ -26,6 +41,8 @@ export const createProduct = createAsyncThunk(
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
       const response = await api_post(`${PROYECT_PRODUCTS}/products`, body, auth)
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      Router.push('/ecommerce/products')
       return response;
     } catch (error) {
       console.log(error)
@@ -75,7 +92,8 @@ const initialState = {
   isLoading: false,
   products: [],
 
-  editItem: null
+  editItem: null,
+  mainComponents: []
 }
 
 export const productsSlice = createSlice({
@@ -115,6 +133,9 @@ export const productsSlice = createSlice({
     })
     builder.addCase(deleteProduct.fulfilled, (state, {payload}) => {
       state.products = payload
+    })
+    builder.addCase(getMainComponents.fulfilled, (state, {payload}) => {
+      state.mainComponents = payload.content.mainComponents
     })
   }
 })

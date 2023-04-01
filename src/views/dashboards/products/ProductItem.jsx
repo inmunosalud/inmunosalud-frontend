@@ -54,7 +54,7 @@ const BoxCustomized = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   backgroundColor: theme.palette.mode === 'light' ? '#D8DEDF' : '',
   width: '100px',
-  height: '90px',
+  height: '120px',
   borderRadius: '5px',
   padding: '5px',
   color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
@@ -64,8 +64,10 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  backgroundColor: theme.palette.mode === 'light' ? '' : '',
-  width: '100px',
+  backgroundColor: theme.palette.mode === 'light'
+    ? ''
+    : '',
+  width: '150px',
   height: 'auto',
   borderRadius: '5px',
   padding: '5px',
@@ -74,9 +76,10 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 }))
 
 // carousel product
-const CarouselProducts = () => {
-  return (
-    <>
+const CarouselProducts = ({ images }) => {
+  const [url1, url2] = images ?? []
+  if (url1 || url2) {
+    return (
       <Swiper
         spaceBetween={2}
         slidesPerView={1}
@@ -86,30 +89,20 @@ const CarouselProducts = () => {
           width: '300px'
         }}
       >
-        <SwiperSlide>
-          <img
-            width={100}
-            height={136}
-            style={{ margin: 'auto 100px' }}
-            alt='Apple iPhone 11 Pro'
-            src='/images/cards/iPhone-11-pro.png'
-          />
+        <SwiperSlide >
+          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='primer imagen' src={url1} />
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            width={100}
-            height={136}
-            style={{ margin: 'auto 100px' }}
-            alt='Apple iPhone 11 Pro'
-            src='/images/cards/iPhone-11-pro.png'
-          />
+          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='segunda imagen' src={url2} />
         </SwiperSlide>
       </Swiper>
-    </>
-  )
+    )
+  }
+  return null
 }
 
-export const ProductItem = props => {
+export const ProductItem = (props) => {
+  //debugger
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
@@ -201,7 +194,7 @@ export const ProductItem = props => {
   const series = [
     {
       name: 'Income',
-      data: [] || propertiesByProduct()
+      data: propertiesByProduct()
     }
   ]
 
@@ -226,15 +219,13 @@ export const ProductItem = props => {
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <StyledGrid item md={5} xs={12}>
-              <CardContent
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
+              <CardContent sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
                 <CarouselProducts images={props.urlImages} />
                 <Typography
                   sx={{
@@ -281,20 +272,19 @@ export const ProductItem = props => {
                 }}
               >
                 <BoxCustomized>
-                  <Typography
-                    sx={{
-                      fontSize: '11px'
-                    }}
-                  >
-                    <strong>{`${props.capsuleActiveMg}`}</strong>
-                    {` Activos en Cápsula`}
+                  <Typography sx={{
+                    fontSize: '11px',
+                    margin: '5px 0px',
+                    wordBreak: 'break-all',
+                    textOverflow: 'ellipsis',
+                  }}>
+                    {`${props.ingredients}`}
                   </Typography>
 
-                  <Typography
-                    sx={{
-                      fontSize: '12px'
-                    }}
-                  >
+                  <Typography sx={{
+                    fontSize: '12px',
+                    margin: '10px 0px'
+                  }}>
                     <strong>{`${props.capsuleQuantity}`}</strong>
                   </Typography>
                 </BoxCustomized>
