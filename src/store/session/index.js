@@ -3,11 +3,14 @@ import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
 import { PROYECT, api_post } from '../../services/api'
+import { setUser } from '../dashboard/generalSlice'
 
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
+
+    thunkApi.dispatch(setUser(response.content.user))
 
     Router.push('/ecommerce/products')
 
@@ -45,8 +48,8 @@ export const sessionSlice = createSlice({
       state.errors = payload
     },
     setLogin: (state, { payload }) => {
-      state.token = payload.token
-      state.user = payload.user
+      state.token = payload.content.token
+      state.user = payload.content.user
       localStorage.setItem('im-user', payload.token)
     }
   },

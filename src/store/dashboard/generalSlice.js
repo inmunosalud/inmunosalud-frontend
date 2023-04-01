@@ -9,6 +9,8 @@ export const loadSession = createAsyncThunk('general/loadSession', async (body, 
   try {
     const response = await api_get(`${PROYECT}/users/data-user`, auth)
 
+    console.log(response.content)
+
     return response.content
   } catch (error) {
     const data = error.response.data
@@ -28,6 +30,8 @@ export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${PROYECT}/users/dashboard`, auth)
+
+    console.log(response)
 
     return response
   } catch (error) {
@@ -50,7 +54,7 @@ const initialState = {
   errors: null,
   data: null,
   isLoadingSession: false,
-  user: null
+  user: {}
 }
 
 export const generalSlice = createSlice({
@@ -59,6 +63,9 @@ export const generalSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.errors = payload
+    },
+    setUser: (state, { payload }) => {
+      state.user = payload
     }
   },
   extraReducers: builder => {
@@ -92,4 +99,4 @@ export const generalSlice = createSlice({
 
 export default generalSlice.reducer
 
-export const { setErrors } = generalSlice.actions
+export const { setErrors, setUser } = generalSlice.actions

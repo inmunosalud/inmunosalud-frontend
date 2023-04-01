@@ -15,27 +15,24 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
-import { DotsVertical } from 'mdi-material-ui';
-
+import { DotsVertical } from 'mdi-material-ui'
 
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
 import MenuBasic from 'src/views/components/menu/MenuBasic'
 
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide } from 'swiper/react'
 // import required modules
-import { Navigation } from "swiper";
+import { Navigation } from 'swiper'
 
 import { setEdit, deleteProduct } from 'src/store/products'
 
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
+import 'swiper/css'
+import 'swiper/css/navigation'
 
-import {
-  InfoProduct
-} from './styles'
+import { InfoProduct } from './styles'
 
 // Styled Grid component
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -55,16 +52,12 @@ const BoxCustomized = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  backgroundColor: theme.palette.mode === 'light'
-    ? '#D8DEDF'
-    : '',
+  backgroundColor: theme.palette.mode === 'light' ? '#D8DEDF' : '',
   width: '100px',
   height: '120px',
   borderRadius: '5px',
   padding: '5px',
-  color: theme.palette.mode === 'light'
-    ? '#000000'
-    : '#F0F8FF',
+  color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
 }))
 
 const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
@@ -79,9 +72,7 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   borderRadius: '5px',
   padding: '5px',
   border: '1px solid #D8DEDF',
-  color: theme.palette.mode === 'light'
-    ? '#000000'
-    : '#F0F8FF',
+  color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
 }))
 
 // carousel product
@@ -116,21 +107,21 @@ export const ProductItem = (props) => {
   const router = useRouter()
   const theme = useTheme()
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [showModalDelete, setShowModalDelete] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [showModalDelete, setShowModalDelete] = React.useState(false)
 
   const handleModalClose = () => {
     setShowModalDelete(false)
   }
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleEdit = () => {
-    dispatch(setEdit(props));
+    dispatch(setEdit(props))
     handleRedirectEdit()
-  };
+  }
 
   const handleDelete = () => {
     setShowModalDelete(true)
@@ -197,9 +188,7 @@ export const ProductItem = (props) => {
   }
 
   const propertiesByProduct = () => {
-    return props?.properties
-      .filter(property => property.value)
-      .map(property => property.value)
+    return props?.properties.filter(property => property.value).map(property => property.value)
   }
 
   const series = [
@@ -213,22 +202,18 @@ export const ProductItem = (props) => {
     anchorEl,
     handleClose,
     handleEdit,
-    handleDelete,
+    handleDelete
   }
 
   return (
     <>
-      <Card >
+      <Card>
         <CardHeader
           title={props.name}
           titleTypographyProps={{
             sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
           }}
-          action={
-            <IconButton>
-              {props.isEdit ? <DotsVertical onClick={handleClick} /> : null}
-            </IconButton>
-          }
+          action={<IconButton>{props.isEdit ? <DotsVertical onClick={handleClick} /> : null}</IconButton>}
         />
         <MenuBasic {...listMenuProps} />
         <CardContent>
@@ -242,22 +227,24 @@ export const ProductItem = (props) => {
                 justifyContent: 'space-between'
               }}>
                 <CarouselProducts images={props.urlImages} />
-                <Typography sx={{
-                  fontSize: '15px',
-                  padding: '30px',
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: '15px',
+                    padding: '30px'
+                  }}
+                >
                   {`${props.description}`}
                 </Typography>
-
-
               </CardContent>
             </StyledGrid>
-            <InfoProduct >
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%'
-              }}>
+            <InfoProduct>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%'
+                }}
+              >
                 <Typography variant='h5' sx={{ marginBottom: '60px' }}>
                   <strong>{`${props.product}`}</strong>
                 </Typography>
@@ -266,19 +253,24 @@ export const ProductItem = (props) => {
                 </Typography>
               </div>
 
-              <Typography sx={{
-                fontSize: '13px',
-                marginBottom: '7px'
-              }}>
-                <strong>INSTRUCCIONES: </strong>{`${props.instructions}`}
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '7px'
+                }}
+              >
+                <strong>INSTRUCCIONES: </strong>
+                {`${props.instructions}`}
               </Typography>
               <Divider sx={{ my: 1 }} />
 
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: 15
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: 15
+                }}
+              >
                 <BoxCustomized>
                   <Typography sx={{
                     fontSize: '11px',
@@ -297,27 +289,32 @@ export const ProductItem = (props) => {
                   </Typography>
                 </BoxCustomized>
                 <BoxCustomizedInfo>
-                  <Typography sx={{
-                    fontSize: '12px',
-                  }}>
-                    <strong>{`${props.capsuleConcentration}`}</strong>{` concentración de cápsulas`}
+                  <Typography
+                    sx={{
+                      fontSize: '12px'
+                    }}
+                  >
+                    <strong>{`${props.capsuleConcentration}`}</strong>
+                    {` concentración de cápsulas`}
                   </Typography>
-                  <Typography sx={{
-                    fontSize: '12px',
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: '12px'
+                    }}
+                  >
                     {`${props.mainComponent}`}
                   </Typography>
                 </BoxCustomizedInfo>
               </div>
             </InfoProduct>
             <ReactApexcharts type='radar' height={200} series={series} options={options} />
-
           </Box>
           <div
             style={{
               display: 'flex',
               justifyContent: 'flex-end'
-            }}>
+            }}
+          >
             <Button variant='contained'>Agregar al carrito</Button>
           </div>
         </CardContent>

@@ -60,12 +60,12 @@ const intakeProducts = {
 const Users = () => {
   const dispatch = useDispatch()
   const { userInfo } = useSelector(state => state.users)
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
-  }, [dispatch]);
-  
+  }, [dispatch])
+
   const handlePaste = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
   }
@@ -74,34 +74,34 @@ const Users = () => {
     if (userInfo.profile !== 'Consumidor') {
       return (
         <>
-        <Grid item xs={12} md={3}>
-          <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
-        </Grid>
-        <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
-          <CardNumber data={data[0]} userInfo={userInfo} />
-          <NextComision />
-        </Grid>
-        <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
-          <Card>
-            <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
-              <CustomizedTooltip title='Copy to clipboard'>
-                <Button
-                  fullWidth
-                  style={{ color: 'white' }}
-                  variant='outlined'
-                  onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
-                >
-                  Copiar código de recomendado
-                </Button>
-              </CustomizedTooltip>
+          <Grid item xs={12} md={3}>
+            <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
+          </Grid>
+          <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
+            <CardNumber data={data[0]} userInfo={userInfo} />
+            <NextComision />
+          </Grid>
+          <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
+            <Card>
+              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
+                <CustomizedTooltip title='Copy to clipboard'>
+                  <Button
+                    fullWidth
+                    style={{ color: 'white' }}
+                    variant='outlined'
+                    onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
+                  >
+                    Copiar código de recomendado
+                  </Button>
+                </CustomizedTooltip>
 
-              <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
-                Copiar liga para registro de un recomendado
-              </Button>
-            </CardContent>
-          </Card>
-            </Grid>
-          </>
+                <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
+                  Copiar liga para registro de un recomendado
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </>
       )
     }
   }

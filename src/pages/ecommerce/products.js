@@ -9,9 +9,7 @@ import Typography from '@mui/material/Typography'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { ProductItem } from 'src/views/dashboards/products/ProductItem'
 import { Button } from '@mui/material'
-import {
-  getProducts
-} from 'src/store/products'
+import { getProducts } from 'src/store/products'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { closeSnackBar } from 'src/store/notifications'
 
@@ -56,7 +54,7 @@ const Products = () => {
       )
     }
   }
-  
+
   const displayMapProducts = () => {
     const { content } = products
     return (

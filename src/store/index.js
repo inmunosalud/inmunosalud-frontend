@@ -13,6 +13,9 @@ import session from 'src/store/session'
 import users from 'src/store/users'
 import notifications from 'src/store/notifications'
 import general from 'src/store/dashboard/generalSlice'
+import address from 'src/store/address'
+import paymentMethods from 'src/store/paymentMethods'
+import register from 'src/store/register'
 import cart from 'src/store/cart'
 
 import products from 'src/store/products'
@@ -42,6 +45,3 @@ export const store = configureStore({
       serializableCheck: false
     })
 })
-
-
-
