@@ -10,7 +10,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
 
-    thunkApi.dispatch(setUser(payload.user))
+    thunkApi.dispatch(setUser(response.content.user))
 
     Router.push('/ecommerce/products')
 
@@ -48,8 +48,8 @@ export const sessionSlice = createSlice({
       state.errors = payload
     },
     setLogin: (state, { payload }) => {
-      state.token = payload.token
-      state.user = payload.user
+      state.token = payload.content.token
+      state.user = payload.content.user
       localStorage.setItem('im-user', payload.token)
     }
   },

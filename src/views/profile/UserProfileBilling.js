@@ -39,8 +39,14 @@ import Plus from 'mdi-material-ui/Plus'
 import Payment from 'payment'
 import Cards from 'react-credit-cards'
 
+// ** Third Party Imports
+import { useForm, Controller } from 'react-hook-form'
+
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
+
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
 
 // ** Util Import
 import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@core/utils/format'
@@ -72,66 +78,91 @@ const CARD_LOGOS = {
   MASTERCARD: '/images/logos/mastercard.png'
 }
 
+const defaultPaymentValues = {
+  alias: '',
+  month: '',
+  year: '',
+  cardUse: '',
+  nameOnCard: '',
+  cardNumber: '',
+  cvc: ''
+}
+
+const paymentSchema = yup.object().shape({
+  alias: yup.string().required(),
+  month: yup.string().required(),
+  cardUse: yup.string().required(),
+  year: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(4, 'Deben ser 4 digitos')
+    .max(4, 'Deben ser 4 digitos'),
+  cardNumber: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(16, 'Deben ser 16 digitos')
+    .max(16, 'Deben ser 16 digitos'),
+
+  nameOnCard: yup.string().required(),
+  cvc: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(3, 'Deben ser 3 digitos')
+    .max(3, 'Deben ser 3 digitos')
+})
+
 const UserProfileBilling = ({ methods = [] }) => {
   // ** States
-  const [cvc, setCvc] = useState('')
-  const [name, setName] = useState('')
-  const [focus, setFocus] = useState()
-  const [cardId, setCardId] = useState(0)
-  const [expiry, setExpiry] = useState('')
-  const [cardNumber, setCardNumber] = useState('')
-  const [dialogTitle, setDialogTitle] = useState('Add')
   const [openEditCard, setOpenEditCard] = useState(false)
-  const [openAddressCard, setOpenAddressCard] = useState(false)
-  const [openUpgradePlans, setOpenUpgradePlans] = useState(false)
 
   console.log(methods)
 
+  const {
+    reset: paymentReset,
+    control: paymentControl,
+    handleSubmit: handlePaymentSubmit,
+    formState: { errors: paymentErrors }
+  } = useForm({
+    defaultValues: defaultPaymentValues,
+    resolver: yupResolver(paymentSchema)
+  })
+
+  const onPaymentSubmit = values => {
+    const body = {
+      ...values,
+      cardUse: 'Cobro',
+      expDate: `${values.month}/${values.year}`
+    }
+
+    dispatch(createMethod({ body, uuid: user.id }))
+  }
+
   // Handle Edit Card dialog and get card ID
   const handleEditCardClickOpen = id => {
-    setDialogTitle('Edit')
-    setCardId(id)
-    setCardNumber(data[id].cardNumber)
-    setName(data[id].name)
-    setCvc(data[id].cardCvc)
-    setExpiry(data[id].expiryDate)
+    // setDialogTitle('Edit')
+    // setCardId(id)
+    // setCardNumber(data[id].cardNumber)
+    // setName(data[id].name)
+    // setCvc(data[id].cardCvc)
+    // setExpiry(data[id].expiryDate)
     setOpenEditCard(true)
   }
 
   const handleAddCardClickOpen = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
+    console.log('entro')
+    // setDialogTitle('Add')
+    // setCardNumber('')
+    // setName('')
+    // setCvc('')
+    // setExpiry('')
     setOpenEditCard(true)
   }
 
   const handleEditCardClose = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
     setOpenEditCard(false)
-  }
-
-  // Handle Upgrade Plan dialog
-  const handleUpgradePlansClickOpen = () => setOpenUpgradePlans(true)
-  const handleUpgradePlansClose = () => setOpenUpgradePlans(false)
-  const handleBlur = () => setFocus(undefined)
-
-  const handleInputChange = ({ target }) => {
-    if (target.name === 'number') {
-      target.value = formatCreditCardNumber(target.value, Payment)
-      setCardNumber(target.value)
-    } else if (target.name === 'expiry') {
-      target.value = formatExpirationDate(target.value)
-      setExpiry(target.value)
-    } else if (target.name === 'cvc') {
-      target.value = formatCVC(target.value, cardNumber, Payment)
-      setCvc(target.value)
-    }
   }
 
   return (
@@ -163,7 +194,7 @@ const UserProfileBilling = ({ methods = [] }) => {
               }}
             >
               <div>
-                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
+                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardcardUse]} />
                 <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
                 </Box>
@@ -185,7 +216,7 @@ const UserProfileBilling = ({ methods = [] }) => {
           ))}
         </CardContent>
 
-        {/* <Dialog
+        <Dialog
           open={openEditCard}
           onClose={handleEditCardClose}
           aria-labelledby='user-view-billing-edit-card'
@@ -193,113 +224,222 @@ const UserProfileBilling = ({ methods = [] }) => {
           aria-describedby='user-view-billing-edit-card-description'
         >
           <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-            {dialogTitle} Card
+            Nuevo Metodo de Pago
           </DialogTitle>
           <DialogContent>
-            <DialogContentText
-              variant='body2'
-              id='user-view-billing-edit-card-description'
-              sx={{ textAlign: 'center', mb: 7 }}
-            >
-              {dialogTitle} card for future billing
-            </DialogContentText>
-            <form>
-              <Grid container spacing={6}>
+            <form key={1} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
+              <Grid container spacing={5}>
                 <Grid item xs={12}>
-                  <CardWrapper sx={{ '& .rccs': { m: '0 auto' } }}>
-                    <Cards cvc={cvc} focused={focus} expiry={expiry} name={name} number={cardNumber} />
-                  </CardWrapper>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='alias'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Alias'
+                          onChange={onChange}
+                          placeholder='Alias'
+                          error={Boolean(paymentErrors['alias'])}
+                          aria-describedby='stepper-linear-payment-alias'
+                        />
+                      )}
+                    />
+                    {paymentErrors['alias'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
+                        El campo es requerido
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id='stepper-linear-payment-country'
+                      error={Boolean(paymentErrors.country)}
+                      htmlFor='stepper-linear-payment-country'
+                    >
+                      MM
+                    </InputLabel>
+                    <Controller
+                      name='month'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <Select
+                          value={value}
+                          label='MM'
+                          onChange={onChange}
+                          error={Boolean(paymentErrors.month)}
+                          labelId='stepper-linear-payment-month'
+                          aria-describedby='stepper-linear-payment-month-helper'
+                        >
+                          <MenuItem value='01'>01</MenuItem>
+                          <MenuItem value='02'>02</MenuItem>
+                          <MenuItem value='03'>03</MenuItem>
+                          <MenuItem value='04'>04</MenuItem>
+                          <MenuItem value='05'>05</MenuItem>
+                          <MenuItem value='06'>06</MenuItem>
+                          <MenuItem value='07'>07</MenuItem>
+                          <MenuItem value='08'>08</MenuItem>
+                          <MenuItem value='09'>09</MenuItem>
+                          <MenuItem value='10'>10</MenuItem>
+                          <MenuItem value='11'>11</MenuItem>
+                          <MenuItem value='12'>12</MenuItem>
+                        </Select>
+                      )}
+                    />
+                    {paymentErrors.month && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-month-helper'>
+                        El campo es requerido
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='year'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='AAAA'
+                          onChange={onChange}
+                          placeholder='AAAA'
+                          error={Boolean(paymentErrors['year'])}
+                          aria-describedby='stepper-linear-payment-year'
+                        />
+                      )}
+                    />
+                    {paymentErrors['year'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-year'>
+                        {paymentErrors['year'] ? paymentErrors['year'].message : 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='cardNumber'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Numero de la tarjeta'
+                          onChange={onChange}
+                          placeholder='XXXX-XXXX-XXXX-XXXX'
+                          error={Boolean(paymentErrors['cardNumber'])}
+                          aria-describedby='stepper-linear-payment-cardNumber'
+                        />
+                      )}
+                    />
+                    {paymentErrors['cardNumber'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardNumber'>
+                        {paymentErrors['cardNumber'] ? paymentErrors['cardNumber'].message : 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='cvc'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='CVV'
+                          onChange={onChange}
+                          placeholder='000'
+                          error={Boolean(paymentErrors['cvc'])}
+                          aria-describedby='stepper-linear-payment-cvc'
+                        />
+                      )}
+                    />
+                    {paymentErrors['cvc'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cvc'>
+                        {paymentErrors['cvc'] ? paymentErrors['cvc'].message : 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <Grid container spacing={6}>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        name='number'
-                        value={cardNumber}
-                        autoComplete='off'
-                        label='Card Number'
-                        onBlur={handleBlur}
-                        onChange={handleInputChange}
-                        placeholder='0000 0000 0000 0000'
-                        onFocus={e => setFocus(e.target.name)}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        fullWidth
-                        name='name'
-                        value={name}
-                        autoComplete='off'
-                        onBlur={handleBlur}
-                        label='Name on Card'
-                        placeholder='John Doe'
-                        onChange={e => setName(e.target.value)}
-                        onFocus={e => setFocus(e.target.name)}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        fullWidth
-                        name='expiry'
-                        label='Expiry'
-                        value={expiry}
-                        onBlur={handleBlur}
-                        placeholder='MM/YY'
-                        onChange={handleInputChange}
-                        inputProps={{ maxLength: '5' }}
-                        onFocus={e => setFocus(e.target.name)}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <FormControl fullWidth>
-                        <InputLabel id='user-view-billing-edit-card-status-label'>Card Status</InputLabel>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='nameOnCard'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Titular de la tarjeta'
+                          onChange={onChange}
+                          placeholder='Titular de la tarjeta'
+                          error={Boolean(paymentErrors['nameOnCard'])}
+                          aria-describedby='stepper-linear-payment-nameOnCard'
+                        />
+                      )}
+                    />
+                    {paymentErrors['nameOnCard'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-nameOnCard'>
+                        El campo es requerido
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id='stepper-linear-payment-country'
+                      error={Boolean(paymentErrors.country)}
+                      htmlFor='stepper-linear-payment-country'
+                    >
+                      Tipo
+                    </InputLabel>
+                    <Controller
+                      name='cardUse'
+                      control={paymentControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
                         <Select
-                          label='Card Status'
-                          id='user-view-billing-edit-card-status'
-                          labelId='user-view-billing-edit-card-status-label'
-                          defaultValue={data[cardId].cardStatus ? data[cardId].cardStatus : ''}
+                          value={value}
+                          label='Tipo'
+                          onChange={onChange}
+                          error={Boolean(paymentErrors.cardUse)}
+                          labelId='stepper-linear-payment-cardUse'
+                          aria-describedby='stepper-linear-payment-cardUse-helper'
                         >
-                          <MenuItem value='Primary'>Primary</MenuItem>
-                          <MenuItem value='Expired'>Expired</MenuItem>
-                          <MenuItem value='Active'>Active</MenuItem>
+                          <MenuItem value='Cobro'>Cobro</MenuItem>
+                          <MenuItem value='Pago'>Pago</MenuItem>
                         </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        fullWidth
-                        name='cvc'
-                        label='CVC'
-                        value={cvc}
-                        autoComplete='off'
-                        onBlur={handleBlur}
-                        onChange={handleInputChange}
-                        onFocus={e => setFocus(e.target.name)}
-                        placeholder={Payment.fns.cardType(cardNumber) === 'amex' ? '1234' : '123'}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        control={<Switch defaultChecked />}
-                        label='Save Card for future billing?'
-                        sx={{ '& .MuiTypography-root': { color: 'text.secondary' } }}
-                      />
-                    </Grid>
-                  </Grid>
+                      )}
+                    />
+                    {paymentErrors.cardUse && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardUse-helper'>
+                        El campo es requerido
+                      </FormHelperText>
+                    )}
+                  </FormControl>
                 </Grid>
               </Grid>
             </form>
           </DialogContent>
           <DialogActions sx={{ justifyContent: 'center' }}>
             <Button variant='contained' sx={{ mr: 1 }} onClick={handleEditCardClose}>
-              Submit
+              Agregar
             </Button>
             <Button variant='outlined' color='secondary' onClick={handleEditCardClose}>
-              Cancel
+              Cancelar
             </Button>
           </DialogActions>
-        </Dialog> */}
+        </Dialog>
       </Card>
     </Fragment>
   )
