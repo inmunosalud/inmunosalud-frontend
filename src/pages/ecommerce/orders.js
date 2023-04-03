@@ -21,8 +21,8 @@ const AdreessContainer = {
   flexDirection: "column"
 }
 const ImageStyle = {
-  width: "100px",
-  heigth: "100px",
+  width: "150px",
+  heigth: "150px",
   margin: "5px"
 }
 const DeliveryInfoStyles = {

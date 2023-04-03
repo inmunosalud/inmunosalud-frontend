@@ -8,7 +8,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import Card from '@mui/material/Card'
-import Divider from '@mui/material/Divider'
 import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
@@ -45,19 +44,6 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     borderRight: `1px solid ${theme.palette.divider}`
   }
-}))
-
-// Styled Card component
-const BoxCustomized = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  backgroundColor: theme.palette.mode === 'light' ? '#D8DEDF' : '',
-  width: '100px',
-  height: '120px',
-  borderRadius: '5px',
-  padding: '5px',
-  color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
 }))
 
 const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
@@ -237,57 +223,48 @@ export const ProductItem = (props) => {
                 </Typography>
               </CardContent>
             </StyledGrid>
-            <InfoProduct>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%'
-                }}
-              >
-                <Typography variant='h5' sx={{ marginBottom: '60px' }}>
+            <InfoProduct >
+              <div id='info-product' style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                margin: '0px 2px'
+              }}>
+                <Typography variant='h5' sx={{ marginBottom: '40px', fontSize: "20px" }}>
                   <strong>{`${props.product}`}</strong>
                 </Typography>
-                <Typography variant='h5' sx={{ marginBottom: '60px' }}>
+                <Typography variant='h5' sx={{ marginBottom: '40px' }}>
                   <strong>{`$${props.price}`}</strong>
                 </Typography>
               </div>
 
-              <Typography
-                sx={{
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px"
+              }}>
+                <Typography sx={{
                   fontSize: '13px',
                   marginBottom: '7px'
-                }}
-              >
-                <strong>INSTRUCCIONES: </strong>
-                {`${props.instructions}`}
-              </Typography>
-              <Divider sx={{ my: 1 }} />
+                }}>
+                  <strong>INSTRUCCIONES: </strong>{`${props.instructions}`}
+                </Typography>
 
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: 15
-                }}
-              >
-                <BoxCustomized>
-                  <Typography sx={{
-                    fontSize: '11px',
-                    margin: '5px 0px',
-                    wordBreak: 'break-all',
-                    textOverflow: 'ellipsis',
-                  }}>
-                    {`${props.ingredients}`}
-                  </Typography>
+                <Typography sx={{
+                  fontSize: '13px',
+                  margin: '5px 0px',
+                  wordBreak: 'break-all',
+                  textOverflow: 'ellipsis',
+                }}>
+                  <strong>INGREDIENTES: </strong>{`${props.ingredients}`}
+                </Typography>
+              </div>
 
-                  <Typography sx={{
-                    fontSize: '12px',
-                    margin: '10px 0px'
-                  }}>
-                    <strong>{`${props.capsuleQuantity}`}</strong>
-                  </Typography>
-                </BoxCustomized>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: 15
+              }}>
                 <BoxCustomizedInfo>
                   <Typography
                     sx={{
@@ -297,12 +274,11 @@ export const ProductItem = (props) => {
                     <strong>{`${props.capsuleConcentration}`}</strong>
                     {` concentración de cápsulas`}
                   </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '12px'
-                    }}
-                  >
-                    {`${props.mainComponent}`}
+                  <Typography sx={{
+                    fontSize: '12px',
+                    margin: '10px 0px'
+                  }}>
+                    <strong>{`${props.capsuleQuantity}`}</strong>
                   </Typography>
                 </BoxCustomizedInfo>
               </div>

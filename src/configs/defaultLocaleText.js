@@ -123,5 +123,7 @@ export function getLocaleText() {
       aggregationFunctionLabelMin: 'min',
       aggregationFunctionLabelMax: 'max',
       aggregationFunctionLabelSize: 'size',
+
+      footerPaginationRowsPerPage: 'Filas por pagina'
    }
 }
