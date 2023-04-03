@@ -17,8 +17,7 @@ import {
   DialogContentText
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
-import { deleteComission, getComissions, liquidationComisions, setOpenModal } from 'src/store/comissions'
-
+import { getComissions, liquidationComisions, setOpenModal } from 'src/store/comissions'
 
 const COLUMNS = [
   {
@@ -35,33 +34,11 @@ const COLUMNS = [
   {
     flex: 0.175,
     minWidth: 110,
-    field: 'commissionLost',
-    headerName: 'Comision perdida',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.comissionLost}
-      </Typography>
-    )
-  },
-  {
-    flex: 0.175,
-    minWidth: 110,
     field: 'commissionReal',
-    headerName: 'Comision Real',
+    headerName: 'Comision',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.commissionReal}
-      </Typography>
-    )
-  },
-  {
-    flex: 0.175,
-    minWidth: 110,
-    field: 'commissionTotal',
-    headerName: 'Comision Total',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.commissionTotal}
+        ${" "}{params.row.commissionReal}
       </Typography>
     )
   },
@@ -107,29 +84,19 @@ const Comissions = () => {
     isLoading,
     openModal,
   } = useSelector(state => state.comissions)
-
-  const [pageSize, setPageSize] = React.useState(10)
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-
-  const [actionSelected, setActionSelected] = React.useState('')
   
   React.useEffect(() => {
      dispatch(getComissions())
   }, [])
 
-  const handleAction = (e) => {
-    const value = e.target.value
-    setActionSelected(value)
+  const handleAction = () => {
     dispatch(setOpenModal(true))
   }
 
   const confirmSubmit = () => {
-      console.log({rowSelectionModel});
-    if (actionSelected === 'liquidation') {
-      dispatch(liquidationComisions(rowSelectionModel))
-    } else {
-      dispatch(deleteComission(rowSelectionModel))
-    }
+    console.log({rowSelectionModel});
+    dispatch(liquidationComisions(rowSelectionModel))
   }
   
   return (
@@ -139,37 +106,22 @@ const Comissions = () => {
         title='Comisiones'
         action={
           <Box>
-            <FormControl fullWidth>
-              <InputLabel id='form-layouts-separator-select-label'>Acciones</InputLabel>
-              <Select
-                  disabled={!rowSelectionModel.length ? true: false}
-                  sx={{width: "200px"}}
-                  label="Acciones"
-                  value={actionSelected}
-                  id='form-layouts-separator-select'
-                  labelId='form-layouts-separator-select-label'
-                  onChange={handleAction}
-                >
-                  <MenuItem value='liquidation'>Liquidar comisiones </MenuItem>
-                  <MenuItem value='delete'>Eliminar comisiones</MenuItem>
-                </Select>
-              </FormControl>
+            <Button variant='contained' disabled={!rowSelectionModel.length} onClick={handleAction}>Liquidar Comisiones</Button>
           </Box>
-        }/>
-      <DataGrid
-        autoHeight
-        loading={isLoading}
-        rows={comissions}
-        columns={COLUMNS}
-        pageSize={pageSize}
-        rowsPerPageOptions={[7, 10, 25, 50]}
-        onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-        checkboxSelection
-        onSelectionModelChange={(newSelection) => {
-          setRowSelectionModel(newSelection);
-        }}
-        rowSelectionModel={rowSelectionModel}
-      />
+        } />
+        <DataGrid
+            autoHeight
+            loading={isLoading}
+            rows={comissions}
+            columns={COLUMNS}
+            autoPageSize
+            checkboxSelection
+            onSelectionModelChange={(newSelection) => {
+              setRowSelectionModel(newSelection);
+            }}
+            rowSelectionModel={rowSelectionModel}
+          />
+      
     </Card>
       <Dialog
         maxWidth="md"
@@ -185,7 +137,7 @@ const Comissions = () => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button variant='contained' onClick={() => dispatch(setOpenModal(false))}>Regresar</Button>
-          <Button variant='contained'onClick={confirmSubmit}>{actionSelected === "liquidar" ? "Liquidar" : "Eliminar"}</Button>
+          <Button variant='contained'onClick={confirmSubmit}>Liquidar</Button>
         </DialogActions>
       </Dialog>
       </React.Fragment>
