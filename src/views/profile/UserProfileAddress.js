@@ -151,7 +151,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
       </Card>
       {addresses.length
         ? addresses.map(address => (
-            <Card>
+            <Card key={address.id}>
               <CardHeader
                 title='Direcciones'
                 titleTypographyProps={{ variant: 'h6' }}

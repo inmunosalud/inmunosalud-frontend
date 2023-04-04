@@ -38,6 +38,9 @@ export const store = configureStore({
     products,
     comissions,
     orders,
+    paymentMethods,
+    address,
+    register,
     dashboard: combineReducers({ general })
   },
   middleware: getDefaultMiddleware =>
