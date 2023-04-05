@@ -59,7 +59,7 @@ const TableUsers = () => {
         console.log(row.profile != "Socio" ? row : "")
         return (
           <Typography variant='body2' sx={{ color: '#6495ED', cursor: 'pointer' }}>
-            {row.profile == 'Administrador General' ? <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />: null}
+            {row.profile.includes('Admin') ? <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />: null}
             <Delete sx={{ margin: '5px' }} onClick={() => setItemDeleteModal(row)} />
           </Typography>
         )
