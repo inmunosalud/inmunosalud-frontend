@@ -120,7 +120,7 @@ const NewUser = () => {
                         value={value}
                         label='Nombre'
                         onChange={onChange}
-                        placeholder='Leonard'
+                        placeholder='Juan'
                         error={Boolean(errors.firstName)}
                         aria-describedby='validation-basic-first-name'
                       />
@@ -145,7 +145,7 @@ const NewUser = () => {
                         value={value}
                         label='Apellido'
                         onChange={onChange}
-                        placeholder='Carter'
+                        placeholder='Perez'
                         error={Boolean(errors.lastName)}
                         aria-describedby='validation-basic-last-name'
                       />
@@ -172,7 +172,7 @@ const NewUser = () => {
                         label='Correo electrónico'
                         onChange={onChange}
                         error={Boolean(errors.email)}
-                        placeholder='carterleonard@gmail.com'
+                        placeholder='juanperez@gmail.com'
                         aria-describedby='validation-basic-email'
                       />
                     )}
@@ -283,8 +283,8 @@ const NewUser = () => {
                         labelId='validation-basic-profile'
                         aria-describedby='validation-basic-profile'
                       >
-                        <MenuItem value='admin'>Admin</MenuItem>
-                        <MenuItem value='productsAdmin'>Admin de Productos</MenuItem>
+                        <MenuItem value='Administrador General'>Administrador General</MenuItem>
+                        <MenuItem value='Administrador de Productos'>Administrador de Productos</MenuItem>
                       </Select>
                     )}
                   />
