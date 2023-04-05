@@ -70,7 +70,7 @@ const NumberUsers = ({ data = null }) => {
 
   const getSeries = () => {
     if (!data) {
-      return []
+      return [10,20]
     }
 
     return [data.valid, data.invalid]
@@ -110,8 +110,14 @@ const NumberUsers = ({ data = null }) => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Numero de usuarios</Typography>
-                <Typography variant='h6'>{data?.total}</Typography>
+                <Typography variant='h6'>300</Typography>
               </Box>
+            </Box>
+            <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column'}}>
+              <Typography variant='body2'>Administradores Generales: <b>400</b></Typography>
+              <Typography variant='body2'>Administradores de Productos: <b>400</b></Typography>
+              <Typography variant='body2'>Consumidores: <b>400</b></Typography>
+              <Typography variant='body2'>Socios: <b>400</b></Typography>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Grid container>
@@ -133,6 +139,7 @@ const NumberUsers = ({ data = null }) => {
               </Grid>
             </Grid>
           </Grid>
+
         </Grid>
       </CardContent>
     </Card>
