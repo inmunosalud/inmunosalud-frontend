@@ -1,6 +1,8 @@
 // ** React Imports
 import { Fragment, useState } from 'react'
 
+import { useDispatch, useSelector } from 'react-redux'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -31,9 +33,12 @@ import LinearProgress from '@mui/material/LinearProgress'
 import TableContainer from '@mui/material/TableContainer'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import DialogContentText from '@mui/material/DialogContentText'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
+import Delete from 'mdi-material-ui/Delete'
+
 
 // ** Third Party Imports
 import Payment from 'payment'
@@ -48,36 +53,10 @@ import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 
-const data = [
-  {
-    cardCvc: '587',
-    name: 'Tom McBride',
-    expiryDate: '12/24',
-    imgAlt: 'Mastercard',
-    badgeColor: 'primary',
-    cardStatus: 'Primary',
-    cardNumber: '5577 0000 5577 9865',
-    imgSrc: '/images/logos/mastercard.png'
-  },
-  {
-    cardCvc: '681',
-    imgAlt: 'Visa card',
-    expiryDate: '02/24',
-    name: 'Mildred Wagner',
-    cardNumber: '4532 3616 2070 5678',
-    imgSrc: '/images/logos/visa.png'
-  },
-  {
-    cardCvc: '3845',
-    expiryDate: '08/20',
-    badgeColor: 'error',
-    cardStatus: 'Expired',
-    name: 'Lester Jennings',
-    imgAlt: 'American Express card',
-    cardNumber: '3700 000000 00002',
-    imgSrc: '/images/logos/american-express.png'
-  }
-]
+
+import { createAddress, updateAddress, deleteAddress } from 'src/store/address'
+import { closeSnackBar } from 'src/store/notifications'
+import { FormHelperText } from '@mui/material'
 
 const defaultAddressValues = {
   street: '',
@@ -104,35 +83,62 @@ const addressSchema = yup.object().shape({
 })
 
 const UserProfileAddress = ({ addresses = [] }) => {
+  const dispatch = useDispatch()
   // ** States
   const [openAddressCard, setOpenAddressCard] = useState(false)
+  const [openDeleteCard, setOpenDeleteCard] = useState(false)
+  const [editItem, setEditItem] = useState(null)
+  const [deleteID, setDeleteID] = useState(null)
+
+  const { user } = useSelector(state => state.session)
+  const { open, message, severity } = useSelector(state => state.notifications)
 
   // ** Hooks
   const {
-    reset: addressReset,
+    reset,
     control: addressControl,
-    handleSubmit: handleAddressSubmit,
+    handleSubmit,
     formState: { errors: addressErrors }
   } = useForm({
     defaultValues: defaultAddressValues,
     resolver: yupResolver(addressSchema)
   })
 
-  const onAddressSubmit = values => {
-    dispatch(createAddress({ body: values, uuid: user.id }))
+  
+  const onSubmit = (data) => {
+    if (Object.keys(editItem).length) {
+      dispatch(updateAddress({ body: data }))
+    } else {
+      dispatch(createAddress({ body: data, uuid: user.id }))
+    }
+    handleAddressClose(false)
   }
 
   // Handle Edit Card dialog and get card ID
-  const handleEditAddressClickOpen = id => {
+  const handleEditAddressClickOpen = (address) => {
+    setEditItem(address)
     setOpenAddressCard(true)
+    reset(address)
+  }
+
+  const sendDelete = () => {
+    if (deleteID) {
+      dispatch(deleteAddress(deleteID))
+    }
   }
 
   const handleAddAddressClickOpen = () => {
     setOpenAddressCard(true)
   }
 
-  const handleEditAddressClose = () => {
+  const handleAddressClose = () => {
     setOpenAddressCard(false)
+    reset(defaultAddressValues)
+  }
+
+  const handleDeleteModal = (address) => {
+    setDeleteID(address?.id)
+    setOpenDeleteCard(true)
   }
 
   return (
@@ -151,14 +157,23 @@ const UserProfileAddress = ({ addresses = [] }) => {
       </Card>
       {addresses.length
         ? addresses.map(address => (
-            <Card key={address.id}>
+            <Card key={address.id} sx={{margin: "20px 0px"}}>
               <CardHeader
                 title='Direcciones'
                 titleTypographyProps={{ variant: 'h6' }}
                 action={
-                  <Button variant='contained' onClick={() => setOpenAddressCard(true)}>
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "10px"
+                  }}>
+                  <Button variant='contained' onClick={() => handleEditAddressClickOpen(address)}>
                     Editar
                   </Button>
+                  <Button onClick={() => handleDeleteModal(address)}>
+                    <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                  </Button>
+                  </div>
                 }
               />
               <CardContent>
@@ -357,16 +372,16 @@ const UserProfileAddress = ({ addresses = [] }) => {
         : null}
       <Dialog
         open={openAddressCard}
-        onClose={handleEditAddressClose}
+        onClose={handleAddressClose}
         aria-labelledby='user-view-billing-edit-card'
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          Nuev Direccion
+          Nueva Direccion
         </DialogTitle>
         <DialogContent>
-          <form key={0} onSubmit={handleAddressSubmit(onAddressSubmit)}>
+          <form key={0} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -587,17 +602,34 @@ const UserProfileAddress = ({ addresses = [] }) => {
                 </FormControl>
               </Grid>
             </Grid>
+            <Grid item xs={12} sx={{display:"flex", justifyContent:"center", marginTop: "20px" }}>
+              <Button variant='contained' sx={{ mr: 1 }} type="submit">
+                Agregar
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={handleAddressClose}>
+                Cancelar
+              </Button>
+            </Grid>
+            
           </form>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
-          <Button variant='contained' sx={{ mr: 1 }} onClick={handleEditAddressClose}>
-            Agregar
-          </Button>
-          <Button variant='outlined' color='secondary' onClick={handleEditAddressClose}>
-            Cancelar
-          </Button>
+      </Dialog>
+      <Dialog
+        open={openDeleteCard}
+        onClose={() => setOpenDeleteCard(false)}
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
+      >
+        <DialogContent>Seguro de eliminar la direccion seleccionada?</DialogContent>
+        <DialogActions>
+          <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
+                Agregar
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={() => setOpenDeleteCard(false)}>
+                Cancelar
+              </Button>
         </DialogActions>
       </Dialog>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Fragment>
   )
 }
