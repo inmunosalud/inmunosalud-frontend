@@ -210,7 +210,7 @@ const AddProduct = () => {
   
   return (
     <>
-    <Card sx={{ margin: '40px 100px'  }}>
+    <Card sx={{ margin: '40px 20px'  }}>
       <CardHeader title={`${editItem ? 'Editar' : 'Agregar'} Producto`} titleTypographyProps={{ variant: 'h6' }} />
       <Grid item xs={12}>
         <Divider />
@@ -415,7 +415,7 @@ const AddProduct = () => {
                 </Grid>
               </Grid>
             <Grid item xs={12} >
-              <Typography sx={{margin: 'auto 0px'}} variant='h6'>Propiedades</Typography>
+              <Typography sx={{margin: 'auto 0px'}} variant='h5'>Propiedades</Typography>
               </Grid>
               
             <ListProperties
