@@ -79,7 +79,8 @@ const AverageEfectiveness = ({ score = 0 }) => {
       }
     },
     xaxis: {
-      categories: ['General']
+      categories: ['General'],
+      max: 10
     },
     fill: {
       opacity: 1
@@ -98,6 +99,7 @@ const AverageEfectiveness = ({ score = 0 }) => {
       <CardHeader
         title='Score'
         titleTypographyProps={{ variant: 'h6' }}
+        subheader="Suma del peso de la cartera y la fuerza de la cartera"
         subheaderTypographyProps={{ variant: 'caption' }}
         sx={{
           flexDirection: ['column', 'row'],

@@ -16,11 +16,11 @@ const Img = styled('img')({
   position: 'absolute'
 })
 
-const CardNumber = ({ data, userInfo = {} }) => {
+const CardNumber = ({ data, userInfo = {}}) => {
   // ** Vars
   const { title, chipColor, chipText, src, stats, trend, trendNumber } = data
   const isActive = 'Usuario Activo'
-  const isInactive = 'Usuario Inactivo'
+  const isInactive = null
 
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
@@ -32,21 +32,21 @@ const CardNumber = ({ data, userInfo = {} }) => {
           <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{title}</Typography>
           <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{userInfo?.valid ? isActive: isInactive}</Typography>
         </div>
-        <Box sx={{ 
-          mb: 1.5, 
-          rowGap: 1, 
-          width: '100%', 
-          display: 'flex', 
-          flexWrap: 'wrap', 
+        <Box sx={{
+          mb: 1.5,
+          rowGap: 1,
+          width: '100%',
+          display: 'flex',
+          flexWrap: 'wrap',
           alignItems: 'flex-start',
           justifyContent: 'space-between'
           }}>
           <Typography variant='h5' sx={{ mr: 1.5 }}>
-            {stats}
+            {isNaN(stats) ? stats : `$${stats.toLocaleString(undefined, {minimumFractionDigits: 2})}`}
           </Typography>
-          
+
         </Box>
-        
+
       </CardContent>
     </Card>
   )

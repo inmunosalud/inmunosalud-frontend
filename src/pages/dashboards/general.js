@@ -55,14 +55,14 @@ const General = () => {
           <NumberUsers data={data} />
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
-          <CardNumber data={performance} />
+          <CardNumber data={performance}/>
 
-          <CardNumber data={antiquity} />
+          <CardNumber data={antiquity}/>
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
-          <CardNumber data={nextConsumption} />
+          <CardNumber data={nextConsumption}/>
 
-          <CardNumber data={nextComission} />
+          <CardNumber data={nextComission}/>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <WalletAverage title='Estatus' subtitle={subtitle} percentage={data?.status} />
