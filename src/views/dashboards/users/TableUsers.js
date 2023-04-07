@@ -56,7 +56,6 @@ const TableUsers = () => {
       headerName: 'Acciones',
       renderCell: params => {
         const row = params?.row
-        console.log(row.profile != "Socio" ? row : "")
         return (
           <Typography variant='body2' sx={{ color: '#6495ED', cursor: 'pointer' }}>
             {row.profile.includes('Admin') ? <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />: null}

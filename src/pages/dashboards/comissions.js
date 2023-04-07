@@ -85,10 +85,10 @@ const Comissions = () => {
     openModal,
   } = useSelector(state => state.comissions)
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  
+
   React.useEffect(() => {
      dispatch(getComissions())
-  }, [])
+  }, [dispatch])
 
   const handleAction = () => {
     dispatch(setOpenModal(true))
@@ -98,7 +98,7 @@ const Comissions = () => {
     console.log({rowSelectionModel});
     dispatch(liquidationComisions(rowSelectionModel))
   }
-  
+
   return (
     <React.Fragment>
     <Card>
@@ -121,7 +121,7 @@ const Comissions = () => {
             }}
             rowSelectionModel={rowSelectionModel}
           />
-      
+
     </Card>
       <Dialog
         maxWidth="md"
