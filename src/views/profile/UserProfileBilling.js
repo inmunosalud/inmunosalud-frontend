@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -31,6 +32,7 @@ import LinearProgress from '@mui/material/LinearProgress'
 import TableContainer from '@mui/material/TableContainer'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import DialogContentText from '@mui/material/DialogContentText'
+import FormHelperText from '@mui/material/FormHelperText'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
@@ -38,39 +40,18 @@ import Plus from 'mdi-material-ui/Plus'
 // ** Third Party Imports
 import Payment from 'payment'
 import Cards from 'react-credit-cards'
+import Delete from 'mdi-material-ui/Delete'
+import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
-
-// ** Custom Components
-import CustomChip from 'src/@core/components/mui/chip'
-
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
 
-// ** Util Import
-import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@core/utils/format'
-
-// ** Styled Component Imports
-import CardWrapper from 'src/@core/styles/libs/react-credit-cards'
-
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-
-// ** Styled <sup> component
-const Sup = styled('sup')(({ theme }) => ({
-  top: '0.2rem',
-  left: '-0.6rem',
-  position: 'absolute',
-  color: theme.palette.primary.main
-}))
-
-// ** Styled <sub> component
-const Sub = styled('sub')({
-  fontWeight: 300,
-  fontSize: '1rem',
-  alignSelf: 'flex-end'
-})
+import { createMethod , setModal, updateMethod, setModalDelete, deleteMethod} from 'src/store/paymentMethods'
+import { closeSnackBar } from 'src/store/notifications'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -100,11 +81,7 @@ const paymentSchema = yup.object().shape({
     .max(4, 'Deben ser 4 digitos'),
   cardNumber: yup
     .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(16, 'Deben ser 16 digitos')
-    .max(16, 'Deben ser 16 digitos'),
-
+    .required(),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
@@ -115,15 +92,19 @@ const paymentSchema = yup.object().shape({
 })
 
 const UserProfileBilling = ({ methods = [] }) => {
+  const dispatch = useDispatch()
   // ** States
-  const [openEditCard, setOpenEditCard] = useState(false)
 
-  console.log(methods)
+  const [editItem, setEditItem] = useState(null)
+  const [deleteID, setDeleteID] = useState(null)
 
+  const { user } = useSelector(state => state.session)
+  const { isOpen, isOpenDelete } = useSelector(state => state.paymentMethods)
+  const { open, message, severity } = useSelector(state => state.notifications)
   const {
-    reset: paymentReset,
+    reset,
     control: paymentControl,
-    handleSubmit: handlePaymentSubmit,
+    handleSubmit,
     formState: { errors: paymentErrors }
   } = useForm({
     defaultValues: defaultPaymentValues,
@@ -136,34 +117,57 @@ const UserProfileBilling = ({ methods = [] }) => {
       cardUse: 'Cobro',
       expDate: `${values.month}/${values.year}`
     }
-
-    dispatch(createMethod({ body, uuid: user.id }))
+    if (Object.keys(editItem).length) {
+      if (values.cardNumber === editItem.cardNumber) {
+        // cardNumber has not changed, so exclude it from the update
+        const { cardNumber, ...bodyWithoutCardNumber } = body
+        dispatch(updateMethod({ body: bodyWithoutCardNumber, uuid: user.id, idPaymentMethod: editItem?.id }))
+      } else {
+        dispatch(updateMethod({ body, uuid: user.id, idPaymentMethod: editItem?.id }))
+      }
+    } else {
+      dispatch(createMethod({ body, uuid: user.id }))
+    }
   }
 
   // Handle Edit Card dialog and get card ID
-  const handleEditCardClickOpen = id => {
-    // setDialogTitle('Edit')
-    // setCardId(id)
-    // setCardNumber(data[id].cardNumber)
-    // setName(data[id].name)
-    // setCvc(data[id].cardCvc)
-    // setExpiry(data[id].expiryDate)
-    setOpenEditCard(true)
+  const handleEditCardClickOpen = item => {
+    console.log({item});
+    setEditItem(item)
+    reset({
+      alias: item.alias,
+      month: item.expDate.split("/")[0],
+      year: item.expDate.split("/")[1],
+      cardUse: item.cardUse,
+      nameOnCard: item.nameOnCard,
+      cardNumber: item.cardNumber,
+      cvc: item.cvc
+    })
+    
+    dispatch(setModal(true))
   }
 
-  const handleAddCardClickOpen = () => {
-    console.log('entro')
-    // setDialogTitle('Add')
-    // setCardNumber('')
-    // setName('')
-    // setCvc('')
-    // setExpiry('')
-    setOpenEditCard(true)
+  const handleAddCardClickOpen = () => {    
+    dispatch(setModal(true))
   }
 
   const handleEditCardClose = () => {
-    setOpenEditCard(false)
+    setEditItem(null)
+    reset(defaultPaymentValues)
+    dispatch(setModal(false))
   }
+
+  const sendDelete = () => {
+    if (deleteID) {
+      dispatch(deleteMethod(deleteID))
+    }
+  }
+
+  const handleModalDelete = (method) => {
+    setDeleteID(method?.id)
+    dispatch(setModalDelete(true))
+  }
+
 
   return (
     <Fragment>
@@ -202,11 +206,11 @@ const UserProfileBilling = ({ methods = [] }) => {
               </div>
 
               <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(index)}>
+                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(item)}>
                   Editar
                 </Button>
-                <Button variant='outlined' color='secondary'>
-                  Eliminar
+                <Button onClick={() => handleModalDelete(item)}>
+                  <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
                 </Button>
                 <Typography variant='body2' sx={{ mt: 5 }}>
                   Expira el {item.expDate}
@@ -217,17 +221,17 @@ const UserProfileBilling = ({ methods = [] }) => {
         </CardContent>
 
         <Dialog
-          open={openEditCard}
+          open={isOpen}
           onClose={handleEditCardClose}
           aria-labelledby='user-view-billing-edit-card'
           sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
           aria-describedby='user-view-billing-edit-card-description'
         >
           <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-            Nuevo Metodo de Pago
+            {editItem && Object.keys(editItem).length ?  "Editar Metodo de Pago": "Nuevo Metodo de Pago"}
           </DialogTitle>
           <DialogContent>
-            <form key={1} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
+            <form key={1} onSubmit={handleSubmit(onPaymentSubmit)}>
               <Grid container spacing={5}>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
@@ -429,18 +433,37 @@ const UserProfileBilling = ({ methods = [] }) => {
                   </FormControl>
                 </Grid>
               </Grid>
+              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+                <Button variant='contained' sx={{ mr: 1 }} type="submit">
+                  Agregar
+              </Button>
+                <Button variant='outlined' color='secondary' onClick={handleEditCardClose}>
+                  Cancelar
+                </Button>
+              </Grid>
+              
             </form>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center' }}>
-            <Button variant='contained' sx={{ mr: 1 }} onClick={handleEditCardClose}>
-              Agregar
-            </Button>
-            <Button variant='outlined' color='secondary' onClick={handleEditCardClose}>
-              Cancelar
-            </Button>
-          </DialogActions>
+          
         </Dialog>
       </Card>
+      <Dialog
+        open={isOpenDelete}
+        onClose={() => dispatch(setModalDelete(false))}
+        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
+      >
+        <DialogContent>Seguro de eliminar el metodo seleccionado?</DialogContent>
+        <DialogActions>
+          <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
+                Agregar
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={() => dispatch(setModalDelete(false))}>
+                Cancelar
+              </Button>
+        </DialogActions>
+      </Dialog>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+
     </Fragment>
   )
 }

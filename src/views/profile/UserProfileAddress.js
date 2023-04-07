@@ -167,7 +167,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
                     justifyContent: "space-between",
                     gap: "10px"
                   }}>
-                  <Button variant='contained' onClick={() => handleEditAddressClickOpen(address)}>
+                  <Button variant='outlined' onClick={() => handleEditAddressClickOpen(address)}>
                     Editar
                   </Button>
                   <Button onClick={() => handleDeleteModal(address)}>
