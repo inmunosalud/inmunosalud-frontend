@@ -6,6 +6,7 @@ import { setLogin } from '../session'
 
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
+import { loadInfo } from '../paymentMethods'
 
 //actions
 
@@ -16,13 +17,14 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
     const response = await api_post(`${PROJECT_ADDRESS}/addresses/${uuid}`, body, auth)
 
     console.log(response)
-
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(loadInfo(uuid))
+    thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(nextStep())
-
     return response
   } catch (error) {
     const data = error.response.data
-
+    
     if (data.message) {
       thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
     }
@@ -31,7 +33,7 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
   }
 })
 
-export const addressList = createAsyncThunk('user/list', async () => {
+export const addressList = createAsyncThunk('user/list', async (uuid) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -45,14 +47,14 @@ export const addressList = createAsyncThunk('user/list', async () => {
   }
 })
 
-export const updateAddress = createAsyncThunk('user/updateAddress', async (body, thunkApi) => {
+export const updateAddress = createAsyncThunk('user/updateAddress', async ({body}, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_put(`${PROJECT_ADDRESS}/users/${body.id}`, body, auth)
+    const response = await api_put(`${PROJECT_ADDRESS}/addresses/${body.id}`, body, auth)
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    //thunkApi.dispatch(addressList())
+    
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -62,11 +64,11 @@ export const updateAddress = createAsyncThunk('user/updateAddress', async (body,
   }
 })
 
-export const deleteAddress = createAsyncThunk('user/deleteAddress', async (body, thunkApi) => {
+export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_delete(`${PROJECT_ADDRESS}/users/${body.id}`, body, auth)
+    const response = await api_delete(`${PROJECT_ADDRESS}/address/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     console.log(response)
@@ -120,14 +122,12 @@ export const addressSlice = createSlice({
       state.users = [...content]
     })
 
-    //update user
     builder.addCase(updateAddress.fulfilled, (state, { payload }) => {
-      const updatedUser = payload?.content
-      console.log({ updatedUser })
-      state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
+      const updatedAddress = payload?.content
+      state.address = updatedAddress
     })
     builder.addCase(deleteAddress.fulfilled, (state, { payload }) => {
-      state.users = payload.content
+      state.address = payload.content
     })
   }
 })
