@@ -52,7 +52,7 @@ const General = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={6}>
-          <NumberUsers data={data?.users} />
+          <NumberUsers data={data} />
         </Grid>
         <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
           <CardNumber data={performance} />

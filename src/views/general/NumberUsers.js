@@ -55,7 +55,7 @@ const NumberUsers = ({ data = null }) => {
             },
             value: {
               offsetY: -15,
-              formatter: value => `${value}k`
+              formatter: value => `${value}`
             },
             total: {
               show: true,
@@ -73,7 +73,7 @@ const NumberUsers = ({ data = null }) => {
       return [10,20]
     }
 
-    return [data.valid, data.invalid]
+    return [data.users.valid, data.users.invalid]
   }
 
   return (
@@ -110,14 +110,14 @@ const NumberUsers = ({ data = null }) => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Numero de usuarios</Typography>
-                <Typography variant='h6'>300</Typography>
+                <Typography variant='h6'>{data.users.total}</Typography>
               </Box>
             </Box>
             <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column'}}>
-              <Typography variant='body2'>Administradores Generales: <b>400</b></Typography>
-              <Typography variant='body2'>Administradores de Productos: <b>400</b></Typography>
-              <Typography variant='body2'>Consumidores: <b>400</b></Typography>
-              <Typography variant='body2'>Socios: <b>400</b></Typography>
+              <Typography variant='body2'>Administradores Generales: <b>{data.countByProfile.admin}</b></Typography>
+              <Typography variant='body2'>Administradores de Productos: <b>{data.countByProfile.productsAdmin}</b></Typography>
+              <Typography variant='body2'>Consumidores: <b>{data.countByProfile.consumerUser}</b></Typography>
+              <Typography variant='body2'>Socios: <b>{data.countByProfile.associatedUser}</b></Typography>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Grid container>
