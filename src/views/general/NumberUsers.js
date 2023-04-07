@@ -110,14 +110,14 @@ const NumberUsers = ({ data = null }) => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Numero de usuarios</Typography>
-                <Typography variant='h6'>{data.users.total}</Typography>
+                <Typography variant='h6'>{data?.users.total ?? "9"}</Typography>
               </Box>
             </Box>
             <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column'}}>
-              <Typography variant='body2'>Administradores Generales: <b>{data.countByProfile.admin}</b></Typography>
-              <Typography variant='body2'>Administradores de Productos: <b>{data.countByProfile.productsAdmin}</b></Typography>
-              <Typography variant='body2'>Consumidores: <b>{data.countByProfile.consumerUser}</b></Typography>
-              <Typography variant='body2'>Socios: <b>{data.countByProfile.associatedUser}</b></Typography>
+              <Typography variant='body2'>Administradores Generales: <b>{data?.countByProfile.admin ?? 0}</b></Typography>
+              <Typography variant='body2'>Administradores de Productos: <b>{data?.countByProfile.productsAdmin ?? 0}</b></Typography>
+              <Typography variant='body2'>Consumidores: <b>{data?.countByProfile.consumerUser ?? 0}</b></Typography>
+              <Typography variant='body2'>Socios: <b>{data?.countByProfile.associatedUser ?? 0}</b></Typography>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Grid container>
