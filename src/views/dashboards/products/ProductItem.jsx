@@ -154,14 +154,16 @@ export const ProductItem = (props) => {
       }
     },
     labels: [
-      'Activación Fisica',
-      'Sistema Nervioso',
-      'Prevención',
+      'Sistema Inmune',
+      'Circulación Arterial',
+      'Digestión',
+      'Sistema Óseo',
+      'Vías Respiratorias',
       'Activación Mental',
-      'Sistema Digestivo',
-      'Activacion Mental',
-      'Relajación',
-      'Sistema Inmune'
+      'Regeneración Muscular',
+      'Salud Hormonal',
+      'Piel, Cabello y Uñas',
+      'Relajación'
     ],
     markers: {
       size: 0
