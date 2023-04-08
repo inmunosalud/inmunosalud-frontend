@@ -114,7 +114,7 @@ const Comissions = () => {
             loading={isLoading}
             rows={comissions}
             columns={COLUMNS}
-            autoPageSize
+            pageSize={10}
             checkboxSelection
             onSelectionModelChange={(newSelection) => {
               setRowSelectionModel(newSelection);
