@@ -5,14 +5,18 @@ import { useForm, Controller } from "react-hook-form";
 import {
   CardContent,
   Card,
-  CardHeader, 
+  CardHeader,
   CardActions,
   Grid,
   TextField,
   Divider,
   Button,
   Typography,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText
 } from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -26,12 +30,31 @@ import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
 import Plus from 'mdi-material-ui/Plus'
 
 
+const Modal = ({
+  open = false,
+  onHandleOpenModal = () => { },
+  onSubmitConfirm = () => {}
+}) => {
 
-
+  return (
+    <Dialog open={open}>
+      <DialogContent>
+        <DialogContentText>
+          Presione confirmar para crear el producto.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+      <Button onClick={onHandleOpenModal}>Salir</Button>
+      <Button onClick={onSubmitConfirm}>Crear producto</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
 
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
+
 
   const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -75,6 +98,17 @@ const AddProduct = () => {
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('');
 
+  const [openModal, setOpenModal] = React.useState(false)
+
+  const handleOpenModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const submitConfirm = () => {
+    console.log(fields)
+    dispatch(createProduct(fields))
+  }
+
   /* main component handle on change select */
   const handleOptionChange = ({ target }) => {
     const selectedValues = target.value;
@@ -115,7 +149,7 @@ const AddProduct = () => {
       const newOptionObject = { value: newOption };
       setMainComponentValue([...mainComponentValue, newOptionObject]);
     }
-      
+
     // Update the last input field's property with the new option
     setFields((prevFields) => [
       ...prevFields,
@@ -126,7 +160,7 @@ const AddProduct = () => {
     setNewOption('');
   }
 
-  const handleCleanOptions = () => { 
+  const handleCleanOptions = () => {
     setMainComponentValue([])
     setFields([])
   }
@@ -134,22 +168,23 @@ const AddProduct = () => {
   const setLinks = () => {
     return Object.values(images)
   }
-  
+
   const handleChangeLinks = (prop) => (event) => {
     setImages({
       ...images,
       [prop]: event.target.value
     })
   }
-  
+
   const handlePropertiesList = (prop) => (event) => {
     const newValue = event.target.value;
     if (newValue >= 0 && newValue <= 10) {
       setValues((prevValues) => ({ ...prevValues, [prop]: newValue }));
     }
   }
-  
-  const onSubmit = (data) => {
+
+  const onSubmit = (data, event) => {
+    event.preventDefault()
     const newProperties = getCustomStructure(values);
 
     const body = {
@@ -157,7 +192,7 @@ const AddProduct = () => {
       description: data?.description,
       capsuleQuantity: data?.capsuleQuantity,
       capsuleConcentration: data?.capsuleConcentration,
-      mainComponents: fields,
+      mainComponents: [{property: "ZINC", value: 60}],
       instructions: data?.instructions,
       price: data?.price,
       ingredients: data?.ingredients,
@@ -169,14 +204,15 @@ const AddProduct = () => {
     if (Boolean(editItem)) {
       dispatch(updateProduct(body))
     } else {
-      dispatch(createProduct(body))
+      setFields(body)
+      handleOpenModal()
     }
   };
 
   React.useEffect(() => {
     dispatch(getMainComponents())
   }, [dispatch])
-  
+
   React.useEffect(() => {
     return () => {
       dispatch(setRemoveEdit())//cleaning edit values
@@ -207,7 +243,7 @@ const AddProduct = () => {
       setMainComponentValue(defaultMainComponents)
     }
    }, [editItem])
-  
+
   return (
     <>
     <Card sx={{ margin: '40px 20px'  }}>
@@ -235,7 +271,7 @@ const AddProduct = () => {
                   />
                 )}
               />
-              
+
             </Grid>
             <Grid item xs={12} sm={6} >
               <Controller
@@ -248,7 +284,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.description}
-                    label='Description'
+                    label='Descripción'
                     fullWidth
                     {...field}
                   />
@@ -266,7 +302,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.capsuleQuantity}
-                    label='Cantidad de Capsulas'
+                    label='Cantidad de Cápsulas'
                     fullWidth
                     {...field}
                   />
@@ -284,7 +320,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.capsuleConcentration}
-                    label='Concentracion de Capsulas'
+                    label='Concentracion de Cápsulas'
                     fullWidth
                     {...field}
                   />
@@ -362,62 +398,11 @@ const AddProduct = () => {
                   }
                 }}
                 />
-                <Grid item xs={12} sx={{marginTop: '15px'}}>
-                  {/* create here dropdown dynammic */}
-                  <Typography
-                    sx={{ margin: 'auto 0px' }}
-                    variant='h6'
-                  >
-                    Seleccionar componentes principales
-                  </Typography>
-                  <MultiSelectWithAddOption
-                    //handle select
-                    options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
-                    onOptionChange={handleOptionChange}
-                    value={mainComponentValue}
-                    //handle text
-                    newOption={newOption}
-                    onHandleNewOptionChange={handleNewOptionChange}
-                    onHandleAddOption={handleAddOption}
-
-                    onCleanOptions={handleCleanOptions}
-                  />
-                </Grid>
-                {/* main components fields */}
-                <Typography sx={{margin: '8px 0px'}} variant='h6'>Componentes principales</Typography>
-                {fields.map((field, index) => (
-                <Grid container item xs={12} spacing={5} key={index}>
-                  <Grid item xs={6} sx={{marginTop: '10px'}}>
-                      <TextField
-                        label="Property"
-                        variant="outlined"
-                        value={field.property}
-                        fullWidth
-                        onChange={(e) =>
-                          handleFieldChange(index, "property", e.target.value)
-                        }
-                    />
-                  </Grid>
-                  <Grid item xs={6} sx={{marginTop: '10px'}}>
-                    <TextField
-                      label="Value"
-                      variant="outlined"
-                      value={field.value}
-                      fullWidth
-                      onChange={(e) =>
-                        handleFieldChange(index, "value", e.target.value)
-                      }
-                    />
-                  </Grid>
-                </Grid>
-                ))}
-                <Grid item sx={{ marginTop: '10px' }}>
-                </Grid>
               </Grid>
             <Grid item xs={12} >
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Propiedades</Typography>
               </Grid>
-              
+
             <ListProperties
               values={values}
               handleChangeProperties={handlePropertiesList}
@@ -433,7 +418,7 @@ const AddProduct = () => {
                 type='text'
                 onChange={handleChangeLinks('link1')}
               />
-          </Grid>   
+          </Grid>
           <Grid item xs={12} sm={6}>
               <TextField
                 focused={images.link2 ? true : false}
@@ -446,14 +431,14 @@ const AddProduct = () => {
                 onChange={handleChangeLinks('link2')}
             />
               </Grid>
-          </Grid> 
+          </Grid>
       </CardContent>
       <Grid item xs={12}>
         <Divider sx={{ mb: 2 }} />
       </Grid>
       <CardActions>
         <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-          Enviar
+          Crear Producto
         </Button>
           <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
           Regresar
@@ -462,6 +447,7 @@ const AddProduct = () => {
       </form>
     </Card>
     <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+    <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitConfirm={submitConfirm}/>
     </>
   )
 }
