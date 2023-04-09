@@ -65,7 +65,9 @@ const Users = () => {
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
-    getMonthlyCountdown(data[0].stats)
+    if (user.profile === "Socio") {
+      getMonthlyCountdown(data[0].stats)
+    }
   }, [dispatch])
 
   const handlePaste = () => {
@@ -74,7 +76,7 @@ const Users = () => {
 
   const getMonthlyCountdown = (date) => {
     const diffDays = moment(date, 'DD/MM/YYYY').diff(moment(), 'days')
-    data[0].stats = `${data[0].stats} - Faltan ${diffDays} para el siguiente corte`
+    data[0].stats = `${date} - Faltan ${diffDays} para el siguiente corte`
   }
 
   const renderCharts = () => {
