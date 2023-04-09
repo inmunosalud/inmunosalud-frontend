@@ -40,11 +40,9 @@ export const columns = [
     minWidth: 200,
     headerName: 'Efectividad',
     renderCell: params => {
-      const value = getNumber(params.row)
-
       return (
         <Box sx={{ height: '80px' }}>
-          <GraphRow type='E' params={value} />
+          <GraphRow type='E' value={params.row.efficiency} />
         </Box>
       )
     }
@@ -55,10 +53,10 @@ export const columns = [
     minWidth: 200,
     headerName: 'Peso Cartera',
     renderCell: params => {
-      const value = params.row?.portfolio?.weight ? params.row?.portfolio?.weight : 0
+      const value = params.row?.portfolio?.weight
       return (
         <Box sx={{ height: '80px' }}>
-          <GraphRow type='E' params={value} />
+          <GraphRow type='W' value={value} />
         </Box>
       )
     }
