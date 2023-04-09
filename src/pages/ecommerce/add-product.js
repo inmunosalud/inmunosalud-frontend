@@ -93,6 +93,7 @@ const AddProduct = () => {
   })
   /* fields of main components property - value form */
   const [fields, setFields] = React.useState([]);
+  const [formBody, setFormBody] = React.useState({})
 
   const [mainComponentValue, setMainComponentValue] = React.useState([])
   /* the new option for select */
@@ -105,8 +106,7 @@ const AddProduct = () => {
   }
 
   const submitConfirm = () => {
-    console.log(fields)
-    dispatch(createProduct(fields))
+    dispatch(createProduct(formBody))
   }
 
   /* main component handle on change select */
@@ -192,7 +192,7 @@ const AddProduct = () => {
       description: data?.description,
       capsuleQuantity: data?.capsuleQuantity,
       capsuleConcentration: data?.capsuleConcentration,
-      mainComponents: [{property: "ZINC", value: 60}],
+      mainComponents: fields,
       instructions: data?.instructions,
       price: data?.price,
       ingredients: data?.ingredients,
@@ -204,7 +204,7 @@ const AddProduct = () => {
     if (Boolean(editItem)) {
       dispatch(updateProduct(body))
     } else {
-      setFields(body)
+      setFormBody(body)
       handleOpenModal()
     }
   };
@@ -398,6 +398,53 @@ const AddProduct = () => {
                   }
                 }}
                 />
+                <Grid item xs={12} sx={{marginTop: '15px'}}>
+                  {/* create here dropdown dynammic */}
+
+                  <MultiSelectWithAddOption
+                    //handle select
+                    options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
+                    onOptionChange={handleOptionChange}
+                    value={mainComponentValue}
+                    //handle text
+                    newOption={newOption}
+                    onHandleNewOptionChange={handleNewOptionChange}
+                    onHandleAddOption={handleAddOption}
+
+                    onCleanOptions={handleCleanOptions}
+                  />
+                </Grid>
+                {/* main components fields */}
+                <Typography sx={{margin: '8px 0px'}} variant='h6'>Componentes principales</Typography>
+                {fields.map((field, index) => (
+                <Grid container item xs={12} spacing={5} key={index}>
+                  <Grid item xs={6} sx={{marginTop: '10px'}}>
+                      <TextField
+                        label="Property"
+                        variant="outlined"
+                        value={field.property}
+                        fullWidth
+                        onChange={(e) =>
+                          handleFieldChange(index, "property", e.target.value)
+                        }
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{marginTop: '10px'}}>
+                    <TextField
+                      label="Value"
+                      variant="outlined"
+                      value={field.value}
+                      fullWidth
+                      onChange={(e) =>
+                        handleFieldChange(index, "value", e.target.value)
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                ))}
+                <Grid item sx={{ marginTop: '10px' }}>
+                </Grid>
+
               </Grid>
             <Grid item xs={12} >
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Propiedades</Typography>
