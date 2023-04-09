@@ -274,13 +274,12 @@ export const ProductItem = (props) => {
                     }}
                   >
                     <strong>{`${props.capsuleConcentration}`}</strong>
-                    {` concentración de cápsulas`}
                   </Typography>
                   <Typography sx={{
                     fontSize: '12px',
                     margin: '10px 0px'
                   }}>
-                    <strong>{`${props.capsuleQuantity}`}</strong>
+                    {`Contiene ${props.capsuleQuantity} capsulas por envase`}
                   </Typography>
                 </BoxCustomizedInfo>
               </div>
