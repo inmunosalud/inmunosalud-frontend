@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import React, { useState } from 'react';
 
 const ImageUploader = () => {
@@ -7,7 +8,9 @@ const ImageUploader = () => {
     e.preventDefault();
     const newImages = [...images];
     for (const file of e.dataTransfer.files) {
-      newImages.push(file);
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
+        newImages.push(file);
+      }
     }
     setImages(newImages);
   }
@@ -53,45 +56,57 @@ const ImageUploader = () => {
       }}
       onDrop={handleDrop}
       style={{
-        border: '2px solid #ccc',
+        border: '1px solid #ccc',
         borderRadius: '10px',
-        boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.1)',
         padding: '20px',
         margin: '0',
-        width: '80%'
+        width: '100%'
       }}
     >
-      <h2>Sube tus imagenes arrastrando o subiendo a traves de aqui.</h2>
+      <Typography variant='body1'>Arrastra las imágenes que quieras subir o a través del botón</Typography>
       <input
         type="file"
         accept=".jpg,.png,.webp"
         onChange={handleFileInputChange}
         multiple
+        style={{
+          fontSize: '14px'
+        }}
       />
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+      }}>
       {images.map((file, index) => (
         <div key={index} style={{
           position: 'relative',
-          width: '200px',
-          height: '200px',
+          width: '150px',
+          height: '150px',
           overflow: 'hidden',
-          margin: '0 auto',
-          marginBottom: '50px'
+          margin: '10px 5px'
         }}>
           <img
             src={URL.createObjectURL(file)}
             alt={file.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div style={{ position: 'absolute', bottom: '5px', left: '5px', color: '#fff', fontWeight: 'bold' }}>
-            {file.name}
-            <button  onClick={() => handleRemove(index)}>Remove</button>
+          <div style={{ position: 'absolute', top: '5px', right: '5px', color: '#fff', fontWeight: 'bold' }}>
+            <button style={{
+              backgroundColor: '#000',
+              border: '1px solid #ccc',
+              borderRadius: '15px',
+              height: '30px',
+              width: '30px'
+            }}
+            onClick={() => handleRemove(index)}
+            ><Typography variant='body2' color={'#eee'}><strong>X</strong></Typography></button>
           </div>
 
         </div>
       ))}
-      {images.length > 0 && (
-        <button onClick={handleUpload}>Upload</button>
-      )}
+      </div>
     </div>
   );
 };
+
+export default ImageUploader

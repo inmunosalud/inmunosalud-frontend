@@ -21,6 +21,7 @@ import {
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import ListProperties from '../components/propertiesProduct';
+import ImageUploader from 'src/views/components/image-uploader/ImageUploader';
 //import utils fns
 import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
 import { createProduct, getMainComponents, setRemoveEdit, updateProduct } from 'src/store/products';
@@ -454,8 +455,10 @@ const AddProduct = () => {
               values={values}
               handleChangeProperties={handlePropertiesList}
             />
-            <Grid item xs={12} sm={6}>
-              <TextField
+
+            <Grid item xs={12}>
+              <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
+              {/* <TextField
                 focused={images.link2 ? true : false}
                 label='Foto del producto'
                 value={images.link1}
@@ -464,20 +467,11 @@ const AddProduct = () => {
                 fullWidth
                 type='text'
                 onChange={handleChangeLinks('link1')}
-              />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-              <TextField
-                focused={images.link2 ? true : false}
-                label='Foto del producto'
-                value={images.link2}
-                id='input-link'
-                fullWidth
-                name='link2'
-                type='text'
-                onChange={handleChangeLinks('link2')}
-            />
-              </Grid>
+              /> */}
+              <ImageUploader/>
+            </Grid>
+
+
           </Grid>
       </CardContent>
       <Grid item xs={12}>
