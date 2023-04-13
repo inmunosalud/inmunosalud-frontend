@@ -1,8 +1,34 @@
 import { Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const ImageUploader = () => {
+const ImageUploader = ({
+  base64Images = [],
+  handleImages = (images) => {}
+}) => {
   const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    if (base64Images.length > 0) {
+      handleBase64Images(base64Images)
+    }
+  }, [])
+
+  useEffect(() => {
+    handleImages(images)
+  }, [images])
+
+  const handleBase64Images = (base64Images) => {
+    const newImages = []
+    base64Images.forEach(base64 => {
+      const arr = base64.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = Buffer.from(arr[1], 'base64'),
+            extension = mime.split("/")[1];
+
+      newImages.push(new File([bstr], '', {type: mime}));
+    });
+    setImages(newImages)
+  }
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -28,25 +54,6 @@ const ImageUploader = () => {
       }
     }
     setImages(newImages);
-  }
-
-  const handleUpload = () => {
-    const promises = [];
-    for (const image of images) {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      promises.push(
-        new Promise((resolve) => {
-          reader.onload = () => {
-            resolve(reader.result);
-          };
-        })
-      );
-    }
-    Promise.all(promises).then((base64Strings) => {
-      // Send base64Strings to API for upload
-      console.log(base64Strings);
-    });
   }
 
   return (

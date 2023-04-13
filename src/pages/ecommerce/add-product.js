@@ -78,7 +78,34 @@ const AddProduct = () => {
   });
 
   /* images state */
-  const [images, setImages] = React.useState({ link1: '', link2: '' })
+  const [images, setImages] = React.useState([])
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const newImages = [...images];
+    for (const file of e.dataTransfer.files) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
+        newImages.push(file);
+      }
+    }
+    setImages(newImages);
+  }
+
+  const handleRemove = (indexToRemove) => {
+    const newImages = images.filter((image, index) => index !== indexToRemove);
+    setImages(newImages);
+  }
+
+  const handleFileInputChange = (e) => {
+    const newImages = [...images];
+    for (const file of e.target.files) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
+        newImages.push(file);
+      }
+    }
+    setImages(newImages);
+  }
+
   /* properties */
   const [values, setValues] = React.useState({
     viasRespiratorias: '',
@@ -101,6 +128,7 @@ const AddProduct = () => {
   const [newOption, setNewOption] = React.useState('');
 
   const [openModal, setOpenModal] = React.useState(false)
+
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -170,11 +198,24 @@ const AddProduct = () => {
     return Object.values(images)
   }
 
-  const handleChangeLinks = (prop) => (event) => {
-    setImages({
-      ...images,
-      [prop]: event.target.value
-    })
+  const handleImages = (images) => {
+    const promises = [];
+    for (const image of images) {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      promises.push(
+        new Promise((resolve) => {
+          reader.onload = () => {
+            resolve(reader.result);
+          };
+        })
+      );
+    }
+    Promise.all(promises).then((base64Strings) => {
+      // Send base64Strings to API for upload
+      console.log(base64Strings[0])
+      setImages(base64Strings)
+    });
   }
 
   const handlePropertiesList = (prop) => (event) => {
@@ -235,10 +276,10 @@ const AddProduct = () => {
       })
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
-      setImages({
-        link1: editItem.urlImages[0],
-        link2: editItem.urlImages[1],
-      })
+      // setImages({
+      //   link1: editItem.urlImages[0],
+      //   link2: editItem.urlImages[1],
+      // })
       setFields(editItem?.mainComponents)
       const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
       setMainComponentValue(defaultMainComponents)
@@ -458,17 +499,8 @@ const AddProduct = () => {
 
             <Grid item xs={12}>
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
-              {/* <TextField
-                focused={images.link2 ? true : false}
-                label='Foto del producto'
-                value={images.link1}
-                id='input-link'
-                name='link1'
-                fullWidth
-                type='text'
-                onChange={handleChangeLinks('link1')}
-              /> */}
-              <ImageUploader/>
+              
+              <ImageUploader base64Images={images} handleImages={handleImages}/>
             </Grid>
 
 
