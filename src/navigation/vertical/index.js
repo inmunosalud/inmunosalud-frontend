@@ -1,5 +1,8 @@
 // ** Icon imports
 import HomeOutline from 'mdi-material-ui/HomeOutline'
+import ShoppingOutline from 'mdi-material-ui/ShoppingOutline'
+import ViewDashboard from 'mdi-material-ui/ViewDashboard'
+import OrderBoolDescending from 'mdi-material-ui/OrderBoolDescending'
 import { PERMISSIONS } from 'src/configs/profiles'
 
 const navigation = () => {
@@ -12,7 +15,7 @@ const navigation = () => {
     },
     {
       title: 'Dashboard',
-      icon: HomeOutline,
+      icon: ViewDashboard,
       permission: 'dashboard',
       children: [
         {
@@ -34,7 +37,7 @@ const navigation = () => {
     },
     {
       title: 'Ecommerce',
-      icon: HomeOutline,
+      icon: ShoppingOutline,
       permission: 'ecommerce',
       children: [
         {
@@ -49,17 +52,18 @@ const navigation = () => {
         }
       ]
     },
-    // {
-    //   title: 'Admin',
-    //   icon: AccountSupervisor,
-    //   permission: "home",
-    //   children: [
-    //     {
-    //       title: 'Usuarios',
-    //       path: '/admin/users'
-    //     }
-    //   ]
-    // }
+    {
+      title: 'Pedidos',
+      icon: OrderBoolDescending,
+      permission: 'orders',
+      children: [
+        {
+          title: 'Pedidos',
+          path: '/orders/admin-orders',
+          permission: PERMISSIONS.ecommerceProducts
+        },
+      ]
+    },
   ]
 }
 
