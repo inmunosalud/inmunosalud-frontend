@@ -34,11 +34,11 @@ const COLUMNS = [
   {
     flex: 0.175,
     minWidth: 110,
-    field: 'commissionReal',
+    field: 'commission',
     headerName: 'Comision',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        ${" "}{params.row.commissionReal}
+        ${" "}{params.row.commission}
       </Typography>
     )
   },
@@ -84,11 +84,12 @@ const Comissions = () => {
     isLoading,
     openModal,
   } = useSelector(state => state.comissions)
+
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
   
   React.useEffect(() => {
      dispatch(getComissions())
-  }, [])
+  }, [dispatch])
 
   const handleAction = () => {
     dispatch(setOpenModal(true))
@@ -110,17 +111,17 @@ const Comissions = () => {
           </Box>
         } />
         <DataGrid
-            autoHeight
-            loading={isLoading}
-            rows={comissions}
-            columns={COLUMNS}
-            autoPageSize
-            checkboxSelection
-            onSelectionModelChange={(newSelection) => {
-              setRowSelectionModel(newSelection);
-            }}
-            rowSelectionModel={rowSelectionModel}
-          />
+          autoHeight
+          loading={isLoading}
+          rows={comissions}
+          columns={COLUMNS}
+          pageSize={10}
+          checkboxSelection
+          onSelectionModelChange={(newSelection) => {
+            setRowSelectionModel(newSelection);
+          }}
+          rowSelectionModel={rowSelectionModel}
+        />
       
     </Card>
       <Dialog
