@@ -9,6 +9,11 @@ import Box from '@mui/material/Box'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { PROFILES_USER } from 'src/configs/profiles'
+import { useSelector, useDispatch } from 'react-redux'
+import { setLogin } from 'src/store/session'
+import { setUser } from 'src/store/dashboard/generalSlice'
 
 // ** Styled Components
 const BoxWrapper = styled(Box)(({ theme }) => ({
@@ -18,11 +23,14 @@ const BoxWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const Welcome = () => {
+  const { user } = useSelector(state => state.users)
+  const dispatch = useDispatch()
   const router = useRouter()
 
   const handleSubmit = e => {
     e.preventDefault()
-    router.push('/ecommerce/products')
+    dispatch(setUser(user))
+    router.push(user.profile === PROFILES_USER.associatedUser ? '/register/address' :'/ecommerce/products')
   }
 
   return (

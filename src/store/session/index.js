@@ -48,8 +48,8 @@ export const sessionSlice = createSlice({
       state.errors = payload
     },
     setLogin: (state, { payload }) => {
-      state.token = payload.content.token
-      state.user = payload.content.user
+      state.token = payload.token
+      state.user = payload.user
       localStorage.setItem('im-user', payload.token)
     }
   },
