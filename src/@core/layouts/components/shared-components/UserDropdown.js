@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 // ** Next Import
@@ -27,8 +27,6 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
-
-import { setLogin, updateUser } from 'src/store/users'
 import { Account } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 
@@ -67,16 +65,7 @@ const UserDropdown = props => {
   }
 
   const handleConvertProfile = () => {
-    const body = {
-      id: user.id ?? '',
-      firstName: user.firstName ?? '',
-      lastName: user.lastName ?? '',
-      phone: user.phone ?? '',
-      profile: 'associatedUser',
-      recommenderId: ''
-    }
-
-    router.push({pathname: '/register/address', query: {isAssociate: true}})
+    router.push({pathname: '/register/address', query: {newAssociate: true}})
     handleDropdownClose()
   }
 
