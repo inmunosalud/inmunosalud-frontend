@@ -28,8 +28,9 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
 
-import { updateUser } from 'src/store/users'
+import { setLogin, updateUser } from 'src/store/users'
 import { Account } from 'mdi-material-ui'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -67,13 +68,15 @@ const UserDropdown = props => {
 
   const handleConvertProfile = () => {
     const body = {
+      id: user.id ?? '',
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       phone: user.phone ?? '',
       profile: 'associatedUser',
       recommenderId: ''
     }
-    dispatch(updateUser(body))
+
+    router.push({pathname: '/register/address', query: {isAssociate: true}})
     handleDropdownClose()
   }
 
@@ -125,11 +128,13 @@ const UserDropdown = props => {
             Perfil
           </MenuItem>
         ) : null}
+        {user?.profile === PROFILES_USER.consumerUser ?
+          <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
+            <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            Convertirme en Socio
+          </MenuItem>
+        : null}
 
-        <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
-          <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-          Convertirme en Socio
-        </MenuItem>
         <Divider />
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={handleLogout}>

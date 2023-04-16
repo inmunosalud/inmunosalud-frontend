@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
 import { PROJECT_ADDRESS, api_post, api_get, api_put, api_delete } from '../../services/api'
-import { setLogin } from '../session'
 
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
@@ -24,7 +23,7 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
     return response
   } catch (error) {
     const data = error.response.data
-    
+
     if (data.message) {
       thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
     }
@@ -54,7 +53,7 @@ export const updateAddress = createAsyncThunk('user/updateAddress', async ({body
     const response = await api_put(`${PROJECT_ADDRESS}/addresses/${body.id}`, body, auth)
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    
+
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message

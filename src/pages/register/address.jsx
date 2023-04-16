@@ -37,7 +37,7 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // ** Styled Components
 import { useDispatch, useSelector } from 'react-redux'
-import { sendNewUser, uploadPersonalData } from 'src/store/users'
+import { sendNewUser, updateUser } from 'src/store/users'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import GoBackButton from 'src/views/components/goback/GoBack'
 
@@ -57,6 +57,7 @@ import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 import { createAddress } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod } from 'src/store/paymentMethods'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 const steps = [
   {
@@ -76,8 +77,7 @@ const steps = [
 const defaultDataValues = {
   name: '',
   lastName: '',
-  phoneNumber: '',
-  birthDate: ''
+  phoneNumber: ''
 }
 
 const defaultAddressValues = {
@@ -213,7 +213,8 @@ export default function Address() {
   }
 
   const onDataSubmit = values => {
-    dispatch(uploadPersonalData({body: values, uuid: user.id}))
+    values.profile = PROFILES_USER.associatedUser
+    dispatch(updateUser({body: values, uuid: user.id}))
     dispatch(nextStep())
   }
 
@@ -319,7 +320,6 @@ export default function Address() {
                         onChange={onChange}
                         error={Boolean(dataErrors.birthDate)}
                         aria-describedby='validation-basic-date'
-                        defaultValue={new Date()}
                       />
                     )}
                   />
