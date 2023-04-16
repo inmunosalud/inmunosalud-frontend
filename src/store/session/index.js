@@ -11,6 +11,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
     const response = await api_post(`${PROYECT}/users/login`, body)
 
     thunkApi.dispatch(setUser(response.content.user))
+    // thunkApi.dispatch(setLogin(response.content))
 
     Router.push('/ecommerce/products')
 
@@ -46,11 +47,6 @@ export const sessionSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.errors = payload
-    },
-    setLogin: (state, { payload }) => {
-      state.token = payload.content.token
-      state.user = payload.content.user
-      localStorage.setItem('im-user', payload.token)
     }
   },
   extraReducers: builder => {
@@ -74,4 +70,4 @@ export const sessionSlice = createSlice({
 
 export default sessionSlice.reducer
 
-export const { login, setErrors, setLogin } = sessionSlice.actions
+export const { login, setErrors } = sessionSlice.actions

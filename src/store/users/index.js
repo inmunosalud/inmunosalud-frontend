@@ -2,34 +2,31 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
 import { PROYECT, api_post, api_get, api_put, api_delete } from '../../services/api'
-import { setLogin } from '../session'
 
 import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
+import { nextStep } from '../register'
 
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users`, body)
+    console.log(response)
     const newUser = {
       user: {
         profile: response.content.profile,
         recommenderId: response.content.recommenderId,
         email: response.content.email,
-        id: response.content.id
+        id: response.content.id ?? ""
       },
       token: response.content.token
     }
 
-    thunkApi.dispatch(setLogin(newUser))
+    // thunkApi.dispatch(setLogin(newUser))
 
-    if (body.profile === PROFILES_USER.associatedUser) {
-      Router.push('/register/address')
-    } else {
-      Router.push('/register/welcome')
-    }
+    Router.push({pathname: '/register/welcome'})
 
-    return response
+    return newUser
   } catch (error) {
     const data = error.response.data
 
@@ -66,11 +63,12 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   }
 })
 
-export const updateUser = createAsyncThunk('user/updateUser', async (body, thunkApi) => {
+export const updateUser = createAsyncThunk('user/updateUser', async ({body, uuid}, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_put(`${PROYECT}/users/${body.id}`, body, auth)
+    const response = await api_put(`${PROYECT}/users/${uuid}`, body, auth)
+    thunkApi.dispatch(nextStep())
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     //thunkApi.dispatch(usersList())
@@ -79,6 +77,7 @@ export const updateUser = createAsyncThunk('user/updateUser', async (body, thunk
     const errMessage = error?.response?.data?.message
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -120,7 +119,7 @@ const initialState = {
   message: '',
   // new user
   isLoading: 'idle',
-  newUser: {},
+  user: {},
   //edit user
   showModal: false,
   modalRow: null,
@@ -147,6 +146,11 @@ export const usersSlice = createSlice({
     },
     setModalDelete: (state, { payload }) => {
       state.showDelete = payload
+    },
+    setLogin: (state, { payload }) => {
+      state.token = payload.token
+      state.user = payload.user
+      localStorage.setItem('im-user', payload.token)
     }
   },
   extraReducers: builder => {
@@ -155,8 +159,13 @@ export const usersSlice = createSlice({
       state.registerErrors = null
     })
     builder.addCase(createUser.fulfilled, (state, { payload }) => {
+      const { user, token } = payload
       state.isLoadingRegister = false
       state.registerErrors = null
+      state.isLoading = false
+      state.token = token
+      state.user = user
+      localStorage.setItem('im-user', token)
     })
     builder.addCase(createUser.rejected, (state, action) => {
       state.isLoadingRegister = false
@@ -204,4 +213,4 @@ export const usersSlice = createSlice({
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete } = usersSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete, setLogin } = usersSlice.actions
