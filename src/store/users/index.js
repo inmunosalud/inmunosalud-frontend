@@ -22,8 +22,6 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
       token: response.content.token
     }
 
-    // thunkApi.dispatch(setLogin(newUser))
-
     Router.push({pathname: '/register/welcome'})
 
     return newUser
@@ -147,7 +145,7 @@ export const usersSlice = createSlice({
     setModalDelete: (state, { payload }) => {
       state.showDelete = payload
     },
-    setLogin: (state, { payload }) => {
+    setUser: (state, { payload }) => {
       state.token = payload.token
       state.user = payload.user
       localStorage.setItem('im-user', payload.token)
@@ -213,4 +211,4 @@ export const usersSlice = createSlice({
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setLogin } = usersSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete, setUser } = usersSlice.actions
