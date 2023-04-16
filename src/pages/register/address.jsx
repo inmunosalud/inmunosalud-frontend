@@ -215,7 +215,6 @@ export default function Address() {
   const onDataSubmit = values => {
     values.profile = PROFILES_USER.associatedUser
     dispatch(updateUser({body: values, uuid: user.id}))
-    dispatch(nextStep())
   }
 
   const onAddressSubmit = values => {
@@ -689,7 +688,7 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Numero de la tarjeta'
+                        label='Número de la tarjeta'
                         onChange={onChange}
                         placeholder='XXXX-XXXX-XXXX-XXXX'
                         error={Boolean(paymentErrors['cardNumber'])}

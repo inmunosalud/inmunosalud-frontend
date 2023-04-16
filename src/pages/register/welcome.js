@@ -12,8 +12,6 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setLogin } from 'src/store/users'
-import { setUser } from 'src/store/dashboard/generalSlice'
 import { setActiveStep } from 'src/store/register'
 
 // ** Styled Components
@@ -30,7 +28,6 @@ const Welcome = () => {
 
   const handleSubmit = e => {
     e.preventDefault()
-    dispatch(setLogin({user: user, token: token}))
     dispatch(setActiveStep(0))
     router.push(user.profile === PROFILES_USER.associatedUser ? '/register/address' :'/ecommerce/products')
   }
