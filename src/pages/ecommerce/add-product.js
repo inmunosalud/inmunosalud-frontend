@@ -78,7 +78,8 @@ const AddProduct = () => {
   });
 
   /* images state */
-  const [images, setImages] = React.useState([])
+  const [images, setImages] = React.useState({ link1: '', link2: '' })
+  // const [images, setImages] = React.useState([])
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -198,6 +199,13 @@ const AddProduct = () => {
     return Object.values(images)
   }
 
+  const handleChangeLinks = (prop) => (event) => {
+    setImages({
+      ...images,
+      [prop]: event.target.value
+    })
+  }
+
   const handleImages = (images) => {
     const promises = [];
     for (const image of images) {
@@ -276,10 +284,10 @@ const AddProduct = () => {
       })
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
-      // setImages({
-      //   link1: editItem.urlImages[0],
-      //   link2: editItem.urlImages[1],
-      // })
+      setImages({
+        link1: editItem.urlImages[0],
+        link2: editItem.urlImages[1],
+      })
       setFields(editItem?.mainComponents)
       const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
       setMainComponentValue(defaultMainComponents)
@@ -499,8 +507,34 @@ const AddProduct = () => {
 
             <Grid item xs={12}>
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
-              
-              <ImageUploader base64Images={images} handleImages={handleImages}/>
+
+              <Grid xs={12} sm={6}>
+                <TextField
+                  focused={images.link2 ? true : false}
+                  label='Foto del producto'
+                  value={images.link1}
+                  id='input-link'
+                  name='link1'
+                  fullWidth
+                  type='text'
+                  onChange={handleChangeLinks('link1')}
+                />
+              </Grid>
+              <Grid xs={12} sm={6}>
+                <TextField
+                  focused={images.link2 ? true : false}
+                  label='Foto del producto'
+                  value={images.link2}
+                  id='input-link'
+                  name='link1'
+                  fullWidth
+                  type='text'
+                  onChange={handleChangeLinks('link2')}
+                />
+              </Grid>
+
+
+              {/* <ImageUploader base64Images={images} handleImages={handleImages}/> */}
             </Grid>
 
 
