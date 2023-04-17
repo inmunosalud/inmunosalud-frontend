@@ -507,8 +507,9 @@ const AddProduct = () => {
 
             <Grid item xs={12}>
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
-
-              <Grid xs={12} sm={6}>
+              {/* <ImageUploader base64Images={images} handleImages={handleImages}/> */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
                 <TextField
                   focused={images.link2 ? true : false}
                   label='Foto del producto'
@@ -520,7 +521,7 @@ const AddProduct = () => {
                   onChange={handleChangeLinks('link1')}
                 />
               </Grid>
-              <Grid xs={12} sm={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   focused={images.link2 ? true : false}
                   label='Foto del producto'
@@ -532,10 +533,6 @@ const AddProduct = () => {
                   onChange={handleChangeLinks('link2')}
                 />
               </Grid>
-
-
-              {/* <ImageUploader base64Images={images} handleImages={handleImages}/> */}
-            </Grid>
 
 
           </Grid>
