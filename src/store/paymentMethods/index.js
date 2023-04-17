@@ -16,7 +16,9 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
     const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, body, auth)
 
     console.log(response)
-
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(loadInfo(uuid))
     thunkApi.dispatch(nextStep())
 
     return response
@@ -25,8 +27,52 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
 
     if (data.message) {
       thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+      thunkApi.dispatch(setModal(false))
     }
 
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+
+export const updateMethod = createAsyncThunk('paymentMethods/updateMethod', async ({ body, uuid ,idPaymentMethod}, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_put(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
+
+    console.log(response)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(loadInfo(uuid))
+    thunkApi.dispatch(nextStep())
+
+    return response
+  } catch (error) {
+    const data = error.response.data
+
+    if (data.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+      thunkApi.dispatch(setModal(false))
+    }
+
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const deleteMethod = createAsyncThunk('user/deleteMethod', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_delete(`${PROJECT_PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
+    thunkApi.dispatch(setModalDelete(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    console.log(response)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModalDelete(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -64,46 +110,16 @@ export const methodsList = createAsyncThunk('user/list', async uuid => {
   }
 })
 
-// export const updateAddress = createAsyncThunk('user/updateAddress', async (body, thunkApi) => {
-//   const token = localStorage.getItem('im-user')
-//   const auth = { headers: { Authorization: `Bearer ${token}` } }
-//   try {
-//     const response = await api_put(`${PROJECT_ADDRESS}/users/${body.id}`, body, auth)
-//     thunkApi.dispatch(setModal(false))
-//     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-//     //thunkApi.dispatch(addressList())
-//     return response
-//   } catch (error) {
-//     const errMessage = error?.response?.data?.message
-//     thunkApi.dispatch(setModal(false))
-//     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
-//     return thunkApi.rejectWithValue('error')
-//   }
-// })
-
-// export const deleteAddress = createAsyncThunk('user/deleteAddress', async (body, thunkApi) => {
-//   const token = localStorage.getItem('im-user')
-//   const auth = { headers: { Authorization: `Bearer ${token}` } }
-//   try {
-//     const response = await api_delete(`${PROJECT_ADDRESS}/users/${body.id}`, body, auth)
-//     thunkApi.dispatch(setModalDelete(false))
-//     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-//     console.log(response)
-//     return response
-//   } catch (error) {
-//     const errMessage = error?.response?.data?.message
-//     thunkApi.dispatch(setModalDelete(false))
-//     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
-//     return thunkApi.rejectWithValue('error')
-//   }
-// })
 
 const initialState = {
   // register
   isLoading: false,
   formErrors: null,
   /* users table */
-  paymentMethods: []
+  paymentMethods: [],
+  //modal props
+  isOpen: false, 
+  isOpenDelete: false
 }
 
 export const paymentMethodsSlice = createSlice({
@@ -112,7 +128,13 @@ export const paymentMethodsSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.registerErrors = payload
-    }
+    },
+    setModal: (state, { payload }) => {
+      state.isOpen = payload
+    },
+    setModalDelete: (state, { payload }) => {
+      state.isOpenDelete = payload
+    },
   },
   extraReducers: builder => {
     // session
@@ -138,9 +160,27 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(loadInfo.rejected, (state, action) => {
       state.isLoading = false
     })
+    builder.addCase(createMethod.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(createMethod.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.paymentMethods = payload.content
+    })
+    builder.addCase(createMethod.rejected, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(updateMethod.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.paymentMethods = payload.content
+    })
+    builder.addCase(deleteMethod.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.paymentMethods = payload.content
+    })
   }
 })
 
 export default paymentMethodsSlice.reducer
 
-export const { setErrors } = paymentMethodsSlice.actions
+export const { setErrors, setModal , setModalDelete} = paymentMethodsSlice.actions

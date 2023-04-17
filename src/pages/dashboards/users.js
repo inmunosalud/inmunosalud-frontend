@@ -58,9 +58,48 @@ const intakeProducts = {
   categories: ['Feb-22', 'Mar-22', 'Apr-22', 'May-22', 'Jun-22', 'Jul-22', 'Aug-22']
 }
 
+function getOverAllConsumptionCategories({ overallConsumption = {} }) {
+  const keys = Object?.keys(overallConsumption?.monthly)
+  return keys
+}
+
+function getOverAllConsumptionSeries({ overallConsumption = {} }) {
+  return [{ data: Object?.values(overallConsumption?.monthly) }]
+}
+
+function getProductConsumptionCategories({ productsConsumption = {} }) {
+  const categories = new Array(0)
+  for (const [key, values] of Object.entries(productsConsumption)) {
+    categories.push(Object.keys(values))
+  }
+
+  return Array.from(new Set(categories.flat()))
+}
+
+function getProductConsumptionSeries(userInfo) {
+  const categories = getProductConsumptionCategories(userInfo)
+
+  const series = []
+
+  for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
+    let data = []
+    const months = Object.keys(values)
+    for (let i = 0; i < categories.length; i++) {
+      const match = months.find(month => month === categories[i])
+
+      if (match) {
+        data.push(values[match])
+      } else data.push(0)
+    }
+    series.push({ data, name: key })
+  }
+  return series
+}
+
 const Users = () => {
   const dispatch = useDispatch()
   const { userInfo } = useSelector(state => state.users)
+  const [isLoaded, setIsLoaded] = React.useState(false)
   const { user } = useSelector(state => state.dashboard.general)
 
   React.useEffect(() => {
@@ -69,6 +108,10 @@ const Users = () => {
       getMonthlyCountdown(data[0].stats)
     }
   }, [dispatch])
+
+  React.useEffect(() => {
+    if (userInfo != '') setIsLoaded(true)
+  })
 
   const handlePaste = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
@@ -87,7 +130,7 @@ const Users = () => {
             <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
           </Grid>
           <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
-            <CardNumber data={data[0]} userInfo={userInfo} />
+            <CardNumber data={{ title: 'Proximo Corte', stats: userInfo?.cutoffDate }} userInfo={userInfo} />
             <NextComision />
           </Grid>
           <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
@@ -120,13 +163,17 @@ const Users = () => {
       <Grid container spacing={6}>
         {renderCharts()}
         <Grid item xs={12} sm={6}>
-          <LinearChart title='Consumo general' series={intake.series} categories={intake.categories} />
+          <LinearChart
+            title='Consumo general'
+            series={isLoaded && getOverAllConsumptionSeries(userInfo)}
+            categories={isLoaded && getOverAllConsumptionCategories(userInfo)}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <LinearChart
             title='Consumo por producto'
-            series={intakeProducts.series}
-            categories={intakeProducts.categories}
+            series={isLoaded && getProductConsumptionSeries(userInfo)}
+            categories={isLoaded && getProductConsumptionCategories(userInfo)}
           />
         </Grid>
       </Grid>

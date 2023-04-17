@@ -37,7 +37,7 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // ** Styled Components
 import { useDispatch, useSelector } from 'react-redux'
-import { sendNewUser } from 'src/store/users'
+import { sendNewUser, updateUser } from 'src/store/users'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import GoBackButton from 'src/views/components/goback/GoBack'
 
@@ -55,19 +55,30 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 import { closeSnackBar } from 'src/store/notifications'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 import { createAddress } from 'src/store/address'
-import { setActiveStep } from 'src/store/register'
+import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod } from 'src/store/paymentMethods'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 const steps = [
   {
-    title: 'Direccion',
-    subtitle: 'Ingresa tu direccion'
+    title: 'Datos personales',
+    subtitle: 'Ingresa tus datos personales'
+  },
+  {
+    title: 'Dirección',
+    subtitle: 'Ingresa tu dirección'
   },
   {
     title: 'Forma de pago',
     subtitle: 'Ingresa la informacion de tu forma de pago'
   }
 ]
+
+const defaultDataValues = {
+  name: '',
+  lastName: '',
+  phoneNumber: ''
+}
 
 const defaultAddressValues = {
   street: '',
@@ -89,6 +100,17 @@ const defaultPaymentValues = {
   cardNumber: '',
   cvc: ''
 }
+
+const dataSchema = yup.object().shape({
+  name: yup.string().required(),
+  lastName: yup.string().required(),
+  phoneNumber: yup.string()
+  .required()
+  .matches(/^[0-9]+$/, 'Solo digitos')
+  .min(10, 'Deben ser 10 digitos')
+  .max(10, 'Deben ser 10 digitos'),
+  // birthDate: yup.date()
+})
 
 const addressSchema = yup.object().shape({
   colony: yup.string().required(),
@@ -134,14 +156,30 @@ function PAGE() {
 export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
   const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
 
-  // const [activeStep, setActiveStep] = useState(0)
+  // Get the current year
+  const currentYear = (new Date().getFullYear());
+
+  // Generate an array of options for the next 6 years
+  const options = Array.from({ length: 6 }, (_, i) => ({
+    value: currentYear + i,
+    label: `${currentYear + i}`.slice(-2)
+  }));
 
   // ** Hooks
+  const {
+    reset: dataReset,
+    control: dataControl,
+    handleSubmit: handleDataSubmit,
+    formState: { errors: dataErrors }
+  } = useForm({
+    defaultValues: defaultDataValues,
+    resolver: yupResolver(dataSchema)
+  })
   const {
     reset: addressReset,
     control: addressControl,
@@ -174,6 +212,11 @@ export default function Address() {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'associated' } })
   }
 
+  const onDataSubmit = values => {
+    values.profile = PROFILES_USER.associatedUser
+    dispatch(updateUser({body: values, uuid: user.id}))
+  }
+
   const onAddressSubmit = values => {
     dispatch(createAddress({ body: values, uuid: user.id }))
   }
@@ -191,7 +234,116 @@ export default function Address() {
     switch (step) {
       case 0:
         return (
-          <form key={0} onSubmit={handleAddressSubmit(onAddressSubmit)}>
+          <form key={0} onSubmit={handleDataSubmit(onDataSubmit)}>
+            <Grid container spacing={5}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='name'
+                    control={dataControl}
+                    rules={{ required: true, maxLength: 20 }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Nombre'
+                        onChange={onChange}
+                        placeholder='Nombre'
+                        error={Boolean(dataErrors.name)}
+                        aria-describedby='validation-basic-first-name'
+                      />
+                    )}
+                  />
+                  {dataErrors.name?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='lastName'
+                    control={dataControl}
+                    rules={{ required: false }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Apellido'
+                        onChange={onChange}
+                        placeholder='Apellido'
+                        aria-describedby='validation-basic-last-name'
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='phoneNumber'
+                    control={dataControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Teléfono'
+                        onChange={onChange}
+                        error={Boolean(dataErrors.phoneNumber)}
+                        placeholder='Teléfono'
+                        aria-describedby='validation-basic-number'
+                      />
+                    )}
+                  />
+                  {addressErrors.colony && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-number'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='birthdate'
+                    control={dataControl}
+                    rules={{ required: false }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        type='date'
+                        value={value}
+                        label='Fecha de Nacimiento'
+                        onChange={onChange}
+                        error={Boolean(dataErrors.birthDate)}
+                        aria-describedby='validation-basic-date'
+                      />
+                    )}
+                  />
+                  {addressErrors.city?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-date'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
+                  Atras
+                </Button>
+                <Button size='large' type='submit' variant='contained'>
+                  Siguiente
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )
+      case 1:
+        return (
+          <form key={1} onSubmit={handleAddressSubmit(onAddressSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -423,18 +575,10 @@ export default function Address() {
             </Grid>
           </form>
         )
-      case 1:
+      case 2:
         return (
-          <form key={1} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
+          <form key={2} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
             <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
-                  {steps[1].title}
-                </Typography>
-                <Typography variant='caption' component='p'>
-                  {steps[1].subtitle}
-                </Typography>
-              </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
@@ -511,14 +655,21 @@ export default function Address() {
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <TextField
+                      <>
+                      <InputLabel id="demo-simple-select-label">AA</InputLabel>
+                      <Select
                         value={value}
-                        label='AAAA'
+                        label='AA'
                         onChange={onChange}
-                        placeholder='AAAA'
+                        placeholder='AA'
                         error={Boolean(paymentErrors['year'])}
                         aria-describedby='stepper-linear-payment-year'
-                      />
+                      >
+                        {options.map((year, _) => {
+                          return <MenuItem value={year.value}>{year.label}</MenuItem>
+                        })}
+                      </Select>
+                      </>
                     )}
                   />
                   {paymentErrors['year'] && (
@@ -537,7 +688,7 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Numero de la tarjeta'
+                        label='Número de la tarjeta'
                         onChange={onChange}
                         placeholder='XXXX-XXXX-XXXX-XXXX'
                         error={Boolean(paymentErrors['cardNumber'])}

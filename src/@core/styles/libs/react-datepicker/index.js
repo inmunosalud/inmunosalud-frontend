@@ -14,10 +14,11 @@ const DatePickerWrapper = styled(Box)(({ theme }) => {
 
   return {
     '& .react-datepicker-popper': {
-      zIndex: 5
+      zIndex: 5,
     },
     '& .react-datepicker-wrapper': {
-      width: '100%'
+      width: '100%',
+      
     },
     '& .react-datepicker': {
       padding: theme.spacing(2, 0),

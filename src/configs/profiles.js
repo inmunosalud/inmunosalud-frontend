@@ -11,6 +11,7 @@ export const PERMISSIONS = {
   ecommerceAddProduct: 'ecommerce/products/add-product',
   ecommerceOrders: 'ecommerce/orders',
   ecommerceEditOrders: 'ecommerce/edit-order',
+  ordersAdmin: '/orders/admin-orders'
 }
 
 export const PROFILES = {
@@ -60,6 +61,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceAddProduct,
     PERMISSIONS.ecommerceOrders,
     PERMISSIONS.ecommerceEditOrders,
+    PERMISSIONS.ordersAdmin,
   ],
   default: [
     PERMISSIONS.home,
@@ -85,6 +87,7 @@ export const ROUTES_PERMISSION = {
   ['/ecommerce/products/add-product']: PERMISSIONS.ecommerceAddProduct,
   ['/ecommerce/orders']: PERMISSIONS.ecommerceOrders,
   ['/ecommerce/edit-order']: PERMISSIONS.ecommerceEditOrders,
+  ['/orders/admin-orders']: PERMISSIONS.ordersAdmin,
 }
 
 export const PROFILES_USER = {

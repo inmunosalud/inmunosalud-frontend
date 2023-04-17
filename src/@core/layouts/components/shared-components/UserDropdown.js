@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 // ** Next Import
@@ -27,9 +27,8 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
-
-import { updateUser } from 'src/store/users'
 import { Account } from 'mdi-material-ui'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -66,14 +65,7 @@ const UserDropdown = props => {
   }
 
   const handleConvertProfile = () => {
-    const body = {
-      firstName: user.firstName ?? '',
-      lastName: user.lastName ?? '',
-      phone: user.phone ?? '',
-      profile: 'associatedUser',
-      recommenderId: ''
-    }
-    dispatch(updateUser(body))
+    router.push({pathname: '/register/address', query: {newAssociate: true}})
     handleDropdownClose()
   }
 
@@ -125,11 +117,13 @@ const UserDropdown = props => {
             Perfil
           </MenuItem>
         ) : null}
+        {user?.profile === PROFILES_USER.consumerUser ?
+          <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
+            <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            Convertirme en Socio
+          </MenuItem>
+        : null}
 
-        <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
-          <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-          Convertirme en Socio
-        </MenuItem>
         <Divider />
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
