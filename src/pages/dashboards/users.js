@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -17,7 +18,7 @@ import CustomizedTooltip from '../components/tooltip/Tooltip'
 
 const data = [
   {
-    stats: '7/09/2022',
+    stats: '01/05/2023',
     title: 'Próximo corte'
   },
   {
@@ -103,6 +104,9 @@ const Users = () => {
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
+    if (user.profile === "Socio") {
+      getMonthlyCountdown(data[0].stats)
+    }
   }, [dispatch])
 
   React.useEffect(() => {
@@ -111,6 +115,11 @@ const Users = () => {
 
   const handlePaste = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
+  }
+
+  const getMonthlyCountdown = (date) => {
+    const diffDays = moment(date, 'DD/MM/YYYY').diff(moment(), 'days')
+    data[0].stats = `${date} - Faltan ${diffDays} para el siguiente corte`
   }
 
   const renderCharts = () => {

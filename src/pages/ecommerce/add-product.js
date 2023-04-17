@@ -5,18 +5,23 @@ import { useForm, Controller } from "react-hook-form";
 import {
   CardContent,
   Card,
-  CardHeader, 
+  CardHeader,
   CardActions,
   Grid,
   TextField,
   Divider,
   Button,
   Typography,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText
 } from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import ListProperties from '../components/propertiesProduct';
+import ImageUploader from 'src/views/components/image-uploader/ImageUploader';
 //import utils fns
 import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
 import { createProduct, getMainComponents, setRemoveEdit, updateProduct } from 'src/store/products';
@@ -26,12 +31,31 @@ import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
 import Plus from 'mdi-material-ui/Plus'
 
 
+const Modal = ({
+  open = false,
+  onHandleOpenModal = () => { },
+  onSubmitConfirm = () => {}
+}) => {
 
-
+  return (
+    <Dialog open={open}>
+      <DialogContent>
+        <DialogContentText>
+          Presione confirmar para crear el producto.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+      <Button onClick={onHandleOpenModal}>Salir</Button>
+      <Button onClick={onSubmitConfirm}>Crear producto</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
 
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
+
 
   const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -55,6 +79,34 @@ const AddProduct = () => {
 
   /* images state */
   const [images, setImages] = React.useState({ link1: '', link2: '' })
+  // const [images, setImages] = React.useState([])
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const newImages = [...images];
+    for (const file of e.dataTransfer.files) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
+        newImages.push(file);
+      }
+    }
+    setImages(newImages);
+  }
+
+  const handleRemove = (indexToRemove) => {
+    const newImages = images.filter((image, index) => index !== indexToRemove);
+    setImages(newImages);
+  }
+
+  const handleFileInputChange = (e) => {
+    const newImages = [...images];
+    for (const file of e.target.files) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
+        newImages.push(file);
+      }
+    }
+    setImages(newImages);
+  }
+
   /* properties */
   const [values, setValues] = React.useState({
     viasRespiratorias: '',
@@ -70,10 +122,22 @@ const AddProduct = () => {
   })
   /* fields of main components property - value form */
   const [fields, setFields] = React.useState([]);
+  const [formBody, setFormBody] = React.useState({})
 
   const [mainComponentValue, setMainComponentValue] = React.useState([])
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('');
+
+  const [openModal, setOpenModal] = React.useState(false)
+
+
+  const handleOpenModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const submitConfirm = () => {
+    dispatch(createProduct(formBody))
+  }
 
   /* main component handle on change select */
   const handleOptionChange = ({ target }) => {
@@ -115,7 +179,7 @@ const AddProduct = () => {
       const newOptionObject = { value: newOption };
       setMainComponentValue([...mainComponentValue, newOptionObject]);
     }
-      
+
     // Update the last input field's property with the new option
     setFields((prevFields) => [
       ...prevFields,
@@ -126,7 +190,7 @@ const AddProduct = () => {
     setNewOption('');
   }
 
-  const handleCleanOptions = () => { 
+  const handleCleanOptions = () => {
     setMainComponentValue([])
     setFields([])
   }
@@ -134,22 +198,43 @@ const AddProduct = () => {
   const setLinks = () => {
     return Object.values(images)
   }
-  
+
   const handleChangeLinks = (prop) => (event) => {
     setImages({
       ...images,
       [prop]: event.target.value
     })
   }
-  
+
+  const handleImages = (images) => {
+    const promises = [];
+    for (const image of images) {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      promises.push(
+        new Promise((resolve) => {
+          reader.onload = () => {
+            resolve(reader.result);
+          };
+        })
+      );
+    }
+    Promise.all(promises).then((base64Strings) => {
+      // Send base64Strings to API for upload
+      console.log(base64Strings[0])
+      setImages(base64Strings)
+    });
+  }
+
   const handlePropertiesList = (prop) => (event) => {
     const newValue = event.target.value;
     if (newValue >= 0 && newValue <= 10) {
       setValues((prevValues) => ({ ...prevValues, [prop]: newValue }));
     }
   }
-  
-  const onSubmit = (data) => {
+
+  const onSubmit = (data, event) => {
+    event.preventDefault()
     const newProperties = getCustomStructure(values);
 
     const body = {
@@ -169,14 +254,15 @@ const AddProduct = () => {
     if (Boolean(editItem)) {
       dispatch(updateProduct(body))
     } else {
-      dispatch(createProduct(body))
+      setFormBody(body)
+      handleOpenModal()
     }
   };
 
   React.useEffect(() => {
     dispatch(getMainComponents())
   }, [dispatch])
-  
+
   React.useEffect(() => {
     return () => {
       dispatch(setRemoveEdit())//cleaning edit values
@@ -207,7 +293,7 @@ const AddProduct = () => {
       setMainComponentValue(defaultMainComponents)
     }
    }, [editItem])
-  
+
   return (
     <>
     <Card sx={{ margin: '40px 20px'  }}>
@@ -235,7 +321,7 @@ const AddProduct = () => {
                   />
                 )}
               />
-              
+
             </Grid>
             <Grid item xs={12} sm={6} >
               <Controller
@@ -248,7 +334,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.description}
-                    label='Description'
+                    label='Descripción'
                     fullWidth
                     {...field}
                   />
@@ -266,7 +352,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.capsuleQuantity}
-                    label='Cantidad de Capsulas'
+                    label='Cantidad de Cápsulas'
                     fullWidth
                     {...field}
                   />
@@ -284,7 +370,7 @@ const AddProduct = () => {
                 }) => (
                   <TextField
                     error={!!errors.capsuleConcentration}
-                    label='Concentracion de Capsulas'
+                    label='Concentracion de Cápsulas'
                     fullWidth
                     {...field}
                   />
@@ -364,12 +450,7 @@ const AddProduct = () => {
                 />
                 <Grid item xs={12} sx={{marginTop: '15px'}}>
                   {/* create here dropdown dynammic */}
-                  <Typography
-                    sx={{ margin: 'auto 0px' }}
-                    variant='h6'
-                  >
-                    Seleccionar componentes principales
-                  </Typography>
+
                   <MultiSelectWithAddOption
                     //handle select
                     options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
@@ -413,47 +494,55 @@ const AddProduct = () => {
                 ))}
                 <Grid item sx={{ marginTop: '10px' }}>
                 </Grid>
+
               </Grid>
             <Grid item xs={12} >
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Propiedades</Typography>
               </Grid>
-              
+
             <ListProperties
               values={values}
               handleChangeProperties={handlePropertiesList}
             />
+
+            <Grid item xs={12}>
+              <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
+              {/* <ImageUploader base64Images={images} handleImages={handleImages}/> */}
+            </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                focused={images.link2 ? true : false}
-                label='Foto del producto'
-                value={images.link1}
-                id='input-link'
-                name='link1'
-                fullWidth
-                type='text'
-                onChange={handleChangeLinks('link1')}
-              />
-          </Grid>   
-          <Grid item xs={12} sm={6}>
-              <TextField
-                focused={images.link2 ? true : false}
-                label='Foto del producto'
-                value={images.link2}
-                id='input-link'
-                fullWidth
-                name='link2'
-                type='text'
-                onChange={handleChangeLinks('link2')}
-            />
+                <TextField
+                  focused={images.link2 ? true : false}
+                  label='Foto del producto'
+                  value={images.link1}
+                  id='input-link'
+                  name='link1'
+                  fullWidth
+                  type='text'
+                  onChange={handleChangeLinks('link1')}
+                />
               </Grid>
-          </Grid> 
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  focused={images.link2 ? true : false}
+                  label='Foto del producto'
+                  value={images.link2}
+                  id='input-link'
+                  name='link1'
+                  fullWidth
+                  type='text'
+                  onChange={handleChangeLinks('link2')}
+                />
+              </Grid>
+
+
+          </Grid>
       </CardContent>
       <Grid item xs={12}>
         <Divider sx={{ mb: 2 }} />
       </Grid>
       <CardActions>
         <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-          Enviar
+          Crear Producto
         </Button>
           <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
           Regresar
@@ -462,6 +551,7 @@ const AddProduct = () => {
       </form>
     </Card>
     <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+    <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitConfirm={submitConfirm}/>
     </>
   )
 }

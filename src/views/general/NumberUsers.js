@@ -110,7 +110,7 @@ const NumberUsers = ({ data = null }) => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Numero de usuarios</Typography>
-                <Typography variant='h6'>{data?.users.total ?? "9"}</Typography>
+                <Typography variant='h6'>{data?.users.total ?? 0}</Typography>
               </Box>
             </Box>
             <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column'}}>

@@ -154,14 +154,16 @@ export const ProductItem = (props) => {
       }
     },
     labels: [
-      'Activación Fisica',
-      'Sistema Nervioso',
-      'Prevención',
+      'Sistema Inmune',
+      'Circulación Arterial',
+      'Digestión',
+      'Sistema Óseo',
+      'Vías Respiratorias',
       'Activación Mental',
-      'Sistema Digestivo',
-      'Activacion Mental',
-      'Relajación',
-      'Sistema Inmune'
+      'Regeneración Muscular',
+      'Salud Hormonal',
+      'Piel, Cabello y Uñas',
+      'Relajación'
     ],
     markers: {
       size: 0
@@ -272,13 +274,12 @@ export const ProductItem = (props) => {
                     }}
                   >
                     <strong>{`${props.capsuleConcentration}`}</strong>
-                    {` concentración de cápsulas`}
                   </Typography>
                   <Typography sx={{
                     fontSize: '12px',
                     margin: '10px 0px'
                   }}>
-                    <strong>{`${props.capsuleQuantity}`}</strong>
+                    {`Contiene ${props.capsuleQuantity} capsulas por envase`}
                   </Typography>
                 </BoxCustomizedInfo>
               </div>
