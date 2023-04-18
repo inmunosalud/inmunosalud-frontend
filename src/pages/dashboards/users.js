@@ -14,6 +14,7 @@ import LinearChart from 'src/views/dashboards/users/LinearChart'
 import { getUserInfo } from 'src/store/users'
 import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
+import { object } from 'yup'
 
 const data = [
   {
@@ -58,15 +59,22 @@ const intakeProducts = {
 }
 
 function getOverAllConsumptionCategories({ overallConsumption = {} }) {
+  debugger
+  if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
+
   const keys = Object?.keys(overallConsumption?.monthly)
   return keys
 }
 
 function getOverAllConsumptionSeries({ overallConsumption = {} }) {
+  debugger
+  if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
   return [{ data: Object?.values(overallConsumption?.monthly) }]
 }
 
 function getProductConsumptionCategories({ productsConsumption = {} }) {
+  if (!productsConsumption) return []
+
   const categories = new Array(0)
   for (const [key, values] of Object.entries(productsConsumption)) {
     categories.push(Object.keys(values))
@@ -77,6 +85,8 @@ function getProductConsumptionCategories({ productsConsumption = {} }) {
 
 function getProductConsumptionSeries(userInfo) {
   const categories = getProductConsumptionCategories(userInfo)
+
+  if (!categories) return []
 
   const series = []
 
@@ -148,27 +158,31 @@ const Users = () => {
       )
     }
   }
-
+  debugger
   return (
-    <ApexChartWrapper>
-      <Grid container spacing={6}>
-        {renderCharts()}
-        <Grid item xs={12} sm={6}>
-          <LinearChart
-            title='Consumo general'
-            series={isLoaded && getOverAllConsumptionSeries(userInfo)}
-            categories={isLoaded && getOverAllConsumptionCategories(userInfo)}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <LinearChart
-            title='Consumo por producto'
-            series={isLoaded && getProductConsumptionSeries(userInfo)}
-            categories={isLoaded && getProductConsumptionCategories(userInfo)}
-          />
-        </Grid>
-      </Grid>
-    </ApexChartWrapper>
+    <>
+      {isLoaded && (
+        <ApexChartWrapper>
+          <Grid container spacing={6}>
+            {renderCharts()}
+            <Grid item xs={12} sm={6}>
+              <LinearChart
+                title='Consumo general'
+                series={getOverAllConsumptionSeries(userInfo)}
+                categories={getOverAllConsumptionCategories(userInfo)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <LinearChart
+                title='Consumo por producto'
+                series={getProductConsumptionSeries(userInfo)}
+                categories={getProductConsumptionCategories(userInfo)}
+              />
+            </Grid>
+          </Grid>
+        </ApexChartWrapper>
+      )}
+    </>
   )
 }
 
