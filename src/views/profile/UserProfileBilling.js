@@ -80,8 +80,11 @@ const paymentSchema = yup.object().shape({
     .min(4, 'Deben ser 4 digitos')
     .max(4, 'Deben ser 4 digitos'),
   cardNumber: yup
-    .string()
-    .required(),
+  .string()
+  .required()
+  .matches(/^[\d*]+$/, "Solo digitos o *")
+  .min(16, "Deben ser 16 digitos")
+  .max(16, "Deben ser 16 digitos"),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
@@ -105,34 +108,29 @@ const UserProfileBilling = ({ methods = [] }) => {
     reset,
     control: paymentControl,
     handleSubmit,
-    formState: { errors: paymentErrors }
+    formState: { errors: paymentErrors , isSubmitting}
   } = useForm({
     defaultValues: defaultPaymentValues,
     resolver: yupResolver(paymentSchema)
   })
 
+  const isFormEditing = Boolean(editItem)
+
   const onPaymentSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro',
       expDate: `${values.month}/${values.year}`
     }
-    if (Object.keys(editItem).length) {
-      if (values.cardNumber === editItem.cardNumber) {
-        // cardNumber has not changed, so exclude it from the update
-        const { cardNumber, ...bodyWithoutCardNumber } = body
-        dispatch(updateMethod({ body: bodyWithoutCardNumber, uuid: user.id, idPaymentMethod: editItem?.id }))
-      } else {
-        dispatch(updateMethod({ body, uuid: user.id, idPaymentMethod: editItem?.id }))
-      }
+    if (editItem && Object.keys(editItem).length) {
+      dispatch(updateMethod({ body, uuid: user.id, idPaymentMethod: editItem?.id }))
     } else {
       dispatch(createMethod({ body, uuid: user.id }))
     }
+    handleEditCardClose()
   }
 
   // Handle Edit Card dialog and get card ID
   const handleEditCardClickOpen = item => {
-    console.log({item});
     setEditItem(item)
     reset({
       alias: item.alias,
@@ -168,7 +166,11 @@ const UserProfileBilling = ({ methods = [] }) => {
     dispatch(setModalDelete(true))
   }
 
-
+  const handleCloseModal = () => { 
+    reset(defaultPaymentValues)
+    dispatch(setModalDelete(false))
+  }
+  
   return (
     <Fragment>
       <Card sx={{ mb: 6 }}>
@@ -230,33 +232,36 @@ const UserProfileBilling = ({ methods = [] }) => {
           <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
             {editItem && Object.keys(editItem).length ?  "Editar Metodo de Pago": "Nuevo Metodo de Pago"}
           </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{paddingTop: "5px"}}>
             <form key={1} onSubmit={handleSubmit(onPaymentSubmit)}>
               <Grid container spacing={5}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='alias'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='Alias'
-                          onChange={onChange}
-                          placeholder='Alias'
-                          error={Boolean(paymentErrors['alias'])}
-                          aria-describedby='stepper-linear-payment-alias'
-                        />
+                  {!isFormEditing ? (
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <Controller
+                        name='alias'
+                        control={paymentControl}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            value={value}
+                            label='Alias'
+                            onChange={onChange}
+                            placeholder='Alias'
+                            error={Boolean(paymentErrors['alias'])}
+                            aria-describedby='stepper-linear-payment-alias'
+                          />
+                        )}
+                      />
+                      {paymentErrors['alias'] && (
+                        <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
+                          El campo es requerido
+                        </FormHelperText>
                       )}
-                    />
-                    {paymentErrors['alias'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
+                    </FormControl>
+                  </Grid>
+                ): null}
+                
 
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
@@ -326,20 +331,22 @@ const UserProfileBilling = ({ methods = [] }) => {
                     )}
                   </FormControl>
                 </Grid>
+
+                {!isFormEditing ? (
                 <Grid item xs={12} sm={8}>
                   <FormControl fullWidth>
                     <Controller
-                      name='cardNumber'
+                      name="cardNumber"
                       control={paymentControl}
                       rules={{ required: true }}
                       render={({ field: { value, onChange } }) => (
                         <TextField
                           value={value}
-                          label='Numero de la tarjeta'
+                          label="Numero de la tarjeta"
                           onChange={onChange}
-                          placeholder='XXXX-XXXX-XXXX-XXXX'
+                          placeholder="XXXX-XXXX-XXXX-XXXX"
                           error={Boolean(paymentErrors['cardNumber'])}
-                          aria-describedby='stepper-linear-payment-cardNumber'
+                          aria-describedby="stepper-linear-payment-cardNumber"                          
                         />
                       )}
                     />
@@ -350,30 +357,35 @@ const UserProfileBilling = ({ methods = [] }) => {
                     )}
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='cvc'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='CVV'
-                          onChange={onChange}
-                          placeholder='000'
-                          error={Boolean(paymentErrors['cvc'])}
-                          aria-describedby='stepper-linear-payment-cvc'
-                        />
+                ): null}
+                
+                {!isFormEditing ? (
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth>
+                      <Controller
+                        name='cvc'
+                        control={paymentControl}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            value={value}
+                            label='CVV'
+                            onChange={onChange}
+                            placeholder='000'
+                            error={Boolean(paymentErrors['cvc'])}
+                            aria-describedby='stepper-linear-payment-cvc'
+                          />
+                        )}
+                      />
+                      {paymentErrors['cvc'] && (
+                        <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cvc'>
+                          {paymentErrors['cvc'] ? paymentErrors['cvc'].message : 'El campo es requerido'}
+                        </FormHelperText>
                       )}
-                    />
-                    {paymentErrors['cvc'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cvc'>
-                        {paymentErrors['cvc'] ? paymentErrors['cvc'].message : 'El campo es requerido'}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
+                    </FormControl>
+                  </Grid>
+                ): null}
+                
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <Controller
@@ -398,6 +410,8 @@ const UserProfileBilling = ({ methods = [] }) => {
                     )}
                   </FormControl>
                 </Grid>
+
+                {!isFormEditing ? (
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel
@@ -432,7 +446,9 @@ const UserProfileBilling = ({ methods = [] }) => {
                     )}
                   </FormControl>
                 </Grid>
-              </Grid>
+                ) : null}
+                
+                </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
                 <Button variant='contained' sx={{ mr: 1 }} type="submit">
                   Agregar
@@ -449,7 +465,7 @@ const UserProfileBilling = ({ methods = [] }) => {
       </Card>
       <Dialog
         open={isOpenDelete}
-        onClose={() => dispatch(setModalDelete(false))}
+        onClose={handleCloseModal}
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
       >
         <DialogContent>Seguro de eliminar el metodo seleccionado?</DialogContent>
@@ -457,7 +473,7 @@ const UserProfileBilling = ({ methods = [] }) => {
           <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
                 Agregar
               </Button>
-              <Button variant='outlined' color='secondary' onClick={() => dispatch(setModalDelete(false))}>
+              <Button variant='outlined' color='secondary' onClick={handleCloseModal}>
                 Cancelar
               </Button>
         </DialogActions>

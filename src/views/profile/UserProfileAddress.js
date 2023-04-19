@@ -72,7 +72,7 @@ const defaultAddressValues = {
 
 const addressSchema = yup.object().shape({
   colony: yup.string().required(),
-  zipCode: yup.string().required(),
+  zipCode: yup.string().length(5).matches(/^[0-9]{5}/).required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
   federalEntity: yup.string().required(),
@@ -106,7 +106,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
 
   
   const onSubmit = (data) => {
-    if (Object.keys(editItem).length) {
+    if (editItem && Object.keys(editItem).length) {
       dispatch(updateAddress({ body: data }))
     } else {
       dispatch(createAddress({ body: data, uuid: user.id }))
@@ -137,6 +137,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
   }
 
   const handleDeleteModal = (address) => {
+    console.log({address});
     setDeleteID(address?.id)
     setOpenDeleteCard(true)
   }
@@ -378,11 +379,11 @@ const UserProfileAddress = ({ addresses = [] }) => {
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          Nueva Direccion
+          {editItem && Object.keys(editItem).length ?  "Editar Dirección": "Nuevo Dirección"}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{paddingTop: "5px"}}>
           <form key={0} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={5}>
+            <Grid container spacing={5} >
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
@@ -622,7 +623,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
         <DialogContent>Seguro de eliminar la direccion seleccionada?</DialogContent>
         <DialogActions>
           <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
-                Agregar
+                Eliminar
               </Button>
               <Button variant='outlined' color='secondary' onClick={() => setOpenDeleteCard(false)}>
                 Cancelar
