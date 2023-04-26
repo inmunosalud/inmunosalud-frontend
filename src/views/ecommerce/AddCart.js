@@ -1,6 +1,9 @@
 // ** React Imports
 import { useState, forwardRef } from 'react'
 
+//**next imports
+import { useRouter } from 'next/router'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
@@ -105,7 +108,7 @@ const AddCard = props => {
 
   // ** Hook
   const theme = useTheme()
-
+  const router = useRouter()
   // ** Deletes form
   const deleteForm = e => {
     e.preventDefault()
@@ -303,7 +306,7 @@ const AddCard = props => {
               size='small'
               variant='contained'
               startIcon={<Plus fontSize='small' />}
-              onClick={() => setCount(count + 1)}
+              onClick={() => router.push('/ecommerce/products/')}
             >
               Agregar artículos
             </Button>
