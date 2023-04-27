@@ -128,7 +128,10 @@ const ImageUploader = ({
               height: '30px',
               width: '30px'
             }}
-            onClick={() => handleRemove(index)}
+            onClick={(e) => {
+              e.preventDefault()
+              handleRemove(index)
+            }}
             ><Typography variant='body2' color={'#eee'}><strong>X</strong></Typography></button>
           </div>
 
