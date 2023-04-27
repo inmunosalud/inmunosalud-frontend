@@ -78,34 +78,7 @@ const AddProduct = () => {
   });
 
   /* images state */
-  const [images, setImages] = React.useState({ link1: '', link2: '' })
-  // const [images, setImages] = React.useState([])
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const newImages = [...images];
-    for (const file of e.dataTransfer.files) {
-      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
-        newImages.push(file);
-      }
-    }
-    setImages(newImages);
-  }
-
-  const handleRemove = (indexToRemove) => {
-    const newImages = images.filter((image, index) => index !== indexToRemove);
-    setImages(newImages);
-  }
-
-  const handleFileInputChange = (e) => {
-    const newImages = [...images];
-    for (const file of e.target.files) {
-      if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
-        newImages.push(file);
-      }
-    }
-    setImages(newImages);
-  }
+  const [images, setImages] = React.useState([])
 
   /* properties */
   const [values, setValues] = React.useState({
@@ -206,25 +179,9 @@ const AddProduct = () => {
     })
   }
 
-  const handleImages = (images) => {
-    const promises = [];
-    for (const image of images) {
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      promises.push(
-        new Promise((resolve) => {
-          reader.onload = () => {
-            resolve(reader.result);
-          };
-        })
-      );
-    }
-    Promise.all(promises).then((base64Strings) => {
-      // Send base64Strings to API for upload
-      console.log(base64Strings[0])
-      setImages(base64Strings)
-    });
-  }
+  const handleImagesUpdate = (images) => {
+    setImages(images)
+  };
 
   const handlePropertiesList = (prop) => (event) => {
     const newValue = event.target.value;
@@ -248,7 +205,7 @@ const AddProduct = () => {
       ingredients: data?.ingredients,
       quantity: 1,
       properties: newProperties,
-      urlImages: setLinks(),
+      urlImages: images,
       id: editItem?.id ?? ''
     }
     if (Boolean(editItem)) {
@@ -284,10 +241,8 @@ const AddProduct = () => {
       })
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
-      setImages({
-        link1: editItem.urlImages[0],
-        link2: editItem.urlImages[1],
-      })
+      console.log(editItem.urlImages)
+      setImages(editItem.urlImages)
       setFields(editItem?.mainComponents)
       const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
       setMainComponentValue(defaultMainComponents)
@@ -470,7 +425,7 @@ const AddProduct = () => {
                 <Grid container item xs={12} spacing={5} key={index}>
                   <Grid item xs={6} sx={{marginTop: '10px'}}>
                       <TextField
-                        label="Property"
+                        label="Componente Principal"
                         variant="outlined"
                         value={field.property}
                         fullWidth
@@ -481,7 +436,7 @@ const AddProduct = () => {
                   </Grid>
                   <Grid item xs={6} sx={{marginTop: '10px'}}>
                     <TextField
-                      label="Value"
+                      label="Valor"
                       variant="outlined"
                       value={field.value}
                       fullWidth
@@ -507,34 +462,8 @@ const AddProduct = () => {
 
             <Grid item xs={12}>
               <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
-              {/* <ImageUploader base64Images={images} handleImages={handleImages}/> */}
+              <ImageUploader base64Images={editItem ? editItem.urlImages : []} handleImages={handleImagesUpdate}/>
             </Grid>
-            <Grid item xs={12} sm={6}>
-                <TextField
-                  focused={images.link2 ? true : false}
-                  label='Foto del producto'
-                  value={images.link1}
-                  id='input-link'
-                  name='link1'
-                  fullWidth
-                  type='text'
-                  onChange={handleChangeLinks('link1')}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  focused={images.link2 ? true : false}
-                  label='Foto del producto'
-                  value={images.link2}
-                  id='input-link'
-                  name='link1'
-                  fullWidth
-                  type='text'
-                  onChange={handleChangeLinks('link2')}
-                />
-              </Grid>
-
-
           </Grid>
       </CardContent>
       <Grid item xs={12}>

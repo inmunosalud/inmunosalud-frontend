@@ -3,19 +3,42 @@ import React, { useEffect, useState } from 'react';
 
 const ImageUploader = ({
   base64Images = [],
-  handleImages = (images) => {}
+  handleImages
 }) => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
     if (base64Images.length > 0) {
+      console.log(base64Images)
       handleBase64Images(base64Images)
     }
   }, [])
 
   useEffect(() => {
-    handleImages(images)
+    convertImagesToBase64()
   }, [images])
+
+  const convertImagesToBase64 = () => {
+    Promise.all(
+      images.map(
+        (image) =>
+          new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+
+            fileReader.onload = (file) => {
+              resolve(fileReader.result);
+            };
+
+            fileReader.onerror = (error) => reject(error);
+
+            fileReader.readAsDataURL(image);
+          })
+      )
+    ).then((base64Images) => {
+      // Send base64Images to server
+      handleImages(base64Images)
+    });
+  }
 
   const handleBase64Images = (base64Images) => {
     const newImages = []
