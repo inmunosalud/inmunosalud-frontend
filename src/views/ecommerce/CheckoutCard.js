@@ -22,6 +22,7 @@ import TableCell from '@mui/material/TableCell'
 
 // ** Third Party Imports
 import ReactToPdf from 'react-to-pdf'
+import moment from 'moment'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -45,7 +46,30 @@ const CalcWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
-const CheckoutCard = ({data}) => {
+const getCurrentDate = () => {
+  debugger
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+  ]
+
+  const date = moment(new Date()).format('MM/DD/YYYY').split('/')
+  const month = date[0][0] == 0 ? Number(date[0][1]) : Number(date[0][0])
+
+  return `${date[1]} de ${months[month]} del ${date[2]}`
+}
+
+const CheckoutCard = ({ data }) => {
   // ** Hook
   const theme = useTheme()
 
@@ -164,7 +188,7 @@ const CheckoutCard = ({data}) => {
                     </TableRow>
                     <TableRow>
                       <MUITableCell>
-                        <Typography variant='body2'>Fecha: 02/01/2023</Typography>
+                        <Typography variant='body2'>Fecha: {getCurrentDate()}</Typography>
                       </MUITableCell>
                       <MUITableCell>
                         <Typography variant='body2' sx={{ fontWeight: 600 }}>
