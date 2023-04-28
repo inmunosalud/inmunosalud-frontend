@@ -116,7 +116,6 @@ const Comissions = () => {
           columns={COLUMNS}
           pageSize={10}
           isRowSelectable={params => {
-            debugger
             return params.row.status != 'Comisión liquidada'
           }}
           checkboxSelection

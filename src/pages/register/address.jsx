@@ -75,9 +75,9 @@ const steps = [
 ]
 
 const defaultDataValues = {
-  name: '',
+  firstName: '',
   lastName: '',
-  phoneNumber: ''
+  phone: ''
 }
 
 const defaultAddressValues = {
@@ -102,9 +102,9 @@ const defaultPaymentValues = {
 }
 
 const dataSchema = yup.object().shape({
-  name: yup.string().required(),
+  firstName: yup.string().required(),
   lastName: yup.string().required(),
-  phoneNumber: yup.string()
+  phone: yup.string()
   .required()
   .matches(/^[0-9]+$/, 'Solo digitos')
   .min(10, 'Deben ser 10 digitos')
@@ -156,7 +156,7 @@ function PAGE() {
 export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { user } = useSelector(state => state.users)
+  const { user } = useSelector(state => state.dashboard.general)
   const { isLoading } = useSelector(state => state.users)
   const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -239,7 +239,7 @@ export default function Address() {
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
-                    name='name'
+                    name='firstName'
                     control={dataControl}
                     rules={{ required: true, maxLength: 20 }}
                     render={({ field: { value, onChange } }) => (
@@ -248,7 +248,7 @@ export default function Address() {
                         label='Nombre'
                         onChange={onChange}
                         placeholder='Nombre'
-                        error={Boolean(dataErrors.name)}
+                        error={Boolean(dataErrors.firstName)}
                         aria-describedby='validation-basic-first-name'
                       />
                     )}
@@ -283,7 +283,7 @@ export default function Address() {
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='phoneNumber'
+                    name='phone'
                     control={dataControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -291,7 +291,7 @@ export default function Address() {
                         value={value}
                         label='Teléfono'
                         onChange={onChange}
-                        error={Boolean(dataErrors.phoneNumber)}
+                        error={Boolean(dataErrors.phone)}
                         placeholder='Teléfono'
                         aria-describedby='validation-basic-number'
                       />
