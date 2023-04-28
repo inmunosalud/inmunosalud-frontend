@@ -8,6 +8,7 @@ import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
 import { createOrder } from 'src/store/orders'
 import { loadInfo } from 'src/store/paymentMethods'
 import { getUserInfo } from 'src/store/users'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const InvoicePreview = ({ }) => {
   const dispatch = useDispatch()
@@ -48,14 +49,9 @@ const InvoicePreview = ({ }) => {
   }
 
   useEffect(()=> {
-    console.log(user)
-    if (user.id) {
-      dispatch(loadInfo(user.id))
-      dispatch(getUserInfo(user.id))
-
-    }else {
-      console.log("NO USERS")
-    }
+    if (!user.id) dispatch(loadSession())
+    dispatch(loadInfo(user.id))
+    dispatch(getUserInfo(user.id))
   }, [])
 
   return (
