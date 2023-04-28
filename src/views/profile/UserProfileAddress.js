@@ -104,7 +104,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
     resolver: yupResolver(addressSchema)
   })
 
-  
+
   const onSubmit = (data) => {
     if (editItem && Object.keys(editItem).length) {
       dispatch(updateAddress({ body: data }))
@@ -611,7 +611,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
                 Cancelar
               </Button>
             </Grid>
-            
+
           </form>
         </DialogContent>
       </Dialog>

@@ -101,7 +101,7 @@ const UserProfileBilling = ({ methods = [] }) => {
   const [editItem, setEditItem] = useState(null)
   const [deleteID, setDeleteID] = useState(null)
 
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
   const { isOpen, isOpenDelete } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
@@ -141,11 +141,11 @@ const UserProfileBilling = ({ methods = [] }) => {
       cardNumber: item.cardNumber,
       cvc: item.cvc
     })
-    
+
     dispatch(setModal(true))
   }
 
-  const handleAddCardClickOpen = () => {    
+  const handleAddCardClickOpen = () => {
     dispatch(setModal(true))
   }
 
@@ -166,11 +166,11 @@ const UserProfileBilling = ({ methods = [] }) => {
     dispatch(setModalDelete(true))
   }
 
-  const handleCloseModal = () => { 
+  const handleCloseModal = () => {
     reset(defaultPaymentValues)
     dispatch(setModalDelete(false))
   }
-  
+
   return (
     <Fragment>
       <Card sx={{ mb: 6 }}>
@@ -261,7 +261,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                     </FormControl>
                   </Grid>
                 ): null}
-                
+
 
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
@@ -346,7 +346,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                           onChange={onChange}
                           placeholder="XXXX-XXXX-XXXX-XXXX"
                           error={Boolean(paymentErrors['cardNumber'])}
-                          aria-describedby="stepper-linear-payment-cardNumber"                          
+                          aria-describedby="stepper-linear-payment-cardNumber"
                         />
                       )}
                     />
@@ -358,7 +358,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                   </FormControl>
                 </Grid>
                 ): null}
-                
+
                 {!isFormEditing ? (
                   <Grid item xs={12} sm={4}>
                     <FormControl fullWidth>
@@ -385,7 +385,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                     </FormControl>
                   </Grid>
                 ): null}
-                
+
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <Controller
@@ -447,7 +447,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                   </FormControl>
                 </Grid>
                 ) : null}
-                
+
                 </Grid>
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
                 <Button variant='contained' sx={{ mr: 1 }} type="submit">
@@ -457,10 +457,10 @@ const UserProfileBilling = ({ methods = [] }) => {
                   Cancelar
                 </Button>
               </Grid>
-              
+
             </form>
           </DialogContent>
-          
+
         </Dialog>
       </Card>
       <Dialog
