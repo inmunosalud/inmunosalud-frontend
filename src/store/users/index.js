@@ -102,6 +102,7 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const response = await api_get(`${PROYECT}/users/${id}`, auth)
+  console.log(response)
   return response
 })
 
@@ -123,7 +124,7 @@ const initialState = {
   modalRow: null,
 
   //user info
-  userInfo: '',
+  userInfo: {},
 
   //detele modal
   showDelete: false

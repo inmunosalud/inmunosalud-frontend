@@ -47,7 +47,6 @@ const CalcWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const getCurrentDate = () => {
-  debugger
   const months = [
     'enero',
     'febrero',
@@ -64,7 +63,7 @@ const getCurrentDate = () => {
   ]
 
   const date = moment(new Date()).format('MM/DD/YYYY').split('/')
-  const month = date[0][0] == 0 ? Number(date[0][1]) : Number(date[0][0])
+  const month = date[0][0] == 0 ? Number(date[0][1]) - 1 : Number(date[0][0]) - 1
 
   return `${date[1]} de ${months[month - 1]} del ${date[2]}`
 }
@@ -74,12 +73,31 @@ const CheckoutCard = ({ data }) => {
   const theme = useTheme()
 
   // ** Selectors
-  const { total, products } = data
+  const { total, products, address, paymentMethods, userInfo } = data
 
   console.log(products)
 
   // ** Ref
   const PreviewRef = useRef(null)
+
+  const formatPhoneNumber = str => {
+    let match = ''
+    //Filter only numbers from the input
+    let cleaned = ('' + str).replace(/\D/g, '')
+
+    //Check if the input is of correct length
+    if (str.slice(0, 2) == '33' || str.slice(0, 2) == '55' || str.slice(0, 2) == '81') {
+      match = cleaned.match(/^(\d{2})(\d{4})(\d{4})$/)
+    } else {
+      match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    }
+
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + ' - ' + match[3]
+    }
+
+    return null
+  }
 
   return (
     <Card>
@@ -157,22 +175,32 @@ const CheckoutCard = ({ data }) => {
                 </Box>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant='h6' sx={{ mb: 1 }}>
-                    Direccion
+                    Dirección
                   </Typography>
                   <Typography variant='body2' sx={{ mb: 1 }}>
-                    Office 149, 450 South Brand Brooklyn
+                    {address
+                      ? `${address[0].street ?? ''} ${address[0].extNumber ?? ''} ${
+                          address[0].intNumber ? `- ${address[0].intNumber}` : ''
+                        }`
+                      : null}
                   </Typography>
                   <Typography variant='body2' sx={{ mb: 1 }}>
-                    San Diego County, CA 91905, USA
+                    {address
+                      ? `${address[0].colony ?? ''}, ${address[0].zipCode ?? ''}, ${address[0].federalEntity ?? ''}, ${
+                          address[0].country ?? ''
+                        }`
+                      : null}
                   </Typography>
-                  <Typography variant='body2'>+1 (123) 456 7891, +44 (876) 543 2198</Typography>
+                  <Typography variant='body2'>{formatPhoneNumber(userInfo.phone)}</Typography>
                 </Box>
                 <Box>
                   <Typography variant='h6' sx={{ mb: 1 }}>
                     Metodo de pago
                   </Typography>
                   <Typography variant='body2' sx={{ mb: 1 }}>
-                    Visa - 7898
+                    {paymentMethods
+                      ? `${paymentMethods[0].cardType} - ${paymentMethods[0].cardNumber.slice(-4)}`
+                      : null}
                   </Typography>
                 </Box>
               </Box>
