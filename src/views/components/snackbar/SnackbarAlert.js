@@ -6,32 +6,28 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Snackbar from '@mui/material/Snackbar'
 
-const SnackbarAlert = () => {
-  // ** State
-  const [open, setOpen] = useState(false)
+import { useDispatch } from 'react-redux'
+import { openSnackBar } from 'src/store/notifications'
 
-  const handleClick = () => {
-    setOpen(true)
-  }
+const SnackbarAlert = ({ severity, isOpen, message }) => {
+  // ** State
+  const [open, setOpen] = useState(isOpen)
+  const dispatch = useDispatch()
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
     setOpen(false)
+    dispatch(openSnackBar({ open: false, message: '', severity: '' }))
   }
 
   return (
-    <Fragment>
-      <Button variant='outlined' onClick={handleClick}>
-        Open alert snackbar
-      </Button>
-      <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
-        <Alert variant='filled' elevation={3} onClose={handleClose} severity='success'>
-          This is a success message!
-        </Alert>
-      </Snackbar>
-    </Fragment>
+    <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+      <Alert variant='filled' elevation={3} onClose={handleClose} severity={severity}>
+        {message}
+      </Alert>
+    </Snackbar>
   )
 }
 

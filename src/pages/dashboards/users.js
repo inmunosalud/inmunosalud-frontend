@@ -60,7 +60,6 @@ const intakeProducts = {
 }
 
 function getOverAllConsumptionCategories({ overallConsumption = {} }) {
-  debugger
   if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
 
   const keys = Object?.keys(overallConsumption?.monthly)
@@ -68,7 +67,6 @@ function getOverAllConsumptionCategories({ overallConsumption = {} }) {
 }
 
 function getOverAllConsumptionSeries({ overallConsumption = {} }) {
-  debugger
   if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
   return [{ data: Object?.values(overallConsumption?.monthly) }]
 }
@@ -114,7 +112,7 @@ const Users = () => {
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
-    if (user.profile === "Socio") {
+    if (user.profile === 'Socio') {
       getMonthlyCountdown(data[0].stats)
     }
   }, [dispatch])
@@ -127,7 +125,7 @@ const Users = () => {
     navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
   }
 
-  const getMonthlyCountdown = (date) => {
+  const getMonthlyCountdown = date => {
     const diffDays = moment(date, 'DD/MM/YYYY').diff(moment(), 'days')
     data[0].stats = `${date} - Faltan ${diffDays} para el siguiente corte`
   }
@@ -167,7 +165,7 @@ const Users = () => {
       )
     }
   }
-  debugger
+
   return (
     <>
       {isLoaded && (
