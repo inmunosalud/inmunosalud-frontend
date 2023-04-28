@@ -5,7 +5,6 @@ import { updateOrder } from 'src/store/orders'
 
 import {format} from 'date-fns'
 
-
 import { useRouter } from 'next/router';
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -18,7 +17,6 @@ import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
 import "react-datepicker/dist/react-datepicker.css";
-import toast from 'react-hot-toast'
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
@@ -45,9 +43,6 @@ const ordersSchema = yup.object().shape({
   validDeliveryDate: yup.string().required(),
   deliveryStatus: yup.string().required(),
 })
-
-
-const minDate = new Date(); // set min date to today
 
 const EditOrder = () => {
   const router = useRouter()
@@ -76,7 +71,6 @@ const EditOrder = () => {
   }, [])
 
   const onSubmit = (values) => {
-    console.log({values});
     let body
     const formattedDate = format(new Date(values.validDeliveryDate), "dd/MM/yyyy");
 
@@ -90,7 +84,6 @@ const EditOrder = () => {
       deliveryDate: formattedDate,
       idParam: itemUpdated?.id
     } 
-    //console.log({body});
     dispatch(updateOrder(body))
   }
 
@@ -111,10 +104,10 @@ const EditOrder = () => {
                   return (
                     <DatePickerWrapper>
                       <DatePicker
-                        minDate={minDate}
                         selected={value}
                         onChange={onChange}
                         placeholderText="DD/MM/YYYY"
+                        dateFormat="dd/MM/yyyy"
                         customInput={<CustomInput label="Fecha de entrega" />}
                       />
                     </DatePickerWrapper>

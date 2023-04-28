@@ -18,7 +18,7 @@ const Products = () => {
   const dispatch = useDispatch()
 
   const { products, isLoading } = useSelector(state => state.products)
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
   const isProductAdmin = user.profile === PROFILES_USER['productsAdmin']
   const isAdmin = user.profile === PROFILES_USER['admin']

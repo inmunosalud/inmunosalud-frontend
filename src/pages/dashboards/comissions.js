@@ -38,7 +38,7 @@ const COLUMNS = [
     headerName: 'Comision',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        ${" "}{params.row.commission}
+        $ {params.row.commission}
       </Typography>
     )
   },
@@ -79,16 +79,12 @@ const COLUMNS = [
 
 const Comissions = () => {
   const dispatch = useDispatch()
-  const {
-    comissions,
-    isLoading,
-    openModal,
-  } = useSelector(state => state.comissions)
+  const { comissions, isLoading, openModal } = useSelector(state => state.comissions)
 
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([])
+
   React.useEffect(() => {
-     dispatch(getComissions())
+    dispatch(getComissions())
   }, [dispatch])
 
   const handleAction = () => {
@@ -96,36 +92,41 @@ const Comissions = () => {
   }
 
   const confirmSubmit = () => {
-    console.log({rowSelectionModel});
+    console.log({ rowSelectionModel })
     dispatch(liquidationComisions(rowSelectionModel))
   }
-  
+
   return (
     <React.Fragment>
-    <Card>
-      <CardHeader
-        title='Comisiones'
-        action={
-          <Box>
-            <Button variant='contained' disabled={!rowSelectionModel.length} onClick={handleAction}>Liquidar Comisiones</Button>
-          </Box>
-        } />
+      <Card>
+        <CardHeader
+          title='Comisiones'
+          action={
+            <Box>
+              <Button variant='contained' disabled={!rowSelectionModel.length} onClick={handleAction}>
+                Liquidar Comisiones
+              </Button>
+            </Box>
+          }
+        />
         <DataGrid
           autoHeight
           loading={isLoading}
           rows={comissions}
           columns={COLUMNS}
           pageSize={10}
+          isRowSelectable={params => {
+            return params.row.status != 'Comisión liquidada'
+          }}
           checkboxSelection
-          onSelectionModelChange={(newSelection) => {
-            setRowSelectionModel(newSelection);
+          onSelectionModelChange={newSelection => {
+            setRowSelectionModel(newSelection)
           }}
           rowSelectionModel={rowSelectionModel}
         />
-      
-    </Card>
+      </Card>
       <Dialog
-        maxWidth="md"
+        maxWidth='md'
         open={openModal}
         disableEscapeKeyDown
         aria-labelledby='alert-dialog-title'
@@ -137,11 +138,15 @@ const Comissions = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
-          <Button variant='contained' onClick={() => dispatch(setOpenModal(false))}>Regresar</Button>
-          <Button variant='contained'onClick={confirmSubmit}>Liquidar</Button>
+          <Button variant='contained' onClick={() => dispatch(setOpenModal(false))}>
+            Regresar
+          </Button>
+          <Button variant='contained' onClick={confirmSubmit}>
+            Liquidar
+          </Button>
         </DialogActions>
       </Dialog>
-      </React.Fragment>
+    </React.Fragment>
   )
 }
 

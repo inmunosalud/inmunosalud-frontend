@@ -60,7 +60,6 @@ const intakeProducts = {
 }
 
 function getOverAllConsumptionCategories({ overallConsumption = {} }) {
-  debugger
   if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
 
   const keys = Object?.keys(overallConsumption?.monthly)
@@ -68,7 +67,6 @@ function getOverAllConsumptionCategories({ overallConsumption = {} }) {
 }
 
 function getOverAllConsumptionSeries({ overallConsumption = {} }) {
-  debugger
   if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
   return [{ data: Object?.values(overallConsumption?.monthly) }]
 }
@@ -167,7 +165,6 @@ const Users = () => {
       )
     }
   }
-  debugger
   return (
     <>
       {isLoaded && (

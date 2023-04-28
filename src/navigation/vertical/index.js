@@ -13,7 +13,7 @@ const navigation = () => {
     // Check if the current user has the given permission
     return PROFILES_USER['admin'] === permission
   }
-  
+
   const navItems = [
     {
       icon: HomeOutline,

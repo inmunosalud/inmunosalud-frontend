@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import { PROYECT, api_post, api_get } from '../../services/api'
+import { setUser } from '../users'
 
 //actions
 export const loadSession = createAsyncThunk('general/loadSession', async (body, thunkApi) => {
@@ -8,8 +9,6 @@ export const loadSession = createAsyncThunk('general/loadSession', async (body, 
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${PROYECT}/users/data-user`, auth)
-
-    console.log(response.content)
 
     return response.content
   } catch (error) {
@@ -63,9 +62,6 @@ export const generalSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.errors = payload
-    },
-    setUser: (state, { payload }) => {
-      state.user = payload
     }
   },
   extraReducers: builder => {
@@ -99,4 +95,4 @@ export const generalSlice = createSlice({
 
 export default generalSlice.reducer
 
-export const { setErrors, setUser } = generalSlice.actions
+export const { setErrors } = generalSlice.actions

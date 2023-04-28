@@ -6,6 +6,9 @@ import Grid from '@mui/material/Grid'
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
 import { createOrder } from 'src/store/orders'
+import { loadInfo } from 'src/store/paymentMethods'
+import { getUserInfo } from 'src/store/users'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const InvoicePreview = ({ }) => {
   const dispatch = useDispatch()
@@ -18,16 +21,20 @@ const InvoicePreview = ({ }) => {
   const toggleAddPaymentDrawer = () => setAddPaymentOpen(!addPaymentOpen)
 
 
-  
-  const { total, products, id } = useSelector(state => state.cart)
-  const { user } = useSelector(state => state.session)
 
+  const { total, products, id } = useSelector(state => state.cart)
+  const { user } = useSelector(state => state.dashboard.general)
+  const { userInfo } = useSelector(state => state.users)
+  const { paymentMethods } = useSelector(state => state.paymentMethods)
+  const { address } = useSelector(state => state.address)
 
   const data = {
     products,
     total,
+    paymentMethods,
+    address,
+    userInfo
   }
-
 
   const handleConfirmOrder = () => {
     console.log("send order");
@@ -40,6 +47,12 @@ const InvoicePreview = ({ }) => {
 
     dispatch(createOrder(body)) */
   }
+
+  useEffect(()=> {
+    if (!user.id) dispatch(loadSession())
+    dispatch(loadInfo(user.id))
+    dispatch(getUserInfo(user.id))
+  }, [])
 
   return (
     <>
