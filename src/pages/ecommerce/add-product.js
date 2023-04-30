@@ -24,7 +24,7 @@ import ListProperties from '../components/propertiesProduct';
 import ImageUploader from 'src/views/components/image-uploader/ImageUploader';
 //import utils fns
 import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
-import { createProduct, getMainComponents, setRemoveEdit, updateProduct } from 'src/store/products';
+import { createProduct, getMainComponents, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products';
 import { parseDataToEdit } from 'src/utils/functions';
 import { closeSnackBar } from 'src/store/notifications'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
@@ -190,30 +190,43 @@ const AddProduct = () => {
     }
   }
 
+  const handleImagesUpload = async (productName) => {
+    const body = {
+      productName: productName,
+      images: images
+    }
+    return await dispatch(uploadProductImages(body))
+  }
+
   const onSubmit = (data, event) => {
     event.preventDefault()
-    const newProperties = getCustomStructure(values);
 
-    const body = {
-      product: data?.product ,
-      description: data?.description,
-      capsuleQuantity: data?.capsuleQuantity,
-      capsuleConcentration: data?.capsuleConcentration,
-      mainComponents: fields,
-      instructions: data?.instructions,
-      price: data?.price,
-      ingredients: data?.ingredients,
-      quantity: 1,
-      properties: newProperties,
-      urlImages: images,
-      id: editItem?.id ?? ''
-    }
-    if (Boolean(editItem)) {
-      dispatch(updateProduct(body))
-    } else {
-      setFormBody(body)
-      handleOpenModal()
-    }
+    handleImagesUpload(data.product).then(productImages => {
+      const newProperties = getCustomStructure(values);
+      const body = {
+        product: data?.product ,
+        description: data?.description,
+        capsuleQuantity: data?.capsuleQuantity,
+        capsuleConcentration: data?.capsuleConcentration,
+        mainComponents: fields,
+        instructions: data?.instructions,
+        price: data?.price,
+        ingredients: data?.ingredients,
+        quantity: 1,
+        properties: newProperties,
+        urlImages: productImages.payload,
+        id: editItem?.id ?? ''
+      }
+      if (productImages.payload === 'error') {
+        return
+      }
+      if (Boolean(editItem)) {
+        dispatch(updateProduct(body))
+      } else {
+        setFormBody(body)
+        handleOpenModal()
+      }
+    })
   };
 
   React.useEffect(() => {
@@ -241,7 +254,6 @@ const AddProduct = () => {
       })
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
-      console.log(editItem.urlImages)
       setImages(editItem.urlImages)
       setFields(editItem?.mainComponents)
       const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
@@ -471,7 +483,7 @@ const AddProduct = () => {
       </Grid>
       <CardActions>
         <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-          Crear Producto
+          {editItem ? "Guardar Cambios" :"Crear Producto" }
         </Button>
           <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
           Regresar

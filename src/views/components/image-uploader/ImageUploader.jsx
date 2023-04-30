@@ -1,6 +1,8 @@
 import { Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
+//TODO: Separate the URLS from Files array maybe handling two arrays on images object (urlImages, fileImages)
+
 const ImageUploader = ({
   base64Images = [],
   handleImages
@@ -9,8 +11,7 @@ const ImageUploader = ({
 
   useEffect(() => {
     if (base64Images.length > 0) {
-      console.log(base64Images)
-      handleBase64Images(base64Images)
+      setImages(base64Images)
     }
   }, [])
 
@@ -23,34 +24,22 @@ const ImageUploader = ({
       images.map(
         (image) =>
           new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-
-            fileReader.onload = (file) => {
-              resolve(fileReader.result);
-            };
-
-            fileReader.onerror = (error) => reject(error);
-
-            fileReader.readAsDataURL(image);
+            if (typeof(image) != 'string') {
+              const fileReader = new FileReader();
+              fileReader.onload = (_) => {
+                resolve(fileReader.result);
+              };
+              fileReader.onerror = (error) => reject(error);
+              fileReader.readAsDataURL(image);
+            } else {
+              resolve(image)
+            }
           })
       )
     ).then((base64Images) => {
       // Send base64Images to server
       handleImages(base64Images)
     });
-  }
-
-  const handleBase64Images = (base64Images) => {
-    const newImages = []
-    base64Images.forEach(base64 => {
-      const arr = base64.split(','),
-            mime = arr[0].match(/:(.*?);/)[1],
-            bstr = Buffer.from(arr[1], 'base64'),
-            extension = mime.split("/")[1];
-
-      newImages.push(new File([bstr], '', {type: mime}));
-    });
-    setImages(newImages)
   }
 
   const handleDrop = (e) => {
@@ -70,6 +59,7 @@ const ImageUploader = ({
   }
 
   const handleFileInputChange = (e) => {
+    e.preventDefault()
     const newImages = [...images];
     for (const file of e.target.files) {
       if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp') {
@@ -116,7 +106,7 @@ const ImageUploader = ({
           margin: '10px 5px'
         }}>
           <img
-            src={URL.createObjectURL(file)}
+            src={typeof(file) === 'string' ? file : URL.createObjectURL(file)}
             alt={file.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

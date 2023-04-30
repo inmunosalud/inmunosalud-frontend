@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 import { PROYECT_PRODUCTS, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { useDispatch } from 'react-redux';
 
 import { openSnackBar } from '../notifications';
 
@@ -13,10 +14,10 @@ export const getProducts = createAsyncThunk(
       const response = await api_get(`${PROYECT_PRODUCTS}/products`, auth)
       return response;
     } catch (error) {
-      console.log(error) 
+      console.log(error)
       return thunkApi.rejectWithValue('error')
     }
-  } 
+  }
 )
 
 export const getMainComponents = createAsyncThunk(
@@ -28,10 +29,10 @@ export const getMainComponents = createAsyncThunk(
       const response = await api_get(`${PROYECT_PRODUCTS}/products/mainComponents`, auth)
       return response;
     } catch (error) {
-      console.log(error) 
+      console.log(error)
       return thunkApi.rejectWithValue('error')
     }
-  } 
+  }
 )
 
 export const createProduct = createAsyncThunk(
@@ -48,7 +49,7 @@ export const createProduct = createAsyncThunk(
       console.log(error)
       return thunkApi.rejectWithValue('error')
     }
-  } 
+  }
 )
 
 export const updateProduct = createAsyncThunk(
@@ -66,7 +67,7 @@ export const updateProduct = createAsyncThunk(
       thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
       return thunkApi.rejectWithValue('error')
     }
-  } 
+  }
 )
 
 
@@ -84,13 +85,44 @@ export const deleteProduct = createAsyncThunk(
       thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
       return thunkApi.rejectWithValue('error')
     }
-  } 
+  }
+)
+
+export const uploadProductImages = createAsyncThunk(
+  "product/uploadProductImages",
+  async(body, thunkApi) => {
+    const token = localStorage.getItem("im-user")
+    const auth = { headers: { Authorization: `Bearer ${token}` }}
+    const urlImages = []
+    try {
+      for (const image of body.images) {
+        if (image.includes("http")) {
+          urlImages.push(image)
+        } else {
+          const imageData = {
+            product: body.productName,
+            image: image
+          }
+          const response = await api_post(`${PROYECT_PRODUCTS}/products/uploadImage`, imageData, auth)
+          urlImages.push(response.content.urlImage)
+        }
+      }
+      return urlImages
+
+    } catch (error) {
+      const errMessage = error?.response?.data?.message
+      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+      return thunkApi.rejectWithValue('error')
+    }
+  }
 )
 
 
 const initialState = {
   isLoading: false,
+  isImagesUploading: false,
   products: [],
+  productImages: [],
 
   editItem: null,
   mainComponents: []
@@ -136,6 +168,16 @@ export const productsSlice = createSlice({
     })
     builder.addCase(getMainComponents.fulfilled, (state, {payload}) => {
       state.mainComponents = payload.content.mainComponents
+    })
+    builder.addCase(uploadProductImages.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(uploadProductImages.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.productImages = payload
+    })
+    builder.addCase(uploadProductImages.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
   }
 })
