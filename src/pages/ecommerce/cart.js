@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -10,16 +10,16 @@ import AddActions from 'src/views/apps/invoice/add/AddActions'
 import AddNewCustomers from 'src/views/apps/invoice/add/AddNewCustomer'
 
 // ** Third Party Styles Imports
-import 'react-datepicker/dist/react-datepicker.css'
 import CartActions from 'src/views/ecommerce/CartAcctions'
 import CardsModal from 'src/views/ecommerce/CardsModal'
-import { useDispatch } from 'react-redux'
-import { getPackages } from 'src/store/cart'
 import AddressModal from 'src/views/ecommerce/AddressModal'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import { closeSnackBar } from 'src/store/notifications'
 
 const Cart = () => {
-  const router = useRouter()
   const dispatch = useDispatch()
+
+  const { open, message, severity } = useSelector(state => state.notifications)
   // ** State
   const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
@@ -27,12 +27,6 @@ const Cart = () => {
   const [openCardModal, setOpenCardModal] = useState(false)
   const [openAddressModal, setOpenAddressModal] = useState(false)
   const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
-
-  // useEffect(() => {
-  //   if (router.query.type === 'associated') {
-  //     dispatch(getPackages())
-  //   }
-  // }, [router])
 
   return (
     <>
@@ -52,6 +46,7 @@ const Cart = () => {
       </Grid>
       <CardsModal open={openCardModal} onClose={() => setOpenCardModal(false)} />
       <AddressModal open={openAddressModal} onClose={() => setOpenAddressModal(false)} />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
 }

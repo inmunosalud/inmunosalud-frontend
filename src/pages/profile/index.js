@@ -21,10 +21,7 @@ const Profile = () => {
   const { address } = useSelector(state => state.address)
 
   useEffect(() => {
-    if (user.id) {
-      console.log(user.id)
-      dispatch(loadInfo(user.id))
-    }
+    if (user.id) dispatch(loadInfo(user.id))
   }, [])
 
   return user.id ? (

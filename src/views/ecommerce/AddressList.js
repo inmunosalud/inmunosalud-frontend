@@ -1,122 +1,39 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-
+import * as React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
-
-// ** Icons Imports
-import Plus from 'mdi-material-ui/Plus'
-
-// ** Third Party Imports
-import Payment from 'payment'
-import Cards from 'react-credit-cards'
-
-// ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
-
-// ** Util Import
-import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@core/utils/format'
-
-// ** Styled Component Imports
-import CardWrapper from 'src/@core/styles/libs/react-credit-cards'
-
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-
-// ** Styled <sup> component
-const Sup = styled('sup')(({ theme }) => ({
-  top: '0.2rem',
-  left: '-0.6rem',
-  position: 'absolute',
-  color: theme.palette.primary.main
-}))
-
-// ** Styled <sub> component
-const Sub = styled('sub')({
-  fontWeight: 300,
-  fontSize: '1rem',
-  alignSelf: 'flex-end'
-})
-
-const data = [
-  {
-    cardCvc: '587',
-    name: 'Direccion 1',
-
-    expiryDate: '12/24',
-    imgAlt: 'Mastercard',
-    cardNumber: '5577 0000 5577 9865',
-    imgSrc: '/images/logos/mastercard.png'
-  },
-  {
-    cardCvc: '681',
-    imgAlt: 'Direccion 2',
-    expiryDate: '02/24',
-    name: 'Mildred Wagner',
-    cardNumber: '4532 3616 2070 5678',
-    imgSrc: '/images/logos/visa.png'
-  },
-  {
-    cardCvc: '3845',
-    expiryDate: '08/20',
-    name: 'Direccion 3',
-    imgAlt: 'American Express card',
-    cardNumber: '3700 000000 00002',
-    imgSrc: '/images/logos/american-express.png'
-  }
-]
+import { addressList, setSelectedAddressInCart } from 'src/store/address'
 
 export const AddressList = () => {
-  // ** States
-  const [cvc, setCvc] = useState('')
-  const [name, setName] = useState('')
-  const [focus, setFocus] = useState()
-  const [cardId, setCardId] = useState(0)
-  const [expiry, setExpiry] = useState('')
-  const [cardNumber, setCardNumber] = useState('')
-  const [dialogTitle, setDialogTitle] = useState('Add')
-  const [openEditCard, setOpenEditCard] = useState(false)
-  const [openAddressCard, setOpenAddressCard] = useState(false)
-  const [openUpgradePlans, setOpenUpgradePlans] = useState(false)
+  const dispatch = useDispatch()
 
-  // Handle Edit Card dialog and get card ID
-  const handleEditCardClickOpen = id => {
-    setDialogTitle('Edit')
-    setCardId(id)
-    setCardNumber(data[id].cardNumber)
-    setName(data[id].name)
-    setCvc(data[id].cardCvc)
-    setExpiry(data[id].expiryDate)
-    setOpenEditCard(true)
-  }
+  const [selectedAddress, setSelectedAddress] = React.useState(null)
 
-  // Handle Upgrade Plan dialog
-  const handleUpgradePlansClickOpen = () => setOpenUpgradePlans(true)
-  const handleUpgradePlansClose = () => setOpenUpgradePlans(false)
-  const handleBlur = () => setFocus(undefined)
+  const { user } = useSelector(state => state.session)
+  const { address } = useSelector(state => state.address)
 
-  const handleInputChange = ({ target }) => {
-    if (target.name === 'number') {
-      target.value = formatCreditCardNumber(target.value, Payment)
-      setCardNumber(target.value)
-    } else if (target.name === 'expiry') {
-      target.value = formatExpirationDate(target.value)
-      setExpiry(target.value)
-    } else if (target.name === 'cvc') {
-      target.value = formatCVC(target.value, cardNumber, Payment)
-      setCvc(target.value)
-    }
+  React.useEffect(() => {
+    if (user?.id) dispatch(addressList(user.id))
+  }, [dispatch])
+  React.useEffect(() => {
+    if (user?.id) dispatch(addressList(user.id))
+  }, [address])
+
+  const handleSelectAddress = item => {
+    setSelectedAddress(item.id)
+    dispatch(setSelectedAddressInCart(item))
   }
 
   return (
     <>
-      {data.map((item, index) => (
+      {address.map((item, index) => (
         <Box
           key={index}
           sx={{
@@ -126,8 +43,12 @@ export const AddressList = () => {
             flexDirection: ['column', 'row'],
             justifyContent: ['space-between'],
             alignItems: ['flex-start', 'center'],
-            mb: index !== data.length - 1 ? 4 : undefined,
-            border: theme => `1px solid ${theme.palette.divider}`
+            mb: index === address.length - 1 ? undefined : 4,
+            border: theme => (selectedAddress === item.id ? `1px solid white` : `1px solid ${theme.palette.divider}`),
+            '&:hover': {
+              border: '1px solid #D9D4D3',
+              color: 'gray'
+            }
           }}
         >
           <div>
@@ -143,17 +64,17 @@ export const AddressList = () => {
                 />
               ) : null}
             </Box>
-            <Typography variant='body2'>Mexicaltzingo 1539, Col. Moderna, Guadalajara</Typography>
-            <Typography variant='body2'>CP. 45660</Typography>
-            <Typography variant='body2'>Guadalajara</Typography>
+            <Typography variant='body2'>{`${item.street} ${item.extNumber}, ${item.colony}`}</Typography>
+            <Typography variant='body2'>{item.zipCode}</Typography>
+            <Typography variant='body2'>{item.city}</Typography>
           </div>
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-            <Button variant='outlined' sx={{ ml: 3 }} onClick={() => handleEditCardClickOpen(index)}>
+            <Button variant='outlined' sx={{ ml: 3 }} onClick={() => handleSelectAddress(item)}>
               Seleccionar
             </Button>
             <Typography variant='body2' sx={{ mt: 5 }}>
-              Jalisco
+              {item.country}
             </Typography>
           </Box>
         </Box>

@@ -38,25 +38,16 @@ import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
-
-
 // ** Third Party Imports
-import Payment from 'payment'
-import Cards from 'react-credit-cards'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
-import { useForm, Controller } from 'react-hook-form'
-
-// ** Custom Components
-import CustomChip from 'src/@core/components/mui/chip'
-
+import { useForm } from 'react-hook-form'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 
-
-import { createAddress, updateAddress, deleteAddress } from 'src/store/address'
+import { createAddress, updateAddress, deleteAddress, setModal } from 'src/store/address'
 import { closeSnackBar } from 'src/store/notifications'
-import { FormHelperText } from '@mui/material'
+import DialogAddress from '../components/dialogs/DialogAddress'
 
 const defaultAddressValues = {
   street: '',
@@ -72,7 +63,11 @@ const defaultAddressValues = {
 
 const addressSchema = yup.object().shape({
   colony: yup.string().required(),
-  zipCode: yup.string().length(5).matches(/^[0-9]{5}/).required(),
+  zipCode: yup
+    .string()
+    .length(5)
+    .matches(/^[0-9]{5}/)
+    .required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
   federalEntity: yup.string().required(),
@@ -93,6 +88,8 @@ const UserProfileAddress = ({ addresses = [] }) => {
   const { user } = useSelector(state => state.session)
   const { open, message, severity } = useSelector(state => state.notifications)
 
+  const { showModal } = useSelector(state => state.address)
+
   // ** Hooks
   const {
     reset,
@@ -104,8 +101,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
     resolver: yupResolver(addressSchema)
   })
 
-
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     if (editItem && Object.keys(editItem).length) {
       dispatch(updateAddress({ body: data }))
     } else {
@@ -115,29 +111,22 @@ const UserProfileAddress = ({ addresses = [] }) => {
   }
 
   // Handle Edit Card dialog and get card ID
-  const handleEditAddressClickOpen = (address) => {
+  const handleEditAddressClickOpen = address => {
     setEditItem(address)
-    setOpenAddressCard(true)
+    dispatch(setModal(true))
     reset(address)
   }
 
   const sendDelete = () => {
-    if (deleteID) {
-      dispatch(deleteAddress(deleteID))
-    }
-  }
-
-  const handleAddAddressClickOpen = () => {
-    setOpenAddressCard(true)
+    if (deleteID) dispatch(deleteAddress(deleteID))
   }
 
   const handleAddressClose = () => {
-    setOpenAddressCard(false)
+    dispatch(setModal(false))
     reset(defaultAddressValues)
   }
 
-  const handleDeleteModal = (address) => {
-    console.log({address});
+  const handleDeleteModal = address => {
     setDeleteID(address?.id)
     setOpenDeleteCard(true)
   }
@@ -149,7 +138,12 @@ const UserProfileAddress = ({ addresses = [] }) => {
           title='Direcciones'
           titleTypographyProps={{ variant: 'h6' }}
           action={
-            <Button variant='contained' onClick={handleAddAddressClickOpen}>
+            <Button
+              variant='contained'
+              onClick={() => {
+                dispatch(setModal(true))
+              }}
+            >
               <Plus sx={{ mr: 1, fontSize: '1.125rem' }} />
               Agregar
             </Button>
@@ -158,22 +152,24 @@ const UserProfileAddress = ({ addresses = [] }) => {
       </Card>
       {addresses.length
         ? addresses.map(address => (
-            <Card key={address.id} sx={{margin: "20px 0px"}}>
+            <Card key={address.id} sx={{ margin: '20px 0px' }}>
               <CardHeader
                 title='Direcciones'
                 titleTypographyProps={{ variant: 'h6' }}
                 action={
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "10px"
-                  }}>
-                  <Button variant='outlined' onClick={() => handleEditAddressClickOpen(address)}>
-                    Editar
-                  </Button>
-                  <Button onClick={() => handleDeleteModal(address)}>
-                    <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                  </Button>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: '10px'
+                    }}
+                  >
+                    <Button variant='outlined' onClick={() => handleEditAddressClickOpen(address)}>
+                      Editar
+                    </Button>
+                    <Button onClick={() => handleDeleteModal(address)}>
+                      <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                    </Button>
                   </div>
                 }
               />
@@ -371,250 +367,15 @@ const UserProfileAddress = ({ addresses = [] }) => {
             </Card>
           ))
         : null}
-      <Dialog
-        open={openAddressCard}
-        onClose={handleAddressClose}
-        aria-labelledby='user-view-billing-edit-card'
-        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-        aria-describedby='user-view-billing-edit-card-description'
-      >
-        <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          {editItem && Object.keys(editItem).length ?  "Editar Dirección": "Nuevo Dirección"}
-        </DialogTitle>
-        <DialogContent style={{paddingTop: "5px"}}>
-          <form key={0} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={5} >
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='street'
-                    control={addressControl}
-                    rules={{ required: true, maxLength: 20 }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Calle'
-                        onChange={onChange}
-                        placeholder='Calle'
-                        error={Boolean(addressErrors.street)}
-                        aria-describedby='validation-basic-first-name'
-                      />
-                    )}
-                  />
-                  {addressErrors.street?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='extNumber'
-                    control={addressControl}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Número Exterior'
-                        onChange={onChange}
-                        placeholder='No. Ext'
-                        error={Boolean(addressErrors.extNumber)}
-                        aria-describedby='validation-basic-last-name'
-                      />
-                    )}
-                  />
-                  {addressErrors.extNumber?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-last-name'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='intNumber'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Número Interior'
-                        onChange={onChange}
-                        placeholder='No. Int'
-                        aria-describedby='validation-basic-last-name'
-                      />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='colony'
-                    control={addressControl}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Colonia'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.colony)}
-                        placeholder='Colonia'
-                        aria-describedby='validation-basic-colony'
-                      />
-                    )}
-                  />
-                  {addressErrors.colony && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='city'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        type='tel'
-                        value={value}
-                        label='Ciudad'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.city)}
-                        placeholder='Ciudad'
-                        aria-describedby='validation-basic-city'
-                      />
-                    )}
-                  />
-                  {addressErrors.city?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-city'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='federalEntity'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Estado'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.federalEntity)}
-                        placeholder='Entidad Federativa'
-                        aria-describedby='validation-basic-state'
-                      />
-                    )}
-                  />
-                  {addressErrors.federalEntity?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-state'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='zipCode'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Código Postal'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.zipCode)}
-                        placeholder='Código Postal'
-                        aria-describedby='validation-basic-zipCode'
-                      />
-                    )}
-                  />
-                  {addressErrors.zipCode?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='country'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='País'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.country)}
-                        placeholder='País'
-                        aria-describedby='validation-basic-country'
-                      />
-                    )}
-                  />
-                  {addressErrors.country?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-country'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='refer'
-                    control={addressControl}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Referencia'
-                        onChange={onChange}
-                        placeholder='Referencia. Ejemplo: "Fachada blanca, herrería negra"'
-                        aria-describedby='validation-basic-reference'
-                      />
-                    )}
-                  />
-                  {addressErrors.refer?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-refer'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} sx={{display:"flex", justifyContent:"center", marginTop: "20px" }}>
-              <Button variant='contained' sx={{ mr: 1 }} type="submit">
-                Agregar
-              </Button>
-              <Button variant='outlined' color='secondary' onClick={handleAddressClose}>
-                Cancelar
-              </Button>
-            </Grid>
-
-          </form>
-        </DialogContent>
-      </Dialog>
+      <DialogAddress
+        openAddressCard={showModal}
+        handleAddressClose={() => dispatch(setModal(false))}
+        editItem={editItem}
+        handleSubmit={handleSubmit}
+        addressControl={addressControl}
+        addressErrors={addressErrors}
+        onSubmit={onSubmit}
+      />
       <Dialog
         open={openDeleteCard}
         onClose={() => setOpenDeleteCard(false)}
@@ -623,11 +384,11 @@ const UserProfileAddress = ({ addresses = [] }) => {
         <DialogContent>Seguro de eliminar la direccion seleccionada?</DialogContent>
         <DialogActions>
           <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
-                Eliminar
-              </Button>
-              <Button variant='outlined' color='secondary' onClick={() => setOpenDeleteCard(false)}>
-                Cancelar
-              </Button>
+            Eliminar
+          </Button>
+          <Button variant='outlined' color='secondary' onClick={() => setOpenDeleteCard(false)}>
+            Cancelar
+          </Button>
         </DialogActions>
       </Dialog>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />

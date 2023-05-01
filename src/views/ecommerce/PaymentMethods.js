@@ -1,152 +1,43 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-
+import { Fragment, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { loadInfo, setSelectedPaymentMethodInCart } from 'src/store/paymentMethods'
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
-
-// ** Icons Imports
-import Plus from 'mdi-material-ui/Plus'
-
-// ** Third Party Imports
-import Payment from 'payment'
-import Cards from 'react-credit-cards'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 
-// ** Util Import
-import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@core/utils/format'
-
-// ** Styled Component Imports
-import CardWrapper from 'src/@core/styles/libs/react-credit-cards'
-
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 
-// ** Styled <sup> component
-const Sup = styled('sup')(({ theme }) => ({
-  top: '0.2rem',
-  left: '-0.6rem',
-  position: 'absolute',
-  color: theme.palette.primary.main
-}))
-
-// ** Styled <sub> component
-const Sub = styled('sub')({
-  fontWeight: 300,
-  fontSize: '1rem',
-  alignSelf: 'flex-end'
-})
-
-const data = [
-  {
-    cardCvc: '587',
-    name: 'Tom McBride',
-    expiryDate: '12/24',
-    imgAlt: 'Mastercard',
-    cardNumber: '5577 0000 5577 9865',
-    imgSrc: '/images/logos/mastercard.png'
-  },
-  {
-    cardCvc: '681',
-    imgAlt: 'Visa card',
-    expiryDate: '02/24',
-    name: 'Mildred Wagner',
-    cardNumber: '4532 3616 2070 5678',
-    imgSrc: '/images/logos/visa.png'
-  },
-  {
-    cardCvc: '3845',
-    expiryDate: '08/20',
-    name: 'Lester Jennings',
-    imgAlt: 'American Express card',
-    cardNumber: '3700 000000 00002',
-    imgSrc: '/images/logos/american-express.png'
-  }
-]
-
 export const PaymentMethods = () => {
-  // ** States
-  const [cvc, setCvc] = useState('')
-  const [name, setName] = useState('')
-  const [focus, setFocus] = useState()
-  const [cardId, setCardId] = useState(0)
-  const [expiry, setExpiry] = useState('')
-  const [cardNumber, setCardNumber] = useState('')
-  const [dialogTitle, setDialogTitle] = useState('Add')
-  const [openEditCard, setOpenEditCard] = useState(false)
-  const [openAddressCard, setOpenAddressCard] = useState(false)
-  const [openUpgradePlans, setOpenUpgradePlans] = useState(false)
+  const dispatch = useDispatch()
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
 
-  // Handle Edit Card dialog and get card ID
-  const handleEditCardClickOpen = id => {
-    setDialogTitle('Edit')
-    setCardId(id)
-    setCardNumber(data[id].cardNumber)
-    setName(data[id].name)
-    setCvc(data[id].cardCvc)
-    setExpiry(data[id].expiryDate)
-    setOpenEditCard(true)
-  }
+  const { user } = useSelector(state => state.dashboard.general)
+  const { paymentMethods } = useSelector(state => state.paymentMethods)
 
-  const handleAddCardClickOpen = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
-    setOpenEditCard(true)
-  }
+  useEffect(() => {
+    if (user.id) dispatch(loadInfo(user.id))
+  }, [paymentMethods])
 
-  const handleEditCardClose = () => {
-    setDialogTitle('Add')
-    setCardNumber('')
-    setName('')
-    setCvc('')
-    setExpiry('')
-    setOpenEditCard(false)
-  }
+  useEffect(() => {
+    if (user.id) dispatch(loadInfo(user.id))
+  }, [dispatch])
 
-  // Handle Upgrade Plan dialog
-  const handleUpgradePlansClickOpen = () => setOpenUpgradePlans(true)
-  const handleUpgradePlansClose = () => setOpenUpgradePlans(false)
-  const handleBlur = () => setFocus(undefined)
-
-  const handleInputChange = ({ target }) => {
-    if (target.name === 'number') {
-      target.value = formatCreditCardNumber(target.value, Payment)
-      setCardNumber(target.value)
-    } else if (target.name === 'expiry') {
-      target.value = formatExpirationDate(target.value)
-      setExpiry(target.value)
-    } else if (target.name === 'cvc') {
-      target.value = formatCVC(target.value, cardNumber, Payment)
-      setCvc(target.value)
-    }
+  const handleSelectPaymentMethod = item => {
+    setSelectedPaymentMethod(item.id)
+    dispatch(setSelectedPaymentMethodInCart(item))
   }
 
   return (
-    <>
-      {/* <CardHeader
-          title='Payment Methods'
-          titleTypographyProps={{ variant: 'h6' }}
-          action={
-            <Button variant='contained' onClick={handleAddCardClickOpen}>
-              <Plus sx={{ mr: 1, fontSize: '1.125rem' }} />
-              Add Card
-            </Button>
-          }
-        /> */}
-
-      {data.map((item, index) => (
+    <Fragment>
+      {paymentMethods?.map(item => (
         <Box
-          key={index}
+          key={item.id}
           sx={{
             p: 5,
             display: 'flex',
@@ -154,14 +45,19 @@ export const PaymentMethods = () => {
             flexDirection: ['column', 'row'],
             justifyContent: ['space-between'],
             alignItems: ['flex-start', 'center'],
-            mb: index !== data.length - 1 ? 4 : undefined,
-            border: theme => `1px solid ${theme.palette.divider}`
+            mb: item.id === paymentMethods.length - 1 ? undefined : 4,
+            border: theme =>
+              selectedPaymentMethod === item.id ? `1px solid white` : `1px solid ${theme.palette.divider}`,
+            '&:hover': {
+              border: '1px solid #D9D4D3',
+              color: 'gray'
+            }
           }}
         >
           <div>
             <img height='20' alt={item.imgAlt} src={item.imgSrc} />
             <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-              <Typography sx={{ fontWeight: 500 }}>{item.name}</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{item.nameOnCard}</Typography>
               {item.cardStatus ? (
                 <CustomChip
                   skin='light'
@@ -172,22 +68,19 @@ export const PaymentMethods = () => {
                 />
               ) : null}
             </Box>
-            <Typography variant='body2'>
-              **** **** **** {item.cardNumber.substring(item.cardNumber.length - 4)}
-            </Typography>
+            <Typography variant='body2'>{item.cardNumber}</Typography>
           </div>
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-            <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(index)}>
+            <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleSelectPaymentMethod(item)}>
               Seleccionar
             </Button>
-
             <Typography variant='body2' sx={{ mt: 5 }}>
-              Expira el {item.expiryDate}
+              Expira el {item.expDate}
             </Typography>
           </Box>
         </Box>
       ))}
-    </>
+    </Fragment>
   )
 }
