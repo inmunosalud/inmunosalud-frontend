@@ -24,7 +24,7 @@ const ImageUploader = ({
       images.map(
         (image) =>
           new Promise((resolve, reject) => {
-            if (typeof(image) != 'string') {
+            if (typeof (image) != 'string') {
               const fileReader = new FileReader();
               fileReader.onload = (_) => {
                 resolve(fileReader.result);
@@ -83,7 +83,7 @@ const ImageUploader = ({
         width: '100%'
       }}
     >
-      <Typography variant='body1'>Arrastra las imágenes que quieras subir o a través del botón</Typography>
+      <Typography variant='body1'>Para subir imágenes arrastralas aquí o agregalas a través del botón</Typography>
       <input
         type="file"
         accept=".jpg,.png,.webp"
@@ -97,36 +97,36 @@ const ImageUploader = ({
         display: 'flex',
         flexWrap: 'wrap',
       }}>
-      {images.map((file, index) => (
-        <div key={index} style={{
-          position: 'relative',
-          width: '150px',
-          height: '150px',
-          overflow: 'hidden',
-          margin: '10px 5px'
-        }}>
-          <img
-            src={typeof(file) === 'string' ? file : URL.createObjectURL(file)}
-            alt={file.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-          <div style={{ position: 'absolute', top: '5px', right: '5px', color: '#fff', fontWeight: 'bold' }}>
-            <button style={{
-              backgroundColor: '#000',
-              border: '1px solid #ccc',
-              borderRadius: '15px',
-              height: '30px',
-              width: '30px'
-            }}
-            onClick={(e) => {
-              e.preventDefault()
-              handleRemove(index)
-            }}
-            ><Typography variant='body2' color={'#eee'}><strong>X</strong></Typography></button>
-          </div>
+        {images.map((file, index) => (
+          <div key={index} style={{
+            position: 'relative',
+            width: '150px',
+            height: '150px',
+            overflow: 'hidden',
+            margin: '10px 5px'
+          }}>
+            <img
+              src={typeof (file) === 'string' ? file : URL.createObjectURL(file)}
+              alt={file.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div style={{ position: 'absolute', top: '5px', right: '5px', color: '#fff', fontWeight: 'bold' }}>
+              <button style={{
+                backgroundColor: '#000',
+                border: '1px solid #ccc',
+                borderRadius: '15px',
+                height: '30px',
+                width: '30px'
+              }}
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleRemove(index)
+                }}
+              ><Typography variant='body2' color={'#eee'}><strong>X</strong></Typography></button>
+            </div>
 
-        </div>
-      ))}
+          </div>
+        ))}
       </div>
     </div>
   );
