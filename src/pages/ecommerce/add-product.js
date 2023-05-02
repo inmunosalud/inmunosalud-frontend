@@ -28,7 +28,6 @@ import { createProduct, getMainComponents, setRemoveEdit, updateProduct, uploadP
 import { parseDataToEdit } from 'src/utils/functions';
 import { closeSnackBar } from 'src/store/notifications'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
-import Plus from 'mdi-material-ui/Plus'
 
 
 const Modal = ({
@@ -168,17 +167,6 @@ const AddProduct = () => {
     setFields([])
   }
 
-  const setLinks = () => {
-    return Object.values(images)
-  }
-
-  const handleChangeLinks = (prop) => (event) => {
-    setImages({
-      ...images,
-      [prop]: event.target.value
-    })
-  }
-
   const handleImagesUpdate = (images) => {
     setImages(images)
   };
@@ -195,7 +183,7 @@ const AddProduct = () => {
       productName: productName,
       images: images
     }
-    return await dispatch(uploadProductImages(body))
+    return dispatch(uploadProductImages(body))
   }
 
   const onSubmit = (data, event) => {
