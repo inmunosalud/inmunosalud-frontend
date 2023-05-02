@@ -22,9 +22,8 @@ import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import ListProperties from '../components/propertiesProduct';
 import ImageUploader from 'src/views/components/image-uploader/ImageUploader';
-//import utils fns
 import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
-import { createProduct, getMainComponents, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products';
+import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products';
 import { parseDataToEdit } from 'src/utils/functions';
 import { closeSnackBar } from 'src/store/notifications'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
@@ -33,9 +32,8 @@ import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
 const Modal = ({
   open = false,
   onHandleOpenModal = () => { },
-  onSubmitConfirm = () => {}
+  onSubmitConfirm = () => { }
 }) => {
-
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -44,8 +42,8 @@ const Modal = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-      <Button onClick={onHandleOpenModal}>Salir</Button>
-      <Button onClick={onSubmitConfirm}>Crear producto</Button>
+        <Button onClick={onHandleOpenModal}>Salir</Button>
+        <Button onClick={onSubmitConfirm}>Crear producto</Button>
       </DialogActions>
     </Dialog>
   )
@@ -54,8 +52,6 @@ const Modal = ({
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-
-
   const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
@@ -73,7 +69,7 @@ const AddProduct = () => {
       ingredients: '',
       price: '',
       quantity: '',
-   }
+    }
   });
 
   /* images state */
@@ -95,13 +91,10 @@ const AddProduct = () => {
   /* fields of main components property - value form */
   const [fields, setFields] = React.useState([]);
   const [formBody, setFormBody] = React.useState({})
-
   const [mainComponentValue, setMainComponentValue] = React.useState([])
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('');
-
   const [openModal, setOpenModal] = React.useState(false)
-
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -140,7 +133,7 @@ const AddProduct = () => {
   };
 
   const handleAddOption = () => {
-      // Check if the new option is already in the options list
+    // Check if the new option is already in the options list
     const existingOption = mainComponents.find((option) => option.value === newOption);
 
     if (existingOption) {
@@ -192,7 +185,7 @@ const AddProduct = () => {
     handleImagesUpload(data.product).then(productImages => {
       const newProperties = getCustomStructure(values);
       const body = {
-        product: data?.product ,
+        product: data?.product,
         description: data?.description,
         capsuleQuantity: data?.capsuleQuantity,
         capsuleConcentration: data?.capsuleConcentration,
@@ -218,16 +211,12 @@ const AddProduct = () => {
   };
 
   React.useEffect(() => {
-    dispatch(getMainComponents())
+    return () => {
+      dispatch(setRemoveEdit())//cleaning edit values
+    }
   }, [dispatch])
 
   React.useEffect(() => {
-    return () => {
-      dispatch(setRemoveEdit())//cleaning edit values
-     }
-  }, [dispatch])
-
-   React.useEffect(() => {
     if (editItem) {
       reset({
         product: editItem.product,
@@ -247,165 +236,163 @@ const AddProduct = () => {
       const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
       setMainComponentValue(defaultMainComponents)
     }
-   }, [editItem])
+  }, [editItem])
 
   return (
     <>
-    <Card sx={{ margin: '40px 20px'  }}>
-      <CardHeader title={`${editItem ? 'Editar' : 'Agregar'} Producto`} titleTypographyProps={{ variant: 'h6' }} />
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <form onSubmit={handleSubmit(onSubmit)} >
-      <CardContent>
-          <Grid container spacing={5}>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name="product"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.product}
-                    label='Producto'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-
-            </Grid>
-            <Grid item xs={12} sm={6} >
-              <Controller
-                control={control}
-                name="description"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.description}
-                    label='Descripción'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name="capsuleQuantity"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.capsuleQuantity}
-                    label='Cantidad de Cápsulas'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name="capsuleConcentration"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.capsuleConcentration}
-                    label='Concentracion de Cápsulas'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name="instructions"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.instructions}
-                    label='Instrucciones'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
+      <Card sx={{ margin: '40px 20px' }}>
+        <CardHeader title={`${editItem ? 'Editar' : 'Agregar'} Producto`} titleTypographyProps={{ variant: 'h6' }} />
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <form onSubmit={handleSubmit(onSubmit)} >
+          <CardContent>
+            <Grid container spacing={5}>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  control={control}
+                  name="product"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.product}
+                      label='Producto'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} >
+                <Controller
+                  control={control}
+                  name="description"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.description}
+                      label='Descripción'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-              <Controller
-                control={control}
-                name="ingredients"
-                rules={{ required: true }}
-                render={({
-                  field,
-                  fieldState,
-                }) => (
-                  <TextField
-                    error={!!errors.ingredients}
-                    label='Ingredientes'
-                    fullWidth
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Controller
-                control={control}
-                name="price"
-                rules={{ required: true }}
-                render={({ field, formState }) => {
-                  const { value } = field;
-                  if (value >= 0) {
-                    return (
-                      <TextField
-                        label="Precio"
-                        fullWidth
-                        type="number"
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                        }}
-                        {...field}
-                      />
-                    );
-                  } else {
-                    return (
-                      <TextField
-                        label="Precio"
-                        fullWidth
-                        type="number"
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                        }}
-                        {...field}
-                        error
-                      />
-                    );
-                  }
-                }}
+                <Controller
+                  control={control}
+                  name="capsuleQuantity"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.capsuleQuantity}
+                      label='Cantidad de Cápsulas'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
                 />
-                <Grid item xs={12} sx={{marginTop: '15px'}}>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  control={control}
+                  name="capsuleConcentration"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.capsuleConcentration}
+                      label='Concentración de Cápsulas'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  control={control}
+                  name="instructions"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.instructions}
+                      label='Instrucciones'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  control={control}
+                  name="ingredients"
+                  rules={{ required: true }}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <TextField
+                      error={!!errors.ingredients}
+                      label='Ingredientes'
+                      fullWidth
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <Controller
+                  control={control}
+                  name="price"
+                  rules={{ required: true }}
+                  render={({ field, formState }) => {
+                    const { value } = field;
+                    if (value >= 0) {
+                      return (
+                        <TextField
+                          label="Precio"
+                          fullWidth
+                          type="number"
+                          InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                          }}
+                          {...field}
+                        />
+                      );
+                    } else {
+                      return (
+                        <TextField
+                          label="Precio"
+                          fullWidth
+                          type="number"
+                          InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                          }}
+                          {...field}
+                          error
+                        />
+                      );
+                    }
+                  }}
+                />
+                <Grid item xs={12} sx={{ marginTop: '15px' }}>
                   {/* create here dropdown dynammic */}
-
                   <MultiSelectWithAddOption
                     //handle select
                     options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
@@ -420,10 +407,10 @@ const AddProduct = () => {
                   />
                 </Grid>
                 {/* main components fields */}
-                <Typography sx={{margin: '8px 0px'}} variant='h6'>Componentes principales</Typography>
+                <Typography sx={{ margin: '8px 0px' }} variant='h6'>Componentes principales</Typography>
                 {fields.map((field, index) => (
-                <Grid container item xs={12} spacing={5} key={index}>
-                  <Grid item xs={6} sx={{marginTop: '10px'}}>
+                  <Grid container item xs={12} spacing={5} key={index}>
+                    <Grid item xs={6} sx={{ marginTop: '10px' }}>
                       <TextField
                         label="Componente Principal"
                         variant="outlined"
@@ -432,55 +419,54 @@ const AddProduct = () => {
                         onChange={(e) =>
                           handleFieldChange(index, "property", e.target.value)
                         }
-                    />
+                      />
+                    </Grid>
+                    <Grid item xs={6} sx={{ marginTop: '10px' }}>
+                      <TextField
+                        label="Valor"
+                        variant="outlined"
+                        value={field.value}
+                        fullWidth
+                        onChange={(e) =>
+                          handleFieldChange(index, "value", e.target.value)
+                        }
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={6} sx={{marginTop: '10px'}}>
-                    <TextField
-                      label="Valor"
-                      variant="outlined"
-                      value={field.value}
-                      fullWidth
-                      onChange={(e) =>
-                        handleFieldChange(index, "value", e.target.value)
-                      }
-                    />
-                  </Grid>
-                </Grid>
                 ))}
                 <Grid item sx={{ marginTop: '10px' }}>
                 </Grid>
-
               </Grid>
-            <Grid item xs={12} >
-              <Typography sx={{margin: 'auto 0px'}} variant='h5'>Propiedades</Typography>
+              <Grid item xs={12} >
+                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>Propiedades</Typography>
               </Grid>
 
-            <ListProperties
-              values={values}
-              handleChangeProperties={handlePropertiesList}
-            />
+              <ListProperties
+                values={values}
+                handleChangeProperties={handlePropertiesList}
+              />
 
-            <Grid item xs={12}>
-              <Typography sx={{margin: 'auto 0px'}} variant='h5'>Imágenes Del Producto</Typography>
-              <ImageUploader base64Images={editItem ? editItem.urlImages : []} handleImages={handleImagesUpdate}/>
+              <Grid item xs={12}>
+                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>Imágenes Del Producto</Typography>
+                <ImageUploader base64Images={editItem ? editItem.urlImages : []} handleImages={handleImagesUpdate} />
+              </Grid>
             </Grid>
+          </CardContent>
+          <Grid item xs={12}>
+            <Divider sx={{ mb: 2 }} />
           </Grid>
-      </CardContent>
-      <Grid item xs={12}>
-        <Divider sx={{ mb: 2 }} />
-      </Grid>
-      <CardActions>
-        <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-          {editItem ? "Guardar Cambios" :"Crear Producto" }
-        </Button>
-          <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
-          Regresar
-        </Button>
-        </CardActions>
-      </form>
-    </Card>
-    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
-    <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitConfirm={submitConfirm}/>
+          <CardActions>
+            <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
+              {editItem ? "Guardar Cambios" : "Crear Producto"}
+            </Button>
+            <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
+              Regresar
+            </Button>
+          </CardActions>
+        </form>
+      </Card>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+      <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitConfirm={submitConfirm} />
     </>
   )
 }
