@@ -5,53 +5,29 @@ import { useSelector, useDispatch } from 'react-redux'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Alert from '@mui/material/Alert'
-import Table from '@mui/material/Table'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
-import Select from '@mui/material/Select'
-import Switch from '@mui/material/Switch'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
-import TableRow from '@mui/material/TableRow'
-import { styled } from '@mui/material/styles'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
-import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import AlertTitle from '@mui/material/AlertTitle'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import LinearProgress from '@mui/material/LinearProgress'
-import TableContainer from '@mui/material/TableContainer'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import DialogContentText from '@mui/material/DialogContentText'
-import FormHelperText from '@mui/material/FormHelperText'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
-
-// ** Third Party Imports
-import Payment from 'payment'
-import Cards from 'react-credit-cards'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { createMethod , setModal, updateMethod, setModalDelete, deleteMethod} from 'src/store/paymentMethods'
+import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
+import DialogBilling from '../components/dialogs/DialogBilling'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -68,6 +44,12 @@ const defaultPaymentValues = {
   cardNumber: '',
   cvc: ''
 }
+const defautlPaymentEditValues = {
+  alias: '',
+  month: '',
+  year: '',
+  nameOnCard: ''
+}
 
 const paymentSchema = yup.object().shape({
   alias: yup.string().required(),
@@ -80,11 +62,11 @@ const paymentSchema = yup.object().shape({
     .min(4, 'Deben ser 4 digitos')
     .max(4, 'Deben ser 4 digitos'),
   cardNumber: yup
-  .string()
-  .required()
-  .matches(/^[\d*]+$/, "Solo digitos o *")
-  .min(16, "Deben ser 16 digitos")
-  .max(16, "Deben ser 16 digitos"),
+    .string()
+    .required()
+    .matches(/^[\d*]+$/, 'Solo digitos o *')
+    .min(16, 'Deben ser 16 digitos')
+    .max(16, 'Deben ser 16 digitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
@@ -92,6 +74,18 @@ const paymentSchema = yup.object().shape({
     .matches(/^[0-9]+$/, 'Solo digitos')
     .min(3, 'Deben ser 3 digitos')
     .max(3, 'Deben ser 3 digitos')
+})
+
+const paymentSchemaEdit = yup.object().shape({
+  alias: yup.string().required(),
+  month: yup.string().required(),
+  year: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(4, 'Deben ser 4 digitos')
+    .max(4, 'Deben ser 4 digitos'),
+  nameOnCard: yup.string().required()
 })
 
 const UserProfileBilling = ({ methods = [] }) => {
@@ -108,10 +102,10 @@ const UserProfileBilling = ({ methods = [] }) => {
     reset,
     control: paymentControl,
     handleSubmit,
-    formState: { errors: paymentErrors , isSubmitting}
+    formState: { errors: paymentErrors }
   } = useForm({
-    defaultValues: defaultPaymentValues,
-    resolver: yupResolver(paymentSchema)
+    defaultValues: editItem && Object.keys(editItem).length ? defautlPaymentEditValues : defaultPaymentValues,
+    resolver: yupResolver(editItem && Object.keys(editItem).length ? paymentSchemaEdit : paymentSchema)
   })
 
   const isFormEditing = Boolean(editItem)
@@ -134,12 +128,9 @@ const UserProfileBilling = ({ methods = [] }) => {
     setEditItem(item)
     reset({
       alias: item.alias,
-      month: item.expDate.split("/")[0],
-      year: item.expDate.split("/")[1],
-      cardUse: item.cardUse,
-      nameOnCard: item.nameOnCard,
-      cardNumber: item.cardNumber,
-      cvc: item.cvc
+      month: item.expDate.split('/')[0],
+      year: item.expDate.split('/')[1],
+      nameOnCard: item.nameOnCard
     })
 
     dispatch(setModal(true))
@@ -161,7 +152,7 @@ const UserProfileBilling = ({ methods = [] }) => {
     }
   }
 
-  const handleModalDelete = (method) => {
+  const handleModalDelete = method => {
     setDeleteID(method?.id)
     dispatch(setModalDelete(true))
   }
@@ -222,246 +213,16 @@ const UserProfileBilling = ({ methods = [] }) => {
           ))}
         </CardContent>
 
-        <Dialog
-          open={isOpen}
-          onClose={handleEditCardClose}
-          aria-labelledby='user-view-billing-edit-card'
-          sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
-          aria-describedby='user-view-billing-edit-card-description'
-        >
-          <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-            {editItem && Object.keys(editItem).length ?  "Editar Metodo de Pago": "Nuevo Metodo de Pago"}
-          </DialogTitle>
-          <DialogContent style={{paddingTop: "5px"}}>
-            <form key={1} onSubmit={handleSubmit(onPaymentSubmit)}>
-              <Grid container spacing={5}>
-                  {!isFormEditing ? (
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <Controller
-                        name='alias'
-                        control={paymentControl}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            value={value}
-                            label='Alias'
-                            onChange={onChange}
-                            placeholder='Alias'
-                            error={Boolean(paymentErrors['alias'])}
-                            aria-describedby='stepper-linear-payment-alias'
-                          />
-                        )}
-                      />
-                      {paymentErrors['alias'] && (
-                        <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
-                          El campo es requerido
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                ): null}
-
-
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel
-                      id='stepper-linear-payment-country'
-                      error={Boolean(paymentErrors.country)}
-                      htmlFor='stepper-linear-payment-country'
-                    >
-                      MM
-                    </InputLabel>
-                    <Controller
-                      name='month'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <Select
-                          value={value}
-                          label='MM'
-                          onChange={onChange}
-                          error={Boolean(paymentErrors.month)}
-                          labelId='stepper-linear-payment-month'
-                          aria-describedby='stepper-linear-payment-month-helper'
-                        >
-                          <MenuItem value='01'>01</MenuItem>
-                          <MenuItem value='02'>02</MenuItem>
-                          <MenuItem value='03'>03</MenuItem>
-                          <MenuItem value='04'>04</MenuItem>
-                          <MenuItem value='05'>05</MenuItem>
-                          <MenuItem value='06'>06</MenuItem>
-                          <MenuItem value='07'>07</MenuItem>
-                          <MenuItem value='08'>08</MenuItem>
-                          <MenuItem value='09'>09</MenuItem>
-                          <MenuItem value='10'>10</MenuItem>
-                          <MenuItem value='11'>11</MenuItem>
-                          <MenuItem value='12'>12</MenuItem>
-                        </Select>
-                      )}
-                    />
-                    {paymentErrors.month && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-month-helper'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='year'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='AAAA'
-                          onChange={onChange}
-                          placeholder='AAAA'
-                          error={Boolean(paymentErrors['year'])}
-                          aria-describedby='stepper-linear-payment-year'
-                        />
-                      )}
-                    />
-                    {paymentErrors['year'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-year'>
-                        {paymentErrors['year'] ? paymentErrors['year'].message : 'El campo es requerido'}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-
-                {!isFormEditing ? (
-                <Grid item xs={12} sm={8}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="cardNumber"
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label="Numero de la tarjeta"
-                          onChange={onChange}
-                          placeholder="XXXX-XXXX-XXXX-XXXX"
-                          error={Boolean(paymentErrors['cardNumber'])}
-                          aria-describedby="stepper-linear-payment-cardNumber"
-                        />
-                      )}
-                    />
-                    {paymentErrors['cardNumber'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardNumber'>
-                        {paymentErrors['cardNumber'] ? paymentErrors['cardNumber'].message : 'El campo es requerido'}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                ): null}
-
-                {!isFormEditing ? (
-                  <Grid item xs={12} sm={4}>
-                    <FormControl fullWidth>
-                      <Controller
-                        name='cvc'
-                        control={paymentControl}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            value={value}
-                            label='CVV'
-                            onChange={onChange}
-                            placeholder='000'
-                            error={Boolean(paymentErrors['cvc'])}
-                            aria-describedby='stepper-linear-payment-cvc'
-                          />
-                        )}
-                      />
-                      {paymentErrors['cvc'] && (
-                        <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cvc'>
-                          {paymentErrors['cvc'] ? paymentErrors['cvc'].message : 'El campo es requerido'}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                ): null}
-
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='nameOnCard'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='Titular de la tarjeta'
-                          onChange={onChange}
-                          placeholder='Titular de la tarjeta'
-                          error={Boolean(paymentErrors['nameOnCard'])}
-                          aria-describedby='stepper-linear-payment-nameOnCard'
-                        />
-                      )}
-                    />
-                    {paymentErrors['nameOnCard'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-nameOnCard'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-
-                {!isFormEditing ? (
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel
-                      id='stepper-linear-payment-country'
-                      error={Boolean(paymentErrors.country)}
-                      htmlFor='stepper-linear-payment-country'
-                    >
-                      Tipo
-                    </InputLabel>
-                    <Controller
-                      name='cardUse'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <Select
-                          value={value}
-                          label='Tipo'
-                          onChange={onChange}
-                          error={Boolean(paymentErrors.cardUse)}
-                          labelId='stepper-linear-payment-cardUse'
-                          aria-describedby='stepper-linear-payment-cardUse-helper'
-                        >
-                          <MenuItem value='Cobro'>Cobro</MenuItem>
-                          <MenuItem value='Pago'>Pago</MenuItem>
-                        </Select>
-                      )}
-                    />
-                    {paymentErrors.cardUse && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardUse-helper'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                ) : null}
-
-                </Grid>
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-                <Button variant='contained' sx={{ mr: 1 }} type="submit">
-                  Agregar
-              </Button>
-                <Button variant='outlined' color='secondary' onClick={handleEditCardClose}>
-                  Cancelar
-                </Button>
-              </Grid>
-
-            </form>
-          </DialogContent>
-
-        </Dialog>
+        <DialogBilling
+          isOpen={isOpen}
+          onHandleEditCardClose={handleEditCardClose}
+          editItem={editItem}
+          isFormEditing={isFormEditing}
+          paymentControl={paymentControl}
+          paymentErrors={paymentErrors}
+          onPaymentSubmit={onPaymentSubmit}
+          handleSubmit={handleSubmit}
+        />
       </Card>
       <Dialog
         open={isOpenDelete}
@@ -471,15 +232,14 @@ const UserProfileBilling = ({ methods = [] }) => {
         <DialogContent>Seguro de eliminar el metodo seleccionado?</DialogContent>
         <DialogActions>
           <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
-                Agregar
-              </Button>
-              <Button variant='outlined' color='secondary' onClick={handleCloseModal}>
-                Cancelar
-              </Button>
+            Eliminar
+          </Button>
+          <Button variant='outlined' color='secondary' onClick={handleCloseModal}>
+            Cancelar
+          </Button>
         </DialogActions>
       </Dialog>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
-
     </Fragment>
   )
 }

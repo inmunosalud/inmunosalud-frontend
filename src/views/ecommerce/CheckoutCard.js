@@ -23,7 +23,6 @@ import TableCell from '@mui/material/TableCell'
 // ** Third Party Imports
 import ReactToPdf from 'react-to-pdf'
 import moment from 'moment'
-import moment from 'moment'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -197,36 +196,41 @@ const CheckoutCard = ({ data }) => {
                     {themeConfig.templateName}
                   </Typography>
                 </Box>
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant='h6' sx={{ mb: 1 }}>
-                    Dirección
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 1 }}>
-                    {address
-                      ? `${address[0].street ?? ''} ${address[0].extNumber ?? ''} ${
-                          address[0].intNumber ? `- ${address[0].intNumber}` : ''
-                        }`
-                      : null}
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 1 }}>
-                    {address
-                      ? `${address[0].colony ?? ''}, ${address[0].zipCode ?? ''}, ${address[0].federalEntity ?? ''}, ${
-                          address[0].country ?? ''
-                        }`
-                      : null}
-                  </Typography>
-                  <Typography variant='body2'>{formatPhoneNumber(userInfo.phone)}</Typography>
-                </Box>
-                <Box>
-                  <Typography variant='h6' sx={{ mb: 1 }}>
-                    Metodo de pago
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 1 }}>
-                    {paymentMethods
-                      ? `${paymentMethods[0].cardType} - ${paymentMethods[0].cardNumber.slice(-4)}`
-                      : null}
-                  </Typography>
-                </Box>
+
+                {userInfo && paymentMethods[0] && address[0] ? (
+                  <>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant='h6' sx={{ mb: 1 }}>
+                        Dirección
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 1 }}>
+                        {address
+                          ? `${address[0].street ?? ''} ${address[0].extNumber ?? ''} ${
+                              address[0].intNumber ? `- ${address[0].intNumber}` : ''
+                            }`
+                          : null}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 1 }}>
+                        {address
+                          ? `${address[0].colony ?? ''}, ${address[0].zipCode ?? ''}, ${
+                              address[0].federalEntity ?? ''
+                            }, ${address[0].country ?? ''}`
+                          : null}
+                      </Typography>
+                      <Typography variant='body2'>{formatPhoneNumber(userInfo.phone)}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant='h6' sx={{ mb: 1 }}>
+                        Metodo de pago
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 1 }}>
+                        {paymentMethods
+                          ? `${paymentMethods[0].cardType} - ${paymentMethods[0].cardNumber.slice(-4)}`
+                          : null}
+                      </Typography>
+                    </Box>
+                  </>
+                ) : null}
               </Box>
             </Grid>
             <Grid item sm={6} xs={12}>

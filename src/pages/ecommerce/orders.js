@@ -228,7 +228,7 @@ const Orders = () => {
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex',justifyContent: "center", alignItems: "center", marginTop: "100px" }}>
-        <Typography>{`cargando tus pedidos...`}</Typography>
+        <Typography>{`Cargando tus pedidos...`}</Typography>
       </Box>
     )
     

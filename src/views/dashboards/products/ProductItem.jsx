@@ -63,8 +63,8 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 
 // carousel product
 const CarouselProducts = ({ images }) => {
-  const [url1, url2] = images ?? []
-  if (url1 || url2) {
+  // const [url1, url2] = images ?? []
+  if (images) {
     return (
       <Swiper
         spaceBetween={2}
@@ -75,12 +75,11 @@ const CarouselProducts = ({ images }) => {
           width: '300px'
         }}
       >
-        <SwiperSlide >
-          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='primer imagen' src={url1} />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='segunda imagen' src={url2} />
-        </SwiperSlide>
+        {images.map(image => (
+          <SwiperSlide >
+            <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='imagen' src={image} />
+          </SwiperSlide>
+        ))}
       </Swiper>
     )
   }

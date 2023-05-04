@@ -19,7 +19,7 @@ const FooterContent = () => {
             rel='noreferrer'
             href='https://www.vainilladev.com'
           >
-            Vainillad Dev
+            Aviso de privacidad
           </a>
         </Box>
       )}

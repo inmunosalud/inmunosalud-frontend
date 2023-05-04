@@ -14,8 +14,6 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_post(`${PROJECT_ADDRESS}/addresses/${uuid}`, body, auth)
-
-    console.log(response)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(loadInfo(uuid))
     thunkApi.dispatch(setModal(false))
@@ -32,21 +30,18 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
   }
 })
 
-export const addressList = createAsyncThunk('user/list', async (uuid) => {
+export const addressList = createAsyncThunk('user/getAddress', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
-
-    console.log(response)
-
+    const response = await api_get(`${PROJECT_ADDRESS}/addresses/user/${id}`, auth)
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const updateAddress = createAsyncThunk('user/updateAddress', async ({body}, thunkApi) => {
+export const updateAddress = createAsyncThunk('user/updateAddress', async ({ body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -70,7 +65,6 @@ export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, t
     const response = await api_delete(`${PROJECT_ADDRESS}/address/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    console.log(response)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -85,7 +79,12 @@ const initialState = {
   isLoading: false,
   formErrors: null,
   /* users table */
-  address: []
+  address: [],
+
+  selectedAddressInCard: null,
+  isSelectedAddress: false,
+
+  showModal: false
 }
 
 export const addressSlice = createSlice({
@@ -106,6 +105,9 @@ export const addressSlice = createSlice({
     },
     setAddresses: (state, { payload }) => {
       state.address = payload
+    },
+    setSelectedAddressInCart: (state, { payload }) => {
+      ;(state.selectedAddressInCard = payload), (state.isSelectedAddress = true)
     }
   },
   extraReducers: builder => {
@@ -118,7 +120,7 @@ export const addressSlice = createSlice({
         payload: { content }
       } = action
       state.isLoading = false
-      state.users = [...content]
+      state.address = [...content]
     })
 
     builder.addCase(updateAddress.fulfilled, (state, { payload }) => {
@@ -133,4 +135,5 @@ export const addressSlice = createSlice({
 
 export default addressSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setAddresses } = addressSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete, setAddresses, setSelectedAddressInCart } =
+  addressSlice.actions
