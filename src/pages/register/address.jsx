@@ -58,6 +58,7 @@ import { createAddress } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const steps = [
   {
@@ -71,6 +72,10 @@ const steps = [
   {
     title: 'Forma de pago',
     subtitle: 'Ingresa la informacion de tu forma de pago'
+  },
+  {
+    title: 'Datos Bancarios',
+    subtitle: 'Ingresa la informacion para recibir tu pago de comisiones'
   }
 ]
 
@@ -99,6 +104,10 @@ const defaultPaymentValues = {
   nameOnCard: '',
   cardNumber: '',
   cvc: ''
+}
+
+const defaultBankInfoValues = {
+  clabe: ''
 }
 
 const dataSchema = yup.object().shape({
@@ -149,6 +158,15 @@ const paymentSchema = yup.object().shape({
     .max(3, 'Deben ser 3 digitos')
 })
 
+const bankInfoSchema = yup.object().shape({
+  clabe: yup
+        .string()
+        .required()
+        .matches(/^[0-9]+$/, 'Solo digitos')
+        .min(18, 'Deben ser 18 digitos')
+        .max(18, 'Deben ser 18 digitos')
+})
+
 function PAGE() {
   return `/register/register-02`
 }
@@ -169,6 +187,10 @@ export default function Address() {
     value: currentYear + i,
     label: `${currentYear + i}`.slice(-2)
   }));
+
+  useEffect(() => {
+    dispatch(loadSession())
+  }, [])
 
   // ** Hooks
   const {
@@ -200,6 +222,16 @@ export default function Address() {
     resolver: yupResolver(paymentSchema)
   })
 
+  const {
+    reset: bankInfoReset,
+    control: bankInfoControl,
+    handleSubmit: handleBankInfoSubmit,
+    formState: { errors: bankInfoErrors }
+  } = useForm ({
+    defaultValues: defaultBankInfoValues,
+    resolver: yupResolver(bankInfoSchema)
+  })
+
   // Handle Stepper
   const handleBack = () => {
     const newStep = activeStep - 1
@@ -220,11 +252,21 @@ export default function Address() {
   const onAddressSubmit = values => {
     dispatch(createAddress({ body: values, uuid: user.id }))
   }
+
   const onPaymentSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro',
+      cardUse: 'Pago',
       expDate: `${values.month}/${values.year}`
+    }
+
+    dispatch(createMethod({ body, uuid: user.id }))
+  }
+
+  const onBankInfoSubmit = values => {
+    const body = {
+      ...values,
+      cardUse: 'Cobro',
     }
 
     dispatch(createMethod({ body, uuid: user.id }))
@@ -763,6 +805,45 @@ export default function Address() {
             </Grid>
           </form>
         )
+        case 3:
+        return (
+          <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
+            <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='clabe'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='CLABE Interbancaria'
+                        onChange={onChange}
+                        placeholder='XXXXXXXXXXXXXXXXXX'
+                        error={Boolean(bankInfoErrors['clabe'])}
+                        aria-describedby='stepper-linear-bankinfo-clabe'
+                      />
+                    )}
+                  />
+                  {bankInfoErrors['clabe'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankinfo-clabe'>
+                      {bankInfoErrors['clabe'] ? bankInfoErrors['clabe'].message : 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
+                  Atras
+                </Button>
+                <Button size='large' type='submit' variant='contained'>
+                  Siguiente
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )
       default:
         return null
     }
@@ -812,7 +893,7 @@ export default function Address() {
                         addressErrors.zipCode ||
                         addressErrors.country ||
                         addressErrors.city) &&
-                      activeStep === 0
+                      activeStep === 1
                     ) {
                       labelProps.error = true
                     } else if (
@@ -822,8 +903,10 @@ export default function Address() {
                         paymentErrors.cvc ||
                         paymentErrors.cardNumber ||
                         paymentErrors.cardName) &&
-                      activeStep === 1
+                      activeStep === 2
                     ) {
+                      labelProps.error = true
+                    } else if (bankInfoErrors.clabe && activeStep === 3) {
                       labelProps.error = true
                     }
                   }
