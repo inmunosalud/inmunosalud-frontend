@@ -14,10 +14,14 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  DialogContentText
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Snackbar
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { getComissions, liquidationComisions, setOpenModal } from 'src/store/comissions'
+import SnackbarAlert from 'src/views/components/snackbar/SnackbarAlert'
 
 const COLUMNS = [
   {
@@ -81,7 +85,11 @@ const Comissions = () => {
   const dispatch = useDispatch()
   const { comissions, isLoading, openModal } = useSelector(state => state.comissions)
 
+  const { message, open, severity } = useSelector(state => state.notifications)
   const [rowSelectionModel, setRowSelectionModel] = React.useState([])
+  const [authActionModal, setAuthActionModal] = React.useState(false)
+
+  const [showNotification, setShowNotification] = React.useState(open)
 
   React.useEffect(() => {
     dispatch(getComissions())
@@ -91,8 +99,13 @@ const Comissions = () => {
     dispatch(setOpenModal(true))
   }
 
+  React.useEffect(() => {
+    setShowNotification(open)
+  }, [open])
+
   const confirmSubmit = () => {
     console.log({ rowSelectionModel })
+    debugger
     dispatch(liquidationComisions(rowSelectionModel))
   }
 
@@ -103,7 +116,7 @@ const Comissions = () => {
           title='Comisiones'
           action={
             <Box>
-              <Button variant='contained' disabled={!rowSelectionModel.length} onClick={handleAction}>
+              <Button variant='contained' disabled={!rowSelectionModel.length} onClick={confirmSubmit}>
                 Liquidar Comisiones
               </Button>
             </Box>
@@ -125,27 +138,9 @@ const Comissions = () => {
           rowSelectionModel={rowSelectionModel}
         />
       </Card>
-      <Dialog
-        maxWidth='md'
-        open={openModal}
-        disableEscapeKeyDown
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Estas seguro de liquidar las comisiones seleccionadas?.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions className='dialog-actions-dense'>
-          <Button variant='contained' onClick={() => dispatch(setOpenModal(false))}>
-            Regresar
-          </Button>
-          <Button variant='contained' onClick={confirmSubmit}>
-            Liquidar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {showNotification && (
+        <SnackbarAlert severity={severity} isOpen={showNotification} message={message}></SnackbarAlert>
+      )}
     </React.Fragment>
   )
 }

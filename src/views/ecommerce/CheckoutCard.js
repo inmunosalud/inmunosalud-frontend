@@ -37,6 +37,29 @@ const MUITableCell = styled(TableCell)(({ theme }) => ({
   paddingBottom: `${theme.spacing(1)} !important`
 }))
 
+const getDate = () => {
+  const months = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+  ]
+
+  const date = moment(new Date()).format('DD/MM/YYYY').split('/')
+
+  const month = date[1].charAt(0) === 0 ? Number(date[1].charAt(1)) : Number(date[1])
+
+  return `${date[0]} de ${months[month - 1]} de ${date[2]}`
+}
+
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

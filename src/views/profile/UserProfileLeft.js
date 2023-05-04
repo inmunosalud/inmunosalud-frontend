@@ -1,5 +1,6 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -38,6 +39,10 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 
+// ** store imports
+import { getUserInfo } from 'src/store/users'
+import { React } from 'mdi-material-ui'
+
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
   top: '0.2rem',
@@ -62,6 +67,14 @@ const roleColors = {
 }
 
 const UserProfileLeft = ({ data }) => {
+  const { userInfo } = useSelector(state => state.users)
+  const dispatch = useDispatch()
+  debugger
+
+  useEffect(() => {
+    dispatch(getUserInfo(data?.id))
+  }, [])
+
   const renderUserAvatar = () => {
     if (data) {
       return (
@@ -115,7 +128,7 @@ const UserProfileLeft = ({ data }) => {
                   </CustomAvatar>
                   <Box>
                     <Typography variant='h6' sx={{ lineHeight: 1.3 }}>
-                      1 año
+                      {userInfo?.antiquity}
                     </Typography>
                     <Typography variant='body2'>Tiempo</Typography>
                   </Box>
@@ -126,7 +139,7 @@ const UserProfileLeft = ({ data }) => {
                   </CustomAvatar>
                   <Box>
                     <Typography variant='h6' sx={{ lineHeight: 1.3 }}>
-                      43
+                      {userInfo?.numberOfPurchases}
                     </Typography>
                     <Typography variant='body2'>Compras</Typography>
                   </Box>

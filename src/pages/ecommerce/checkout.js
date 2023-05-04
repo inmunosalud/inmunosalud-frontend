@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
@@ -10,7 +10,7 @@ import { loadInfo } from 'src/store/paymentMethods'
 import { getUserInfo } from 'src/store/users'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 
-const InvoicePreview = ({ }) => {
+const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
   // ** State
   const [error, setError] = useState(false)
@@ -19,8 +19,6 @@ const InvoicePreview = ({ }) => {
 
   const toggleSendInvoiceDrawer = () => setSendInvoiceOpen(!sendInvoiceOpen)
   const toggleAddPaymentDrawer = () => setAddPaymentOpen(!addPaymentOpen)
-
-
 
   const { total, products, id } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
@@ -37,18 +35,18 @@ const InvoicePreview = ({ }) => {
   }
 
   const handleConfirmOrder = () => {
-    console.log("send order");
-   /*  const body = {
-      idAddress,
-      idPaymentMethod,
-      products,
-      idUser: user?.id
-    }
+    console.log('send order')
+    // const body = {
+    //   idAddress,
+    //   idPaymentMethod,
+    //   products,
+    //   idUser: user?.id
+    // }
 
-    dispatch(createOrder(body)) */
+    // dispatch(createOrder(body))
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!user.id) dispatch(loadSession())
     dispatch(loadInfo(user.id))
     dispatch(getUserInfo(user.id))
