@@ -42,6 +42,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 // ** store imports
 import { getUserInfo } from 'src/store/users'
 import { React } from 'mdi-material-ui'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -69,9 +70,9 @@ const roleColors = {
 const UserProfileLeft = ({ data }) => {
   const { userInfo } = useSelector(state => state.users)
   const dispatch = useDispatch()
-  debugger
 
   useEffect(() => {
+    dispatch(loadSession())
     dispatch(getUserInfo(data?.id))
   }, [])
 

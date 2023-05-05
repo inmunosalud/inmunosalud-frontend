@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 // ** MUI Imports
@@ -19,15 +19,16 @@ import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 
 // ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod } from 'src/store/paymentMethods'
+import { createMethod, setModal, updateMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
-import DialogBilling from '../components/dialogs/DialogBilling'
+import DialogBankInfo from '../components/dialogs/DialogBankInfo'
+import { loadInfo } from 'src/store/paymentMethods'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -35,210 +36,111 @@ const CARD_LOGOS = {
   MASTERCARD: '/images/logos/mastercard.png'
 }
 
-const defaultPaymentValues = {
-  alias: '',
-  month: '',
-  year: '',
-  cardUse: '',
-  nameOnCard: '',
-  cardNumber: '',
-  cvc: ''
-}
-const defautlPaymentEditValues = {
-  alias: '',
-  month: '',
-  year: '',
-  nameOnCard: ''
+const defaultBankInfoValues = {
+  clabe: ''
 }
 
-const paymentSchema = yup.object().shape({
-  alias: yup.string().required(),
-  month: yup.string().required(),
-  cardUse: yup.string().required(),
-  year: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
-  cardNumber: yup
+const bankInfoSchema = yup.object().shape({
+  clabe: yup
     .string()
     .required()
     .matches(/^[\d*]+$/, 'Solo digitos o *')
-    .min(16, 'Deben ser 16 digitos')
-    .max(16, 'Deben ser 16 digitos'),
-  nameOnCard: yup.string().required(),
-  cvc: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(3, 'Deben ser 3 digitos')
-    .max(3, 'Deben ser 3 digitos')
+    .min(18, 'Deben ser 18 digitos')
+    .max(18, 'Deben ser 18 digitos')
 })
 
-const paymentSchemaEdit = yup.object().shape({
-  alias: yup.string().required(),
-  month: yup.string().required(),
-  year: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
-  nameOnCard: yup.string().required()
-})
-
-const UserProfileBilling = ({ bankInfo = {}}) => {
+const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const dispatch = useDispatch()
   // ** States
-
-  const [editItem, setEditItem] = useState(null)
-  const [deleteID, setDeleteID] = useState(null)
+  const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
 
   const { user } = useSelector(state => state.dashboard.general)
   const { isOpen, isOpenDelete } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
-    control: paymentControl,
+    control: bankInfoControl,
     handleSubmit,
-    formState: { errors: paymentErrors }
+    formState: { errors: bankInfoErrors }
   } = useForm({
-    defaultValues: editItem && Object.keys(editItem).length ? defautlPaymentEditValues : defaultPaymentValues,
-    resolver: yupResolver(editItem && Object.keys(editItem).length ? paymentSchemaEdit : paymentSchema)
+    defaultValues: defaultBankInfoValues,
+    resolver: yupResolver(bankInfoSchema)
   })
 
-  const isFormEditing = Boolean(editItem)
+  useEffect(() => setClabeIsEmpty(!bankInfo.clabe), [])
 
-  const onPaymentSubmit = values => {
+  const onBankInfoSubmit = values => {
     const body = {
       ...values,
-      expDate: `${values.month}/${values.year}`
+      cardUse: 'Cobro'
     }
-    if (editItem && Object.keys(editItem).length) {
-      dispatch(updateMethod({ body, uuid: user.id, idPaymentMethod: editItem?.id }))
-    } else {
-      dispatch(createMethod({ body, uuid: user.id }))
-    }
+
+    dispatch(
+      clabeIsEmpty
+        ? createMethod({ body, uuid: user.id })
+        : updateMethod({ body, uuid: user.id, idPaymentMethod: bankInfo.id })
+    )
+    dispatch(loadInfo(user.id))
     handleEditCardClose()
   }
 
   // Handle Edit Card dialog and get card ID
   const handleEditCardClickOpen = item => {
-    setEditItem(item)
     reset({
-      alias: item.alias,
-      month: item.expDate.split('/')[0],
-      year: item.expDate.split('/')[1],
-      nameOnCard: item.nameOnCard
+      clabe: item.clabe
     })
 
     dispatch(setModal(true))
   }
 
-  const handleAddCardClickOpen = () => {
-    dispatch(setModal(true))
-  }
-
   const handleEditCardClose = () => {
-    setEditItem(null)
-    reset(defaultPaymentValues)
+    reset(defaultBankInfoValues)
     dispatch(setModal(false))
-  }
-
-  const sendDelete = () => {
-    if (deleteID) {
-      dispatch(deleteMethod(deleteID))
-    }
-  }
-
-  const handleModalDelete = method => {
-    setDeleteID(method?.id)
-    dispatch(setModalDelete(true))
-  }
-
-  const handleCloseModal = () => {
-    reset(defaultPaymentValues)
-    dispatch(setModalDelete(false))
   }
 
   return (
     <Fragment>
       <Card sx={{ mb: 6 }}>
-        <CardHeader
-          title='Metodos de Pago'
-          titleTypographyProps={{ variant: 'h6' }}
-          action={
-            <Button variant='contained' onClick={handleAddCardClickOpen}>
-              <Plus sx={{ mr: 1, fontSize: '1.125rem' }} />
-              Agregar
-            </Button>
-          }
-        />
+        <CardHeader title='Datos Bancarios' titleTypographyProps={{ variant: 'h6' }} />
         <CardContent>
-          {methods.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                p: 5,
-                display: 'flex',
-                borderRadius: 1,
-                flexDirection: ['column', 'row'],
-                justifyContent: ['space-between'],
-                alignItems: ['flex-start', 'center'],
-                mb: index !== methods.length - 1 ? 4 : undefined,
-                border: theme => `1px solid ${theme.palette.divider}`
-              }}
-            >
-              <div>
-                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardcardUse]} />
-                <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
-                </Box>
-                <Typography variant='body2'>{item.cardNumber}</Typography>
-              </div>
-
-              <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(item)}>
-                  Editar
-                </Button>
-                <Button onClick={() => handleModalDelete(item)}>
-                  <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                </Button>
-                <Typography variant='body2' sx={{ mt: 5 }}>
-                  Expira el {item.expDate}
-                </Typography>
+          <Box
+            key={0}
+            sx={{
+              p: 5,
+              display: 'flex',
+              borderRadius: 1,
+              flexDirection: ['column', 'row'],
+              justifyContent: ['space-between'],
+              alignItems: ['flex-start', 'center'],
+              mb: 12,
+              border: theme => `1px solid ${theme.palette.divider}`
+            }}
+          >
+            <div>
+              <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria</Typography>
               </Box>
+              <Typography variant='body2'>{bankInfo.clabe}</Typography>
+            </div>
+
+            <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
+              <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(bankInfo)}>
+                Editar
+              </Button>
             </Box>
-          ))}
+          </Box>
         </CardContent>
 
-        <DialogBilling
+        <DialogBankInfo
           isOpen={isOpen}
           onHandleEditCardClose={handleEditCardClose}
-          editItem={editItem}
-          isFormEditing={isFormEditing}
-          paymentControl={paymentControl}
-          paymentErrors={paymentErrors}
-          onPaymentSubmit={onPaymentSubmit}
+          bankInfoControl={bankInfoControl}
+          bankInfoErrors={bankInfoErrors}
+          onBankInfoSubmit={onBankInfoSubmit}
           handleSubmit={handleSubmit}
         />
       </Card>
-      <Dialog
-        open={isOpenDelete}
-        onClose={handleCloseModal}
-        sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
-      >
-        <DialogContent>Seguro de eliminar el metodo seleccionado?</DialogContent>
-        <DialogActions>
-          <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
-            Eliminar
-          </Button>
-          <Button variant='outlined' color='secondary' onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-        </DialogActions>
-      </Dialog>
+
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Fragment>
   )

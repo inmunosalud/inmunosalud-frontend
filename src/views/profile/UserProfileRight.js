@@ -13,6 +13,7 @@ import MuiTab from '@mui/material/Tab'
 import { Bank, CreditCard, Home } from 'mdi-material-ui'
 import UserProfileBilling from './UserProfileBilling'
 import UserProfileAddress from './UserProfileAddress'
+import UserProfileBankInfo from './UserProfileBankInfo'
 
 // ** Styled Tab component
 const Tab = styled(MuiTab)(({ theme }) => ({
@@ -24,7 +25,7 @@ const Tab = styled(MuiTab)(({ theme }) => ({
   }
 }))
 
-const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {}}) => {
+const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {} }) => {
   // ** State
   const [value, setValue] = useState('address')
 
@@ -43,7 +44,7 @@ const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {}}) => {
       >
         <Tab value='address' label='Direcciones' icon={<Home />} />
         <Tab value='paymentMethods' label='Metodos de pago' icon={<CreditCard />} />
-        <Tab value='bankInfo' label='Datos bancarios' icon={<Bank/>} />
+        <Tab value='bankInfo' label='Datos bancarios' icon={<Bank />} />
       </TabList>
       <Box sx={{ mt: 6 }}>
         <TabPanel sx={{ p: 0 }} value='address'>
@@ -52,8 +53,8 @@ const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {}}) => {
         <TabPanel sx={{ p: 0 }} value='paymentMethods'>
           <UserProfileBilling methods={methods} />
         </TabPanel>
-        <TabPanel sx={{ p: 0 }} value='paymentMethods'>
-          <UserProfileBankInfo />
+        <TabPanel sx={{ p: 0 }} value='bankInfo'>
+          <UserProfileBankInfo bankInfo={bankInfo} />
         </TabPanel>
       </Box>
     </TabContext>

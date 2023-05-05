@@ -39,7 +39,7 @@ const defaultPaymentValues = {
   alias: '',
   month: '',
   year: '',
-  cardUse: '',
+  cardUse: 'Pago',
   nameOnCard: '',
   cardNumber: '',
   cvc: ''
@@ -54,7 +54,6 @@ const defautlPaymentEditValues = {
 const paymentSchema = yup.object().shape({
   alias: yup.string().required(),
   month: yup.string().required(),
-  cardUse: yup.string().required(),
   year: yup
     .string()
     .required()
@@ -191,7 +190,7 @@ const UserProfileBilling = ({ methods = [] }) => {
               }}
             >
               <div>
-                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardcardUse]} />
+                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
                 <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                   <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
                 </Box>
