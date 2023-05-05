@@ -105,7 +105,6 @@ const Comissions = () => {
 
   const confirmSubmit = () => {
     console.log({ rowSelectionModel })
-    debugger
     dispatch(liquidationComisions(rowSelectionModel))
   }
 

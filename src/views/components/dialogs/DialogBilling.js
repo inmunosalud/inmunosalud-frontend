@@ -25,6 +25,15 @@ export default function DialogBilling({
   handleSubmit = () => {},
   onPaymentSubmit = () => {}
 }) {
+  // Get the current year
+  const currentYear = new Date().getFullYear()
+
+  // Generate an array of options for the next 6 years
+  const options = Array.from({ length: 6 }, (_, i) => ({
+    value: currentYear + i,
+    label: `${currentYear + i}`.slice(-2)
+  }))
+
   return (
     <Card>
       <Dialog
@@ -113,19 +122,30 @@ export default function DialogBilling({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
+                  <InputLabel
+                    id='stepper-linear-payment-country'
+                    error={Boolean(paymentErrors.country)}
+                    htmlFor='stepper-linear-payment-country'
+                  >
+                    YY
+                  </InputLabel>
                   <Controller
                     name='year'
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <TextField
+                      <Select
                         value={value}
-                        label='AAAA'
+                        label='AA'
                         onChange={onChange}
-                        placeholder='AAAA'
+                        placeholder='AA'
                         error={Boolean(paymentErrors['year'])}
                         aria-describedby='stepper-linear-payment-year'
-                      />
+                      >
+                        {options.map((year, _) => {
+                          return <MenuItem value={year.value}>{year.label}</MenuItem>
+                        })}
+                      </Select>
                     )}
                   />
                   {paymentErrors['year'] && (
@@ -214,43 +234,6 @@ export default function DialogBilling({
                   )}
                 </FormControl>
               </Grid>
-
-              {isFormEditing ? null : (
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel
-                      id='stepper-linear-payment-country'
-                      error={Boolean(paymentErrors.country)}
-                      htmlFor='stepper-linear-payment-country'
-                    >
-                      Tipo
-                    </InputLabel>
-                    <Controller
-                      name='cardUse'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <Select
-                          value={value}
-                          label='Tipo'
-                          onChange={onChange}
-                          error={Boolean(paymentErrors.cardUse)}
-                          labelId='stepper-linear-payment-cardUse'
-                          aria-describedby='stepper-linear-payment-cardUse-helper'
-                        >
-                          <MenuItem value='Cobro'>Cobro</MenuItem>
-                          <MenuItem value='Pago'>Pago</MenuItem>
-                        </Select>
-                      )}
-                    />
-                    {paymentErrors.cardUse && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-cardUse-helper'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-              )}
             </Grid>
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <Button variant='contained' sx={{ mr: 1 }} type='submit'>
