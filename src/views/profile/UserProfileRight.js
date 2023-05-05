@@ -9,20 +9,8 @@ import TabContext from '@mui/lab/TabContext'
 import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
 
-// ** Icons Imports
-import LockOutline from 'mdi-material-ui/LockOutline'
-import BellOutline from 'mdi-material-ui/BellOutline'
-import LinkVariant from 'mdi-material-ui/LinkVariant'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
-import BookmarkOutline from 'mdi-material-ui/BookmarkOutline'
-
 // ** Demo Components Imports
-import UserViewBilling from 'src/views/apps/user/view/UserViewBilling'
-import UserViewOverview from 'src/views/apps/user/view/UserViewOverview'
-import UserViewSecurity from 'src/views/apps/user/view/UserViewSecurity'
-import UserViewConnection from 'src/views/apps/user/view/UserViewConnection'
-import UserViewNotification from 'src/views/apps/user/view/UserViewNotification'
-import { CreditCard, Home } from 'mdi-material-ui'
+import { Bank, CreditCard, Home } from 'mdi-material-ui'
 import UserProfileBilling from './UserProfileBilling'
 import UserProfileAddress from './UserProfileAddress'
 
@@ -36,7 +24,7 @@ const Tab = styled(MuiTab)(({ theme }) => ({
   }
 }))
 
-const UserProfileRight = ({ methods = [], addresses = [] }) => {
+const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {}}) => {
   // ** State
   const [value, setValue] = useState('address')
 
@@ -55,6 +43,7 @@ const UserProfileRight = ({ methods = [], addresses = [] }) => {
       >
         <Tab value='address' label='Direcciones' icon={<Home />} />
         <Tab value='paymentMethods' label='Metodos de pago' icon={<CreditCard />} />
+        <Tab value='bankInfo' label='Datos bancarios' icon={<Bank/>} />
       </TabList>
       <Box sx={{ mt: 6 }}>
         <TabPanel sx={{ p: 0 }} value='address'>
@@ -62,6 +51,9 @@ const UserProfileRight = ({ methods = [], addresses = [] }) => {
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='paymentMethods'>
           <UserProfileBilling methods={methods} />
+        </TabPanel>
+        <TabPanel sx={{ p: 0 }} value='paymentMethods'>
+          <UserProfileBankInfo />
         </TabPanel>
       </Box>
     </TabContext>
