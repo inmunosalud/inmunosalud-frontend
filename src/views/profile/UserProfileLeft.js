@@ -7,29 +7,12 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import Select from '@mui/material/Select'
-import Switch from '@mui/material/Switch'
-import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import InputAdornment from '@mui/material/InputAdornment'
-import LinearProgress from '@mui/material/LinearProgress'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Icons Imports
 import Check from 'mdi-material-ui/Check'
-import Circle from 'mdi-material-ui/Circle'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
 
 // ** Custom Components
@@ -38,6 +21,8 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
+import { setModal } from 'src/store/users'
+import Modal from '../dashboards/users/Modal'
 
 // ** store imports
 import { getUserInfo } from 'src/store/users'
@@ -71,6 +56,12 @@ const UserProfileLeft = ({ data }) => {
   const { userInfo } = useSelector(state => state.users)
   const dispatch = useDispatch()
 
+  const { showModal } = useSelector(state => state.users)
+
+  const handleModal = () => {
+    dispatch(setModal(false))
+  }
+
   useEffect(() => {
     dispatch(loadSession())
     dispatch(getUserInfo(data?.id))
@@ -100,6 +91,12 @@ const UserProfileLeft = ({ data }) => {
           <Card>
             <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
               {renderUserAvatar()}
+              <Typography variant='h6' sx={{ mb: 2 }}>
+                {userInfo?.firstName} {userInfo?.lastName}
+              </Typography>
+              <Button variant='outlined' sx={{ mb: 3 }} onClick={() => dispatch(setModal(true))}>
+                Editar Nombre
+              </Button>
               <Typography variant='h6' sx={{ mb: 2 }}>
                 {data.email}
               </Typography>
@@ -149,6 +146,8 @@ const UserProfileLeft = ({ data }) => {
             </CardContent>
           </Card>
         </Grid>
+        {/* New Param showOnlyName to only show name and last name inputs*/}
+        <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={userInfo} showOnlyName={true} />
       </Grid>
     )
   } else {
