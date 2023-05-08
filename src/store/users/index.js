@@ -22,7 +22,7 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
       token: response.content.token
     }
 
-    Router.push({pathname: '/register/welcome'})
+    Router.push({ pathname: '/register/welcome' })
 
     return newUser
   } catch (error) {
@@ -61,13 +61,16 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   }
 })
 
-export const updateUser = createAsyncThunk('user/updateUser', async ({body, uuid}, thunkApi) => {
+export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, loadUserData }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_put(`${PROYECT}/users/${uuid}`, body, auth)
+    console.log(response)
     thunkApi.dispatch(nextStep())
     thunkApi.dispatch(setModal(false))
+    // If param loadUserData values is true, load the user info again
+    loadUserData && thunkApi.dispatch(getUserInfo(uuid))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     //thunkApi.dispatch(usersList())
     return response
