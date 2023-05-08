@@ -29,7 +29,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from 'src/store/products'
 import Router from 'next/router'
 
-
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
   padding: theme.spacing(17.5, 36, 28.25),
@@ -110,7 +109,7 @@ const Pricing = () => {
 
   useEffect(() => {
     dispatch(getProducts())
-  }, [dispatch])
+  }, [])
 
   const handleChange = e => {
     if (e.target.checked) {
@@ -126,10 +125,10 @@ const Pricing = () => {
 
   return (
     <>
-      <Box sx={{position:"relative"}}>
-        <Image src={BannerPrincipal} height={600}/>
+      <Box sx={{ position: 'relative' }}>
+        <Image src={BannerPrincipal} height={600} />
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-          <Image src={Logo} height={150} width={230}/>
+          <Image src={Logo} height={150} width={230} />
         </Box>
       </Box>
 
@@ -140,7 +139,7 @@ const Pricing = () => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          {products ? <NewProducts plan={plan} data={products.content.slice(1)} /> : null}
+          {products ? <NewProducts plan={plan} data={products.content} /> : null}
         </Grid>
         <Grid container justifyContent='center' sx={{ mb: 6 }} xs={12}>
           <Button color='primary' variant='contained' onClick={handleSeeMoreProducts}>
@@ -150,12 +149,12 @@ const Pricing = () => {
       </Grid>
 
       <Card>
-        <CardContent sx={{ display: 'flex', padding: '0', flexWrap: 'wrap'}}>
+        <CardContent sx={{ display: 'flex', padding: '0', flexWrap: 'wrap' }}>
           <Box sx={{ flex: '1', padding: '2rem' }}>
             <AboutUs />
           </Box>
           <Box sx={{ flex: '1' }}>
-            <Image src={Banner} height={400} width={800} alt='aboutUs' style={{objectFit: 'cover'}}/>
+            <Image src={Banner} height={400} width={800} alt='aboutUs' style={{ objectFit: 'cover' }} />
           </Box>
         </CardContent>
         <PricingCTA />

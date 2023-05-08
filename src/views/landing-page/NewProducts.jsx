@@ -10,12 +10,14 @@ const NewProducts = props => {
   const { plan, data } = props
 
   const renderPlan = () => {
-    return data?.map(item => {
-      return (
-        <Grid item xs={12} md={3} key={item.product.toLowerCase()}>
-          <Product plan={plan} data={item} />
-        </Grid>
-      )
+    return data?.map((item, index) => {
+      if (index < 3)
+        return (
+          <Grid item xs={12} md={3} key={item.product.toLowerCase()}>
+            <Product plan={plan} data={item} />
+          </Grid>
+        )
+      else return null
     })
   }
 
