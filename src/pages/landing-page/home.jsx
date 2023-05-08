@@ -1,6 +1,6 @@
 // ** React Imports
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -17,12 +17,18 @@ import PricingHeader from 'src/views/pages/pricing/PricingHeader'
 import PricingFooter from 'src/views/pages/pricing/PricingFooter'
 import { Box, Button, Grid, Typography } from '@mui/material'
 
-import Banner from 'public/images/banners/Banner-Web-Halloween.jpg'
+import Banner from 'public/images/banners/banner.webp'
+import BannerPrincipal from 'public/images/banners/ImagenBanner.webp'
+import Logo from 'public/images/logos/LogoBlanco.webp'
 import { PlusMinus } from 'mdi-material-ui'
 import NewProducts from 'src/views/landing-page/NewProducts'
 import AboutUs from 'src/views/landing-page/AboutUs'
 import FAQs from 'src/views/landing-page/FAQs'
 import Footer from 'src/views/landing-page/Footer'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProducts } from 'src/store/products'
+import Router from 'next/router'
+
 
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
@@ -36,49 +42,38 @@ const CardContent = styled(MuiCardContent)(({ theme }) => ({
   }
 }))
 
-const StyledBox = styled(Box)(({ theme }) => ({
-  //   padding: theme.spacing(17.5, 36, 28.25),
-
-  [theme.breakpoints.down('xl')]: {
-    // padding: theme.spacing(12.5, 20, 20)
-  },
-  [theme.breakpoints.down('sm')]: {
-    // padding: theme.spacing(10, 5)
-  }
-}))
-
-const products = [
-  {
-    imgWidth: 264,
-    title: 'Producto 1',
-    imgHeight: 163,
-    monthlyPrice: 0,
-    currentPlan: true,
-    popularPlan: false,
-    subtitle: 'A simple start for everyone',
-    imgSrc: '/images/pages/pricing-tree-1.png'
-  },
-  {
-    imgWidth: 264,
-    imgHeight: 163,
-    monthlyPrice: 49,
-    title: 'Producto 2',
-    popularPlan: true,
-    currentPlan: false,
-    subtitle: 'For small to medium businesses',
-    imgSrc: '/images/pages/pricing-tree-2.png'
-  },
-  {
-    imgWidth: 264,
-    imgHeight: 163,
-    monthlyPrice: 99,
-    popularPlan: false,
-    currentPlan: false,
-    title: 'Producto 3',
-    subtitle: 'Solution for big organizations',
-    imgSrc: '/images/pages/pricing-tree-3.png'
-  }
-]
+// const products = [
+//   {
+//     imgWidth: 264,
+//     title: 'Producto 1',
+//     imgHeight: 163,
+//     monthlyPrice: 0,
+//     currentPlan: true,
+//     popularPlan: false,
+//     subtitle: 'A simple start for everyone',
+//     imgSrc: '/images/pages/pricing-tree-1.png'
+//   },
+//   {
+//     imgWidth: 264,
+//     imgHeight: 163,
+//     monthlyPrice: 49,
+//     title: 'Producto 2',
+//     popularPlan: true,
+//     currentPlan: false,
+//     subtitle: 'For small to medium businesses',
+//     imgSrc: '/images/pages/pricing-tree-2.png'
+//   },
+//   {
+//     imgWidth: 264,
+//     imgHeight: 163,
+//     monthlyPrice: 99,
+//     popularPlan: false,
+//     currentPlan: false,
+//     title: 'Producto 3',
+//     subtitle: 'Solution for big organizations',
+//     imgSrc: '/images/pages/pricing-tree-3.png'
+//   }
+// ]
 
 const questions = [
   {
@@ -110,6 +105,12 @@ const questions = [
 const Pricing = () => {
   // ** States
   const [plan, setPlan] = useState('monthly')
+  const { products, isLoading } = useSelector(state => state.products)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getProducts())
+  }, [dispatch])
 
   const handleChange = e => {
     if (e.target.checked) {
@@ -119,11 +120,18 @@ const Pricing = () => {
     }
   }
 
+  const handleSeeMoreProducts = () => {
+    Router.push('/ecommerce/products')
+  }
+
   return (
     <>
-      <StyledBox>
-        <Image src={Banner} />
-      </StyledBox>
+      <Box sx={{position:"relative"}}>
+        <Image src={BannerPrincipal} height={600}/>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+          <Image src={Logo} height={150} width={230}/>
+        </Box>
+      </Box>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -132,22 +140,22 @@ const Pricing = () => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <NewProducts plan={plan} data={products} />
+          {products ? <NewProducts plan={plan} data={products.content.slice(1)} /> : null}
         </Grid>
         <Grid container justifyContent='center' sx={{ mb: 6 }} xs={12}>
-          <Button color='primary' variant='contained'>
+          <Button color='primary' variant='contained' onClick={handleSeeMoreProducts}>
             Ver Mas Productos
           </Button>
         </Grid>
       </Grid>
 
       <Card>
-        <CardContent sx={{ display: 'flex', padding: '0' }}>
+        <CardContent sx={{ display: 'flex', padding: '0', flexWrap: 'wrap'}}>
           <Box sx={{ flex: '1', padding: '2rem' }}>
             <AboutUs />
           </Box>
           <Box sx={{ flex: '1' }}>
-            <Image height={1300} src={Banner} />
+            <Image src={Banner} height={400} width={800} alt='aboutUs' style={{objectFit: 'cover'}}/>
           </Box>
         </CardContent>
         <PricingCTA />

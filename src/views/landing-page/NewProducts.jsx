@@ -12,7 +12,7 @@ const NewProducts = props => {
   const renderPlan = () => {
     return data?.map(item => {
       return (
-        <Grid item xs={12} md={3} key={item.title.toLowerCase()}>
+        <Grid item xs={12} md={3} key={item.product.toLowerCase()}>
           <Product plan={plan} data={item} />
         </Grid>
       )
