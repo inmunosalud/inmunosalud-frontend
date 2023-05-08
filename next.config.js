@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 /** @type {import('next').NextConfig} */
 
@@ -9,7 +9,7 @@ const withTM = require('next-transpile-modules')([
   '@fullcalendar/daygrid',
   '@fullcalendar/list',
   '@fullcalendar/timegrid'
-])
+]);
 
 module.exports = withTM({
   trailingSlash: true,
@@ -18,12 +18,15 @@ module.exports = withTM({
     esmExternals: false,
     jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
   },
+  images: {
+    domains: ['products-images-9fe5.s3.amazonaws.com'],
+  },
   webpack: config => {
     config.resolve.alias = {
       ...config.resolve.alias,
       apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
-    }
+    };
 
-    return config
+    return config;
   }
-})
+});
