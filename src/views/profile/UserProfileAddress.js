@@ -154,7 +154,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
         ? addresses.map(address => (
             <Card key={address.id} sx={{ margin: '20px 0px' }}>
               <CardHeader
-                title='Direcciones'
+                title='Dirección'
                 titleTypographyProps={{ variant: 'h6' }}
                 action={
                   <div
@@ -337,7 +337,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
                                   letterSpacing: '0.1px'
                                 }}
                               >
-                                Pais:
+                                País:
                               </Typography>
                             </TableCell>
                             <TableCell>{address.country}</TableCell>

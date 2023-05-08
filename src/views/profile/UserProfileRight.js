@@ -43,7 +43,7 @@ const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {} }) => {
         sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
       >
         <Tab value='address' label='Direcciones' icon={<Home />} />
-        <Tab value='paymentMethods' label='Metodos de pago' icon={<CreditCard />} />
+        <Tab value='paymentMethods' label='Métodos de pago' icon={<CreditCard />} />
         <Tab value='bankInfo' label='Datos bancarios' icon={<Bank />} />
       </TabList>
       <Box sx={{ mt: 6 }}>

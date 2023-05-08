@@ -165,7 +165,7 @@ const UserProfileBilling = ({ methods = [] }) => {
     <Fragment>
       <Card sx={{ mb: 6 }}>
         <CardHeader
-          title='Metodos de Pago'
+          title='Métodos de Pago'
           titleTypographyProps={{ variant: 'h6' }}
           action={
             <Button variant='contained' onClick={handleAddCardClickOpen}>
