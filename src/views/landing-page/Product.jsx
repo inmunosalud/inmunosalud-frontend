@@ -17,7 +17,8 @@ import CustomChip from 'src/@core/components/mui/chip'
 const BoxWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
   padding: theme.spacing(5),
-  borderRadius: theme.shape.borderRadius
+  borderRadius: theme.shape.borderRadius,
+  
 }))
 
 // ** Styled Component for the wrapper of all the features of a plan
@@ -67,18 +68,18 @@ const Product = props => {
       ) : null}
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <img
-          width={data?.imgWidth}
-          src={`${data?.imgSrc}`}
-          height={data?.imgHeight}
-          alt={`${data?.title.toLowerCase()}-plan-img`}
+          src={`${data?.urlImages[0]}`}
+          width={70}
+          height={100}
+          alt={`${data?.product.toLowerCase()}-plan-img`}
         />
       </Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant='h5'>{data?.title}</Typography>
-        <Typography variant='body2'>{data?.subtitle}</Typography>
+        <Typography variant='h5'>{data?.product}</Typography>
+        <Typography variant='body2'>{data?.description}</Typography>
       </Box>
-      <Button fullWidth color='primary' variant={data?.popularPlan ? 'contained' : 'outlined'}>
-        {data?.currentPlan ? 'Your Current Plan' : 'Upgrade'}
+      <Button fullWidth color='primary' variant={'outlined'}>
+        {'Agregar a carrito'}
       </Button>
     </BoxWrapper>
   )
