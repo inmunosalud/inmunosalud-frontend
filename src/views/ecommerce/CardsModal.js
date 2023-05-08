@@ -71,7 +71,7 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
   const descriptionElementRef = useRef(null)
 
   const { isOpen } = useSelector(state => state.paymentMethods)
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
 
   useEffect(() => {
     if (open) {
@@ -114,7 +114,7 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
           <Close />
         </IconButton>
         <DialogContent dividers='paper'>
-          <PaymentMethods />
+          <PaymentMethods onClose={onClose} />
           <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>

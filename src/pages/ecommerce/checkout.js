@@ -23,14 +23,14 @@ const InvoicePreview = ({}) => {
   const { total, products, id } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
-  const { paymentMethods } = useSelector(state => state.paymentMethods)
-  const { address } = useSelector(state => state.address)
+  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
+  const { selectedAddressInCard } = useSelector(state => state.address)
 
   const data = {
     products,
     total,
-    paymentMethods,
-    address,
+    selectedPaymentMethod,
+    selectedAddressInCard,
     userInfo
   }
 
