@@ -46,13 +46,17 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   }
 }))
 
+const ComplementaryGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+}))
+
 const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  backgroundColor: theme.palette.mode === 'light'
-    ? ''
-    : '',
+  backgroundColor: theme.palette.mode === 'light' ? '' : '',
   width: '150px',
   height: 'auto',
   borderRadius: '5px',
@@ -76,7 +80,7 @@ const CarouselProducts = ({ images }) => {
         }}
       >
         {images.map(image => (
-          <SwiperSlide >
+          <SwiperSlide>
             <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='imagen' src={image} />
           </SwiperSlide>
         ))}
@@ -86,7 +90,7 @@ const CarouselProducts = ({ images }) => {
   return null
 }
 
-export const ProductItem = (props) => {
+export const ProductItem = props => {
   //debugger
   const dispatch = useDispatch()
   const router = useRouter()
@@ -204,87 +208,112 @@ export const ProductItem = (props) => {
         />
         <MenuBasic {...listMenuProps} />
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <StyledGrid item md={5} xs={12}>
-              <CardContent sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <CarouselProducts images={props.urlImages} />
-                <Typography
-                  sx={{
-                    fontSize: '15px',
-                    padding: '30px'
-                  }}
-                >
-                  {`${props.description}`}
-                </Typography>
-              </CardContent>
-            </StyledGrid>
-            <InfoProduct >
-              <div id='info-product' style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                margin: '0px 2px'
-              }}>
-                <Typography variant='h5' sx={{ marginBottom: '40px', fontSize: "20px" }}>
-                  <strong>{`${props.product}`}</strong>
-                </Typography>
-                <Typography variant='h5' sx={{ marginBottom: '40px' }}>
-                  <strong>{`$${props.price}`}</strong>
-                </Typography>
-              </div>
-
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px"
-              }}>
-                <Typography sx={{
-                  fontSize: '13px',
-                  marginBottom: '7px'
-                }}>
-                  <strong>INSTRUCCIONES: </strong>{`${props.instructions}`}
-                </Typography>
-
-                <Typography sx={{
-                  fontSize: '13px',
-                  margin: '5px 0px',
-                  wordBreak: 'break-all',
-                  textOverflow: 'ellipsis',
-                }}>
-                  <strong>INGREDIENTES: </strong>{`${props.ingredients}`}
-                </Typography>
-              </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: 15
-              }}>
-                <BoxCustomizedInfo>
+          <CardContent
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Grid container spacing={(0, 5)}>
+              <StyledGrid item xs={12} md={5}>
+                <Box>
+                  <CarouselProducts images={props.urlImages} />
                   <Typography
                     sx={{
-                      fontSize: '12px'
+                      fontSize: '15px',
+                      padding: '30px'
                     }}
                   >
-                    <strong>{`${props.capsuleConcentration}`}</strong>
+                    {`${props.description}`}
                   </Typography>
-                  <Typography sx={{
-                    fontSize: '12px',
-                    margin: '10px 0px'
-                  }}>
-                    {`Contiene ${props.capsuleQuantity} capsulas por envase`}
-                  </Typography>
-                </BoxCustomizedInfo>
-              </div>
-            </InfoProduct>
-            <ReactApexcharts type='radar' height={200} series={series} options={options} />
-          </Box>
+                </Box>
+              </StyledGrid>
+              <ComplementaryGrid sm={12} md={4}>
+                <InfoProduct sm={12}>
+                  <div
+                    id='info-product'
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      margin: '0px 2px'
+                    }}
+                  >
+                    <Typography variant='h5' sx={{ marginBottom: '40px', fontSize: '20px' }}>
+                      <strong>{`${props.product}`}</strong>
+                    </Typography>
+                    <Typography variant='h5' sx={{ marginBottom: '40px' }}>
+                      <strong>{`$${props.price}`}</strong>
+                    </Typography>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px'
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '13px',
+                        marginBottom: '7px'
+                      }}
+                    >
+                      <strong>INSTRUCCIONES: </strong>
+                      {`${props.instructions}`}
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        fontSize: '13px',
+                        margin: '5px 0px',
+                        wordBreak: 'break-all',
+                        textOverflow: 'ellipsis'
+                      }}
+                    >
+                      <strong>INGREDIENTES: </strong>
+                      {`${props.ingredients}`}
+                    </Typography>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginTop: 15
+                    }}
+                    sm={12}
+                  >
+                    <BoxCustomizedInfo>
+                      <Typography
+                        sx={{
+                          fontSize: '12px'
+                        }}
+                      >
+                        <strong>{`${props.capsuleConcentration}`}</strong>
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          margin: '10px 0px'
+                        }}
+                      >
+                        {`Contiene ${props.capsuleQuantity} capsulas por envase`}
+                      </Typography>
+                    </BoxCustomizedInfo>
+                  </div>
+                </InfoProduct>
+              </ComplementaryGrid>
+              <ComplementaryGrid sm={12} md={3}>
+                <ReactApexcharts type='radar' height={200} series={series} options={options} />
+              </ComplementaryGrid>
+            </Grid>
+          </CardContent>
+
           <div
             style={{
               display: 'flex',
