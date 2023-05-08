@@ -15,6 +15,8 @@ import CardContent from '@mui/material/CardContent'
 // ** Icons Imports
 import SendOutline from 'mdi-material-ui/SendOutline'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { openSnackBar } from 'src/store/notifications'
 
 const OptionsWrapper = styled(Box)(() => ({
   display: 'flex',
@@ -24,18 +26,21 @@ const OptionsWrapper = styled(Box)(() => ({
 
 const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) => {
   const router = useRouter()
+  const dispatch = useDispatch()
+
+  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
+  const { selectedAddressInCard } = useSelector(state => state.address)
+
+  const handleCheckout = () => {
+    if (selectedPaymentMethod && selectedAddressInCard) router.push('/ecommerce/checkout')
+    else dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
+  }
 
   return (
     <Box>
       <Card sx={{ mb: 4 }}>
         <CardContent>
-          <Button
-            fullWidth
-            sx={{ mb: 3.5 }}
-            variant='contained'
-            startIcon={<SendOutline />}
-            onClick={() => router.push('/ecommerce/checkout')}
-          >
+          <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />} onClick={handleCheckout}>
             Checkout
           </Button>
 

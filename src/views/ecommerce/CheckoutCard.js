@@ -96,7 +96,7 @@ const CheckoutCard = ({ data }) => {
   const theme = useTheme()
 
   // ** Selectors
-  const { total, products, address, paymentMethods, userInfo } = data
+  const { total, products, selectedPaymentMethod, selectedAddressInCard, userInfo } = data
 
   console.log(products)
 
@@ -197,35 +197,37 @@ const CheckoutCard = ({ data }) => {
                   </Typography>
                 </Box>
 
-                {userInfo && paymentMethods[0] && address[0] ? (
+                {userInfo && selectedPaymentMethod && selectedAddressInCard ? (
                   <>
                     <Box sx={{ mb: 2 }}>
                       <Typography variant='h6' sx={{ mb: 1 }}>
                         Dirección
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {address
-                          ? `${address[0].street ?? ''} ${address[0].extNumber ?? ''} ${
-                              address[0].intNumber ? `- ${address[0].intNumber}` : ''
+                        {selectedAddressInCard
+                          ? `${selectedAddressInCard.street ?? ''} ${selectedAddressInCard.extNumber ?? ''} ${
+                              selectedAddressInCard.intNumber ? `- ${selectedAddressInCard.intNumber}` : ''
                             }`
                           : null}
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {address
-                          ? `${address[0].colony ?? ''}, ${address[0].zipCode ?? ''}, ${
-                              address[0].federalEntity ?? ''
-                            }, ${address[0].country ?? ''}`
+                        {selectedAddressInCard
+                          ? `${selectedAddressInCard.colony ?? ''}, ${selectedAddressInCard.zipCode ?? ''}, ${
+                              selectedAddressInCard.federalEntity ?? ''
+                            }, ${selectedAddressInCard.country ?? ''}`
                           : null}
                       </Typography>
-                      <Typography variant='body2'>{formatPhoneNumber(userInfo.phone)}</Typography>
+                      <Typography variant='body2'>
+                        {userInfo.phone ? formatPhoneNumber(userInfo.phone) : null}
+                      </Typography>
                     </Box>
                     <Box>
                       <Typography variant='h6' sx={{ mb: 1 }}>
                         Metodo de pago
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {paymentMethods
-                          ? `${paymentMethods[0].cardType} - ${paymentMethods[0].cardNumber.slice(-4)}`
+                        {selectedPaymentMethod
+                          ? `${selectedPaymentMethod.cardType} - ${selectedPaymentMethod.cardNumber.slice(-4)}`
                           : null}
                       </Typography>
                     </Box>
