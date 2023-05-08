@@ -339,7 +339,6 @@ const Orders = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.session)
   const { orders, isLoading, messageValid } = useSelector(state => state.orders)
-  console.log({ orders });
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
   }, [])
