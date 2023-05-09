@@ -83,23 +83,28 @@ function getProductConsumptionCategories({ productsConsumption = {} }) {
 }
 
 function getProductConsumptionSeries(userInfo) {
+  debugger
   const categories = getProductConsumptionCategories(userInfo)
 
   if (!categories) return []
 
   const series = []
 
-  for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
-    let data = []
-    const months = Object.keys(values)
-    for (let i = 0; i < categories.length; i++) {
-      const match = months.find(month => month === categories[i])
+  try {
+    for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
+      let data = []
+      const months = Object.keys(values)
+      for (let i = 0; i < categories.length; i++) {
+        const match = months.find(month => month === categories[i])
 
-      if (match) {
-        data.push(values[match])
-      } else data.push(0)
+        if (match) {
+          data.push(values[match])
+        } else data.push(0)
+      }
+      series.push({ data, name: key })
     }
-    series.push({ data, name: key })
+  } catch (error) {
+    return console.error(error)
   }
   return series
 }
