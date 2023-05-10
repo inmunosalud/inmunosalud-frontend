@@ -28,6 +28,7 @@ import Modal from '../dashboards/users/Modal'
 import { getUserInfo } from 'src/store/users'
 import { React } from 'mdi-material-ui'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { useRouter } from 'next/router'
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -56,6 +57,7 @@ const UserProfileLeft = ({ data }) => {
   const { userInfo } = useSelector(state => state.users)
   const dispatch = useDispatch()
 
+  const router = useRouter()
   const { showModal } = useSelector(state => state.users)
 
   const handleModal = () => {
@@ -144,6 +146,13 @@ const UserProfileLeft = ({ data }) => {
                 </Box>
               </Box>
             </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card>
+            <Button variant='outlined' sx={{ mb: 3 }} onClick={() => router.push('/ecommerce/monthly-purchase/')}>
+              Pedidos domiciliados
+            </Button>
           </Card>
         </Grid>
         {/* New Param showOnlyName to only show name and last name inputs*/}
