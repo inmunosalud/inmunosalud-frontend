@@ -104,6 +104,7 @@ const CheckoutCard = ({ data }) => {
   const PreviewRef = useRef(null)
 
   const formatPhoneNumber = str => {
+    return
     let match = ''
     //Filter only numbers from the input
     let cleaned = ('' + str).replace(/\D/g, '')
