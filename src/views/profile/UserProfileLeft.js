@@ -56,12 +56,6 @@ const UserProfileLeft = ({ data }) => {
   const { userInfo } = useSelector(state => state.users)
   const dispatch = useDispatch()
 
-  const { showModal } = useSelector(state => state.users)
-
-  const handleModal = () => {
-    dispatch(setModal(false))
-  }
-
   useEffect(() => {
     dispatch(loadSession())
     dispatch(getUserInfo(data?.id))
