@@ -1,6 +1,6 @@
 // ** React Imports
 import * as React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -8,12 +8,18 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 
 import DialogContentText from '@mui/material/DialogContentText'
-import { deleteUser } from 'src/store/users'
+import { deleteUser, setModalDelete, setShowConfirmModal } from 'src/store/users'
+import DialogForm from './DialogForm'
 const DialogDelete = props => {
+  const { showConfirmModal } = useSelector(state => state.users)
+
+  const [authPasword, setAuthPassword] = React.useState('')
+
   const dispatch = useDispatch()
 
   const handleDialogSubmit = () => {
-    dispatch(deleteUser(props.item))
+    dispatch(setShowConfirmModal(false))
+    dispatch(deleteUser({ body: props.item, headers: { password: authPasword } }))
   }
 
   return (
@@ -29,9 +35,18 @@ const DialogDelete = props => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button onClick={handleDialogSubmit}>{props.buttonText}</Button>
+          <Button onClick={() => dispatch(setShowConfirmModal(true))}>{props.buttonText}</Button>
         </DialogActions>
       </Dialog>
+      <DialogForm
+        onClick={handleDialogSubmit}
+        open={showConfirmModal}
+        handleClose={() => {
+          dispatch(setModalDelete(false))
+          dispatch(setShowConfirmModal(false))
+        }}
+        setAuthPass={setAuthPassword}
+      ></DialogForm>
     </React.Fragment>
   )
 }
