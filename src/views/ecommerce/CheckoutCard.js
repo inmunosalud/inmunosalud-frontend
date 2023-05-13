@@ -224,7 +224,7 @@ const CheckoutCard = ({ data }) => {
                     </Box>
                     <Box>
                       <Typography variant='h6' sx={{ mb: 1 }}>
-                        Metodo de pago
+                        Método de pago
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
                         {selectedPaymentMethod
@@ -306,9 +306,9 @@ const CheckoutCard = ({ data }) => {
                 </Typography>
               </CalcWrapper>
               <CalcWrapper>
-                <Typography variant='body2'>Descuento:</Typography>
+                <Typography variant='body2'>Monto de envío:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.descuento}
+                  ${total.shippingCost}
                 </Typography>
               </CalcWrapper>
               <CalcWrapper>
