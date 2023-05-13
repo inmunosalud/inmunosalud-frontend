@@ -45,6 +45,9 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
 import { React, StackExchange } from 'mdi-material-ui'
 import { updateCart } from 'src/store/cart'
+import { loadInfo, setSelectedPaymentMethodInCart } from 'src/store/paymentMethods'
+import { setSelectedAddressInCart } from 'src/store/address'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
@@ -107,17 +110,13 @@ const tomorrowDate = now.setDate(now.getDate() + 7)
 const AddCard = props => {
   // ** Hooks
   const dispatch = useDispatch()
-  // ** Props
-  const { toggleAddCustomerDrawer } = props
-
-  // ** States
-  const [count, setCount] = useState(1)
 
   // ** Selectors
   const { total, products, id } = useSelector(state => state.cart)
 
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCard } = useSelector(state => state.address)
+  const { user } = useSelector(state => state.dashboard.general)
 
   // ** Hook
   const theme = useTheme()
@@ -129,6 +128,13 @@ const AddCard = props => {
     // @ts-ignore
     e.target.closest('.repeater-wrapper').remove()
   }
+
+  useEffect(() => {
+    if (!user.id) {
+      dispatch(loadSession())
+    }
+    dispatch(loadInfo(user.id))
+  }, [])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
