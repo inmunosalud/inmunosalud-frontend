@@ -238,7 +238,7 @@ const AddCard = props => {
         <Grid container>
           <Grid item xs={12} sm={9} sx={{ mb: { lg: 0, xs: 4 } }}>
             <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
-              Metodo de pago:
+              Método de pago:
             </Typography>
             <div style={{ display: 'flex', gap: '10px' }}>
               <Typography variant='body2' sx={{ mb: 2 }}>
@@ -266,9 +266,15 @@ const AddCard = props => {
                 <Typography variant='body2'>{selectedAddressInCard?.street}</Typography>
               </CalcWrapper>
               <CalcWrapper>
-                <Typography variant='body2'>Num Ext:</Typography>
+                <Typography variant='body2'>Núm. Ext:</Typography>
                 <Typography variant='body2'>{selectedAddressInCard?.extNumber}</Typography>
               </CalcWrapper>
+              {selectedAddressInCard?.intNumber ? (
+                <CalcWrapper>
+                  <Typography variant='body2'>Núm. Int:</Typography>
+                  <Typography variant='body2'>{selectedAddressInCard?.intNumber}</Typography>
+                </CalcWrapper>
+              ) : null}
               <CalcWrapper>
                 <Typography variant='body2'>Colonia:</Typography>
                 <Typography variant='body2'>{selectedAddressInCard?.colony}</Typography>
@@ -303,7 +309,7 @@ const AddCard = props => {
                         className='col-title'
                         sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
                       >
-                        Articulo
+                        Artículo
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
@@ -389,9 +395,9 @@ const AddCard = props => {
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
-              <Typography variant='body2'>Descuento:</Typography>
+              <Typography variant='body2'>Monto de envío:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                ${total.descuento}
+                ${total.shippingCost ?? 0}
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
