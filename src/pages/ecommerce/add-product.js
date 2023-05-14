@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { useForm, Controller } from "react-hook-form";
+import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { useForm, Controller } from 'react-hook-form'
 import {
   CardContent,
   Card,
@@ -20,26 +20,21 @@ import {
 } from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import ListProperties from '../components/propertiesProduct';
-import ImageUploader from 'src/views/components/image-uploader/ImageUploader';
-import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions';
-import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products';
-import { parseDataToEdit } from 'src/utils/functions';
+import ListProperties from '../components/propertiesProduct'
+import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
+import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions'
+import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
+import { parseDataToEdit } from 'src/utils/functions'
 import { closeSnackBar } from 'src/store/notifications'
-import MultiSelectWithAddOption from '../components/multiselectWithAddOption';
+import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
+import DialogForm from 'src/views/components/dialogs/DialogForm'
+import { setShowConfirmModal } from 'src/store/users'
 
-
-const Modal = ({
-  open = false,
-  onHandleOpenModal = () => { },
-  onSubmitConfirm = () => { }
-}) => {
+const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {} }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
-        <DialogContentText>
-          Presione confirmar para crear el producto.
-        </DialogContentText>
+        <DialogContentText>Presione confirmar para crear el producto.</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onHandleOpenModal}>Salir</Button>
@@ -54,6 +49,8 @@ const AddProduct = () => {
   const router = useRouter()
   const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
+  const { showConfirmModal } = useSelector(state => state.users)
+  const [authPasword, setAuthPassword] = React.useState('')
   const {
     control,
     reset,
@@ -68,9 +65,9 @@ const AddProduct = () => {
       instructions: '',
       ingredients: '',
       price: '',
-      quantity: '',
+      quantity: ''
     }
-  });
+  })
 
   /* images state */
   const [images, setImages] = React.useState([])
@@ -86,14 +83,14 @@ const AddProduct = () => {
     relajación: '',
     sistemaOseo: '',
     sistemaInmune: '',
-    circulaciónArterial: '',
+    circulaciónArterial: ''
   })
   /* fields of main components property - value form */
-  const [fields, setFields] = React.useState([]);
+  const [fields, setFields] = React.useState([])
   const [formBody, setFormBody] = React.useState({})
   const [mainComponentValue, setMainComponentValue] = React.useState([])
   /* the new option for select */
-  const [newOption, setNewOption] = React.useState('');
+  const [newOption, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
 
   const handleOpenModal = () => {
@@ -101,58 +98,57 @@ const AddProduct = () => {
   }
 
   const submitConfirm = () => {
-    dispatch(createProduct(formBody))
+    handleOpenModal()
+    dispatch(setShowConfirmModal(false))
+    dispatch(createProduct({ body: formBody, headers: { password: authPasword } }))
   }
 
   /* main component handle on change select */
   const handleOptionChange = ({ target }) => {
-    const selectedValues = target.value;
-    let newFields = [];
+    const selectedValues = target.value
+    let newFields = []
 
     // Map through the selected values and create a new field object for each one
-    selectedValues.forEach((value) => {
+    selectedValues.forEach(value => {
       newFields.push({
         property: value.value,
-        value: '',
-      });
-    });
+        value: ''
+      })
+    })
 
     // Update state with the new fields and selected values
-    setFields(newFields);
-    setMainComponentValue(selectedValues);
-  };
+    setFields(newFields)
+    setMainComponentValue(selectedValues)
+  }
 
-  const handleNewOptionChange = (event) => {
+  const handleNewOptionChange = event => {
     setNewOption(event.target.value)
   }
 
   const handleFieldChange = (index, field, value) => {
-    const newFields = [...fields];
-    newFields[index][field] = value;
-    setFields(newFields);
-  };
+    const newFields = [...fields]
+    newFields[index][field] = value
+    setFields(newFields)
+  }
 
   const handleAddOption = () => {
     // Check if the new option is already in the options list
-    const existingOption = mainComponents.find((option) => option.value === newOption);
+    const existingOption = mainComponents.find(option => option.value === newOption)
 
     if (existingOption) {
       // If the new option already exists, set it as the selected option
-      setMainComponentValue([...mainComponentValue, existingOption]);
+      setMainComponentValue([...mainComponentValue, existingOption])
     } else {
       // If the new option doesn't exist, add it to the options list and set it as the selected option
-      const newOptionObject = { value: newOption };
-      setMainComponentValue([...mainComponentValue, newOptionObject]);
+      const newOptionObject = { value: newOption }
+      setMainComponentValue([...mainComponentValue, newOptionObject])
     }
 
     // Update the last input field's property with the new option
-    setFields((prevFields) => [
-      ...prevFields,
-      { property: newOption.trim(), value: '' }
-    ]);
+    setFields(prevFields => [...prevFields, { property: newOption.trim(), value: '' }])
 
     // Clear the new option text field
-    setNewOption('');
+    setNewOption('')
   }
 
   const handleCleanOptions = () => {
@@ -160,18 +156,18 @@ const AddProduct = () => {
     setFields([])
   }
 
-  const handleImagesUpdate = (images) => {
+  const handleImagesUpdate = images => {
     setImages(images)
-  };
+  }
 
-  const handlePropertiesList = (prop) => (event) => {
-    const newValue = event.target.value;
+  const handlePropertiesList = prop => event => {
+    const newValue = event.target.value
     if (newValue >= 0 && newValue <= 10) {
-      setValues((prevValues) => ({ ...prevValues, [prop]: newValue }));
+      setValues(prevValues => ({ ...prevValues, [prop]: newValue }))
     }
   }
 
-  const handleImagesUpload = async (productName) => {
+  const handleImagesUpload = async productName => {
     const body = {
       productName: productName,
       images: images
@@ -183,7 +179,7 @@ const AddProduct = () => {
     event.preventDefault()
 
     handleImagesUpload(data.product).then(productImages => {
-      const newProperties = getCustomStructure(values);
+      const newProperties = getCustomStructure(values)
       const body = {
         product: data?.product,
         description: data?.description,
@@ -208,11 +204,11 @@ const AddProduct = () => {
         handleOpenModal()
       }
     })
-  };
+  }
 
   React.useEffect(() => {
     return () => {
-      dispatch(setRemoveEdit())//cleaning edit values
+      dispatch(setRemoveEdit()) //cleaning edit values
     }
   }, [dispatch])
 
@@ -227,7 +223,7 @@ const AddProduct = () => {
         instructions: editItem.instructions,
         price: editItem.price,
         ingredients: editItem.ingredients,
-        quantity: 1,
+        quantity: 1
       })
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
@@ -245,72 +241,45 @@ const AddProduct = () => {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-        <form onSubmit={handleSubmit(onSubmit)} >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent>
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name="product"
+                  name='product'
                   rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
-                    <TextField
-                      error={!!errors.product}
-                      label='Producto'
-                      fullWidth
-                      {...field}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} >
-                <Controller
-                  control={control}
-                  name="description"
-                  rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
-                    <TextField
-                      error={!!errors.description}
-                      label='Descripción'
-                      fullWidth
-                      {...field}
-                    />
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.product} label='Producto' fullWidth {...field} />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name="capsuleQuantity"
+                  name='description'
                   rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
-                    <TextField
-                      error={!!errors.capsuleQuantity}
-                      label='Cantidad de Cápsulas'
-                      fullWidth
-                      {...field}
-                    />
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.description} label='Descripción' fullWidth {...field} />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name="capsuleConcentration"
+                  name='capsuleQuantity'
                   rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.capsuleQuantity} label='Cantidad de Cápsulas' fullWidth {...field} />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  control={control}
+                  name='capsuleConcentration'
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
                     <TextField
                       error={!!errors.capsuleConcentration}
                       label='Concentración de Cápsulas'
@@ -323,71 +292,55 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name="instructions"
+                  name='instructions'
                   rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
-                    <TextField
-                      error={!!errors.instructions}
-                      label='Instrucciones'
-                      fullWidth
-                      {...field}
-                    />
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.instructions} label='Instrucciones' fullWidth {...field} />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name="ingredients"
+                  name='ingredients'
                   rules={{ required: true }}
-                  render={({
-                    field,
-                    fieldState,
-                  }) => (
-                    <TextField
-                      error={!!errors.ingredients}
-                      label='Ingredientes'
-                      fullWidth
-                      {...field}
-                    />
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.ingredients} label='Ingredientes' fullWidth {...field} />
                   )}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <Controller
                   control={control}
-                  name="price"
+                  name='price'
                   rules={{ required: true }}
                   render={({ field, formState }) => {
-                    const { value } = field;
+                    const { value } = field
                     if (value >= 0) {
                       return (
                         <TextField
-                          label="Precio"
+                          label='Precio'
                           fullWidth
-                          type="number"
+                          type='number'
                           InputProps={{
-                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            startAdornment: <InputAdornment position='start'>$</InputAdornment>
                           }}
                           {...field}
                         />
-                      );
+                      )
                     } else {
                       return (
                         <TextField
-                          label="Precio"
+                          label='Precio'
                           fullWidth
-                          type="number"
+                          type='number'
                           InputProps={{
-                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            startAdornment: <InputAdornment position='start'>$</InputAdornment>
                           }}
                           {...field}
                           error
                         />
-                      );
+                      )
                     }
                   }}
                 />
@@ -395,59 +348,60 @@ const AddProduct = () => {
                   {/* create here dropdown dynammic */}
                   <MultiSelectWithAddOption
                     //handle select
-                    options={mainComponents.map((option, index) => ({ label: option, value: option, fieldIndex: index }))}
+                    options={mainComponents.map((option, index) => ({
+                      label: option,
+                      value: option,
+                      fieldIndex: index
+                    }))}
                     onOptionChange={handleOptionChange}
                     value={mainComponentValue}
                     //handle text
                     newOption={newOption}
                     onHandleNewOptionChange={handleNewOptionChange}
                     onHandleAddOption={handleAddOption}
-
                     onCleanOptions={handleCleanOptions}
                   />
                 </Grid>
                 {/* main components fields */}
-                <Typography sx={{ margin: '8px 0px' }} variant='h6'>Componentes principales</Typography>
+                <Typography sx={{ margin: '8px 0px' }} variant='h6'>
+                  Componentes principales
+                </Typography>
                 {fields.map((field, index) => (
                   <Grid container item xs={12} spacing={5} key={index}>
                     <Grid item xs={6} sx={{ marginTop: '10px' }}>
                       <TextField
-                        label="Componente Principal"
-                        variant="outlined"
+                        label='Componente Principal'
+                        variant='outlined'
                         value={field.property}
                         fullWidth
-                        onChange={(e) =>
-                          handleFieldChange(index, "property", e.target.value)
-                        }
+                        onChange={e => handleFieldChange(index, 'property', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={6} sx={{ marginTop: '10px' }}>
                       <TextField
-                        label="Valor"
-                        variant="outlined"
+                        label='Valor'
+                        variant='outlined'
                         value={field.value}
                         fullWidth
-                        onChange={(e) =>
-                          handleFieldChange(index, "value", e.target.value)
-                        }
+                        onChange={e => handleFieldChange(index, 'value', e.target.value)}
                       />
                     </Grid>
                   </Grid>
                 ))}
-                <Grid item sx={{ marginTop: '10px' }}>
-                </Grid>
+                <Grid item sx={{ marginTop: '10px' }}></Grid>
               </Grid>
-              <Grid item xs={12} >
-                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>Propiedades</Typography>
+              <Grid item xs={12}>
+                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>
+                  Propiedades
+                </Typography>
               </Grid>
 
-              <ListProperties
-                values={values}
-                handleChangeProperties={handlePropertiesList}
-              />
+              <ListProperties values={values} handleChangeProperties={handlePropertiesList} />
 
               <Grid item xs={12}>
-                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>Imágenes Del Producto</Typography>
+                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>
+                  Imágenes Del Producto
+                </Typography>
                 <ImageUploader base64Images={editItem ? editItem.urlImages : []} handleImages={handleImagesUpdate} />
               </Grid>
             </Grid>
@@ -457,16 +411,32 @@ const AddProduct = () => {
           </Grid>
           <CardActions>
             <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-              {editItem ? "Guardar Cambios" : "Crear Producto"}
+              {editItem ? 'Guardar Cambios' : 'Crear Producto'}
             </Button>
-            <Button onClick={() => router.push('/ecommerce/products')} size='large' color='secondary' variant='outlined'>
+            <Button
+              onClick={() => router.push('/ecommerce/products')}
+              size='large'
+              color='secondary'
+              variant='outlined'
+            >
               Regresar
             </Button>
           </CardActions>
         </form>
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
-      <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitConfirm={submitConfirm} />
+      <Modal
+        open={openModal}
+        onHandleOpenModal={handleOpenModal}
+        onSubmitConfirm={() => dispatch(setShowConfirmModal(true))}
+      />
+      <DialogForm
+        text={'Ingrese su contraseña para continuar'}
+        open={showConfirmModal}
+        handleClose={() => dispatch(setShowConfirmModal(false))}
+        onClick={submitConfirm}
+        setAuthPass={setAuthPassword}
+      ></DialogForm>
     </>
   )
 }

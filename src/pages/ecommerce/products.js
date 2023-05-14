@@ -34,21 +34,16 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex',justifyContent: "center", alignItems: "center", marginTop: "100px" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>Cargando productos...</Typography>
       </Box>
     )
   }
 
-
   const showAddProductButton = () => {
     if (isProductAdmin || isAdmin) {
-    return (
-        <Button
-          variant='contained'
-          sx={{ mb: 3, whiteSpace: 'nowrap' }}
-          onClick={handleAddProduct}
-        >
+      return (
+        <Button variant='contained' sx={{ mb: 3, whiteSpace: 'nowrap' }} onClick={handleAddProduct}>
           Alta de producto
         </Button>
       )
@@ -58,31 +53,28 @@ const Products = () => {
   const displayMapProducts = () => {
     const { content } = products
     return (
-    <React.Fragment>
-      {content?.map((product, i) => (
-      <div key={i} style={{marginTop: '25px'}}>
-          <ProductItem
-            isEdit={(isProductAdmin || isAdmin) ? true: false}
-            {...product}
-        />
-      </div>
-      ))}
-    </React.Fragment>
+      <React.Fragment>
+        {content?.map((product, i) => (
+          <div key={i} style={{ marginTop: '25px' }}>
+            <ProductItem isEdit={isProductAdmin || isAdmin ? true : false} {...product} />
+          </div>
+        ))}
+      </React.Fragment>
     )
   }
 
   return (
     <React.Fragment>
-    <Grid container spacing={6}>
-      <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
-      <Grid item display='flex' justifyContent='flex-end' xs={12}>
-        {showAddProductButton()}
+      <Grid container spacing={6}>
+        <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
+        <Grid item display='flex' justifyContent='flex-end' xs={12}>
+          {showAddProductButton()}
+        </Grid>
+        <Grid item alignSelf='flex-end' xs={12}>
+          {displayMapProducts()}
+        </Grid>
       </Grid>
-      <Grid item alignSelf='flex-end' xs={12}>
-        {displayMapProducts()}
-      </Grid>
-    </Grid>
-    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </React.Fragment>
   )
 }

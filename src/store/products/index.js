@@ -6,16 +6,19 @@ import { openSnackBar } from '../notifications'
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
   try {
     const response = await api_get(`${PROYECT_PRODUCTS}/products`)
+    //thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {
     console.log(error)
+
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const createProduct = createAsyncThunk('product/createProduct', async (body, thunkApi) => {
+export const createProduct = createAsyncThunk('product/createProduct', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
+
   try {
     const response = await api_post(`${PROYECT_PRODUCTS}/products`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
@@ -42,9 +45,9 @@ export const updateProduct = createAsyncThunk('product/updateProduct', async (bo
   }
 })
 
-export const deleteProduct = createAsyncThunk('product/deleteProduct', async (id, thunkApi) => {
+export const deleteProduct = createAsyncThunk('product/deleteProduct', async ({ id, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
     const response = await api_delete(`${PROYECT_PRODUCTS}/products/${id}`, {}, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))

@@ -14,7 +14,7 @@ import { Pencil, Delete } from 'mdi-material-ui'
 
 import Modal from './Modal'
 
-import { usersList, setModal, setModalRow, setModalDelete } from 'src/store/users'
+import { usersList, setModal, setModalRow, setModalDelete, setShowConfirmModal } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
 import { columns } from './configTable'
 
@@ -44,6 +44,7 @@ const TableUsers = () => {
   }
 
   const closeDelete = () => {
+    dispatch(setShowConfirmModal(false))
     dispatch(setModalDelete(false))
   }
 
@@ -58,7 +59,9 @@ const TableUsers = () => {
         const row = params?.row
         return (
           <Typography variant='body2' sx={{ color: '#6495ED', cursor: 'pointer' }}>
-            {row.profile.includes('Admin') ? <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />: null}
+            {row.profile.includes('Admin') ? (
+              <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />
+            ) : null}
             <Delete sx={{ margin: '5px' }} onClick={() => setItemDeleteModal(row)} />
           </Typography>
         )

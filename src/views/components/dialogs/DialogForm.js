@@ -10,28 +10,27 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 
-const DialogForm = () => {
+const DialogForm = ({ text, onClick, title, open, handleClose, setAuthPass }) => {
   // ** State
-  const [open, setOpen] = useState(false)
-  const handleClickOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
 
   return (
     <Fragment>
-      <Button variant='outlined' onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-        <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
+        <DialogTitle id='form-dialog-title'>Confirmar Contraseña</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ mb: 3 }}>
-            To subscribe to this website, please enter your email address here. We will send updates occasionally.
-          </DialogContentText>
-          <TextField id='name' autoFocus fullWidth type='email' label='Email Address' />
+          <DialogContentText sx={{ mb: 3 }}>Ingrese su contraseña para continuar</DialogContentText>
+          <TextField
+            id='contraseña'
+            autoFocus
+            fullWidth
+            type='password'
+            label='Contraseña'
+            onChange={e => setAuthPass(e.target.value)}
+          />
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose}>Agree</Button>
+          <Button onClick={onClick}>Continuar</Button>
+          <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
       </Dialog>
     </Fragment>
