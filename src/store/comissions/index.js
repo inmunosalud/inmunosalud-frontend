@@ -18,10 +18,10 @@ export const getComissions = createAsyncThunk('comissions/getComissions', async 
 
 export const liquidationComisions = createAsyncThunk('comissions/liquidationProduct', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = { headers: { Authorization: `Bearer ${token}`, Password: body.password } }
   let response
   try {
-    response = await api_post(`${COMISSIONS}/commissions/liquidate`, body, auth)
+    response = await api_post(`${COMISSIONS}/commissions/liquidate`, body.rowsId, auth)
     thunkApi.dispatch(setOpenModal(false)) //close modal
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' })) //show message success
     thunkApi.dispatch(getComissions())

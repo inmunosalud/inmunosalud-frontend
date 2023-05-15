@@ -8,41 +8,45 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 
 import DialogContentText from '@mui/material/DialogContentText'
-import { deleteUser, setModalDelete, setShowConfirmModal } from 'src/store/users'
+import { setModalUpdate, setShowConfirmModal, updateConstants } from 'src/store/constants'
 import DialogForm from './DialogForm'
-const DialogDelete = props => {
-  const { showConfirmModal } = useSelector(state => state.users)
+const DialogConstants = ({ open = false, body = {} }) => {
+  const { showConfirmModal } = useSelector(state => state.constants)
 
-  const [authPasword, setAuthPassword] = React.useState('')
+  const [authPassword, setAuthPassword] = React.useState('')
 
   const dispatch = useDispatch()
 
   const handleDialogSubmit = () => {
+    dispatch(updateConstants({ body: body, headers: { password: authPassword } }))
     dispatch(setShowConfirmModal(false))
-    dispatch(deleteUser({ body: props.item, headers: { password: authPasword } }))
   }
+
+  const handleClose = () => dispatch(setModalUpdate(false))
 
   return (
     <React.Fragment>
       <Dialog
-        open={props.open}
-        onClose={props.handleClose}
+        open={open}
+        onClose={() => handleClose()}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>{props.content}</DialogContentText>
+          <DialogContentText id='alert-dialog-description'>
+            {'Estás seguro que quieres editar las constantes del sistema'}
+          </DialogContentText>
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
-          <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button onClick={() => dispatch(setShowConfirmModal(true))}>{props.buttonText}</Button>
+          <Button onClick={() => handleClose()}>Cancelar</Button>
+          <Button onClick={() => dispatch(setShowConfirmModal(true))}>{'Confirmar'}</Button>
         </DialogActions>
       </Dialog>
       <DialogForm
         onClick={handleDialogSubmit}
         open={showConfirmModal}
         handleClose={() => {
-          dispatch(setModalDelete(false))
+          dispatch(setModalUpdate(false))
           dispatch(setShowConfirmModal(false))
         }}
         setAuthPass={setAuthPassword}
@@ -51,4 +55,4 @@ const DialogDelete = props => {
   )
 }
 
-export default DialogDelete
+export default DialogConstants

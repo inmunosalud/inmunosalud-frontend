@@ -25,49 +25,49 @@ import TableCell from '@mui/material/TableCell'
 
 import CardContent from '@mui/material/CardContent'
 
-import Image from 'next/image';
+import Image from 'next/image'
 
 const CardContentStyles = {
-  margin: "10px 20px",
+  margin: '10px 20px'
 }
 const InfoProductStyles = {
-  display: "flex",
-  margin: "0px 40px",
-  flexDirection: "column"
+  display: 'flex',
+  margin: '0px 40px',
+  flexDirection: 'column'
 }
 const ProductContainer = {
-  display: "flex",
-  marginTop: "90px"
+  display: 'flex',
+  marginTop: '90px'
 }
 const AdreessContainer = {
-  display: "flex",
-  flexDirection: "column"
+  display: 'flex',
+  flexDirection: 'column'
 }
 const ImageStyle = {
   width: 40,
   heigth: 50,
-  margin: "5px"
+  margin: '5px'
 }
 const DeliveryInfoStyles = {
-  display: "flex",
-  justifyContent: "space-around",
-  margin: "0px 15px",
-  gap: "30px"
+  display: 'flex',
+  justifyContent: 'space-around',
+  margin: '0px 15px',
+  gap: '30px'
 }
 const ButtonActionStyles = {
-  height: "50px",
-  width: " 50px",
+  height: '50px',
+  width: ' 50px'
 }
 const ProductInfoRowStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "100px",
-  alignItems: "center",
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: '100px',
+  alignItems: 'center'
 }
 const OrderSumaryStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  gap: "30px"
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: '30px'
 }
 
 const RepeatingContent = styled(Grid)(({ theme }) => ({
@@ -104,19 +104,11 @@ const RepeaterWrapper = styled(CardContent)(({ theme }) => ({
   }
 }))
 
-
-const Modal = ({
-  open = false,
-  onHandleOpenModal = () => { },
-  onSubmitDelete = () => { }
-}) => {
-
+const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = () => {} }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
-        <DialogContentText>
-          Estas seguro de cancelar tu pedido?
-        </DialogContentText>
+        <DialogContentText>Estas seguro de cancelar tu pedido?</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onHandleOpenModal}>Regresar</Button>
@@ -127,7 +119,7 @@ const Modal = ({
 }
 
 const DeliveryInfo = ({ allOrderInfo }) => {
-  const paymentMethod = allOrderInfo.paymentMethod;
+  const paymentMethod = allOrderInfo.paymentMethod
 
   return (
     <section style={DeliveryInfoStyles}>
@@ -146,8 +138,8 @@ const DeliveryInfo = ({ allOrderInfo }) => {
         </Typography>
         <Typography>{paymentMethod.expDate}</Typography>
       </div>
-      <div style={{ display: "flex" }}>
-        <div style={{ marginRight: "20px" }}>
+      <div style={{ display: 'flex' }}>
+        <div style={{ marginRight: '20px' }}>
           <Typography>
             <strong>Pedido realizado</strong>
           </Typography>
@@ -184,10 +176,8 @@ const DeliveryInfo = ({ allOrderInfo }) => {
         </div>
       </section>
     </section>
-  );
-};
-
-
+  )
+}
 
 const Address = ({ address }) => {
   return (
@@ -195,26 +185,20 @@ const Address = ({ address }) => {
       <Typography variant='h3' style={{ fontSize: '19px', marginBottom: '10px' }}>
         <strong>Dirección de envío</strong>
       </Typography>
-      <Typography style={{ marginBottom: '5px' }}>
-        {`${address.street} ${address.extNumber}`}
-      </Typography>
-      <Typography style={{ marginBottom: '5px' }}>
-        {`${address.colony}`}
-      </Typography>
+      <Typography style={{ marginBottom: '5px' }}>{`${address.street} ${address.extNumber}`}</Typography>
+      <Typography style={{ marginBottom: '5px' }}>{`${address.colony}`}</Typography>
       <Typography style={{ marginBottom: '5px' }}>
         {`${address.city}, ${address.federalEntity}, ${address.zipCode}`}
       </Typography>
     </section>
-  );
-};
-
-
+  )
+}
 
 const Product = ({ products }) => {
   return (
     <>
       {products?.map((p, i) => {
-        const Tag = i === 0 ? Box : Collapse;
+        const Tag = i === 0 ? Box : Collapse
 
         return (
           <Tag key={p.id} className='repeater-wrapper' {...(i !== 0 ? { in: true } : {})}>
@@ -222,24 +206,16 @@ const Product = ({ products }) => {
               <RepeatingContent item xs={12}>
                 <Grid container sx={{ py: 4, width: '100%', pr: { lg: 0, xs: 4 } }}>
                   <Grid item lg={6} md={5} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography
-                      variant='body2'
-                      className='col-title'
-                      sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                    >
+                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
                       Articulo
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Image width={40} height={50} src={p.urlImage} />
-                      <Typography sx={{ ml: 2}}>{p.product}</Typography>
+                      <Typography sx={{ ml: 2 }}>{p.product}</Typography>
                     </Box>
                   </Grid>
                   <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography
-                      variant='body2'
-                      className='col-title'
-                      sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                    >
+                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
                       Precio
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -247,11 +223,7 @@ const Product = ({ products }) => {
                     </Box>
                   </Grid>
                   <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography
-                      variant='body2'
-                      className='col-title'
-                      sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                    >
+                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
                       Cantidad
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -259,11 +231,7 @@ const Product = ({ products }) => {
                     </Box>
                   </Grid>
                   <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
-                    <Typography
-                      variant='body2'
-                      className='col-title'
-                      sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                    >
+                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
                       Total
                     </Typography>
                     <Typography>${p.total}</Typography>
@@ -272,28 +240,23 @@ const Product = ({ products }) => {
               </RepeatingContent>
             </Grid>
           </Tag>
-        );
+        )
       })}
     </>
-  );
-};
-
-
-const Actions = ({ onHandleModal = () => { } }) => {
-  return (
-    <Tooltip title="Cancelar pedido" arrow>
-      <Button
-        style={ButtonActionStyles}
-        onClick={onHandleModal}
-      >
-        <TrashCanOutline />
-      </Button>
-    </Tooltip>
-
   )
 }
 
-const Cards = (props) => {
+const Actions = ({ onHandleModal = () => {} }) => {
+  return (
+    <Tooltip title='Cancelar pedido' arrow>
+      <Button style={ButtonActionStyles} onClick={onHandleModal}>
+        <TrashCanOutline />
+      </Button>
+    </Tooltip>
+  )
+}
+
+const Cards = props => {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = React.useState(false)
 
@@ -310,13 +273,15 @@ const Cards = (props) => {
 
   return (
     <>
-      <Card sx={{ margin: "45px 0px" }}>
+      <Card sx={{ margin: '45px 0px' }}>
         <CardContent style={CardContentStyles}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
-            <div id='header-info' style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div id='header-info' style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <Address address={address} />
               <DeliveryInfo allOrderInfo={props} />
               <Actions onHandleModal={handleOpenModal} />
@@ -333,44 +298,32 @@ const Cards = (props) => {
   )
 }
 
-
-
 const Orders = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.session)
   const { orders, isLoading, messageValid } = useSelector(state => state.orders)
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
+    debugger
   }, [])
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "100px" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>{`Cargando tus pedidos...`}</Typography>
       </Box>
     )
-
   }
 
   if (!orders.length) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "100px" }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>{`Orden(es) no encontrada(s).`}</Typography>
       </Box>
     )
   }
 
-  return (
-    <React.Fragment>
-      {orders.length && orders.map((order) => (
-        <Cards
-          key={order.id}
-          {...order}
-        />
-      ))}
-    </React.Fragment>
-  )
+  return <React.Fragment>{orders.length && orders.map(order => <Cards key={order.id} {...order} />)}</React.Fragment>
 }
-
 
 export default Orders
