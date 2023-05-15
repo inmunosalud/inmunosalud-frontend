@@ -14,7 +14,7 @@ import CardContent from '@mui/material/CardContent'
 // ** Icons Imports
 import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
-
+import { Cart } from 'mdi-material-ui'
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
@@ -28,6 +28,7 @@ import Modal from '../dashboards/users/Modal'
 import { getUserInfo } from 'src/store/users'
 import { React } from 'mdi-material-ui'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { useRouter } from 'next/router'
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -53,10 +54,10 @@ const roleColors = {
 }
 
 const UserProfileLeft = ({ data }) => {
-  const { userInfo } = useSelector(state => state.users)
+  const { userInfo, showModal } = useSelector(state => state.users)
   const dispatch = useDispatch()
 
-  const { showModal } = useSelector(state => state.users)
+  const router = useRouter()
 
   const handleModal = () => {
     dispatch(setModal(false))
@@ -146,18 +147,25 @@ const UserProfileLeft = ({ data }) => {
             </CardContent>
           </Card>
         </Grid>
-        {userInfo?.balance > 0 && (
-          <Grid item xs={12}>
-            <Card>
-              <CardContent sx={{ mt: 2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Typography variant='h6'>Saldo a favor</Typography>
-                  <Typography variant='h6'>${userInfo?.balance}</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <Card sx={{ pt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant='outlined' sx={{ mb: 3 }} onClick={() => router.push('/ecommerce/monthly-purchase/')} startIcon={<Cart />}>
+              Pedido Mensual
+            </Button>
+          </Card>
+        </Grid>
+        {userInfo?.balance > 0 && <Grid item xs={12}>
+          <Card>
+            <CardContent >
+              <Box sx={{ display: "flex", flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Typography variant='h6'>Saldo a favor</Typography>
+                <Typography variant='h6'>
+                  ${userInfo?.balance}
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>}
         {/* New Param showOnlyName to only show name and last name inputs*/}
         <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={userInfo} showOnlyName={true} />
       </Grid>

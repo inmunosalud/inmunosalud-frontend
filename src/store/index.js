@@ -17,6 +17,7 @@ import address from 'src/store/address'
 import paymentMethods from 'src/store/paymentMethods'
 import register from 'src/store/register'
 import cart from 'src/store/cart'
+import monthlyPurchase from 'src/store/monthlypurchase'
 
 import products from 'src/store/products'
 import comissions from 'src/store/comissions'
@@ -43,6 +44,7 @@ export const store = configureStore({
     address,
     register,
     dashboard: combineReducers({ general }),
+    monthlyPurchase,
     constants
   },
   middleware: getDefaultMiddleware =>
