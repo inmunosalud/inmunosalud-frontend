@@ -156,7 +156,7 @@ const UserProfileLeft = ({ data }) => {
         </Grid>
         {userInfo?.balance > 0 && <Grid item xs={12}>
           <Card>
-            <CardContent sx={{ mt: 2 }}>
+            <CardContent >
               <Box sx={{ display: "flex", flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography variant='h6'>Saldo a favor</Typography>
                 <Typography variant='h6'>
