@@ -73,7 +73,7 @@ export const AddressList = () => {
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
             <Button variant='outlined' sx={{ ml: 3 }} onClick={() => handleSelectAddress(item)}>
-              Seleccionar
+              {selectedAddress === item.id ? 'Seleccionado' : 'Seleccionar'}
             </Button>
             <Typography variant='body2' sx={{ mt: 5 }}>
               {item.country}

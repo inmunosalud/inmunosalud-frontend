@@ -62,7 +62,7 @@ export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, t
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_delete(`${PROJECT_ADDRESS}/address/${id}`, {}, auth)
+    const response = await api_delete(`${PROJECT_ADDRESS}/addresses/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response

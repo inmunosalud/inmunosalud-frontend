@@ -1,18 +1,6 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  Card,
-  CardContent,
-  Divider,
-  Typography,
-  Button,
-  Tooltip,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Box
-} from '@mui/material'
+import { Dialog, DialogContent, DialogActions, DialogContentText } from '@mui/material'
 import { deleteOrder, getOrdersByUser } from 'src/store/orders'
 import TrashCanOutline from 'mdi-material-ui/TrashCanOutline'
 // ** MUI Imports
@@ -76,7 +64,6 @@ const ProductInfoRowStyles = {
   gap: '100px',
   alignItems: 'center'
 }
-
 const OrderSumaryStyles = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -138,13 +125,13 @@ const DeliveryInfo = ({ allOrderInfo }) => {
     <section style={DeliveryInfoStyles}>
       <div>
         <Typography>
-          <strong>Status del pedido </strong>
+          <strong>Estatus del pedido</strong>
         </Typography>
         <Typography>{allOrderInfo.deliveryStatus}</Typography>
       </div>
       <div>
         <Typography>
-          <strong>Metodo de pago</strong>
+          <strong>Método de pago</strong>
         </Typography>
         <Typography>
           <span>{paymentMethod.cardType}</span> <span>{paymentMethod.cardNumber}</span>
@@ -164,30 +151,30 @@ const DeliveryInfo = ({ allOrderInfo }) => {
           </Typography>
           <Typography>{allOrderInfo.deliveryEstimateDate}</Typography>
         </div>
-        <section id='section-total-purchase' style={{ margin: '0 16px' }}>
-          <Typography>
-            <strong>Resumen del pedido</strong>
-          </Typography>
-          <div style={OrderSumaryStyles}>
-            <Typography>Productos</Typography>
-            <Typography>${allOrderInfo.subtotal}</Typography>
-          </div>
-          <div style={OrderSumaryStyles}>
-            <Typography>Envio</Typography>
-            <Typography>${allOrderInfo.shippingCost}</Typography>
-          </div>
-          <div style={OrderSumaryStyles}>
-            <Typography>IVA</Typography>
-            <Typography>${allOrderInfo.iva}</Typography>
-          </div>
-          <div style={OrderSumaryStyles}>
-            <Typography>
-              <strong>Total(IVA incluido)</strong>
-            </Typography>
-            <Typography>${allOrderInfo.total}</Typography>
-          </div>
-        </section>
       </div>
+      <section id='section-total-purchase'>
+        <Typography>
+          <strong>Resumen del pedido</strong>
+        </Typography>
+        <div style={OrderSumaryStyles}>
+          <Typography>Productos</Typography>
+          <Typography>${allOrderInfo.subtotal}</Typography>
+        </div>
+        <div style={OrderSumaryStyles}>
+          <Typography>Envío</Typography>
+          <Typography>${allOrderInfo.shippingCost}</Typography>
+        </div>
+        <div style={OrderSumaryStyles}>
+          <Typography>IVA</Typography>
+          <Typography>${allOrderInfo.iva}</Typography>
+        </div>
+        <div style={OrderSumaryStyles}>
+          <Typography>
+            <strong>Total (IVA incluido)</strong>
+          </Typography>
+          <Typography>${allOrderInfo.total}</Typography>
+        </div>
+      </section>
     </section>
   )
 }
@@ -195,8 +182,8 @@ const DeliveryInfo = ({ allOrderInfo }) => {
 const Address = ({ address }) => {
   return (
     <section style={AdreessContainer}>
-      <Typography variant='h3' style={{ fontSize: '19px' }}>
-        <strong>Direccion de envio</strong>
+      <Typography variant='h3' style={{ fontSize: '19px', marginBottom: '10px' }}>
+        <strong>Dirección de envío</strong>
       </Typography>
       <Typography style={{ marginBottom: '5px' }}>{`${address.street} ${address.extNumber}`}</Typography>
       <Typography style={{ marginBottom: '5px' }}>{`${address.colony}`}</Typography>
@@ -315,10 +302,8 @@ const Orders = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.session)
   const { orders, isLoading, messageValid } = useSelector(state => state.orders)
-  console.log({ orders })
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
-    debugger
   }, [])
 
   if (isLoading) {

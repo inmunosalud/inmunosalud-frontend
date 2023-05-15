@@ -76,6 +76,7 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async (id, thu
 export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uuid, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  let paymentInfo = {}
 
   try {
     const [responseMethods, responseAddress] = await Promise.all([
@@ -85,7 +86,9 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
 
     thunkApi.dispatch(setAddresses(responseAddress.content))
 
-    return responseMethods
+    paymentInfo.paymentMethods = responseMethods.content.filter(method => method.cardUse === 'Pago')
+    paymentInfo.clabe = responseMethods.content.find(method => method.cardUse === 'Cobro')
+    return paymentInfo
   } catch (error) {
     return thunkApi.rejectWithValue('error')
   }
@@ -108,6 +111,7 @@ const initialState = {
   formErrors: null,
   /* users table */
   paymentMethods: [],
+  clabe: {},
   //modal props
   isOpen: false,
   isOpenDelete: false,

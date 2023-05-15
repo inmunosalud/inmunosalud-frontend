@@ -18,7 +18,6 @@ export const initCart = createAsyncThunk('cart/getCart', async (id, thunkApi) =>
   }
 })
 export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => {
-  //debugger
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -32,6 +31,7 @@ export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => 
 export const updateCart = createAsyncThunk('cart/updateCart', async ({ id: cartId, body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  debugger
   try {
     const response = await api_put(`${HOST_CART}/cart/${cartId}`, body, auth)
     return response.content

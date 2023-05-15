@@ -17,11 +17,13 @@ import address from 'src/store/address'
 const Profile = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
-  const { paymentMethods } = useSelector(state => state.paymentMethods)
+  const { paymentMethods, clabe } = useSelector(state => state.paymentMethods)
   const { address } = useSelector(state => state.address)
 
   useEffect(() => {
-    if (user.id) dispatch(loadInfo(user.id))
+    if (user.id) {
+      dispatch(loadInfo(user.id))
+    }
   }, [])
 
   return user.id ? (
@@ -30,7 +32,7 @@ const Profile = () => {
         <UserProfileLeft data={user} />
       </Grid>
       <Grid item xs={12} md={7} lg={8}>
-        <UserProfileRight methods={paymentMethods} addresses={address} />
+        <UserProfileRight methods={paymentMethods} addresses={address} bankInfo={clabe} />
       </Grid>
     </Grid>
   ) : null

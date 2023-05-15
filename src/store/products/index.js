@@ -4,11 +4,8 @@ import { PROYECT_PRODUCTS, api_post, api_get, api_put, api_delete } from '../../
 import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    debugger
-    const response = await api_get(`${PROYECT_PRODUCTS}/products`, auth)
+    const response = await api_get(`${PROYECT_PRODUCTS}/products`)
     //thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {

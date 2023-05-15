@@ -16,6 +16,7 @@ import { getUserInfo } from 'src/store/users'
 import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { object } from 'yup'
+import GraphBar from 'src/views/dashboards/users/GraphBar'
 
 const data = [
   {
@@ -89,17 +90,21 @@ function getProductConsumptionSeries(userInfo) {
 
   const series = []
 
-  for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
-    let data = []
-    const months = Object.keys(values)
-    for (let i = 0; i < categories.length; i++) {
-      const match = months.find(month => month === categories[i])
+  try {
+    for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
+      let data = []
+      const months = Object.keys(values)
+      for (let i = 0; i < categories.length; i++) {
+        const match = months.find(month => month === categories[i])
 
-      if (match) {
-        data.push(values[match])
-      } else data.push(0)
+        if (match) {
+          data.push(values[match])
+        } else data.push(0)
+      }
+      series.push({ data, name: key })
     }
-    series.push({ data, name: key })
+  } catch (error) {
+    return console.error(error)
   }
   return series
 }
@@ -172,7 +177,7 @@ const Users = () => {
           <Grid container spacing={6}>
             {renderCharts()}
             <Grid item xs={12} sm={6}>
-              <LinearChart
+              <GraphBar
                 title='Consumo general'
                 series={getOverAllConsumptionSeries(userInfo)}
                 categories={getOverAllConsumptionCategories(userInfo)}

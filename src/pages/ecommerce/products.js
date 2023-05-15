@@ -51,12 +51,12 @@ const Products = () => {
   }
 
   const displayMapProducts = () => {
-    const { content } = products
+    const { content } = { ...products }
     return (
       <React.Fragment>
         {content?.map((product, i) => (
           <div key={i} style={{ marginTop: '25px' }}>
-            <ProductItem isEdit={isProductAdmin || isAdmin ? true : false} {...product} />
+            <ProductItem isEdit={isProductAdmin || isAdmin ? true : false} {...product} cartId={user.id} />
           </div>
         ))}
       </React.Fragment>
