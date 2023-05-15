@@ -1,9 +1,6 @@
 // ** React Imports
 import { useEffect } from 'react'
 
-//**next imports
-import { useRouter } from 'next/router'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
