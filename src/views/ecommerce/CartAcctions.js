@@ -45,11 +45,11 @@ const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) =>
           </Button>
 
           <Button fullWidth sx={{ mb: 3.5 }} variant='outlined' onClick={onMethodClick}>
-            Seleccionar metodo de pago
+            Seleccionar método de pago
           </Button>
 
           <Button fullWidth variant='outlined' sx={{ mb: 3.5 }} onClick={onAddressClick}>
-            Seleccionar direccion
+            Seleccionar dirección
           </Button>
         </CardContent>
       </Card>

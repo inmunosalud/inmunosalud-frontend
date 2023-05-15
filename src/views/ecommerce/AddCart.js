@@ -36,6 +36,9 @@ import themeConfig from 'src/configs/themeConfig'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateCart } from 'src/store/cart'
+import { loadInfo, setSelectedPaymentMethodInCart } from 'src/store/paymentMethods'
+import { setSelectedAddressInCart } from 'src/store/address'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
@@ -98,17 +101,13 @@ const tomorrowDate = now.setDate(now.getDate() + 7)
 const AddCard = props => {
   // ** Hooks
   const dispatch = useDispatch()
-  // ** Props
-  const { toggleAddCustomerDrawer } = props
-
-  // ** States
-  const [count, setCount] = useState(1)
 
   // ** Selectors
   const { total, products, id } = useSelector(state => state.cart)
 
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCard } = useSelector(state => state.address)
+  const { user } = useSelector(state => state.dashboard.general)
 
   // ** Hook
   const theme = useTheme()
@@ -120,6 +119,13 @@ const AddCard = props => {
     // @ts-ignore
     e.target.closest('.repeater-wrapper').remove()
   }
+
+  useEffect(() => {
+    if (!user.id) {
+      dispatch(loadSession())
+    }
+    dispatch(loadInfo(user.id))
+  }, [])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
@@ -229,7 +235,7 @@ const AddCard = props => {
         <Grid container>
           <Grid item xs={12} sm={9} sx={{ mb: { lg: 0, xs: 4 } }}>
             <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
-              Metodo de pago:
+              Método de pago:
             </Typography>
             <div style={{ display: 'flex', gap: '10px' }}>
               <Typography variant='body2' sx={{ mb: 2 }}>
@@ -257,9 +263,15 @@ const AddCard = props => {
                 <Typography variant='body2'>{selectedAddressInCard?.street}</Typography>
               </CalcWrapper>
               <CalcWrapper>
-                <Typography variant='body2'>Num Ext:</Typography>
+                <Typography variant='body2'>Núm. Ext:</Typography>
                 <Typography variant='body2'>{selectedAddressInCard?.extNumber}</Typography>
               </CalcWrapper>
+              {selectedAddressInCard?.intNumber ? (
+                <CalcWrapper>
+                  <Typography variant='body2'>Núm. Int:</Typography>
+                  <Typography variant='body2'>{selectedAddressInCard?.intNumber}</Typography>
+                </CalcWrapper>
+              ) : null}
               <CalcWrapper>
                 <Typography variant='body2'>Colonia:</Typography>
                 <Typography variant='body2'>{selectedAddressInCard?.colony}</Typography>
@@ -294,7 +306,7 @@ const AddCard = props => {
                         className='col-title'
                         sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
                       >
-                        Articulo
+                        Artículo
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
@@ -380,9 +392,9 @@ const AddCard = props => {
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
-              <Typography variant='body2'>Descuento:</Typography>
+              <Typography variant='body2'>Monto de envío:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                ${total.descuento}
+                ${total.shippingCost ?? 0}
               </Typography>
             </CalcWrapper>
             <CalcWrapper>

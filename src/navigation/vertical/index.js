@@ -1,4 +1,4 @@
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 // ** Icon imports
 import HomeOutline from 'mdi-material-ui/HomeOutline'
 import ShoppingOutline from 'mdi-material-ui/ShoppingOutline'
@@ -20,7 +20,7 @@ const navigation = () => {
       title: 'Home',
       path: '/landing-page/home',
       permission: PERMISSIONS.home,
-      visible: true,
+      visible: true
     },
     {
       title: 'Dashboard',
@@ -42,6 +42,11 @@ const navigation = () => {
           title: 'Comisiones',
           path: '/dashboards/comissions',
           permission: PERMISSIONS.dashboardComissions
+        },
+        {
+          title: 'Constantes',
+          path: '/dashboards/constants',
+          permission: PERMISSIONS.dashboardConstants
         }
       ]
     },
@@ -73,9 +78,9 @@ const navigation = () => {
           title: 'Pedidos',
           path: '/orders/admin-orders',
           permission: PERMISSIONS.ecommerceProducts
-        },
+        }
       ]
-    },
+    }
   ]
 
   // Filter out items that the user doesn't have permission to see

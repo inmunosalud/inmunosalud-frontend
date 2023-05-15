@@ -17,7 +17,7 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
         profile: response.content.profile,
         recommenderId: response.content.recommenderId,
         email: response.content.email,
-        id: response.content.id ?? ""
+        id: response.content.id ?? ''
       },
       token: response.content.token
     }
@@ -83,9 +83,9 @@ export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uui
   }
 })
 
-export const deleteUser = createAsyncThunk('user/deleteUser', async (body, thunkApi) => {
+export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
     const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
     thunkApi.dispatch(setModalDelete(false))
@@ -130,7 +130,10 @@ const initialState = {
   userInfo: {},
 
   //detele modal
-  showDelete: false
+  showDelete: false,
+
+  //confirm modal
+  showConfirmModal: false
 }
 
 export const usersSlice = createSlice({
@@ -148,6 +151,9 @@ export const usersSlice = createSlice({
     },
     setModalDelete: (state, { payload }) => {
       state.showDelete = payload
+    },
+    setShowConfirmModal: (state, { payload }) => {
+      state.showConfirmModal = payload
     },
     setUser: (state, { payload }) => {
       state.token = payload.token
@@ -199,7 +205,7 @@ export const usersSlice = createSlice({
     //update user
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
       const updatedUser = payload?.content
-      console.log({ updatedUser });
+      console.log({ updatedUser })
       state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
     })
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
@@ -215,4 +221,4 @@ export const usersSlice = createSlice({
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setUser } = usersSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete, setUser, setShowConfirmModal } = usersSlice.actions

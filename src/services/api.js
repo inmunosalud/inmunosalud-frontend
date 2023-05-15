@@ -7,6 +7,7 @@ export const PROJECT_PAYMENT_METHODS = 'https://647fpdfpo1.execute-api.us-east-1
 export const PROYECT_PRODUCTS = 'https://nj1fowivba.execute-api.us-east-1.amazonaws.com'
 export const COMISSIONS = 'https://ngn5zgk4a1.execute-api.us-east-1.amazonaws.com'
 export const ORDERS = 'https://a57zeomz3a.execute-api.us-east-1.amazonaws.com'
+export const CONSTANTS = 'https://0168sg0a8i.execute-api.us-east-1.amazonaws.com'
 const axiosInstance = axios.create({
   baseURL: ''
 })

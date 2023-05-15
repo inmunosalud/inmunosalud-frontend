@@ -22,6 +22,7 @@ import monthlyPurchase from 'src/store/monthlypurchase'
 import products from 'src/store/products'
 import comissions from 'src/store/comissions'
 import orders from 'src/store/orders'
+import constants from 'src/store/constants'
 
 export const store = configureStore({
   reducer: {
@@ -43,7 +44,8 @@ export const store = configureStore({
     address,
     register,
     dashboard: combineReducers({ general }),
-    monthlyPurchase
+    monthlyPurchase,
+    constants
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

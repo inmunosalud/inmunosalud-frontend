@@ -83,7 +83,6 @@ function getProductConsumptionCategories({ productsConsumption = {} }) {
 }
 
 function getProductConsumptionSeries(userInfo) {
-  debugger
   const categories = getProductConsumptionCategories(userInfo)
 
   if (!categories) return []
