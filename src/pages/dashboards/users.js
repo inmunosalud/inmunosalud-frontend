@@ -16,6 +16,7 @@ import { getUserInfo } from 'src/store/users'
 import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { object } from 'yup'
+import GraphBar from 'src/views/dashboards/users/GraphBar'
 
 const data = [
   {
@@ -176,7 +177,7 @@ const Users = () => {
           <Grid container spacing={6}>
             {renderCharts()}
             <Grid item xs={12} sm={6}>
-              <LinearChart
+              <GraphBar
                 title='Consumo general'
                 series={getOverAllConsumptionSeries(userInfo)}
                 categories={getOverAllConsumptionCategories(userInfo)}

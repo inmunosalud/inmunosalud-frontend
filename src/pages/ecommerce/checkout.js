@@ -9,6 +9,8 @@ import { createOrder } from 'src/store/orders'
 import { loadInfo } from 'src/store/paymentMethods'
 import { getUserInfo } from 'src/store/users'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { updateCart } from 'src/store/cart'
+import { getCart } from 'src/store/cart'
 
 const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
@@ -35,15 +37,20 @@ const InvoicePreview = ({}) => {
   }
 
   const handleConfirmOrder = () => {
-    console.log('send order')
-    // const body = {
-    //   idAddress,
-    //   idPaymentMethod,
-    //   products,
-    //   idUser: user?.id
-    // }
-
-    // dispatch(createOrder(body))
+    const body = {
+      idAddress: selectedAddressInCard.id,
+      idUser: userInfo.id,
+      idPaymentMethod: selectedPaymentMethod.id,
+      products: products.map(product => {
+        return { id: product.id, quantity: product.quantity }
+      })
+    }
+    dispatch(createOrder(body)).then(res => {
+      if (res.payload.message === 'Orden creada.') {
+        dispatch(getCart(userInfo.id))
+        //products.forEach(product => dispatch(updateCart({ id: userInfo.id, body: { id: product.id, quantity: 0 } })))
+      }
+    })
   }
 
   useEffect(() => {
