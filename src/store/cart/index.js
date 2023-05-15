@@ -18,7 +18,6 @@ export const initCart = createAsyncThunk('cart/getCart', async (id, thunkApi) =>
   }
 })
 export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => {
-  //debugger
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {

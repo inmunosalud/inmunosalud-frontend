@@ -5,7 +5,6 @@ import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
   try {
-    debugger
     const response = await api_get(`${PROYECT_PRODUCTS}/products`)
     //thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response

@@ -304,7 +304,6 @@ const Orders = () => {
   const { orders, isLoading, messageValid } = useSelector(state => state.orders)
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
-    debugger
   }, [])
 
   if (isLoading) {
