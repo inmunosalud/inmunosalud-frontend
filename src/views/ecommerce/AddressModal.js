@@ -48,7 +48,7 @@ const addressSchema = yup.object().shape({
 
 const AddressModal = ({ open = false, onClose = () => {} }) => {
   const dispatch = useDispatch()
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
   const { showModal } = useSelector(state => state.address)
 
   const {

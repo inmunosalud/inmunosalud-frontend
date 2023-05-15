@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useDispatch } from 'react-redux'
-import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { useRouter} from 'next/router'
 
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
@@ -32,6 +32,8 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 
 import { InfoProduct } from './styles'
+import DialogForm from 'src/views/components/dialogs/DialogForm'
+import { setShowConfirmModal } from 'src/store/users'
 
 // Styled Grid component
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -86,16 +88,19 @@ const CarouselProducts = ({ images }) => {
   return null
 }
 
-export const ProductItem = (props) => {
-  //debugger
+export const ProductItem = props => {
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
+  const { showConfirmModal } = useSelector(state => state.users)
+  const [authPassword, setAuthPassword] = React.useState('')
 
   const handleModalClose = () => {
+    debugger
+    showModalDelete
     setShowModalDelete(false)
   }
 
@@ -112,9 +117,15 @@ export const ProductItem = (props) => {
     setShowModalDelete(true)
   }
 
-  const submitDelete = () => {
-    dispatch(deleteProduct(props.id))
+  const handleCloseConfirmModal = () => {
+    debugger
+    dispatch(setShowConfirmModal(false))
     handleModalClose()
+  }
+
+  const submitDelete = () => {
+    dispatch(deleteProduct({id: props.id, headers: {password: authPassword}}))
+    handleCloseConfirmModal()
     setAnchorEl(null)
   }
 
@@ -308,9 +319,11 @@ export const ProductItem = (props) => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleModalClose}>Cancelar</Button>
-          <Button onClick={submitDelete}>Eliminar</Button>
+          <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
         </DialogActions>
       </Dialog>
+
+      <DialogForm handleClose={handleCloseConfirmModal} open={showConfirmModal} onClick={submitDelete} setAuthPass={setAuthPassword}></DialogForm>
     </>
   )
 }

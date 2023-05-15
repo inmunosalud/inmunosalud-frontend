@@ -12,22 +12,17 @@ export const initCart = createAsyncThunk('cart/getCart', async (id, thunkApi) =>
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${HOST_CART}/cart/${id}`, auth)
-
-    console.log(response)
-
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
   }
 })
 export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => {
+  //debugger
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${HOST_CART}/cart/${id}`, auth)
-
-    console.log(response)
-
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -37,11 +32,8 @@ export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => 
 export const updateCart = createAsyncThunk('cart/updateCart', async ({ id: cartId, body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  console.log(cartId)
   try {
     const response = await api_put(`${HOST_CART}/cart/${cartId}`, body, auth)
-    console.log(response)
-
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -59,7 +51,7 @@ export const cartSlice = createSlice({
       subtotal: 0,
       iva: 0,
       total: 0,
-      descuento: 0
+      shippingCost: 0
     }
   },
   reducers: {},
@@ -75,6 +67,7 @@ export const cartSlice = createSlice({
       state.total.total = payload.total
       state.total.iva = payload.iva
       state.total.subtotal = payload.subtotal
+      state.total.shippingCost = payload.shippingCost
     })
     builder.addCase(getCart.rejected, (state, action) => {
       state.isLoading = false
@@ -92,6 +85,7 @@ export const cartSlice = createSlice({
       state.total.total = payload.total
       state.total.iva = payload.iva
       state.total.subtotal = payload.subtotal
+      state.total.shippingCost = payload.shippingCost
     })
     builder.addCase(updateCart.rejected, (state, action) => {
       state.isLoading = false

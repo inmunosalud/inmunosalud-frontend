@@ -29,21 +29,28 @@ const InvoicePreview = ({}) => {
   const data = {
     products,
     total,
-    paymentMethods,
-    address,
+    selectedPaymentMethod,
+    selectedAddressInCard,
+    selectedPaymentMethod,
+    selectedAddressInCard,
     userInfo
   }
 
   const handleConfirmOrder = () => {
-    console.log('send order')
-    // const body = {
-    //   idAddress,
-    //   idPaymentMethod,
-    //   products,
-    //   idUser: user?.id
-    // }
-
-    // dispatch(createOrder(body))
+    const body = {
+      idAddress: selectedAddressInCard.id,
+      idPaymentMethod: selectedPaymentMethod.id,
+      products: products.map(product => {
+        return { id: product.id, quantity: product.quantity }
+      })
+    }
+    dispatch(createOrder({ idUser: userInfo.id, body })).then(res => {
+      debugger
+      if (res.payload.message === 'Orden creada.') {
+        dispatch(getCart(userInfo.id))
+        //products.forEach(product => dispatch(updateCart({ id: userInfo.id, body: { id: product.id, quantity: 0 } })))
+      }
+    })
   }
 
   useEffect(() => {

@@ -229,7 +229,7 @@ const UserProfileBilling = ({ methods = [] }) => {
         onClose={handleCloseModal}
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
       >
-        <DialogContent>Seguro de eliminar el metodo seleccionado?</DialogContent>
+        <DialogContent>Seguro de eliminar el método seleccionado?</DialogContent>
         <DialogActions>
           <Button variant='contained' sx={{ mr: 1 }} onClick={sendDelete}>
             Eliminar

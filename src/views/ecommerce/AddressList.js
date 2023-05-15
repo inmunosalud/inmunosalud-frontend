@@ -64,7 +64,9 @@ export const AddressList = () => {
                 />
               ) : null}
             </Box>
-            <Typography variant='body2'>{`${item.street} ${item.extNumber}, ${item.colony}`}</Typography>
+            <Typography variant='body2'>{`${item.street} ${item.extNumber}${
+              item.intNumber ? ` - ${item.intNumber}` : ''
+            }, ${item.colony}`}</Typography>
             <Typography variant='body2'>{item.zipCode}</Typography>
             <Typography variant='body2'>{item.city}</Typography>
           </div>

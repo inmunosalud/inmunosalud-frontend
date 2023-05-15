@@ -5,9 +5,9 @@ import GraphRow from './GraphRow'
 
 const useGraphConfig =
   (network = {}) =>
-  (type = '') => {
-    return network[type]
-  }
+    (type = '') => {
+      return network[type]
+    }
 
 const getValidUsers = (row, type) => {
   if (!row.network || !row.network[type]) return 0
@@ -206,6 +206,19 @@ export const columns = [
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.antiquity}
+        </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.125,
+    minWidth: 140,
+    field: 'balance',
+    headerName: 'Saldo a favor',
+    renderCell: params => {
+      return (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          ${params.row.balance}
         </Typography>
       )
     }

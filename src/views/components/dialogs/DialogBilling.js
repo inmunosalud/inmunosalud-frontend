@@ -35,7 +35,7 @@ export default function DialogBilling({
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          {editItem && Object.keys(editItem).length ? 'Editar Metodo de Pago' : 'Nuevo Metodo de Pago'}
+          {editItem && Object.keys(editItem).length ? 'Editar Método de Pago' : 'Nuevo Método de Pago'}
         </DialogTitle>
         <DialogContent style={{ paddingTop: '5px' }}>
           <form onSubmit={handleSubmit(onPaymentSubmit)}>

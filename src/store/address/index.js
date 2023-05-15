@@ -105,6 +105,7 @@ export const addressSlice = createSlice({
     },
     setAddresses: (state, { payload }) => {
       state.address = payload
+      state.selectedAddressInCard = payload[0]
     },
     setSelectedAddressInCart: (state, { payload }) => {
       ;(state.selectedAddressInCard = payload), (state.isSelectedAddress = true)

@@ -29,7 +29,7 @@ const columns = [
   {
     minWidth: 110,
     field: 'paymentMethodMapped',
-    headerName: 'Metodo de Pago',
+    headerName: 'Método de Pago',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.paymentMethodMapped}

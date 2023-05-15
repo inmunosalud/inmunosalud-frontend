@@ -17,7 +17,8 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Snackbar
+  Snackbar,
+  Modal
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { getComissions, liquidationComisions, setOpenModal } from 'src/store/comissions'
@@ -88,7 +89,7 @@ const Comissions = () => {
   const { message, open, severity } = useSelector(state => state.notifications)
   const [rowSelectionModel, setRowSelectionModel] = React.useState([])
   const [authActionModal, setAuthActionModal] = React.useState(false)
-
+  const [AuthPasword, setAuthPassword] = React.useState('')
   const [showNotification, setShowNotification] = React.useState(open)
 
   React.useEffect(() => {
@@ -103,10 +104,9 @@ const Comissions = () => {
     setShowNotification(open)
   }, [open])
 
-  const confirmSubmit = () => {
+  const confirmSubmit = password => {
     console.log({ rowSelectionModel })
-    debugger
-    dispatch(liquidationComisions(rowSelectionModel))
+    dispatch(liquidationComisions({ rowsId: rowSelectionModel, password }))
   }
 
   return (
@@ -116,7 +116,7 @@ const Comissions = () => {
           title='Comisiones'
           action={
             <Box>
-              <Button variant='contained' disabled={!rowSelectionModel.length} onClick={confirmSubmit}>
+              <Button variant='contained' disabled={!rowSelectionModel.length} onClick={() => setAuthActionModal(true)}>
                 Liquidar Comisiones
               </Button>
             </Box>
@@ -141,6 +141,32 @@ const Comissions = () => {
       {showNotification && (
         <SnackbarAlert severity={severity} isOpen={showNotification} message={message}></SnackbarAlert>
       )}
+
+      <Dialog open={authActionModal}>
+        <DialogTitle>Confirmar Contraseña</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Para poder liquidar las comisiones es necesario escribir su contraseña</DialogContentText>
+          <TextField
+            onChange={e => setAuthPassword(e.target.value)}
+            fullWidth
+            label='Contraseña'
+            autoFocus={true}
+            type='password'
+            variant='standard'
+          ></TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAuthActionModal(false)}>Cancelar</Button>
+          <Button
+            onClick={() => {
+              setAuthActionModal(false)
+              confirmSubmit(AuthPasword)
+            }}
+          >
+            Continuar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   )
 }

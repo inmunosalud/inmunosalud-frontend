@@ -153,7 +153,9 @@ export const paymentMethodsSlice = createSlice({
     })
     builder.addCase(loadInfo.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.paymentMethods = payload.content
+      state.paymentMethods = payload.paymentMethods
+      state.clabe = payload.clabe
+      state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(loadInfo.rejected, (state, action) => {
       state.isLoading = false

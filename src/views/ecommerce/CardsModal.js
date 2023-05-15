@@ -109,7 +109,7 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
       >
-        <DialogTitle id='scroll-dialog-title'>Metodos de pago</DialogTitle>
+        <DialogTitle id='scroll-dialog-title'>Métodos de pago</DialogTitle>
         <IconButton size='small' onClick={onClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
           <Close />
         </IconButton>
@@ -120,7 +120,7 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button onClick={handleNewPayment}>
             <Plus />
-            Nuevo Metodo
+            Nuevo Método
           </Button>
           <Button onClick={onClose}>Confirmar</Button>
         </DialogActions>
