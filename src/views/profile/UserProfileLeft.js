@@ -146,18 +146,18 @@ const UserProfileLeft = ({ data }) => {
             </CardContent>
           </Card>
         </Grid>
-        {userInfo?.balance > 0 && <Grid item xs={12}>
-          <Card>
-            <CardContent sx={{ mt: 2 }}>
-              <Box sx={{ display: "flex", flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Typography variant='h6'>Saldo a favor</Typography>
-                <Typography variant='h6'>
-                  ${userInfo?.balance}
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>}
+        {userInfo?.balance > 0 && (
+          <Grid item xs={12}>
+            <Card>
+              <CardContent sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Typography variant='h6'>Saldo a favor</Typography>
+                  <Typography variant='h6'>${userInfo?.balance}</Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
         {/* New Param showOnlyName to only show name and last name inputs*/}
         <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={userInfo} showOnlyName={true} />
       </Grid>

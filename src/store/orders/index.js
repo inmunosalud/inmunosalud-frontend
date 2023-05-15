@@ -41,13 +41,13 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
   }
 })
 
-export const createOrder = createAsyncThunk('order/createOrder', async (body, thunkApi) => {
+export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser, body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_post(`${ORDERS}/orders/${body.idUser}`, body, auth)
+    const response = await api_post(`${ORDERS}/orders/${idUser}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    //Router.push('/ecommerce/orders')
+    Router.push('/ecommerce/orders')
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
