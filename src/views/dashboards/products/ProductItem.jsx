@@ -34,6 +34,7 @@ import 'swiper/css/navigation'
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal } from 'src/store/users'
+import { updateCart } from 'src/store/cart'
 
 // Styled Grid component
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -205,6 +206,15 @@ export const ProductItem = props => {
     handleDelete
   }
 
+  const handleAddToCart = () => {
+    const body = {
+      id: props.id,
+      quantity: 1
+    }
+
+    dispatch(updateCart( {id: props.cartId, body}))
+  }
+
   return (
     <>
       <Card>
@@ -329,7 +339,7 @@ export const ProductItem = props => {
               justifyContent: 'flex-end'
             }}
           >
-            <Button variant='contained'>Agregar al carrito</Button>
+            <Button variant='contained' onClick={handleAddToCart}>Agregar al carrito</Button>
           </div>
         </CardContent>
       </Card>

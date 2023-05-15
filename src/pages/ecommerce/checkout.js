@@ -38,6 +38,10 @@ const InvoicePreview = ({}) => {
     selectedAddressInCard,
     selectedPaymentMethod,
     selectedAddressInCard,
+    selectedPaymentMethod,
+    selectedAddressInCard,
+    selectedPaymentMethod,
+    selectedAddressInCard,
     userInfo
   }
 
