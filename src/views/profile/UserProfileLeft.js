@@ -14,7 +14,7 @@ import CardContent from '@mui/material/CardContent'
 // ** Icons Imports
 import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
-
+import { Cart } from 'mdi-material-ui'
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
@@ -149,9 +149,9 @@ const UserProfileLeft = ({ data }) => {
           </Card>
         </Grid>
         <Grid item xs={12}>
-          <Card>
-            <Button variant='outlined' sx={{ mb: 3 }} onClick={() => router.push('/ecommerce/monthly-purchase/')}>
-              Pedidos domiciliados
+          <Card sx={{ pt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Button variant='outlined' sx={{ mb: 3 }} onClick={() => router.push('/ecommerce/monthly-purchase/')} startIcon={<Cart />}>
+              Pedido Mensual
             </Button>
           </Card>
         </Grid>

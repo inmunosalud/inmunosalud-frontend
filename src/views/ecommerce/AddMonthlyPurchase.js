@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState, forwardRef, useEffect } from 'react'
+import { useEffect } from 'react'
 
 //**next imports
 import { useRouter } from 'next/router'
@@ -8,22 +8,13 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import Tooltip from '@mui/material/Tooltip'
-import TableRow from '@mui/material/TableRow'
 import Collapse from '@mui/material/Collapse'
-import TableBody from '@mui/material/TableBody'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import { styled, alpha, useTheme } from '@mui/material/styles'
-import Table from '@mui/material/Table'
-
-import TableHead from '@mui/material/TableHead'
-import TableContainer from '@mui/material/TableContainer'
-import TableCell from '@mui/material/TableCell'
+import { styled, useTheme } from '@mui/material/styles'
 
 import CardContent from '@mui/material/CardContent'
 
@@ -31,32 +22,14 @@ import CardContent from '@mui/material/CardContent'
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
 
-// ** Third Party Imports
-import DatePicker from 'react-datepicker'
-
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Custom Component Imports
-import Repeater from 'src/@core/components/repeater'
 
 // ** Styles
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
-import { React, StackExchange } from 'mdi-material-ui'
-import { updateCart } from 'src/store/cart'
+import { getMonthlyPurchase, setModal, updateMonthlyPurchase } from 'src/store/monthlypurchase'
 
-const CustomInput = forwardRef(({ ...props }, ref) => {
-  return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
-})
-
-const MUITableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 0,
-  paddingLeft: '0 !important',
-  paddingRight: '0 !important',
-  paddingTop: `${theme.spacing(1)} !important`,
-  paddingBottom: `${theme.spacing(1)} !important`
-}))
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -101,34 +74,21 @@ const InvoiceAction = styled(Box)(({ theme }) => ({
   borderLeft: `1px solid ${theme.palette.divider}`
 }))
 
-const now = new Date()
-const tomorrowDate = now.setDate(now.getDate() + 7)
 
-const AddMonthlyPurchase = props => {
+const AddMonthlyPurchase = () => {
   // ** Hooks
   const dispatch = useDispatch()
-  // ** Props
-  const { toggleAddCustomerDrawer } = props
-
-  // ** States
-  const [count, setCount] = useState(1)
 
   // ** Selectors
-  const { total, products, id } = useSelector(state => state.cart)
-
-  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
-  const { selectedAddressInCard } = useSelector(state => state.address)
+  const { total, products, id } = useSelector(state => state.monthlyPurchase)
+  const { user } = useSelector(state => state.dashboard.general)
 
   // ** Hook
   const theme = useTheme()
-  const router = useRouter()
-  // ** Deletes form
-  const deleteForm = e => {
-    e.preventDefault()
 
-    // @ts-ignore
-    e.target.closest('.repeater-wrapper').remove()
-  }
+  useEffect(() => {
+    dispatch(getMonthlyPurchase(user.id))
+  }, [])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
@@ -140,7 +100,7 @@ const AddMonthlyPurchase = props => {
       return
     }
 
-    dispatch(updateCart({ id, body }))
+    dispatch(updateMonthlyPurchase({ id, body }))
   }
 
   return (
@@ -222,66 +182,12 @@ const AddMonthlyPurchase = props => {
             <DatePickerWrapper sx={{ '& .react-datepicker-wrapper': { width: 'auto' } }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xl: 'flex-end', xs: 'flex-start' } }}>
                 <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
-                  <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
-                    Pedido domiciliado
+                  <Typography variant='h6' sx={{ mr: 2, width: '180px' }}>
+                    Pedido Mensual
                   </Typography>
                 </Box>
               </Box>
             </DatePickerWrapper>
-          </Grid>
-        </Grid>
-      </CardContent>
-
-      <Divider />
-
-      <CardContent>
-        <Grid container>
-          <Grid item xs={12} sm={9} sx={{ mb: { lg: 0, xs: 4 } }}>
-            <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
-              Metodo de pago:
-            </Typography>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                {selectedPaymentMethod?.cardType}
-              </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                {selectedPaymentMethod?.cardNumber}
-              </Typography>
-            </div>
-
-            <Typography variant='body2' sx={{ mb: 2 }}>
-              {selectedPaymentMethod?.nameOnCard}
-            </Typography>
-            <Typography variant='body2' sx={{ mb: 2 }}>
-              {selectedPaymentMethod?.expDate}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-            <div>
-              <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
-                Dirección:
-              </Typography>
-              <CalcWrapper>
-                <Typography variant='body2'>Calle:</Typography>
-                <Typography variant='body2'>{selectedAddressInCard?.street}</Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Num Ext:</Typography>
-                <Typography variant='body2'>{selectedAddressInCard?.extNumber}</Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Colonia:</Typography>
-                <Typography variant='body2'>{selectedAddressInCard?.colony}</Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>CP:</Typography>
-                <Typography variant='body2'>{selectedAddressInCard?.zipCode}</Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Ciudad:</Typography>
-                <Typography variant='body2'>{selectedAddressInCard?.city}</Typography>
-              </CalcWrapper>
-            </div>
           </Grid>
         </Grid>
       </CardContent>
@@ -352,7 +258,7 @@ const AddMonthlyPurchase = props => {
                   </Grid>
                   <InvoiceAction>
                     {product.canBeRemoved ? (
-                      <IconButton size='small' onClick={deleteForm}>
+                      <IconButton size='small' onClick={ev => handleUpdate(product.id, 0, product.canBeRemoved)}>
                         <Close fontSize='small' />
                       </IconButton>
                     ) : null}
@@ -369,7 +275,7 @@ const AddMonthlyPurchase = props => {
               size='small'
               variant='contained'
               startIcon={<Plus fontSize='small' />}
-              onClick={() => router.push('/ecommerce/products/')}
+              onClick={() => dispatch(setModal(true))}
             >
               Agregar artículos
             </Button>
@@ -389,12 +295,6 @@ const AddMonthlyPurchase = props => {
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
-              <Typography variant='body2'>Descuento:</Typography>
-              <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                ${total.descuento}
-              </Typography>
-            </CalcWrapper>
-            <CalcWrapper>
               <Typography variant='body2'>IVA:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
                 ${total.iva}
@@ -410,7 +310,7 @@ const AddMonthlyPurchase = props => {
           </Grid>
         </Grid>
       </CardContent>
-
+      {/* 
       <Divider />
 
       <CardContent>
@@ -418,7 +318,7 @@ const AddMonthlyPurchase = props => {
           Nota:
         </InputLabel>
         <TextField rows={2} fullWidth multiline id='invoice-note' />
-      </CardContent>
+      </CardContent> */}
     </Card>
   )
 }
