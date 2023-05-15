@@ -16,7 +16,7 @@ import { getUserInfo } from 'src/store/users'
 import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { object } from 'yup'
-import GraphBar from 'src/views/dashboards/users/graphBar'
+import GraphBar from 'src/views/dashboards/users/GraphBar'
 
 const data = [
   {
