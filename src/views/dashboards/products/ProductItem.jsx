@@ -103,7 +103,6 @@ export const ProductItem = props => {
   const [authPassword, setAuthPassword] = React.useState('')
 
   const handleModalClose = () => {
-    debugger
     showModalDelete
     setShowModalDelete(false)
   }
@@ -122,7 +121,6 @@ export const ProductItem = props => {
   }
 
   const handleCloseConfirmModal = () => {
-    debugger
     dispatch(setShowConfirmModal(false))
     handleModalClose()
   }
