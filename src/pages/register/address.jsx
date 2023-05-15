@@ -113,11 +113,12 @@ const defaultBankInfoValues = {
 const dataSchema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
-  phone: yup.string()
-  .required()
-  .matches(/^[0-9]+$/, 'Solo digitos')
-  .min(10, 'Deben ser 10 digitos')
-  .max(10, 'Deben ser 10 digitos'),
+  phone: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(10, 'Deben ser 10 digitos')
+    .max(10, 'Deben ser 10 digitos')
   // birthDate: yup.date()
 })
 
@@ -160,11 +161,11 @@ const paymentSchema = yup.object().shape({
 
 const bankInfoSchema = yup.object().shape({
   clabe: yup
-        .string()
-        .required()
-        .matches(/^[0-9]+$/, 'Solo digitos')
-        .min(18, 'Deben ser 18 digitos')
-        .max(18, 'Deben ser 18 digitos')
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo digitos')
+    .min(18, 'Deben ser 18 digitos')
+    .max(18, 'Deben ser 18 digitos')
 })
 
 function PAGE() {
@@ -180,13 +181,13 @@ export default function Address() {
   const { open, message, severity } = useSelector(state => state.notifications)
 
   // Get the current year
-  const currentYear = (new Date().getFullYear());
+  const currentYear = new Date().getFullYear()
 
   // Generate an array of options for the next 6 years
   const options = Array.from({ length: 6 }, (_, i) => ({
     value: currentYear + i,
     label: `${currentYear + i}`.slice(-2)
-  }));
+  }))
 
   useEffect(() => {
     dispatch(loadSession())
@@ -227,7 +228,7 @@ export default function Address() {
     control: bankInfoControl,
     handleSubmit: handleBankInfoSubmit,
     formState: { errors: bankInfoErrors }
-  } = useForm ({
+  } = useForm({
     defaultValues: defaultBankInfoValues,
     resolver: yupResolver(bankInfoSchema)
   })
@@ -246,7 +247,7 @@ export default function Address() {
 
   const onDataSubmit = values => {
     values.profile = PROFILES_USER.associatedUser
-    dispatch(updateUser({body: values, uuid: user.id}))
+    dispatch(updateUser({ body: values, uuid: user.id }))
   }
 
   const onAddressSubmit = values => {
@@ -266,7 +267,7 @@ export default function Address() {
   const onBankInfoSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro',
+      cardUse: 'Cobro'
     }
 
     dispatch(createMethod({ body, uuid: user.id }))
@@ -361,6 +362,7 @@ export default function Address() {
                         onChange={onChange}
                         error={Boolean(dataErrors.birthDate)}
                         aria-describedby='validation-basic-date'
+                        InputLabelProps={{ shrink: true }}
                       />
                     )}
                   />
@@ -698,19 +700,19 @@ export default function Address() {
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <>
-                      <InputLabel id="demo-simple-select-label">AA</InputLabel>
-                      <Select
-                        value={value}
-                        label='AA'
-                        onChange={onChange}
-                        placeholder='AA'
-                        error={Boolean(paymentErrors['year'])}
-                        aria-describedby='stepper-linear-payment-year'
-                      >
-                        {options.map((year, _) => {
-                          return <MenuItem value={year.value}>{year.label}</MenuItem>
-                        })}
-                      </Select>
+                        <InputLabel id='demo-simple-select-label'>AA</InputLabel>
+                        <Select
+                          value={value}
+                          label='AA'
+                          onChange={onChange}
+                          placeholder='AA'
+                          error={Boolean(paymentErrors['year'])}
+                          aria-describedby='stepper-linear-payment-year'
+                        >
+                          {options.map((year, _) => {
+                            return <MenuItem value={year.value}>{year.label}</MenuItem>
+                          })}
+                        </Select>
                       </>
                     )}
                   />
@@ -805,7 +807,7 @@ export default function Address() {
             </Grid>
           </form>
         )
-        case 3:
+      case 3:
         return (
           <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
             <Grid container spacing={5}>
