@@ -86,6 +86,8 @@ const UserProfileLeft = ({ data }) => {
   }
 
   if (data) {
+    const isActive = 'Usuario Activo'
+    const isInactive = "Usuario Inactivo"
     return (
       <Grid container spacing={6}>
         <Grid item xs={12}>
@@ -107,6 +109,23 @@ const UserProfileLeft = ({ data }) => {
                   size='small'
                   label={data.profile}
                   color={roleColors[data.profile]}
+                  sx={{
+                    height: 20,
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    borderRadius: '5px',
+                    textTransform: 'capitalize',
+                    '& .MuiChip-label': { mt: -0.25 },
+                    mb: 1
+                  }}
+                />
+              }
+              {
+                <CustomChip
+                  skin='light'
+                  size='small'
+                  label={userInfo?.valid ? isActive : isInactive}
+                  color={userInfo?.valid ? 'success' : 'error'}
                   sx={{
                     height: 20,
                     fontSize: '0.875rem',
