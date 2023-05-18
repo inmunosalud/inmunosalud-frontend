@@ -33,8 +33,9 @@ import 'swiper/css/navigation'
 
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
-import { setShowConfirmModal } from 'src/store/users'
+import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
 import { updateCart } from 'src/store/cart'
+import RedirectModal from 'src/pages/components/modals/RedirectModal'
 
 // Styled Grid component
 const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -100,8 +101,9 @@ export const ProductItem = props => {
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
-  const { showConfirmModal } = useSelector(state => state.users)
+  const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const [authPassword, setAuthPassword] = React.useState('')
+
 
   const handleModalClose = () => {
     showModalDelete
@@ -199,6 +201,7 @@ export const ProductItem = props => {
     }
   ]
 
+
   const listMenuProps = {
     anchorEl,
     handleClose,
@@ -206,7 +209,19 @@ export const ProductItem = props => {
     handleDelete
   }
 
+  const checkIfNotRegistred = (id) => {
+    if(!id) {
+      dispatch(setShowRedirectModal(true))
+      return true
+    }
+
+    return false
+  }
+
   const handleAddToCart = () => {
+
+    if(checkIfNotRegistred(props.cartId)) return
+
     const body = {
       id: props.id,
       quantity: 1
@@ -359,8 +374,8 @@ export const ProductItem = props => {
           <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
         </DialogActions>
       </Dialog>
-
       <DialogForm handleClose={handleCloseConfirmModal} open={showConfirmModal} onClick={submitDelete} setAuthPass={setAuthPassword}></DialogForm>
+      <RedirectModal open={showRedirectModal} handleClose={() => dispatch(setShowRedirectModal(false))} pageToRedirect={"/register"}></RedirectModal>
     </>
   )
 }
