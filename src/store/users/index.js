@@ -133,7 +133,10 @@ const initialState = {
   showDelete: false,
 
   //confirm modal
-  showConfirmModal: false
+  showConfirmModal: false,
+
+  //redirect modal
+  showRedirectModal: false
 }
 
 export const usersSlice = createSlice({
@@ -154,6 +157,9 @@ export const usersSlice = createSlice({
     },
     setShowConfirmModal: (state, { payload }) => {
       state.showConfirmModal = payload
+    },
+    setShowRedirectModal: (state, { payload }) => {
+      state.showRedirectModal = payload
     },
     setUser: (state, { payload }) => {
       state.token = payload.token
@@ -221,4 +227,5 @@ export const usersSlice = createSlice({
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setUser, setShowConfirmModal } = usersSlice.actions
+export const { setErrors, setModal, setModalRow, setModalDelete, setUser, setShowConfirmModal, setShowRedirectModal } =
+  usersSlice.actions
