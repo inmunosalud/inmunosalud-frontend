@@ -86,7 +86,7 @@ const getCurrentDate = () => {
   ]
 
   const date = moment(new Date()).format('MM/DD/YYYY').split('/')
-  const month = date[0][0] == 0 ? Number(date[0][1]) - 1 : Number(date[0][0]) - 1
+  const month = date[0][0] == 0 ? Number(date[0][1]) : Number(date[0][0])
 
   return `${date[1]} de ${months[month - 1]} del ${date[2]}`
 }
