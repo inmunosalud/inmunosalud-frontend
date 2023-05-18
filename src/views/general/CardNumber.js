@@ -20,8 +20,7 @@ const CardNumber = ({ data, userInfo = {}}) => {
   // ** Vars
   const { title, chipColor, chipText, src, stats, trend, trendNumber } = data
   const isActive = 'Usuario Activo'
-  const isInactive = null
-
+  const isInactive = 'Usuario Inactivo'
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
       <CardContent>
@@ -30,7 +29,11 @@ const CardNumber = ({ data, userInfo = {}}) => {
           justifyContent: 'space-between'
         }}>
           <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{title}</Typography>
+          {
+          title === "Proximo Corte" ?
           <Typography sx={{ mb: 6.5, fontWeight: 600 }}>{userInfo?.valid ? isActive: isInactive}</Typography>
+          : null
+          }
         </div>
         <Box sx={{
           mb: 1.5,
