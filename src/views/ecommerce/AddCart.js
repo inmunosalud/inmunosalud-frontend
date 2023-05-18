@@ -149,6 +149,10 @@ const AddCard = props => {
     dispatch(updateCart({ id, body }))
   }
 
+  useEffect(() => {
+    console.log(total)
+  }, [])
+
   return (
     <Card>
       <CardContent>
