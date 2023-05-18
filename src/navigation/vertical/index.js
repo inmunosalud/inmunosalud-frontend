@@ -44,10 +44,15 @@ const navigation = () => {
           permission: PERMISSIONS.dashboardComissions
         },
         {
+          title: 'Pedidos',
+          path: '/orders/admin-orders',
+          permission: PERMISSIONS.ecommerceProducts
+        },
+        {
           title: 'Constantes',
           path: '/dashboards/constants',
           permission: PERMISSIONS.dashboardConstants
-        }
+        },
       ]
     },
     {
@@ -68,19 +73,20 @@ const navigation = () => {
         }
       ]
     },
-    {
-      title: 'Pedidos',
-      icon: OrderBoolDescending,
-      permission: 'orders',
-      visible: isAuthorized(user?.profile),
-      children: [
-        {
-          title: 'Pedidos',
-          path: '/orders/admin-orders',
-          permission: PERMISSIONS.ecommerceProducts
-        }
-      ]
-    }
+    // {
+    //   title: 'Pedidos',
+    //   icon: OrderBoolDescending,
+    //   permission: 'orders',
+    //   visible: true,
+    //   visible: isAuthorized(user?.profile),
+    //   children: [
+    //     {
+    //       title: 'Pedidos',
+    //       path: '/orders/admin-orders',
+    //       permission: PERMISSIONS.ecommerceProducts
+    //     }
+    //   ]
+    // }
   ]
 
   // Filter out items that the user doesn't have permission to see
