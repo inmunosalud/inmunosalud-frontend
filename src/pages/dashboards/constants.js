@@ -126,7 +126,10 @@ const Constants = () => {
   const onSubmit = (data, event) => {
     event.preventDefault()
 
-    if (associateProductList.length > 0) {
+    if (
+      associateProductList.length > 0 &&
+      associateProductList.every(associateProduct => associateProduct.product !== '')
+    ) {
       setBody({
         cutoffDay: data.cutoffDay,
         iva: data.iva,
@@ -366,7 +369,7 @@ const Constants = () => {
                   ? associateProductList.map((product, index) => (
                       <Grid container item xs={12} spacing={5} key={product.id}>
                         <Grid item xs={6}>
-                          <FormControl fullWidth>
+                          <FormControl fullWidth error={product.product === ''}>
                             <InputLabel id='product-label'>Producto *</InputLabel>
                             <Select
                               labelId='product-label'
@@ -388,6 +391,9 @@ const Constants = () => {
                                   })
                                 : null}
                             </Select>
+                            {product.product === '' && (
+                              <FormHelperText sx={{ color: 'red' }}>Elige un producto</FormHelperText>
+                            )}
                           </FormControl>
                         </Grid>
                         <Grid item xs={3}>
