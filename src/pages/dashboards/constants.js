@@ -13,7 +13,8 @@ import {
   FormControl,
   InputAdornment,
   Backdrop,
-  CircularProgress
+  CircularProgress,
+  FormHelperText
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -26,6 +27,7 @@ const Constants = () => {
   const { constants, loading, isLoading, showModal, showConfirmModal } = useSelector(state => state.constants)
   const { products } = useSelector(state => state.products)
   const [associateProductList, setAssociateProductList] = useState([])
+  const [addProductDisabled, isAddProductDisabled] = useState(false)
   const [body, setBody] = useState({})
   const dispatch = useDispatch()
   const {
@@ -42,7 +44,8 @@ const Constants = () => {
       d: 0.0,
       e: 0.0,
       shippingCost: 0,
-      minimalAmountOfPurchase: 0
+      minimalAmountOfPurchase: 0,
+      maintenanceCost: 0
     }
   })
 
@@ -59,9 +62,11 @@ const Constants = () => {
         d: (constants.commissionPercentajePerLevel.D * 100).toFixed(2) ?? 0,
         e: (constants.commissionPercentajePerLevel.E * 100).toFixed(2) ?? 0,
         shippingCost: constants.shippingCost,
-        minimalAmountOfPurchase: constants.minimalAmountOfPurchase
+        minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
+        maintenanceCost: constants.maintenanceCost ?? 0
       })
       setAssociateProductList(constants.associatedPackage)
+      isAddProductDisabled(constants.associatedPackage.length === products.content.length)
     }
   }, [loading])
   const generateRandomCharacters = () => {
@@ -73,11 +78,15 @@ const Constants = () => {
     return result
   }
 
-  const handleAddProduct = () =>
+  const handleAddProduct = () => {
     setAssociateProductList([...associateProductList, { id: generateRandomCharacters(), product: '', quantity: 0 }])
+    isAddProductDisabled(associateProductList.length + 1 === products.content.length)
+  }
 
-  const handleDeleteProduct = productToRemove =>
+  const handleDeleteProduct = productToRemove => {
     setAssociateProductList(associateProductList.filter(product => product.id !== productToRemove.id))
+    isAddProductDisabled(associateProductList.length - 1 === products.content.length)
+  }
 
   const handleProductSelected = (index, productSelectedId) => {
     const newProducts = associateProductList.map((associateProduct, associateProductIndex) => {
@@ -92,14 +101,17 @@ const Constants = () => {
   }
 
   const handleQuantityField = (index, value) => {
-    const newProducts = associateProductList.map((associateProduct, associateProductIndex) => {
-      if (index === associateProductIndex) {
-        return { ...associateProduct, quantity: value }
-      } else {
-        return associateProduct
-      }
-    })
-    setAssociateProductList(newProducts)
+    const regex = /^[0-9\b]+$/
+    if (value > 0 && regex.test(value)) {
+      const newProducts = associateProductList.map((associateProduct, associateProductIndex) => {
+        if (index === associateProductIndex) {
+          return { ...associateProduct, quantity: value }
+        } else {
+          return associateProduct
+        }
+      })
+      setAssociateProductList(newProducts)
+    }
   }
 
   const handleModalClose = () => {
@@ -113,7 +125,11 @@ const Constants = () => {
 
   const onSubmit = (data, event) => {
     event.preventDefault()
-    if (associateProductList.length > 0) {
+
+    if (
+      associateProductList.length > 0 &&
+      associateProductList.every(associateProduct => associateProduct.product !== '')
+    ) {
       setBody({
         cutoffDay: data.cutoffDay,
         iva: data.iva,
@@ -125,6 +141,7 @@ const Constants = () => {
         },
         shippingCost: data.shippingCost,
         minimalAmountOfPurchase: data.minimalAmountOfPurchase,
+        maintenanceCost: data.maintenanceCost,
         associatedPackage: associateProductList
       })
       handleModalConfirm()
@@ -151,9 +168,17 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='cutoffDay'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 1, max: 31 }}
                     render={({ field }) => (
-                      <TextField error={!!errors.cutoffDay} label='Dia de corte' fullWidth required {...field} />
+                      <TextField
+                        error={!!errors.cutoffDay}
+                        label='Dia de corte'
+                        fullWidth
+                        required
+                        type='number'
+                        {...field}
+                        helperText={errors.cutoffDay && 'Debe de elegir un dia entre 1 y 31'}
+                      />
                     )}
                   />
                 </Grid>
@@ -161,16 +186,19 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='iva'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
                         label='IVA'
                         fullWidth
                         required
+                        type='number'
+                        error={!!errors.iva}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.iva && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -179,16 +207,22 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='shippingCost'
-                    rules={{ required: true }}
+                    rules={{
+                      required: 'Este campo es requerido',
+                      min: { value: 0, message: 'No se aceptan valores negativos' }
+                    }}
                     render={({ field }) => (
                       <TextField
                         label='Costo de envio'
                         fullWidth
                         required
+                        type='number'
+                        error={!!errors.shippingCost}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>$</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.shippingCost && errors.shippingCost.message}
                       />
                     )}
                   />
@@ -197,16 +231,46 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='minimalAmountOfPurchase'
-                    rules={{ required: true }}
+                    rules={{
+                      required: 'Este campo es requerido',
+                      min: { value: 0, message: 'No se aceptan valores negativos' }
+                    }}
                     render={({ field }) => (
                       <TextField
                         label='Compra mínima'
                         fullWidth
                         required
+                        type='number'
+                        error={!!errors.minimalAmountOfPurchase}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>$</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.minimalAmountOfPurchase && errors.minimalAmountOfPurchase.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    control={control}
+                    name='maintenanceCost'
+                    rules={{
+                      required: 'Este campo es requerido',
+                      min: { value: 0, message: 'No se aceptan valores negativos' }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        label='Costo de mantenimiento'
+                        fullWidth
+                        required
+                        type='number'
+                        error={!!errors.maintenanceCost}
+                        InputProps={{
+                          startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                        }}
+                        {...field}
+                        helperText={errors.maintenanceCost && errors.maintenanceCost.message}
                       />
                     )}
                   />
@@ -218,17 +282,19 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='b'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
                         label='B'
                         type='number'
                         fullWidth
                         required
+                        error={!!errors.b}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.b && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -237,17 +303,19 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='c'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
                         label='C'
                         type='number'
                         fullWidth
                         required
+                        error={!!errors.c}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.c && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -256,17 +324,19 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='d'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
                         label='D'
                         type='number'
                         fullWidth
                         required
+                        error={!!errors.d}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.d && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -275,19 +345,22 @@ const Constants = () => {
                   <Controller
                     control={control}
                     name='e'
-                    rules={{ required: true }}
+                    rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
                         label='E'
                         type='number'
                         fullWidth
+                        error={!!errors.e}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
+                        helperText={errors.e && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
+                  <FormHelperText>Hello</FormHelperText>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant='h6'>Paquete de socios</Typography>
@@ -296,19 +369,31 @@ const Constants = () => {
                   ? associateProductList.map((product, index) => (
                       <Grid container item xs={12} spacing={5} key={product.id}>
                         <Grid item xs={6}>
-                          <FormControl fullWidth>
+                          <FormControl fullWidth error={product.product === ''}>
                             <InputLabel id='product-label'>Producto *</InputLabel>
                             <Select
                               labelId='product-label'
                               label='Producto'
                               value={product.id}
-                              required
+                              required={true}
                               onChange={e => handleProductSelected(index, e.target.value)}
                             >
                               {products
-                                ? products.content.map(item => <MenuItem value={item.id}>{item.product}</MenuItem>)
+                                ? products.content.map(item => {
+                                    if (
+                                      item.id === product.id ||
+                                      !associateProductList.some(selectedProduct => selectedProduct.id === item.id)
+                                    ) {
+                                      return <MenuItem value={item.id}>{item.product}</MenuItem>
+                                    } else {
+                                      return null
+                                    }
+                                  })
                                 : null}
                             </Select>
+                            {product.product === '' && (
+                              <FormHelperText sx={{ color: 'red' }}>Elige un producto</FormHelperText>
+                            )}
                           </FormControl>
                         </Grid>
                         <Grid item xs={3}>
@@ -335,7 +420,7 @@ const Constants = () => {
                     ))
                   : null}
                 <Grid item xs={12}>
-                  <Button variant='contained' onClick={() => handleAddProduct()}>
+                  <Button variant='contained' disabled={addProductDisabled} onClick={() => handleAddProduct()}>
                     Agregar producto
                   </Button>
                 </Grid>
