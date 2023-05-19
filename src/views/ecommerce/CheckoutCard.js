@@ -83,13 +83,14 @@ const getCurrentDate = () => {
     'octubre',
     'noviembre',
     'diciembre'
-  ]
+  ];
 
-  const date = moment(new Date()).format('MM/DD/YYYY').split('/')
-  const month = date[0][0] == 0 ? Number(date[0][1]) - 1 : Number(date[0][0]) - 1
+  const date = moment(new Date()).format('MM/DD/YYYY').split('/');
+  const month = Number(date[0]) - 1;
 
-  return `${date[1]} de ${months[month - 1]} del ${date[2]}`
-}
+  return `${date[1]} de ${months[month]} del ${date[2]}`;
+};
+
 
 const CheckoutCard = ({ data }) => {
   // ** Hook
@@ -312,7 +313,7 @@ const CheckoutCard = ({ data }) => {
                 </Typography>
               </CalcWrapper>
               <CalcWrapper>
-                <Typography variant='body2'>Tax:</Typography>
+                <Typography variant='body2'>IVA:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
                   ${total.iva}
                 </Typography>
@@ -332,7 +333,7 @@ const CheckoutCard = ({ data }) => {
 
         <CardContent>
           <Typography variant='body2'>
-            <strong>Note:</strong>
+            <strong>Nota:</strong>
           </Typography>
         </CardContent>
       </Box>
