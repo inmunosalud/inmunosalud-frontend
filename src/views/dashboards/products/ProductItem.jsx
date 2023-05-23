@@ -61,7 +61,7 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
   backgroundColor: theme.palette.mode === 'light' ? '' : '',
-  width: '150px',
+  width: '250px',
   height: 'auto',
   borderRadius: '5px',
   padding: '5px',
@@ -80,12 +80,27 @@ const CarouselProducts = ({ images }) => {
         navigation
         modules={[Navigation]}
         style={{
-          width: '450px'
+          width: '75%',
+          margin: '0 auto'
         }}
       >
         {images.map(image => (
-          <SwiperSlide>
-            <img width={250} height={350} style={{ margin: 'auto 100px' }} alt='imagen' src={image} />
+          <SwiperSlide
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          >
+            <img
+                style={{
+                width: '75%',
+                height: 'auto', // Ajustar la altura de la imagen automáticamente
+                maxWidth: '100%', // Asegurar que la imagen no exceda el ancho del contenedor
+              }}
+              alt='imagen'
+              src={image}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -103,7 +118,6 @@ export const ProductItem = props => {
   const [showModalDelete, setShowModalDelete] = React.useState(false)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const [authPassword, setAuthPassword] = React.useState('')
-
 
   const handleModalClose = () => {
     showModalDelete
@@ -201,7 +215,6 @@ export const ProductItem = props => {
     }
   ]
 
-
   const listMenuProps = {
     anchorEl,
     handleClose,
@@ -209,8 +222,8 @@ export const ProductItem = props => {
     handleDelete
   }
 
-  const checkIfNotRegistred = (id) => {
-    if(!id) {
+  const checkIfNotRegistred = id => {
+    if (!id) {
       dispatch(setShowRedirectModal(true))
       return true
     }
@@ -219,8 +232,7 @@ export const ProductItem = props => {
   }
 
   const handleAddToCart = () => {
-
-    if(checkIfNotRegistred(props.cartId)) return
+    if (checkIfNotRegistred(props.cartId)) return
 
     const body = {
       id: props.id,
@@ -243,39 +255,44 @@ export const ProductItem = props => {
         <MenuBasic {...listMenuProps} />
         <CardContent>
           <Grid container spacing={2}>
+            <Grid container xs={6} sx={{ justifyContent: 'center', marginBottom: '30px' }}>
+              <Typography variant='h5' sx={{ justifyContent: 'center' }}>
+                <strong>{`${props.product}`}</strong>
+              </Typography>
+            </Grid>
+            <Grid item xs={6}></Grid>
+          </Grid>
+          <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
                 <CarouselProducts images={props.urlImages} />
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', marginBottom: '20px' }}>
-                <Box>
-                  <Typography variant='h5' sx={{ marginBottom: '20px' }}>
-                    <strong>{`${props.product}`}</strong>
-                  </Typography>
+              <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
+                <Grid container xs={6}>
                   <Typography variant='h5'>
                     <strong>{`$${props.price}`}</strong>
                   </Typography>
-                </Box>
-                <Box sx={{ marginLeft: '20px' }}>
+                  <Grid container>
+                    {props.isEdit ? (
+                      <Typography variant='h8'>
+                        <strong>{`Cantidad en almacén: ${props.quantity}`}</strong>
+                      </Typography>
+                    ) : null}
+                  </Grid>
+                </Grid>
+                <Grid container xs={6} sx={{ justifyContent: 'center' }}>
                   <BoxCustomizedInfo>
                     <Typography sx={{ fontSize: '12px' }}>
-                      <strong>{`${props.capsuleConcentration}`}</strong>
+                      <strong>{`${props.capsuleConcentration} mg en cada cápsula`}</strong>
                     </Typography>
                     <Typography sx={{ fontSize: '12px', margin: '10px 0px' }}>
                       {`Contiene ${props.capsuleQuantity} cápsulas por envase`}
                     </Typography>
                   </BoxCustomizedInfo>
-                </Box>
-                {props.isEdit ? (
-                  <Box sx={{ marginLeft: '20px' }}>
-                    <Typography variant='h8' sx={{ marginBottom: '20px' }}>
-                      <strong>{`Cantidad en almacen: ${props.quantity}`}</strong>
-                    </Typography>
-                  </Box>
-                ) : null}
-              </Box>
+                </Grid>
+              </Grid>
               <Typography variant='body2' sx={{ marginBottom: '20px' }}>
                 <strong>DESCRIPCION: </strong>
                 {`${props.description}`}
@@ -317,7 +334,7 @@ export const ProductItem = props => {
       >
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
-            Seguro de eliminar el producto seleccionado ?
+            ¿ Seguro de eliminar el producto seleccionado ?
           </DialogContentText>
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
@@ -325,8 +342,17 @@ export const ProductItem = props => {
           <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
         </DialogActions>
       </Dialog>
-      <DialogForm handleClose={handleCloseConfirmModal} open={showConfirmModal} onClick={submitDelete} setAuthPass={setAuthPassword}></DialogForm>
-      <RedirectModal open={showRedirectModal} handleClose={() => dispatch(setShowRedirectModal(false))} pageToRedirect={"/register"}></RedirectModal>
+      <DialogForm
+        handleClose={handleCloseConfirmModal}
+        open={showConfirmModal}
+        onClick={submitDelete}
+        setAuthPass={setAuthPassword}
+      ></DialogForm>
+      <RedirectModal
+        open={showRedirectModal}
+        handleClose={() => dispatch(setShowRedirectModal(false))}
+        pageToRedirect={'/register'}
+      ></RedirectModal>
     </>
   )
 }
