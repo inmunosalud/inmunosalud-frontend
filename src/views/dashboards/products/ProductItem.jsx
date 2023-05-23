@@ -315,7 +315,7 @@ export const ProductItem = props => {
                 {props.mainComponents.map((ingredient, index) => (
                   <li key={index}>
                     <Typography variant='body2' sx={{ marginBottom: '2px' }}>
-                      {`${ingredient.property} - ${ingredient.value}`}
+                      {`${ingredient.property} - ${ingredient.value} mg activos en cada cápsula`}
                     </Typography>
                   </li>
                 ))}
