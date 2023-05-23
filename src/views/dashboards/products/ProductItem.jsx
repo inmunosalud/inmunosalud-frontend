@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-
+import Image from 'next/image'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import DialogContent from '@mui/material/DialogContent'
@@ -86,21 +86,23 @@ const CarouselProducts = ({ images }) => {
       >
         {images.map(image => (
           <SwiperSlide
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
           >
-            <img
+            <div style={{ width: '75%', height: 'auto' }}>
+              <div
                 style={{
-                width: '75%',
-                height: 'auto', // Ajustar la altura de la imagen automáticamente
-                maxWidth: '100%', // Asegurar que la imagen no exceda el ancho del contenedor
-              }}
-              alt='imagen'
-              src={image}
-            />
+                  width: '100%',
+                  paddingBottom: '75%',
+                  position: 'relative'
+                }}
+              >
+                <Image layout='fill' objectFit='contain' alt='imagen' src={image} />
+              </div>
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
@@ -245,22 +247,23 @@ export const ProductItem = props => {
   return (
     <>
       <Card>
-        <CardHeader
-          title={props.name}
-          titleTypographyProps={{
-            sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
-          }}
-          action={<IconButton>{props.isEdit ? <DotsVertical onClick={handleClick} /> : null}</IconButton>}
-        />
-        <MenuBasic {...listMenuProps} />
         <CardContent>
-          <Grid container spacing={2}>
-            <Grid container xs={6} sx={{ justifyContent: 'center', marginBottom: '30px' }}>
+          <Grid container spacing={2} sx={{ marginBottom: '30px', }}>
+            <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant='h5' sx={{ justifyContent: 'center' }}>
                 <strong>{`${props.product}`}</strong>
               </Typography>
             </Grid>
-            <Grid item xs={6}></Grid>
+            <Grid item xs={6}>
+              <CardHeader
+                title={props.name}
+                titleTypographyProps={{
+                  sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
+                }}
+                action={<IconButton>{props.isEdit ? <DotsVertical onClick={handleClick} /> : null}</IconButton>}
+              />
+              <MenuBasic {...listMenuProps} />
+            </Grid>
           </Grid>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -293,15 +296,15 @@ export const ProductItem = props => {
                   </BoxCustomizedInfo>
                 </Grid>
               </Grid>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>DESCRIPCION: </strong>
                 {`${props.description}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>INSTRUCCIONES: </strong>
                 {`${props.instructions}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>INGREDIENTES: </strong>
                 {`${props.ingredients}`}
               </Typography>
@@ -312,7 +315,7 @@ export const ProductItem = props => {
                 {props.mainComponents.map((ingredient, index) => (
                   <li key={index}>
                     <Typography variant='body2' sx={{ marginBottom: '2px' }}>
-                      {`${ingredient.property} - ${ingredient.value}`}
+                      {`${ingredient.property} - ${ingredient.value} mg activos en cada cápsula`}
                     </Typography>
                   </li>
                 ))}

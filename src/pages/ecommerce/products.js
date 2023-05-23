@@ -68,6 +68,18 @@ const Products = () => {
       <Grid container spacing={6}>
         <PageHeader title={<Typography variant='h5'>Productos</Typography>} />
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
+          <Grid container xs={12}>
+            <Grid container xs={12}>
+              <Typography variant='body2' style={{ textAlign: 'justify' }}>
+                Nuestras formulaciones son derivadas de investigaciones científicas con el objetivo de buscar la mejor combinación de ingredientes.
+                Nuestros productos tienen como objetivo proporcionar un alto nivel de energía y bienestar para mejorar el rendimiento en tú día a día, por eso es importante seguir las dosis sugeridas en las etiquetas de cada suplemento y utilizarlos en conjunto para obtener los mejores resultados.
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} container justifyContent='flex-end'>
           {showAddProductButton()}
         </Grid>
         <Grid item alignSelf='flex-end' xs={12}>
