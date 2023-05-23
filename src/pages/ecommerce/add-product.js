@@ -407,7 +407,32 @@ const AddProduct = () => {
                   }}
                 />
               </Grid>
-
+                <Grid item xs={12} sm={6} sx={{ marginTop: '20px' }}>
+                  <Controller
+                    control={control}
+                    name='quantity'
+                    rules={{ required: true }}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        error={!!errors.capsuleQuantity}
+                        label="Cantidad en almacén"
+                        fullWidth
+                        {...field}
+                        type="text"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Typography variant="subtitle2" color="textSecondary">
+                                en almacén
+                              </Typography>
+                            </InputAdornment>
+                          ),
+                        }}
+                        onKeyDown={handleKeyDownInt}
+                      />
+                    )}
+                  />
+                </Grid>
                 <Grid item xs={12} sx={{ marginTop: '15px' }}>
                   {/* create here dropdown dynammic */}
                   <MultiSelectWithAddOption
