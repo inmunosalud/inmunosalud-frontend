@@ -27,7 +27,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
-import { Account } from 'mdi-material-ui'
+import { Account, Router } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 
 const UserDropdown = props => {
@@ -60,12 +60,18 @@ const UserDropdown = props => {
     handleDropdownClose()
   }
   const handleLogout = () => {
+    localStorage.removeItem('im-user')
+    location.reload()
+    handleDropdownClose()
+  }
+
+  const handleLogin = () => {
     router.push('/register')
     handleDropdownClose()
   }
 
   const handleConvertProfile = () => {
-    router.push({pathname: '/register/address', query: {newAssociate: true}})
+    router.push({ pathname: '/register/address', query: { newAssociate: true } })
     handleDropdownClose()
   }
 
@@ -117,12 +123,12 @@ const UserDropdown = props => {
             Perfil
           </MenuItem>
         ) : null}
-        {user?.profile === PROFILES_USER.consumerUser ?
+        {user?.profile === PROFILES_USER.consumerUser ? (
           <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
             <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
             Convertirme en Socio
           </MenuItem>
-        : null}
+        ) : null}
 
         <Divider />
         {user?.id ? (
@@ -131,7 +137,7 @@ const UserDropdown = props => {
             Cerrar Sesión
           </MenuItem>
         ) : (
-          <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
+          <MenuItem sx={{ py: 2 }} onClick={handleLogin}>
             <LogoutVariant sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
             Iniciar Sesión
           </MenuItem>
