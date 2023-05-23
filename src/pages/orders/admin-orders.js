@@ -12,7 +12,7 @@ import { Pencil } from 'mdi-material-ui'
 import { Typography } from "@mui/material"
 import { closeSnackBar } from 'src/store/notifications'
 
-import { getOrders, setUpdatedOrder} from 'src/store/orders'
+import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 
 const columns = [
@@ -50,31 +50,41 @@ const columns = [
     minWidth: 100,
     field: 'totalProducts',
     headerName: 'Productos',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 140,
     field: 'total',
     headerName: 'Total del pedido',
-    renderCell: params => {}
+    renderCell: params => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        ${params.row.total}
+      </Typography>
+    )
   },
   {
     minWidth: 180,
     field: 'deliveryStatus',
     headerName: 'Estatus de envio',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 180,
     headerName: 'Fecha de compra',
     field: 'purchaseDate',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
-    minWidth: 180,
+    minWidth: 160,
     headerName: 'Fecha estimada de envio',
     field: 'deliveryEstimateDate',
-    renderCell: params => {}
+    renderCell: params => { }
+  },
+  {
+    minWidth: 120,
+    headerName: 'Fecha de entrega',
+    field: 'deliveryDate',
+    renderCell: params => { }
   },
 ]
 
@@ -86,12 +96,12 @@ const AdminOrders = () => {
   const { users } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { ordersAll } = useSelector(state => state.orders)
-  console.log({ordersAll});
+  console.log({ ordersAll });
   React.useEffect(() => {
     dispatch(getOrders())
   }, [dispatch])
-  
-  const handleOpenModalEdit = (item) => { 
+
+  const handleOpenModalEdit = (item) => {
     dispatch(setUpdatedOrder(item))
     router.push('/ecommerce/edit-order')
   }
@@ -105,7 +115,7 @@ const AdminOrders = () => {
       renderCell: params => {
         const row = params?.row
         return (
-          <Pencil sx={{ margin: '5px', cursor:"pointer" }} onClick={() => handleOpenModalEdit(row)} />
+          <Pencil sx={{ margin: '5px', cursor: "pointer" }} onClick={() => handleOpenModalEdit(row)} />
         )
       }
     }
@@ -117,10 +127,10 @@ const AdminOrders = () => {
         <CardHeader title='Pedidos' />
         <DataGrid
           autoHeight
-          pageSize={10}
+          pageSize={50}
           rows={ordersAll}
           columns={config}
-          sx={{width:"100%"}}
+          sx={{ width: "100%" }}
         />
       </Card>
       <CustomSnackbar
