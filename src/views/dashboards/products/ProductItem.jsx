@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
@@ -80,12 +80,12 @@ const CarouselProducts = ({ images }) => {
         navigation
         modules={[Navigation]}
         style={{
-          width: '300px'
+          width: '450px'
         }}
       >
         {images.map(image => (
           <SwiperSlide>
-            <img width={100} height={136} style={{ margin: 'auto 100px' }} alt='imagen' src={image} />
+            <img width={250} height={350} style={{ margin: 'auto 100px' }} alt='imagen' src={image} />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -129,7 +129,7 @@ export const ProductItem = props => {
   }
 
   const submitDelete = () => {
-    dispatch(deleteProduct({id: props.id, headers: {password: authPassword}}))
+    dispatch(deleteProduct({ id: props.id, headers: { password: authPassword } }))
     handleCloseConfirmModal()
     setAnchorEl(null)
   }
@@ -227,7 +227,7 @@ export const ProductItem = props => {
       quantity: 1
     }
 
-    dispatch(updateCart( {id: props.cartId, body}))
+    dispatch(updateCart({ id: props.cartId, body }))
   }
 
   return (
@@ -242,120 +242,71 @@ export const ProductItem = props => {
         />
         <MenuBasic {...listMenuProps} />
         <CardContent>
-          <CardContent
-            sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Grid container spacing={(0, 5)}>
-              <StyledGrid item xs={12} md={5}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+                <CarouselProducts images={props.urlImages} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', marginBottom: '20px' }}>
                 <Box>
-                  <CarouselProducts images={props.urlImages} />
-                  <Typography
-                    sx={{
-                      fontSize: '15px',
-                      padding: '30px'
-                    }}
-                  >
-                    {`${props.description}`}
+                  <Typography variant='h5' sx={{ marginBottom: '20px' }}>
+                    <strong>{`${props.product}`}</strong>
+                  </Typography>
+                  <Typography variant='h5'>
+                    <strong>{`$${props.price}`}</strong>
                   </Typography>
                 </Box>
-              </StyledGrid>
-              <ComplementaryGrid sm={12} md={4}>
-                <InfoProduct sm={12}>
-                  <div
-                    id='info-product'
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      margin: '0px 2px'
-                    }}
-                  >
-                    <Typography variant='h5' sx={{ marginBottom: '40px', fontSize: '20px' }}>
-                      <strong>{`${props.product}`}</strong>
+                <Box sx={{ marginLeft: '20px' }}>
+                  <BoxCustomizedInfo>
+                    <Typography sx={{ fontSize: '12px' }}>
+                      <strong>{`${props.capsuleConcentration}`}</strong>
                     </Typography>
-                    <Typography variant='h5' sx={{ marginBottom: '40px' }}>
-                      <strong>{`$${props.price}`}</strong>
+                    <Typography sx={{ fontSize: '12px', margin: '10px 0px' }}>
+                      {`Contiene ${props.capsuleQuantity} cápsulas por envase`}
                     </Typography>
-                  </div>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '10px'
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '13px',
-                        marginBottom: '7px'
-                      }}
-                    >
-                      <strong>INSTRUCCIONES: </strong>
-                      {`${props.instructions}`}
+                  </BoxCustomizedInfo>
+                </Box>
+                {props.isEdit ? (
+                  <Box sx={{ marginLeft: '20px' }}>
+                    <Typography variant='h8' sx={{ marginBottom: '20px' }}>
+                      <strong>{`Cantidad en almacen: ${props.quantity}`}</strong>
                     </Typography>
-
-                    <Typography
-                      sx={{
-                        fontSize: '13px',
-                        margin: '5px 0px',
-                        wordBreak: 'break-all',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
-                      <strong>INGREDIENTES: </strong>
-                      {`${props.ingredients}`}
+                  </Box>
+                ) : null}
+              </Box>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+                <strong>DESCRIPCION: </strong>
+                {`${props.description}`}
+              </Typography>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+                <strong>INSTRUCCIONES: </strong>
+                {`${props.instructions}`}
+              </Typography>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+                <strong>INGREDIENTES: </strong>
+                {`${props.ingredients}`}
+              </Typography>
+              <Typography variant='body2'>
+                <strong>COMPONENTES: </strong>
+              </Typography>
+              <ul>
+                {props.mainComponents.map((ingredient, index) => (
+                  <li key={index}>
+                    <Typography variant='body2' sx={{ marginBottom: '2px' }}>
+                      {`${ingredient.property} - ${ingredient.value}`}
                     </Typography>
-                  </div>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginTop: 15
-                    }}
-                    sm={12}
-                  >
-                    <BoxCustomizedInfo>
-                      <Typography
-                        sx={{
-                          fontSize: '12px'
-                        }}
-                      >
-                        <strong>{`${props.capsuleConcentration}`}</strong>
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: '12px',
-                          margin: '10px 0px'
-                        }}
-                      >
-                        {`Contiene ${props.capsuleQuantity} capsulas por envase`}
-                      </Typography>
-                    </BoxCustomizedInfo>
-                  </div>
-                </InfoProduct>
-              </ComplementaryGrid>
-              <ComplementaryGrid sm={12} md={3}>
-                <ReactApexcharts type='radar' height={200} series={series} options={options} />
-              </ComplementaryGrid>
+                  </li>
+                ))}
+              </ul>
             </Grid>
-          </CardContent>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <Button variant='contained' onClick={handleAddToCart}>Agregar al carrito</Button>
-          </div>
+          </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+            <Button variant='contained' onClick={handleAddToCart}>
+              Agregar al carrito
+            </Button>
+          </Box>
         </CardContent>
       </Card>
       <Dialog

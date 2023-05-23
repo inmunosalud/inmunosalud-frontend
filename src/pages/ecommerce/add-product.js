@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { useForm, Controller } from 'react-hook-form'
@@ -30,7 +30,7 @@ import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal } from 'src/store/users'
 
-const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {} }) => {
+const Modal = ({ open = false, onHandleOpenModal = () => { }, onSubmitConfirm = () => { } }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -175,6 +175,29 @@ const AddProduct = () => {
     return dispatch(uploadProductImages(body))
   }
 
+  const handleKeyDownInt = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+
+    if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46) {
+      event.preventDefault();
+    }
+  };
+
+  const handleInputFloat = (event) => {
+    const { value } = event.target;
+
+    if (!/^\d*\.?\d*$/.test(value)) {
+      event.target.value = value.slice(0, -1);
+    } else if (value === '.') {
+      event.target.value = '0.';
+    } else if (value.includes('.') && value.split('.')[1].length > 3) {
+      event.target.value = parseFloat(value).toFixed(3);
+    }
+  };
+
+
+
   const onSubmit = (data, event) => {
     event.preventDefault()
 
@@ -270,7 +293,23 @@ const AddProduct = () => {
                   name='capsuleQuantity'
                   rules={{ required: true }}
                   render={({ field, fieldState }) => (
-                    <TextField error={!!errors.capsuleQuantity} label='Cantidad de Cápsulas' fullWidth {...field} />
+                    <TextField
+                      error={!!errors.capsuleQuantity}
+                      label="Cantidad de Cápsulas"
+                      fullWidth
+                      {...field}
+                      type="text"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="subtitle2" color="textSecondary">
+                              cápsulas
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }}
+                      onKeyDown={handleKeyDownInt}
+                    />
                   )}
                 />
               </Grid>
@@ -285,6 +324,16 @@ const AddProduct = () => {
                       label='Concentración de Cápsulas'
                       fullWidth
                       {...field}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Typography variant="subtitle2" color="textSecondary">
+                              mg en cada cápsula
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      }}
+                      onInput={handleInputFloat}
                     />
                   )}
                 />
@@ -310,6 +359,7 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
+              <Grid item xs={12} sm={12}>
                 <Controller
                   control={control}
                   name='price'
@@ -321,11 +371,17 @@ const AddProduct = () => {
                         <TextField
                           label='Precio'
                           fullWidth
-                          type='number'
-                          InputProps={{
-                            startAdornment: <InputAdornment position='start'>$</InputAdornment>
-                          }}
                           {...field}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Typography variant="subtitle2" color="textSecondary">
+                                  $
+                                </Typography>
+                              </InputAdornment>
+                            ),
+                          }}
+                          onInput={handleInputFloat}
                         />
                       )
                     } else {
@@ -333,10 +389,16 @@ const AddProduct = () => {
                         <TextField
                           label='Precio'
                           fullWidth
-                          type='number'
                           InputProps={{
-                            startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Typography variant="subtitle2" color="textSecondary">
+                                  $
+                                </Typography>
+                              </InputAdornment>
+                            ),
                           }}
+                          onInput={handleInputFloat}
                           {...field}
                           error
                         />
@@ -344,6 +406,8 @@ const AddProduct = () => {
                     }
                   }}
                 />
+              </Grid>
+
                 <Grid item xs={12} sx={{ marginTop: '15px' }}>
                   {/* create here dropdown dynammic */}
                   <MultiSelectWithAddOption
@@ -384,20 +448,22 @@ const AddProduct = () => {
                         value={field.value}
                         fullWidth
                         onChange={e => handleFieldChange(index, 'value', e.target.value)}
-                      />
+                        type="text"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Typography variant="subtitle2" color="textSecondary">
+                                mg en cada cápsula
+                              </Typography>
+                            </InputAdornment>
+                          ),
+                        }}
+                        onInput={handleInputFloat} />
                     </Grid>
                   </Grid>
                 ))}
                 <Grid item sx={{ marginTop: '10px' }}></Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>
-                  Propiedades
-                </Typography>
-              </Grid>
-
-              <ListProperties values={values} handleChangeProperties={handlePropertiesList} />
-
               <Grid item xs={12}>
                 <Typography sx={{ margin: 'auto 0px' }} variant='h5'>
                   Imágenes Del Producto
