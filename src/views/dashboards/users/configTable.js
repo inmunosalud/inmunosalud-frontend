@@ -85,30 +85,16 @@ export const columns = [
     )
   },
   {
-    flex: 0.1,
-    minWidth: 90,
-    field: 'performance',
-    headerName: 'Rendimiento',
-    renderCell: params => {
-      const { row } = params
-      return (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {row.performance}
-        </Typography>
-      )
-    }
-  },
-  {
     flex: 0.175,
     minWidth: 120,
     headerName: 'Perfil',
-    field: 'profileText',
+    field: 'profile',
     renderCell: params => {
       const { row } = params
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {row.profileText}
+          {row.profile}
         </Typography>
       )
     }
