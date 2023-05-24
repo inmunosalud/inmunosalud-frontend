@@ -104,7 +104,7 @@ const RepeaterWrapper = styled(CardContent)(({ theme }) => ({
   }
 }))
 
-const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = () => {} }) => {
+const Modal = ({ open = false, onHandleOpenModal = () => { }, onSubmitDelete = () => { } }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -246,7 +246,8 @@ const Product = ({ products }) => {
   )
 }
 
-const Actions = ({ onHandleModal = () => {} }) => {
+const Actions = ({ onHandleModal = () => { }, status = '' }) => {
+  if ((status == 'Está en camino' || status == 'Cancelado' || status == 'Entregado')) return <div style={ButtonActionStyles} />
   return (
     <Tooltip title='Cancelar pedido' arrow>
       <Button style={ButtonActionStyles} onClick={onHandleModal}>
@@ -284,7 +285,7 @@ const Cards = props => {
             <div id='header-info' style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
               <Address address={address} />
               <DeliveryInfo allOrderInfo={props} />
-              <Actions onHandleModal={handleOpenModal} />
+              < Actions onHandleModal={handleOpenModal} status={props.deliveryStatus} />
             </div>
             <Divider />
             <RepeaterWrapper>

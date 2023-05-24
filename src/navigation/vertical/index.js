@@ -46,7 +46,7 @@ const navigation = () => {
         {
           title: 'Pedidos',
           path: '/orders/admin-orders',
-          permission: PERMISSIONS.ecommerceProducts
+          permission: PERMISSIONS.ordersAdmin
         },
         {
           title: 'Constantes',
