@@ -67,8 +67,7 @@ const FAQs = props => {
   return (
     <CardContent>
       <Box sx={{ mb: 9, textAlign: 'center' }}>
-        <Typography variant='h6'>FAQs</Typography>
-        <Typography variant='body2'>Dejanos ayudarte con las preguntas mas frecuentes</Typography>
+        <Typography variant='h6'>PREGUNTAS FRECUENTES</Typography>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box>{renderAccordion()}</Box>
