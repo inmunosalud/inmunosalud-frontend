@@ -11,7 +11,6 @@ import MuiCardContent from '@mui/material/CardContent'
 import axios from 'axios'
 
 // ** Demo Imports
-import PricingCTA from 'src/views/pages/pricing/PricingCTA'
 import PricingPlans from 'src/views/pages/pricing/PricingPlans'
 import PricingHeader from 'src/views/pages/pricing/PricingHeader'
 import PricingFooter from 'src/views/pages/pricing/PricingFooter'
@@ -76,26 +75,32 @@ const CardContent = styled(MuiCardContent)(({ theme }) => ({
 
 const questions = [
   {
-    id: 'general-settings',
-    question: 'Pregunta 1',
+    id: 'Q1',
+    question: '¿Es un medicamento?',
     answer:
       'Sesame snaps tart bonbon tiramisu jelly beans lemon drops bear claw candy gummi bears. Caramels pudding sweet donut tootsie roll gummies macaroon. Lemon drops caramels sesame snaps dessert jujubes. Cupcake chocolate bonbon cake tiramisu. Gummies candy canes ice cream biscuit. Jelly gummies wafer danish chupa chups sugar plum cookie.'
   },
   {
-    id: 'users',
-    question: 'Pregunta 2',
+    id: 'Q2',
+    question: '¿Es de confianza? ¿Cómo sé que es de confianza?',
     answer:
       'Chocolate sweet roll lemon drops chocolate cake candy canes halvah. Donut fruitcake sweet roll brownie carrot cake cake. Donut jujubes pudding candy macaroon. Gummies gingerbread croissant bonbon. Cookie toffee cupcake cotton candy candy canes dessert cotton candy liquorice. Jelly beans gummi bears toffee chocolate bar chocolate cake.'
   },
   {
-    id: 'personal-data',
-    question: 'Pregunta 3',
+    id: 'Q3',
+    question: '¿En dónde lo puedo conseguir? ¿Cuánto tiempo tardan en entregarlo?',
     answer:
       'Liquorice pie donut tootsie roll marzipan liquorice topping pie. Muffin sweet roll soufflé croissant cookie cotton candy toffee. Tootsie roll chocolate cake wafer jelly beans soufflé danish tart. Halvah dragée chocolate bar gingerbread apple pie ice cream ice cream fruitcake. Chocolate bar pudding apple pie cheesecake dragée topping ice cream cookie.'
   },
   {
-    id: 'advanced-settings',
-    question: 'Pregunta 4',
+    id: 'Q4',
+    question: '¿Qué se necesita para afiliarte?',
+    answer:
+      'Halvah liquorice pastry marshmallow sugar plum. Dessert chocolate pastry gummi bears pastry. Gingerbread bonbon pudding oat cake jujubes pie wafer tart brownie. Soufflé jujubes icing powder liquorice. Sweet donut toffee liquorice dessert dragée. Topping cake danish chupa chups chupa chups gummies. Cotton candy gummies chocolate cake oat cake.'
+  },
+  {
+    id: 'Q5',
+    question: '¿Cómo garantizamos la calidad de nuestros productos?',
     answer:
       'Halvah liquorice pastry marshmallow sugar plum. Dessert chocolate pastry gummi bears pastry. Gingerbread bonbon pudding oat cake jujubes pie wafer tart brownie. Soufflé jujubes icing powder liquorice. Sweet donut toffee liquorice dessert dragée. Topping cake danish chupa chups chupa chups gummies. Cotton candy gummies chocolate cake oat cake.'
   }
@@ -147,18 +152,23 @@ const Pricing = () => {
           </Button>
         </Grid>
       </Grid>
-
       <Card>
-        <CardContent sx={{ display: 'flex', padding: '0', flexWrap: 'wrap' }}>
-          <Box sx={{ flex: '1', padding: '2rem' }}>
-            <AboutUs />
-          </Box>
-          <Box sx={{ flex: '1' }}>
-            <Image src={Banner} height={400} width={800} alt='aboutUs' style={{ objectFit: 'cover' }} />
-          </Box>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={4}>
+              <Box sx={{ padding: '2rem' }}>
+                <AboutUs />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={8}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <Image src={Banner} alt='aboutUs' style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+              </Box>
+            </Grid>
+          </Grid>
         </CardContent>
-        <PricingCTA />
       </Card>
+
       <FAQs data={questions} />
       {/* <Footer /> */}
     </>

@@ -1,5 +1,6 @@
 export const PERMISSIONS = {
   home: 'home',
+  join: 'join',
   dashboardUsers: 'dashboard/users',
   dashboardComissions: 'dashboard/comissions',
   dashboardProfile: 'profile',
@@ -19,6 +20,7 @@ export const PERMISSIONS = {
 export const PROFILES = {
   Consumidor: [
     PERMISSIONS.home,
+    PERMISSIONS.join,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
@@ -31,6 +33,7 @@ export const PROFILES = {
   ],
   Socio: [
     PERMISSIONS.home,
+    PERMISSIONS.join,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
@@ -43,6 +46,7 @@ export const PROFILES = {
   ],
   'Administrador de Productos': [
     PERMISSIONS.home,
+    PERMISSIONS.join,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
@@ -55,6 +59,7 @@ export const PROFILES = {
   ],
   'Administrador General': [
     PERMISSIONS.home,
+    PERMISSIONS.join,
     PERMISSIONS.dashboardGeneral,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.dashboardUsers,
@@ -72,6 +77,7 @@ export const PROFILES = {
   ],
   default: [
     PERMISSIONS.home,
+    PERMISSIONS.join,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceAddProduct,
@@ -83,6 +89,7 @@ export const PROFILES = {
 
 export const ROUTES_PERMISSION = {
   ['/landing-page/home']: PERMISSIONS.home,
+  ['/landing-page/join']: PERMISSIONS.join,
   ['/dashboards/general']: PERMISSIONS.dashboardGeneral,
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/dashboards/comissions']: PERMISSIONS.dashboardComissions,

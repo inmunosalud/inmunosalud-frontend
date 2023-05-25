@@ -4,30 +4,29 @@ import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
 import { Button } from '@mui/material'
+import Link from 'next/link';
 
 const AboutUs = () => {
   // ** Props
   return (
-    <Box
-      sx={{
-        mb: 11,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: '100%'
-      }}
-    >
-      <Typography variant='h4'>Nosotros</Typography>
+    <Box>
+      <Typography variant='h4' style={{ textAlign: 'center' }}>
+        Acerca de Inmunosalud
+      </Typography>
       <Box sx={{ my: 5.5 }}>
-        <Typography variant='body2'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor enim inventore praesentium placeat modi
-          voluptatem officia. Dignissimos sit voluptates, sed consequatur ipsa laudantium amet qui nisi corporis
-          ratione, repellendus animi.
+        <Typography variant='body2' style={{ textAlign: 'justify' }}>
+          Somos un equipo especializado en el desarrollo de suplementos alimenticios diseñados para satisfacer las
+          necesidades de tu mente y cuerpo. Nuestra atención se centra en la salud cardiovascular, muscular y cerebral,
+          así como en fortalecer el sistema inmunológico y la salud integral en general. Nuestro compromiso es poner a
+          tu alcance las mejores formulaciones científicas para que disfrutes de tu día a día y goces de una vida plena
+          y digna. En Inmunosalud, creemos que cada persona merece llevar una vida digna y saludable. Por eso, nuestro
+          objetivo es ayudar a miles de individuos a mejorar su calidad de vida. Inmunosalud es el camino hacia tu mejor
+          salud.
         </Typography>
-        <Typography variant='body2'>Choose the best plan to fit your needs.</Typography>
-        <Box sx={{ mt: 5 }}>
-          <Button variant='outlined'>Mas Sobre Nosotros</Button>
+        <Box sx={{ mt: 5 }} style={{ textAlign: 'center' }}>
+          <Link href='/landing-page/join' passHref>
+            <Button variant='outlined'>AFÍLIATE A NOSOTROS</Button>
+          </Link>
         </Box>
       </Box>
     </Box>

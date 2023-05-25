@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import Image from 'next/image'
 
 // ** Icons Imports
 import CircleOutline from 'mdi-material-ui/CircleOutline'
@@ -44,9 +45,12 @@ const Product = props => {
 
   return (
     <BoxWrapper
-      sx={{
-        border: theme => `1px solid ${theme.palette.divider}`
-      }}
+   sx={{
+    border: theme => `1px solid ${theme.palette.divider}`,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%'
+  }}
     >
       {data?.popularPlan ? (
         <CustomChip
@@ -66,21 +70,26 @@ const Product = props => {
           }}
         />
       ) : null}
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <img
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px',}}>
+        <Image
           src={`${data?.urlImages[0]}`}
-          width={70}
+          width={80}
           height={100}
           alt={`${data?.product.toLowerCase()}-plan-img`}
         />
       </Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant='h5'>{data?.product}</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center', marginBottom: '20px',}}>
         <Typography variant='body2'>{data?.description}</Typography>
       </Box>
+      <Box sx={{ marginTop: 'auto' }}>
       <Button fullWidth color='primary' variant={'outlined'}>
         {'Agregar a carrito'}
       </Button>
+
+      </Box>
     </BoxWrapper>
   )
 }
