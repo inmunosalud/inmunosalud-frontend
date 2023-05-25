@@ -2,7 +2,7 @@ import { Box, Button, Modal } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
+import { setShowConfirmModal } from 'src/store/users'
 
 const modalContentStyle = {
   display: 'inline-block',
