@@ -16,7 +16,8 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
 import Alert from '@mui/material/Alert'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Stack } from '@mui/material'
+import VerifyCodeModal from 'src/pages/components/modals/VerifyCodeModal'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -24,6 +25,9 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
 import { loginCall, setErrors } from 'src/store/session'
+
+//store
+import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
 
 const BASIC_ERRORS = {
   email: {
@@ -53,12 +57,23 @@ const Form = props => {
     showPassword: false
   })
 
+  const [openModal, setOpenModal] = React.useState(false)
+  const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
+
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
+  }
+
+  const handleOpenModal = () => {
+    dispatch(setShowConfirmModal(true))
+  }
+
+  const handleCloseModal = () => {
+    dispatch(setShowConfirmModal(false))
   }
 
   const handleMouseDownPassword = event => {
@@ -147,15 +162,23 @@ const Form = props => {
                 {isLoading ? (
                   <CircularProgress size={20} />
                 ) : (
-                  <Button type='submit' variant='contained' size='large' onClick={submitLogin}>
-                    Acceder
-                  </Button>
+                  <div>
+                    <Stack spacing={2} direction={'row'}>
+                      <Button type='submit' variant='contained' size='large' onClick={submitLogin}>
+                        Acceder
+                      </Button>
+                      <Button type='submit' variant='outlined' size='large' onClick={handleOpenModal}>
+                        Recuperar Contraseña
+                      </Button>
+                    </Stack>
+                  </div>
                 )}
               </Box>
             </Grid>
           </form>
         </CardContent>
       </Card>
+      <VerifyCodeModal open={showConfirmModal} handleClose={handleCloseModal} />
     </>
   )
 }
