@@ -27,6 +27,7 @@ import Footer from 'src/views/landing-page/Footer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from 'src/store/products'
 import Router from 'next/router'
+import Link from 'next/link'
 
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
@@ -153,20 +154,47 @@ const Pricing = () => {
         </Grid>
       </Grid>
       <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Box sx={{ padding: '2rem' }}>
-                <AboutUs />
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={6} md={8}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <Image src={Banner} alt='aboutUs' style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
-              </Box>
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                padding: '2rem'
+              }}
+            >
+              <Typography variant='h4' align='center' gutterBottom>
+                Acerca de Inmunosalud
+              </Typography>
+              <Typography variant='body2' align='justify' paragraph>
+                Somos un equipo especializado en el desarrollo de suplementos alimenticios diseñados para satisfacer las
+                necesidades de tu mente y cuerpo. Nuestra atención se centra en la salud cardiovascular, muscular y
+                cerebral, así como en fortalecer el sistema inmunológico y la salud integral en general. Nuestro
+                compromiso es poner a tu alcance las mejores formulaciones científicas para que disfrutes de tu día a
+                día y goces de una vida plena y digna. En Inmunosalud, creemos que cada persona merece llevar una vida
+                digna y saludable. Por eso, nuestro objetivo es ayudar a miles de individuos a mejorar su calidad de
+                vida. Inmunosalud es el camino hacia tu mejor salud.
+              </Typography>
+            </Box>
           </Grid>
-        </CardContent>
+          <Grid item xs={12} sm={6} md={8}>
+            <Box sx={{  margin: '1rem' }}>
+              <Image src={Banner} alt='aboutUs'/>
+            </Box>
+          </Grid>
+        </Grid>
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+              <Link href='/landing-page/join' passHref>
+                <Button variant='outlined' size='large'>
+                  AFÍLIATE A NOSOTROS
+                </Button>
+              </Link>
+            </Box>
+          </Grid>
       </Card>
 
       <FAQs data={questions} />
