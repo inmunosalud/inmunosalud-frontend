@@ -79,7 +79,7 @@ const UserDropdown = props => {
   const handleRegister = () => {
     const id = user.id
     dispatch(stripeRegister(id)).then(response => {
-      window.open('https://connect.stripe.com/setup/e/acct_1MmRwCFYJo8szZJL/npHnFMvZFQ7x', '_blank').focus()
+      window.open('https://connect.stripe.com/setup/e/acct_1N46phFTa1yuqKs0/jKddr7VixBIU', '_blank').focus()
     })
   }
 
