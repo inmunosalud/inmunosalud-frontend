@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { PROYECT, api_post, api_get, api_put, api_delete, STRIPE } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
@@ -109,6 +109,15 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   return response
 })
 
+//register user to stripe
+export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const response = await api_get(`${STRIPE}/users/${id}`, auth)
+
+  return response
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
@@ -128,6 +137,8 @@ const initialState = {
 
   //user info
   userInfo: {},
+
+  strpeLink: '',
 
   //detele modal
   showDelete: false,
@@ -221,6 +232,12 @@ export const usersSlice = createSlice({
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       const { content } = payload
       state.userInfo = content
+    })
+    //get stripe link
+    builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {
+      const { content } = payload
+      debugger
+      state.strpeLink = content
     })
   }
 })
