@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
+import Link from 'next/link'
+import { FileUpload } from 'mdi-material-ui'
+import { ContentCopy } from 'mdi-material-ui';
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -17,6 +20,7 @@ import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { object } from 'yup'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
+
 
 const data = [
   {
@@ -149,18 +153,24 @@ const Users = () => {
           <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
             <Card>
               <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
+                <Link href='/ecommerce/billing' passHref>
+                  <Button variant='contained' startIcon={<FileUpload />}
+                  >
+                    Carga tu factura
+                  </Button>
+                </Link>
                 <CustomizedTooltip title='Copy to clipboard'>
                   <Button
                     fullWidth
-                    style={{ color: 'white' }}
-                    variant='outlined'
+                    startIcon={<ContentCopy />}
+                    variant='contained'
                     onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
                   >
                     Copiar código de recomendado
                   </Button>
                 </CustomizedTooltip>
 
-                <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
+                <Button startIcon={<ContentCopy />} variant='contained' onClick={handlePaste}>
                   Copiar liga para registro de un recomendado
                 </Button>
               </CardContent>
