@@ -69,6 +69,15 @@ const Form = props => {
   }
 
   const handleOpenModal = () => {
+    const { email, password } = values
+    const errors = []
+
+    if (!email) {
+      errors.push(BASIC_ERRORS.email)
+      dispatch(setErrors(errors))
+      return
+    }
+
     dispatch(setShowConfirmModal(true))
   }
 
@@ -178,7 +187,7 @@ const Form = props => {
           </form>
         </CardContent>
       </Card>
-      <VerifyCodeModal open={showConfirmModal} handleClose={handleCloseModal} />
+      {showConfirmModal && <VerifyCodeModal open={showConfirmModal} handleClose={handleCloseModal} userData={values} />}
     </>
   )
 }

@@ -100,6 +100,32 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
   }
 })
 
+//Recover Password
+export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
+  try {
+    const response = await api_put(`${PROYECT}/users/password`, body)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModalDelete(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+//Recover Password
+export const recoverPassword = createAsyncThunk('users/passwordRecoveryCode', async (body, thunkApi) => {
+  try {
+    const response = await api_post(`${PROYECT}/users/passwordRecoveryCode`, body)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModalDelete(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 //get user info
 export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
@@ -136,7 +162,13 @@ const initialState = {
   showConfirmModal: false,
 
   //redirect modal
-  showRedirectModal: false
+  showRedirectModal: false,
+
+  //Patch password
+  patchPassword: false,
+
+  //RecoveryCode
+  recoveryCode: 0
 }
 
 export const usersSlice = createSlice({
@@ -165,6 +197,9 @@ export const usersSlice = createSlice({
       state.token = payload.token
       state.user = payload.user
       localStorage.setItem('im-user', payload.token)
+    },
+    setRecoveryCode: (state, { payload }) => {
+      state.recoveryCode = payload
     }
   },
   extraReducers: builder => {
@@ -222,10 +257,25 @@ export const usersSlice = createSlice({
       const { content } = payload
       state.userInfo = content
     })
+    //Recover password
+    builder.addCase(recoverPassword.fulfilled, state => {
+      state.patchPassword = true
+    })
+    builder.addCase(recoverPassword.rejected, state => {
+      state.patchPassword = false
+    })
   }
 })
 
 export default usersSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setUser, setShowConfirmModal, setShowRedirectModal } =
-  usersSlice.actions
+export const {
+  setErrors,
+  setModal,
+  setModalRow,
+  setModalDelete,
+  setUser,
+  setShowConfirmModal,
+  setShowRedirectModal,
+  setRecoveryCode
+} = usersSlice.actions
