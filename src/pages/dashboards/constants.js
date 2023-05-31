@@ -16,6 +16,8 @@ import {
   CircularProgress,
   FormHelperText
 } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip';
+import Delete from 'mdi-material-ui/Delete'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -367,57 +369,54 @@ const Constants = () => {
                 </Grid>
                 {associateProductList
                   ? associateProductList.map((product, index) => (
-                      <Grid container item xs={12} spacing={5} key={product.id}>
-                        <Grid item xs={6}>
-                          <FormControl fullWidth error={product.product === ''}>
-                            <InputLabel id='product-label'>Producto *</InputLabel>
-                            <Select
-                              labelId='product-label'
-                              label='Producto'
-                              value={product.id}
-                              required={true}
-                              onChange={e => handleProductSelected(index, e.target.value)}
-                            >
-                              {products
-                                ? products.content.map(item => {
-                                    if (
-                                      item.id === product.id ||
-                                      !associateProductList.some(selectedProduct => selectedProduct.id === item.id)
-                                    ) {
-                                      return <MenuItem value={item.id}>{item.product}</MenuItem>
-                                    } else {
-                                      return null
-                                    }
-                                  })
-                                : null}
-                            </Select>
-                            {product.product === '' && (
-                              <FormHelperText sx={{ color: 'red' }}>Elige un producto</FormHelperText>
-                            )}
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <TextField
-                            label='Cantidad'
-                            fullWidth
-                            type='number'
-                            required
-                            value={product.quantity}
-                            onChange={e => handleQuantityField(index, e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={1}>
-                          <Button
-                            variant='text'
-                            color='error'
-                            sx={{ marginTop: 2 }}
-                            onClick={() => handleDeleteProduct(product)}
+                    <Grid container item xs={12} spacing={5} key={product.id}>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth error={product.product === ''}>
+                          <InputLabel id='product-label'>Producto *</InputLabel>
+                          <Select
+                            labelId='product-label'
+                            label='Producto'
+                            value={product.id}
+                            required={true}
+                            onChange={e => handleProductSelected(index, e.target.value)}
                           >
-                            Eliminar
-                          </Button>
-                        </Grid>
+                            {products
+                              ? products.content.map(item => {
+                                if (
+                                  item.id === product.id ||
+                                  !associateProductList.some(selectedProduct => selectedProduct.id === item.id)
+                                ) {
+                                  return <MenuItem value={item.id}>{item.product}</MenuItem>
+                                } else {
+                                  return null
+                                }
+                              })
+                              : null}
+                          </Select>
+                          {product.product === '' && (
+                            <FormHelperText sx={{ color: 'red' }}>Elige un producto</FormHelperText>
+                          )}
+                        </FormControl>
                       </Grid>
-                    ))
+                      <Grid item xs={3}>
+                        <TextField
+                          label='Cantidad'
+                          fullWidth
+                          type='number'
+                          required
+                          value={product.quantity}
+                          onChange={e => handleQuantityField(index, e.target.value)}
+                        />
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Tooltip title="Eliminar" placement="top">
+                          <Button onClick={() => handleDeleteProduct(product)} color="error" variant='outlined' >
+                            <Delete sx={{ mb: 2.5, mt: 2.5, fontSize: '1.125rem' }}  />
+                          </Button>
+                        </Tooltip>
+                      </Grid>
+                    </Grid>
+                  ))
                   : null}
                 <Grid item xs={12}>
                   <Button variant='contained' disabled={addProductDisabled} onClick={() => handleAddProduct()}>

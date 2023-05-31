@@ -14,6 +14,7 @@ export const PERMISSIONS = {
   ecommerceOrders: 'ecommerce/orders',
   ecommerceEditOrders: 'ecommerce/edit-order',
   ecommerceMonthlyPurchase: 'ecommerce/monthly-purchase',
+  ecommerceBilling: 'ecommerce/billing',
   ordersAdmin: '/orders/admin-orders'
 }
 
@@ -43,6 +44,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceOrders,
     PERMISSIONS.ecommerceEditOrders,
     PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceBilling,
   ],
   'Administrador de Productos': [
     PERMISSIONS.home,
@@ -73,7 +75,9 @@ export const PROFILES = {
     PERMISSIONS.ecommerceEditOrders,
     PERMISSIONS.ordersAdmin,
     PERMISSIONS.ecommerceMonthlyPurchase,
-    PERMISSIONS.dashboardConstants
+    PERMISSIONS.dashboardConstants,
+    PERMISSIONS.ecommerceBilling,
+
   ],
   default: [
     PERMISSIONS.home,
@@ -104,6 +108,9 @@ export const ROUTES_PERMISSION = {
   ['/ecommerce/edit-order']: PERMISSIONS.ecommerceEditOrders,
   ['/orders/admin-orders']: PERMISSIONS.ordersAdmin,
   ['/ecommerce/monthly-purchase']: PERMISSIONS.ecommerceMonthlyPurchase,
+  ['/ecommerce/billing']: PERMISSIONS.ecommerceBilling,
+
+
 }
 
 export const PROFILES_USER = {
