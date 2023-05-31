@@ -16,6 +16,8 @@ import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
 import { Cart } from 'mdi-material-ui'
 import { FileUpload } from 'mdi-material-ui'
+import { Pencil } from 'mdi-material-ui';
+import Tooltip from '@mui/material/Tooltip';
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -98,12 +100,12 @@ const UserProfileLeft = ({ data }) => {
           <Card>
             <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
               {renderUserAvatar()}
-              <Typography variant='h6' sx={{ mb: 2 }}>
+                <Tooltip title="Editar" placement="top">
+              <Typography variant='h6' sx={{ mb: 2, mr: 0.5, cursor: 'pointer' }} onClick={() => dispatch(setModal(true))} >
                 {userInfo?.firstName} {userInfo?.lastName}
+                    <Pencil color="warning"/>
               </Typography>
-              <Button variant='outlined' sx={{ mb: 3 }} onClick={() => dispatch(setModal(true))}>
-                Editar Nombre
-              </Button>
+                </Tooltip>
               <Typography variant='h6' sx={{ mb: 2 }}>
                 {data.email}
               </Typography>
@@ -112,7 +114,7 @@ const UserProfileLeft = ({ data }) => {
                   skin='light'
                   size='small'
                   label={data.profile}
-                  color={roleColors[data.profile]}
+                  color='primary'
                   sx={{
                     height: 20,
                     fontSize: '0.875rem',
@@ -173,7 +175,7 @@ const UserProfileLeft = ({ data }) => {
         <Grid item xs={12}>
           <Card sx={{ pt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Link href='/ecommerce/billing' passHref>
-              <Button variant='outlined' sx={{ mb: 3, mr: 0.5 }} startIcon={<FileUpload/>}
+              <Button variant='outlined' sx={{ mb: 3, mr: 0.5 }} startIcon={<FileUpload />}
               >
                 Carga tu factura
               </Button>

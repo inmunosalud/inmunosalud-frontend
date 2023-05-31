@@ -152,7 +152,7 @@ const Users = () => {
           </Grid>
           <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
             <Card>
-              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
+              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                 <Link href='/ecommerce/billing' passHref>
                   <Button variant='contained' startIcon={<FileUpload />}
                   >
@@ -169,7 +169,6 @@ const Users = () => {
                     Copiar código de recomendado
                   </Button>
                 </CustomizedTooltip>
-
                 <Button startIcon={<ContentCopy />} variant='contained' onClick={handlePaste}>
                   Copiar liga para registro de un recomendado
                 </Button>
