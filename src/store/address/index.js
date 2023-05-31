@@ -74,13 +74,24 @@ export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, t
   }
 })
 
+export const getColonies = createAsyncThunk('address/getColonies', async (zipCode, thunkApi) => {
+  try {
+    const response = await api_get(`${PROJECT_ADDRESS}/addresses/colonies/${zipCode}`)
+    return response.content
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   // register
   isLoading: false,
   formErrors: null,
   /* users table */
   address: [],
-
+  colonies: [],
   selectedAddressInCard: null,
   isSelectedAddress: false,
 
@@ -109,6 +120,9 @@ export const addressSlice = createSlice({
     },
     setSelectedAddressInCart: (state, { payload }) => {
       ;(state.selectedAddressInCard = payload), (state.isSelectedAddress = true)
+    },
+    cleanColonies: state => {
+      state.colonies = []
     }
   },
   extraReducers: builder => {
@@ -131,10 +145,27 @@ export const addressSlice = createSlice({
     builder.addCase(deleteAddress.fulfilled, (state, { payload }) => {
       state.address = payload.content
     })
+    builder.addCase(getColonies.pending, state => {
+      state.isLoading = true
+    })
+    builder.addCase(getColonies.fulfilled, (state, { payload }) => {
+      state.colonies = payload
+      state.isLoading = false
+    })
+    builder.addCase(getColonies.rejected, state => {
+      state.isLoading = false
+    })
   }
 })
 
 export default addressSlice.reducer
 
-export const { setErrors, setModal, setModalRow, setModalDelete, setAddresses, setSelectedAddressInCart } =
-  addressSlice.actions
+export const {
+  setErrors,
+  setModal,
+  setModalRow,
+  setModalDelete,
+  setAddresses,
+  setSelectedAddressInCart,
+  cleanColonies
+} = addressSlice.actions
