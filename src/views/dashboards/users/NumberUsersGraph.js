@@ -2,6 +2,7 @@
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
@@ -24,7 +25,7 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
         totalInvalid += network[key]?.invalid ?? 0
       }
     }
-    return {totalValid, totalInvalid }
+    return { totalValid, totalInvalid }
   }
 
   const options = {
@@ -153,7 +154,7 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
     <Card>
       <CardHeader
         title={title}
-        titleTypographyProps={{ variant: 'h6' }}
+        titleTypographyProps={{ variant: 'h5' }}
         subheaderTypographyProps={{ variant: 'caption' }}
         sx={{
           flexDirection: ['column', 'row'],
@@ -163,6 +164,12 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
         }}
       />
       <CardContent>
+        <Typography sx={{ mb: 2 }} variant="body1">
+          Usuarios totales: {network?.totalUsers}
+        </Typography>
+        <Typography variant='body2'>
+            Número de Usuarios en tu Red por nivel:
+        </Typography>
         <ReactApexcharts options={options} series={series} type='bar' height={80} />
         <ReactApexcharts options={optionsC} series={seriesC} type='bar' height={80} />
         <ReactApexcharts options={optionsD} series={seriesD} type='bar' height={80} />

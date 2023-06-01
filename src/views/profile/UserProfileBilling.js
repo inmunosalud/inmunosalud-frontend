@@ -12,11 +12,15 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
+import Tooltip from '@mui/material/Tooltip';
+
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
+import { Pencil } from 'mdi-material-ui';
+
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -198,12 +202,16 @@ const UserProfileBilling = ({ methods = [] }) => {
               </div>
 
               <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(item)}>
-                  Editar
+              <Tooltip title="Editar" placement="top">
+                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(item)} color="warning">
+                <Pencil/>
                 </Button>
-                <Button onClick={() => handleModalDelete(item)}>
+                </Tooltip>
+                <Tooltip title="Eliminar" placement="top">
+                <Button variant='outlined' onClick={() => handleModalDelete(item)} color="error">
                   <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
                 </Button>
+                </Tooltip>
                 <Typography variant='body2' sx={{ mt: 5 }}>
                   Expira el {item.expDate}
                 </Typography>

@@ -15,6 +15,7 @@ import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
+import { Carousel } from '@mui/material'
 
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
@@ -77,7 +78,10 @@ const CarouselProducts = ({ images }) => {
       <Swiper
         spaceBetween={2}
         slidesPerView={1}
-        navigation
+        navigation={{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        }}
         modules={[Navigation]}
         style={{
           width: '75%',
@@ -105,6 +109,8 @@ const CarouselProducts = ({ images }) => {
             </div>
           </SwiperSlide>
         ))}
+        <div className='swiper-button-next' style={{ color: '#9155FD' }} />
+        <div className='swiper-button-prev' style={{ color: '#9155FD' }} />
       </Swiper>
     )
   }
@@ -248,8 +254,8 @@ export const ProductItem = props => {
     <>
       <Card>
         <CardContent>
-          <Grid container spacing={2} sx={{ marginBottom: '30px', }}>
-            <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center'}}>
+          <Grid container spacing={2} sx={{ marginBottom: '30px' }}>
+            <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center' }}>
               <Typography variant='h5' sx={{ justifyContent: 'center' }}>
                 <strong>{`${props.product}`}</strong>
               </Typography>

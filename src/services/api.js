@@ -69,7 +69,7 @@ export const api_post = (url, body, headers = {}) => {
 export const api_put = (url, body, headers = {}) => {
   return new Promise((res, rej) => {
     axiosInstance
-      .put(url, body, headers)
+      .patch(url, body, headers)
       .then(({ data }) => {
         res(data)
       })

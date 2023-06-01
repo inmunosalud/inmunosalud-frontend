@@ -115,7 +115,7 @@ const AdminOrders = () => {
       renderCell: params => {
         const row = params?.row
         return (
-          <Pencil sx={{ margin: '5px', cursor: "pointer" }} onClick={() => handleOpenModalEdit(row)} />
+          <Pencil sx={{ margin: '5px', cursor: "pointer" }} color="warning" onClick={() => handleOpenModalEdit(row)} />
         )
       }
     }
