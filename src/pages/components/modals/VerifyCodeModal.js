@@ -158,6 +158,7 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
                 label='Contraseña'
                 variant='outlined'
                 onChange={e => handlePasswordInput(e)}
+                type='password'
                 required
               />
               <InputLabel htmlFor='reWritedPassword'>Ingresa nuevamente tu contraseña</InputLabel>
@@ -166,6 +167,7 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
                 label='Contraseña'
                 variant='outlined'
                 onChange={e => handlePasswordInput(e)}
+                type='password'
                 required
               />
               <Button variant='contained' onClick={handleUpdatePassword}>

@@ -105,8 +105,8 @@ export const updatePassword = createAsyncThunk('users/password', async (body, th
   debugger
   try {
     const response = await api_put(`${PROYECT}/users/password`, body)
-    thunkApi.dispatch(openSnackBar({ open: true, message: 'message', severity: 'succes' }))
     debugger
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
