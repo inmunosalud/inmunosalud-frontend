@@ -1,4 +1,4 @@
-import { Modal } from '@mui/material'
+import { Modal, Stack } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -22,7 +22,7 @@ import Alert from '@mui/material/Alert'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-import { recoverPassword, setShowConfirmModal, setRecoveryCode } from 'src/store/users'
+import { recoverPassword, setShowConfirmModal, setRecoveryCode, updatePassword } from 'src/store/users'
 import { CircularProgress } from '@mui/material'
 
 const modalContentStyle = {
@@ -31,6 +31,17 @@ const modalContentStyle = {
   borderRadius: '9px',
   boxShadow: '0.8rem 1.2rem 3.2rem rgba(0, 0, 0, 0.3)',
   backgroundColor: '#0d1625',
+  color: 'rgb(239, 239, 239)',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)'
+}
+
+const passwordModalStyle = {
+  display: 'inline-block',
+  padding: '1.2rem 2.6rem',
+  borderRadius: '9px',
   color: 'rgb(239, 239, 239)',
   position: 'absolute',
   top: '50%',
@@ -65,11 +76,17 @@ const buttonStyle = {
 }
 
 const VerifyCodeModal = ({ open, handleClose, userData }) => {
-  const verifyCode = new Array(5).fill(0)
+  const code = new Array(5).fill(0)
   const dispatch = useDispatch()
 
+  const { recoveryCode } = useSelector(state => state.users)
   const [showInputs, setShowInputs] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [passwords, setPasswords] = useState({
+    password: '',
+    reWritedPassword: ''
+  })
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const body = {
@@ -84,22 +101,83 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
   }, [])
 
   const handleVerifyCode = () => {
-    dispatch(setRecoveryCode(Number(verifyCode.join(''))))
+    dispatch(setRecoveryCode(Number(code.join(''))))
 
     setShowInputs(false)
     setShowForm(true)
   }
 
   const handleForm = e => {
-    verifyCode[e.target.dataset.index] = e.target.value
+    code[e.target.dataset.index] = e.target.value
+  }
+
+  const verifyPasswords = () => {
+    if (passwords.password === '' || passwords.reWritedPassword === '') {
+      setError('los campos no pueden estar vacios')
+      return false
+    }
+
+    if (passwords.password != passwords.reWritedPassword) {
+      setError('Las Contraseñas no coinciden')
+      return false
+    }
+
+    setError('')
+    return true
+  }
+
+  const handleUpdatePassword = () => {
+    if (!verifyPasswords()) return
+
+    debugger
+    const body = {
+      email: userData.email,
+      code: recoveryCode,
+      password: passwords.password
+    }
+
+    dispatch(updatePassword(body))
+    dispatch(setShowConfirmModal(false))
+  }
+
+  const handlePasswordInput = e => {
+    if (e.target.id === 'password') setPasswords({ ...passwords, password: e.target.value })
+    if (e.target.id === 'reWritedPassword') setPasswords({ ...passwords, reWritedPassword: e.target.value })
   }
 
   const renderPasswordInputs = () => {
     return (
       <>
         <Card>
-          <CardHeader title='Acceder' titleTypographyProps={{ variant: 'h6' }} />
-          <CardContent></CardContent>
+          <CardHeader title='Actualizar Contraseña' titleTypographyProps={{ variant: 'h6' }} />
+          <CardContent>
+            <Stack spacing={2}>
+              <InputLabel htmlFor='password'>Ingresa tu nueva contraseña</InputLabel>
+              <TextField
+                id='password'
+                label='Contraseña'
+                variant='outlined'
+                onChange={e => handlePasswordInput(e)}
+                required
+              />
+              <InputLabel htmlFor='reWritedPassword'>Ingresa nuevamente tu contraseña</InputLabel>
+              <TextField
+                id='reWritedPassword'
+                label='Contraseña'
+                variant='outlined'
+                onChange={e => handlePasswordInput(e)}
+                required
+              />
+              <Button variant='contained' onClick={handleUpdatePassword}>
+                Actualizar Contraseña
+              </Button>
+            </Stack>
+            {error && (
+              <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
+                {error}
+              </Alert>
+            )}
+          </CardContent>
         </Card>
       </>
     )
@@ -178,7 +256,7 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <div class='modal-content' style={modalContentStyle}>
+      <div class='modal-content' style={!showForm ? modalContentStyle : passwordModalStyle}>
         {!showForm && renderVerifyCodeForm()}
 
         {showForm && renderPasswordInputs()}

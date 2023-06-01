@@ -100,14 +100,17 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
   }
 })
 
-//Recover Password
+//update Password
 export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
+  debugger
   try {
     const response = await api_put(`${PROYECT}/users/password`, body)
+    thunkApi.dispatch(openSnackBar({ open: true, message: 'message', severity: 'succes' }))
+    debugger
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(setModalDelete(false))
+    debugger
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
@@ -120,7 +123,6 @@ export const recoverPassword = createAsyncThunk('users/passwordRecoveryCode', as
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
