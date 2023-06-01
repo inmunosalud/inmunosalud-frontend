@@ -15,6 +15,10 @@ import CardContent from '@mui/material/CardContent'
 import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
 import { Cart } from 'mdi-material-ui'
+import { FileUpload } from 'mdi-material-ui'
+import { Pencil } from 'mdi-material-ui';
+import Tooltip from '@mui/material/Tooltip';
+
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
@@ -29,6 +33,8 @@ import { getUserInfo } from 'src/store/users'
 import { React } from 'mdi-material-ui'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
+
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -94,12 +100,12 @@ const UserProfileLeft = ({ data }) => {
           <Card>
             <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
               {renderUserAvatar()}
-              <Typography variant='h6' sx={{ mb: 2 }}>
+                <Tooltip title="Editar" placement="top">
+              <Typography variant='h6' sx={{ mb: 2, mr: 0.5, cursor: 'pointer' }} onClick={() => dispatch(setModal(true))} >
                 {userInfo?.firstName} {userInfo?.lastName}
+                    <Pencil color="warning"/>
               </Typography>
-              <Button variant='outlined' sx={{ mb: 3 }} onClick={() => dispatch(setModal(true))}>
-                Editar Nombre
-              </Button>
+                </Tooltip>
               <Typography variant='h6' sx={{ mb: 2 }}>
                 {data.email}
               </Typography>
@@ -108,7 +114,7 @@ const UserProfileLeft = ({ data }) => {
                   skin='light'
                   size='small'
                   label={data.profile}
-                  color={roleColors[data.profile]}
+                  color='primary'
                   sx={{
                     height: 20,
                     fontSize: '0.875rem',
@@ -168,7 +174,13 @@ const UserProfileLeft = ({ data }) => {
         </Grid>
         <Grid item xs={12}>
           <Card sx={{ pt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Button variant='outlined' sx={{ mb: 3 }} onClick={() => router.push('/ecommerce/monthly-purchase/')} startIcon={<Cart />}>
+            <Link href='/ecommerce/billing' passHref>
+              <Button variant='outlined' sx={{ mb: 3, mr: 0.5 }} startIcon={<FileUpload />}
+              >
+                Carga tu factura
+              </Button>
+            </Link>
+            <Button variant='outlined' sx={{ mb: 3, ml: 0.5 }} onClick={() => router.push('/ecommerce/monthly-purchase/')} startIcon={<Cart />}>
               Pedido Mensual
             </Button>
           </Card>
