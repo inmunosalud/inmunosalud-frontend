@@ -106,24 +106,26 @@ const UserProfileAddress = ({ addresses = [] }) => {
   })
 
   const onSubmit = data => {
-    let body = {
-      street: data.street,
-      extNumber: data.extNumber,
-      intNumber: data?.intNumber,
-      zipCode: data.zipCode,
-      colony: data.colony.colony,
-      city: data.colony.city,
-      federalEntity: data.colony.federalEntity,
-      country: 'Mexico',
-      refer: data.refer
+    if (data.colony.colony != null) {
+      let body = {
+        street: data.street,
+        extNumber: data.extNumber,
+        intNumber: data?.intNumber,
+        zipCode: data.zipCode,
+        colony: data.colony.colony,
+        city: data.colony.city,
+        federalEntity: data.colony.federalEntity,
+        country: 'Mexico',
+        refer: data.refer
+      }
+      if (editItem && Object.keys(editItem).length) {
+        body.id = editItem.id
+        dispatch(updateAddress({ body: body }))
+      } else {
+        dispatch(createAddress({ body: body, uuid: user.id }))
+      }
+      handleAddressClose(false)
     }
-    if (editItem && Object.keys(editItem).length) {
-      body.id = editItem.id
-      dispatch(updateAddress({ body: body }))
-    } else {
-      dispatch(createAddress({ body: body, uuid: user.id }))
-    }
-    handleAddressClose(false)
   }
 
   // Handle Edit Card dialog and get card ID

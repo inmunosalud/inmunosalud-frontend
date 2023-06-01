@@ -130,6 +130,7 @@ const DialogAddress = ({
                           }
                           if (newValue.length === 5) {
                             dispatch(getColonies(newValue))
+                            dispatch(selectColony({}))
                           }
                         }}
                         error={Boolean(addressErrors.zipCode)}
@@ -172,7 +173,7 @@ const DialogAddress = ({
                       </>
                     )}
                   />
-                  {addressErrors.colony && (
+                  {selectColony.colony && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
                       El campo es requerido
                     </FormHelperText>
@@ -188,7 +189,7 @@ const DialogAddress = ({
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={selectedColony ? selectedColony.city : ' '}
+                        value={selectedColony && selectedColony.city ? selectedColony.city : ' '}
                         label='Ciudad'
                         onChange={null}
                         error={Boolean(addressErrors.city)}
@@ -214,7 +215,7 @@ const DialogAddress = ({
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={selectedColony ? selectedColony.federalEntity : ' '}
+                        value={selectedColony && selectedColony.federalEntity ? selectedColony.federalEntity : ' '}
                         label='Estado'
                         onChange={null}
                         error={Boolean(addressErrors.federalEntity)}

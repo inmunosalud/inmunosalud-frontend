@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { PROYECT, api_post, api_get, api_delete, api_patch } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
@@ -64,8 +64,10 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
 export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, loadUserData }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  console.log(auth)
   try {
-    const response = await api_put(`${PROYECT}/users/${uuid}`, body, auth)
+    console.log('ENTRO')
+    const response = await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
     console.log(response)
     thunkApi.dispatch(nextStep())
     thunkApi.dispatch(setModal(false))

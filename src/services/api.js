@@ -91,3 +91,16 @@ export const api_delete = (url, body, headers = {}) => {
       })
   })
 }
+
+export const api_patch = (url, body, headers = {}) => {
+  return new Promise((res, rej) => {
+    axiosInstance
+      .patch(url, body, headers)
+      .then(({ data }) => {
+        res(data)
+      })
+      .catch(err => {
+        return rej(err)
+      })
+  })
+}
