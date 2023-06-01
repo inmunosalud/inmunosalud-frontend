@@ -39,6 +39,8 @@ const UserDropdown = props => {
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
   const { user } = useSelector(state => state.dashboard.general)
+  const { stripeLink } = useSelector(state => state.users)
+
   // ** Hooks
   const router = useRouter()
 
@@ -78,9 +80,7 @@ const UserDropdown = props => {
 
   const handleRegister = () => {
     const id = user.id
-    dispatch(stripeRegister(id)).then(response => {
-      window.open('https://connect.stripe.com/setup/e/acct_1N46phFTa1yuqKs0/jKddr7VixBIU', '_blank').focus()
-    })
+    dispatch(stripeRegister(id))
   }
 
   return (
