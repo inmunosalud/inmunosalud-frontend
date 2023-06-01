@@ -15,7 +15,7 @@ import {
   InputLabel
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { cleanColonies, getColonies } from 'src/store/address'
+import { getColonies, selectColony } from 'src/store/address'
 
 const DialogAddress = ({
   openAddressCard = false,
@@ -26,14 +26,8 @@ const DialogAddress = ({
   addressControl = {},
   addressErrors = {}
 }) => {
-  const { colonies } = useSelector(state => state.address)
-  const [colony, setColony] = useState({})
+  const { colonies, selectedColony } = useSelector(state => state.address)
   const dispatch = useDispatch()
-  useEffect(() => {
-    if (!editItem) {
-      dispatch(cleanColonies())
-    }
-  }, [])
 
   return (
     <Card>
@@ -45,7 +39,7 @@ const DialogAddress = ({
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          {editItem && Object.keys(editItem).length ? 'Editar Dirección' : 'Nuevo Dirección'}
+          {editItem && Object.keys(editItem).length ? 'Editar Dirección' : 'Nueva Dirección'}
         </DialogTitle>
         <DialogContent style={{ paddingTop: '5px' }}>
           <form key={0} onSubmit={handleSubmit(onSubmit)}>
@@ -135,9 +129,7 @@ const DialogAddress = ({
                             onChange(newValue)
                           }
                           if (newValue.length === 5) {
-                            dispatch(getColonies(newValue)).then(response => {
-                              console.log(response.payload)
-                            })
+                            dispatch(getColonies(newValue))
                           }
                         }}
                         error={Boolean(addressErrors.zipCode)}
@@ -166,14 +158,14 @@ const DialogAddress = ({
                         <Select
                           labelId='colony-label'
                           label='Colonia'
-                          value={value}
+                          value={selectedColony}
                           onChange={event => {
                             const newValue = event.target.value
                             onChange(newValue)
-                            setColony(newValue)
+                            dispatch(selectColony(newValue))
                           }}
                         >
-                          {colonies.map((zipCodeData, index) => (
+                          {colonies.map(zipCodeData => (
                             <MenuItem value={zipCodeData}>{zipCodeData.colony}</MenuItem>
                           ))}
                         </Select>
@@ -196,7 +188,7 @@ const DialogAddress = ({
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={colony.city ?? ' '}
+                        value={selectedColony ? selectedColony.city : ' '}
                         label='Ciudad'
                         onChange={null}
                         error={Boolean(addressErrors.city)}
@@ -222,7 +214,7 @@ const DialogAddress = ({
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={colony.federalEntity ?? ' '}
+                        value={selectedColony ? selectedColony.federalEntity : ' '}
                         label='Estado'
                         onChange={null}
                         error={Boolean(addressErrors.federalEntity)}

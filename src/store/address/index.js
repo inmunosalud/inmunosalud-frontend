@@ -92,6 +92,7 @@ const initialState = {
   /* users table */
   address: [],
   colonies: [],
+  selectedColony: {},
   selectedAddressInCard: null,
   isSelectedAddress: false,
 
@@ -120,6 +121,9 @@ export const addressSlice = createSlice({
     },
     setSelectedAddressInCart: (state, { payload }) => {
       ;(state.selectedAddressInCard = payload), (state.isSelectedAddress = true)
+    },
+    selectColony: (state, { payload }) => {
+      state.selectedColony = payload
     },
     cleanColonies: state => {
       state.colonies = []
@@ -167,5 +171,6 @@ export const {
   setModalDelete,
   setAddresses,
   setSelectedAddressInCart,
+  selectColony,
   cleanColonies
 } = addressSlice.actions

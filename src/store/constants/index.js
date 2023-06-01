@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CONSTANTS, api_get, api_put } from 'src/services/api'
 import { openSnackBar } from '../notifications'
 
+//Get all constants from system
 export const getConstants = createAsyncThunk('constants/getConstants', async (_, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
@@ -14,7 +15,6 @@ export const getConstants = createAsyncThunk('constants/getConstants', async (_,
     return thunkApi.rejectWithValue('error')
   }
 })
-
 export const updateConstants = createAsyncThunk('constants/updateConstants', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
@@ -30,7 +30,6 @@ export const updateConstants = createAsyncThunk('constants/updateConstants', asy
     return thunkApi.rejectWithValue('error')
   }
 })
-
 const initialState = {
   constants: {},
   isLoading: false,
@@ -41,7 +40,6 @@ const initialState = {
   showModal: false,
   showConfirmModal: false
 }
-
 export const constantsSlice = createSlice({
   name: 'constants',
   initialState,
@@ -85,6 +83,5 @@ export const constantsSlice = createSlice({
       })
   }
 })
-
 export const { setErrors, setModalUpdate, setShowConfirmModal } = constantsSlice.actions
 export default constantsSlice.reducer

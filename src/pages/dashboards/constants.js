@@ -24,7 +24,7 @@ import { getProducts } from 'src/store/products'
 import DialogConstants from 'src/views/components/dialogs/DialogConstants'
 
 const Constants = () => {
-  const { constants, loading, isLoading, showModal, showConfirmModal } = useSelector(state => state.constants)
+  const { constants, loading, isLoading, showModal } = useSelector(state => state.constants)
   const { products } = useSelector(state => state.products)
   const [associateProductList, setAssociateProductList] = useState([])
   const [addProductDisabled, isAddProductDisabled] = useState(false)
