@@ -12,11 +12,15 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
+import Tooltip from '@mui/material/Tooltip';
+
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
+import { Pencil } from 'mdi-material-ui';
+
 
 // ** Third Party Imports
 import { useForm } from 'react-hook-form'
@@ -124,9 +128,11 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-              <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(bankInfo)}>
-                Editar
+            <Tooltip title="Editar" placement="top">
+              <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(bankInfo)} color="warning">
+                <Pencil/>
               </Button>
+            </Tooltip>
             </Box>
           </Box>
         </CardContent>

@@ -78,6 +78,11 @@ const navigation = () => {
           title: 'Pedidos',
           path: '/ecommerce/orders',
           permission: PERMISSIONS.ecommerceOrders
+        },
+        {
+          title: 'Facturación',
+          path: '/ecommerce/billing',
+          permission: PERMISSIONS.ecommerceBilling
         }
       ]
     },

@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
+import Link from 'next/link'
+import { FileUpload } from 'mdi-material-ui'
+import { ContentCopy } from 'mdi-material-ui';
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -17,6 +20,7 @@ import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import { object } from 'yup'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
+
 
 const data = [
   {
@@ -61,15 +65,30 @@ const intakeProducts = {
 }
 
 function getOverAllConsumptionCategories({ overallConsumption = {} }) {
-  if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
+  if (!overallConsumption || Object.keys(overallConsumption).length === 0) return [];
 
-  const keys = Object?.keys(overallConsumption?.monthly)
-  return keys
+  const keys = Object.keys(overallConsumption.monthly);
+
+  keys.sort((a, b) => {
+    const monthNames = [
+      'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+      'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
+    ];
+    const [monthA, yearA] = a.split('-').map((part, index) => index === 0 ? monthNames.indexOf(part) : parseInt(part) + 2000);
+    const [monthB, yearB] = b.split('-').map((part, index) => index === 0 ? monthNames.indexOf(part) : parseInt(part) + 2000);
+    return new Date(yearA, monthA) - new Date(yearB, monthB);
+  });
+
+  return keys;
 }
 
 function getOverAllConsumptionSeries({ overallConsumption = {} }) {
-  if (!overallConsumption | (Object.keys(overallConsumption).length === 0)) return []
-  return [{ data: Object?.values(overallConsumption?.monthly) }]
+  if (!overallConsumption || Object.keys(overallConsumption).length === 0) return [];
+
+  const categories = getOverAllConsumptionCategories({ overallConsumption });
+  const values = categories.map(key => overallConsumption.monthly[key]);
+
+  return [{ data: values }];
 }
 
 function getProductConsumptionCategories({ productsConsumption = {} }) {
@@ -109,10 +128,34 @@ function getProductConsumptionSeries(userInfo) {
   return series
 }
 
+function getNextMonth(date) {
+  const spanishMonths = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+    "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+  ];
+
+  const dateParts = date.split(" ");
+  const day = parseInt(dateParts[0]);
+  const currentMonth = dateParts[1].toLowerCase();
+
+  const currentMonthIndex = spanishMonths.findIndex(month => month.startsWith(currentMonth));
+
+  let nextMonthIndex = currentMonthIndex + 1;
+  if (nextMonthIndex === 12) {
+    nextMonthIndex = 0;
+  }
+
+  const nextMonth = `${day} de ${spanishMonths[nextMonthIndex]}`;
+
+  return nextMonth;
+}
+
+
 const Users = () => {
   const dispatch = useDispatch()
   const { userInfo } = useSelector(state => state.users)
   const [isLoaded, setIsLoaded] = React.useState(false)
+  const [cutoffDate, setCutoffDate] = React.useState("")
   const { user } = useSelector(state => state.dashboard.general)
 
   React.useEffect(() => {
@@ -123,12 +166,22 @@ const Users = () => {
   }, [dispatch])
 
   React.useEffect(() => {
+    if (userInfo?.cutoffDate) {
+      setCutoffDate(getNextMonth(userInfo.cutoffDate))
+    }
+  }, [userInfo])
+
+
+  React.useEffect(() => {
     if (userInfo != '') setIsLoaded(true)
   })
 
   const handlePaste = () => {
-    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_PATH_PROYECT}/register?id=${user?.id}`)
-  }
+    const baseUrl = window.location.origin === "http://localhost:3000" ? "https://inmunosalud.vercel.app" : window.location.origin;
+    const url = `${baseUrl}/register?id=${user?.id}`;
+
+    navigator.clipboard.writeText(url);
+  };
 
   const getMonthlyCountdown = date => {
     const diffDays = moment(date, 'DD/MM/YYYY').diff(moment(), 'days')
@@ -140,27 +193,32 @@ const Users = () => {
       return (
         <>
           <Grid item xs={12} md={3}>
-            <NumberUsersGraph title='Número de Usuarios en Red' user={userInfo} />
+            <NumberUsersGraph title='Número de Usuarios en tu Red' user={userInfo} />
           </Grid>
           <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
-            <CardNumber data={{ title: 'Proximo Corte', stats: userInfo?.cutoffDate }} userInfo={userInfo} />
+            <CardNumber data={{ title: 'Proximo Corte', stats: cutoffDate }} userInfo={userInfo} />
             <NextComision />
           </Grid>
           <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
             <Card>
-              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: '10px' }}>
+              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <Link href='/ecommerce/billing' passHref>
+                  <Button variant='contained' startIcon={<FileUpload />}
+                  >
+                    Carga tu factura
+                  </Button>
+                </Link>
                 <CustomizedTooltip title='Copy to clipboard'>
                   <Button
                     fullWidth
-                    style={{ color: 'white' }}
-                    variant='outlined'
+                    startIcon={<ContentCopy />}
+                    variant='contained'
                     onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
                   >
                     Copiar código de recomendado
                   </Button>
                 </CustomizedTooltip>
-
-                <Button style={{ color: 'white' }} variant='outlined' onClick={handlePaste}>
+                <Button startIcon={<ContentCopy />} variant='contained' onClick={handlePaste}>
                   Copiar liga para registro de un recomendado
                 </Button>
               </CardContent>

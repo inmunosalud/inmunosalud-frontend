@@ -44,8 +44,8 @@ const CardNumber = ({ data, userInfo = {}}) => {
           alignItems: 'flex-start',
           justifyContent: 'space-between'
           }}>
-          <Typography variant='h5' sx={{ mr: 1.5 }}>
-            {isNaN(stats) ? stats : `$${stats.toLocaleString(undefined, {minimumFractionDigits: 2})}`}
+            <Typography variant='h5' sx={{ mr: 1.5 }}>
+            {stats}
           </Typography>
 
         </Box>
