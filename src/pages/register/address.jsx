@@ -108,6 +108,7 @@ const defaultPaymentValues = {
 }
 
 const defaultBankInfoValues = {
+  beneficiary: '',
   clabe: ''
 }
 
@@ -157,6 +158,7 @@ const paymentSchema = yup.object().shape({
 })
 
 const bankInfoSchema = yup.object().shape({
+  beneficiary: yup.string().required(),
   clabe: yup
     .string()
     .required()
@@ -833,6 +835,30 @@ export default function Address() {
         return (
           <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
             <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='beneficiary'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Beneficiario'
+                        onChange={onChange}
+                        placeholder='Juan Lopez'
+                        error={Boolean(bankInfoErrors['beneficiary'])}
+                        aria-describedby='stepper-linear-bankInfo-beneficiary'
+                      />
+                    )}
+                  />
+                  {bankInfoErrors['beneficiary'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-clabe'>
+                      {bankInfoErrors['beneficiary'].message ?? 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
