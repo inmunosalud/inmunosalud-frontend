@@ -8,6 +8,7 @@ export const PROYECT_PRODUCTS = 'https://nj1fowivba.execute-api.us-east-1.amazon
 export const COMISSIONS = 'https://ngn5zgk4a1.execute-api.us-east-1.amazonaws.com'
 export const ORDERS = 'https://a57zeomz3a.execute-api.us-east-1.amazonaws.com'
 export const CONSTANTS = 'https://0168sg0a8i.execute-api.us-east-1.amazonaws.com'
+export const STRIPE = 'https://7wcx345m58.execute-api.us-east-1.amazonaws.com'
 const axiosInstance = axios.create({
   baseURL: ''
 })
@@ -69,7 +70,7 @@ export const api_post = (url, body, headers = {}) => {
 export const api_put = (url, body, headers = {}) => {
   return new Promise((res, rej) => {
     axiosInstance
-      .patch(url, body, headers)
+      .put(url, body, headers)
       .then(({ data }) => {
         res(data)
       })
@@ -83,6 +84,19 @@ export const api_delete = (url, body, headers = {}) => {
   return new Promise((res, rej) => {
     axiosInstance
       .delete(url, { ...headers, data: body })
+      .then(({ data }) => {
+        res(data)
+      })
+      .catch(err => {
+        return rej(err)
+      })
+  })
+}
+
+export const api_patch = (url, body, headers = {}) => {
+  return new Promise((res, rej) => {
+    axiosInstance
+      .patch(url, body, headers)
       .then(({ data }) => {
         res(data)
       })

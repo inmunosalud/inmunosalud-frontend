@@ -29,6 +29,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 import { Account, Router } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
+import { stripeRegister } from 'src/store/users'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -38,6 +39,8 @@ const UserDropdown = props => {
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
   const { user } = useSelector(state => state.dashboard.general)
+  const { stripeLink } = useSelector(state => state.users)
+
   // ** Hooks
   const router = useRouter()
 
@@ -73,6 +76,11 @@ const UserDropdown = props => {
   const handleConvertProfile = () => {
     router.push({ pathname: '/register/address', query: { newAssociate: true } })
     handleDropdownClose()
+  }
+
+  const handleRegister = () => {
+    const id = user.id
+    dispatch(stripeRegister(id))
   }
 
   return (
@@ -129,6 +137,31 @@ const UserDropdown = props => {
             Convertirme en Socio
           </MenuItem>
         ) : null}
+
+        {true && (
+          <MenuItem sx={{ py: 2 }} onClick={handleRegister}>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 30 30'
+              stroke-width='1.5'
+              stroke='currentColor'
+              class='w-6 h-6'
+              width={'24px'}
+              style={{
+                marginRight: '8px',
+                alignSelf: 'center'
+              }}
+            >
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                d='M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z'
+              />
+            </svg>
+            Registrarme en Stripe
+          </MenuItem>
+        )}
 
         <Divider />
         {user?.id ? (

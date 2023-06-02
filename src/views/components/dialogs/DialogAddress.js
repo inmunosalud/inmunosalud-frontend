@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import {
   Card,
@@ -9,8 +9,13 @@ import {
   FormControl,
   TextField,
   FormHelperText,
-  Button
+  Button,
+  Select,
+  MenuItem,
+  InputLabel
 } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { getColonies, selectColony } from 'src/store/address'
 
 const DialogAddress = ({
   openAddressCard = false,
@@ -21,6 +26,9 @@ const DialogAddress = ({
   addressControl = {},
   addressErrors = {}
 }) => {
+  const { colonies, selectedColony } = useSelector(state => state.address)
+  const dispatch = useDispatch()
+
   return (
     <Card>
       <Dialog
@@ -31,7 +39,7 @@ const DialogAddress = ({
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          {editItem && Object.keys(editItem).length ? 'Editar Dirección' : 'Nuevo Dirección'}
+          {editItem && Object.keys(editItem).length ? 'Editar Dirección' : 'Nueva Dirección'}
         </DialogTitle>
         <DialogContent style={{ paddingTop: '5px' }}>
           <form key={0} onSubmit={handleSubmit(onSubmit)}>
@@ -108,22 +116,31 @@ const DialogAddress = ({
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
-                    name='colony'
+                    name='zipCode'
                     control={addressControl}
-                    rules={{ required: true }}
+                    rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Colonia'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.colony)}
-                        placeholder='Colonia'
-                        aria-describedby='validation-basic-colony'
+                        label='Código Postal'
+                        onChange={event => {
+                          const newValue = event.target.value
+                          if (newValue.length <= 5) {
+                            onChange(newValue)
+                          }
+                          if (newValue.length === 5) {
+                            dispatch(getColonies(newValue))
+                            dispatch(selectColony({}))
+                          }
+                        }}
+                        error={Boolean(addressErrors.zipCode)}
+                        placeholder='Código Postal'
+                        aria-describedby='validation-basic-zipCode'
                       />
                     )}
                   />
-                  {addressErrors.colony && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
+                  {addressErrors.zipCode?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
                       El campo es requerido
                     </FormHelperText>
                   )}
@@ -133,18 +150,52 @@ const DialogAddress = ({
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <Controller
+                    name='colony'
+                    control={addressControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <>
+                        <InputLabel id='colony-label'>Colonia</InputLabel>
+                        <Select
+                          labelId='colony-label'
+                          label='Colonia'
+                          value={selectedColony}
+                          onChange={event => {
+                            const newValue = event.target.value
+                            onChange(newValue)
+                            dispatch(selectColony(newValue))
+                          }}
+                        >
+                          {colonies.map(zipCodeData => (
+                            <MenuItem value={zipCodeData}>{zipCodeData.colony}</MenuItem>
+                          ))}
+                        </Select>
+                      </>
+                    )}
+                  />
+                  {selectColony.colony && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <Controller
                     name='city'
                     control={addressControl}
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        type='tel'
-                        value={value}
+                        value={selectedColony && selectedColony.city ? selectedColony.city : ' '}
                         label='Ciudad'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.city)}
                         placeholder='Ciudad'
                         aria-describedby='validation-basic-city'
+                        disabled
                       />
                     )}
                   />
@@ -164,12 +215,13 @@ const DialogAddress = ({
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={value}
+                        value={selectedColony && selectedColony.federalEntity ? selectedColony.federalEntity : ' '}
                         label='Estado'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.federalEntity)}
                         placeholder='Entidad Federativa'
                         aria-describedby='validation-basic-state'
+                        disabled
                       />
                     )}
                   />
@@ -184,42 +236,18 @@ const DialogAddress = ({
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
-                    name='zipCode'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Código Postal'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.zipCode)}
-                        placeholder='Código Postal'
-                        aria-describedby='validation-basic-zipCode'
-                      />
-                    )}
-                  />
-                  {addressErrors.zipCode?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
                     name='country'
                     control={addressControl}
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={value}
+                        value={'México'}
                         label='País'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.country)}
                         placeholder='País'
                         aria-describedby='validation-basic-country'
+                        disabled
                       />
                     )}
                   />

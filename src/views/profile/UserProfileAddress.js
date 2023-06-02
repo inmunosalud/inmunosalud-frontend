@@ -49,7 +49,15 @@ import { useForm } from 'react-hook-form'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 
-import { createAddress, updateAddress, deleteAddress, setModal } from 'src/store/address'
+import {
+  createAddress,
+  updateAddress,
+  deleteAddress,
+  setModal,
+  getColonies,
+  cleanColonies,
+  selectColony
+} from 'src/store/address'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogAddress from '../components/dialogs/DialogAddress'
 
@@ -66,7 +74,6 @@ const defaultAddressValues = {
 }
 
 const addressSchema = yup.object().shape({
-  colony: yup.string().required(),
   zipCode: yup
     .string()
     .length(5)
@@ -74,10 +81,7 @@ const addressSchema = yup.object().shape({
     .required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
-  federalEntity: yup.string().required(),
-  city: yup.string().required(),
   street: yup.string().required(),
-  country: yup.string().required(),
   refer: yup.string().required()
 })
 
@@ -106,17 +110,37 @@ const UserProfileAddress = ({ addresses = [] }) => {
   })
 
   const onSubmit = data => {
-    if (editItem && Object.keys(editItem).length) {
-      dispatch(updateAddress({ body: data }))
-    } else {
-      dispatch(createAddress({ body: data, uuid: user.id }))
+    if (data.colony.colony != null) {
+      let body = {
+        street: data.street,
+        extNumber: data.extNumber,
+        intNumber: data?.intNumber,
+        zipCode: data.zipCode,
+        colony: data.colony.colony,
+        city: data.colony.city,
+        federalEntity: data.colony.federalEntity,
+        country: 'Mexico',
+        refer: data.refer
+      }
+      if (editItem && Object.keys(editItem).length) {
+        body.id = editItem.id
+        dispatch(updateAddress({ body: body }))
+      } else {
+        dispatch(createAddress({ body: body, uuid: user.id }))
+      }
+      handleAddressClose(false)
     }
-    handleAddressClose(false)
   }
 
   // Handle Edit Card dialog and get card ID
   const handleEditAddressClickOpen = address => {
     setEditItem(address)
+    dispatch(getColonies(address.zipCode)).then(colonies => {
+      const selectedColony = colonies.payload.find(zipCode => zipCode.colony === address.colony)
+      dispatch(selectColony(selectedColony))
+      setEditItem(prevState => ({ ...prevState, colony: selectedColony }))
+      console.log(editItem)
+    })
     dispatch(setModal(true))
     reset(address)
   }
@@ -145,6 +169,9 @@ const UserProfileAddress = ({ addresses = [] }) => {
             <Button
               variant='contained'
               onClick={() => {
+                setEditItem(null)
+                reset({})
+                dispatch(cleanColonies())
                 dispatch(setModal(true))
               }}
             >
