@@ -111,6 +111,16 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   return response
 })
 
+//get link to register user in stripe
+export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
+  debugger
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const response = await api_get(`${STRIPE}/users/stripeAccountLink/${id}`, auth)
+
+  return response
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
@@ -130,6 +140,8 @@ const initialState = {
 
   //user info
   userInfo: {},
+
+  stripeLink: '',
 
   //detele modal
   showDelete: false,
@@ -223,6 +235,14 @@ export const usersSlice = createSlice({
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       const { content } = payload
       state.userInfo = content
+    })
+    //get stripe link
+    builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {
+      const { content } = payload
+      debugger
+      state.stripeLink = content.url
+
+      window.open(content.url, '_blank')
     })
   }
 })

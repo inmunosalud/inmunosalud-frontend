@@ -8,6 +8,7 @@ export const PROYECT_PRODUCTS = 'https://nj1fowivba.execute-api.us-east-1.amazon
 export const COMISSIONS = 'https://ngn5zgk4a1.execute-api.us-east-1.amazonaws.com'
 export const ORDERS = 'https://a57zeomz3a.execute-api.us-east-1.amazonaws.com'
 export const CONSTANTS = 'https://0168sg0a8i.execute-api.us-east-1.amazonaws.com'
+export const STRIPE = 'https://7wcx345m58.execute-api.us-east-1.amazonaws.com'
 const axiosInstance = axios.create({
   baseURL: ''
 })
