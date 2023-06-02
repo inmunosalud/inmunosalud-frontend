@@ -54,11 +54,12 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 import { closeSnackBar } from 'src/store/notifications'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
-import { createAddress } from 'src/store/address'
+import { createAddress, getColonies, selectColony } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { CardsPlayingSpade } from 'mdi-material-ui'
 
 const steps = [
   {
@@ -107,6 +108,7 @@ const defaultPaymentValues = {
 }
 
 const defaultBankInfoValues = {
+  beneficiary: '',
   clabe: ''
 }
 
@@ -123,14 +125,10 @@ const dataSchema = yup.object().shape({
 })
 
 const addressSchema = yup.object().shape({
-  colony: yup.string().required(),
   zipCode: yup.string().required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
-  federalEntity: yup.string().required(),
-  city: yup.string().required(),
   street: yup.string().required(),
-  country: yup.string().required(),
   refer: yup.string().required()
 })
 
@@ -160,6 +158,7 @@ const paymentSchema = yup.object().shape({
 })
 
 const bankInfoSchema = yup.object().shape({
+  beneficiary: yup.string().required(),
   clabe: yup
     .string()
     .required()
@@ -177,6 +176,7 @@ export default function Address() {
   const router = useRouter()
   const { user } = useSelector(state => state.dashboard.general)
   const { isLoading } = useSelector(state => state.users)
+  const { colonies, selectedColony } = useSelector(state => state.address)
   const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
 
@@ -251,7 +251,20 @@ export default function Address() {
   }
 
   const onAddressSubmit = values => {
-    dispatch(createAddress({ body: values, uuid: user.id }))
+    if (selectColony.colony != '') {
+      const body = {
+        street: values.street,
+        extNumber: values.extNumber,
+        intNumber: values?.intNumber,
+        zipCode: values.zipCode,
+        colony: selectedColony.colony,
+        city: selectedColony.city,
+        federalEntity: selectedColony.federalEntity,
+        country: 'Mexico',
+        refer: values.refer
+      }
+      dispatch(createAddress({ body: body, uuid: user.id }))
+    }
   }
 
   const onPaymentSubmit = values => {
@@ -458,24 +471,58 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={3}>
                 <FormControl fullWidth>
                   <Controller
-                    name='colony'
+                    name='zipCode'
                     control={addressControl}
-                    rules={{ required: true }}
+                    rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Colonia'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.colony)}
-                        placeholder='Colonia'
-                        aria-describedby='validation-basic-colony'
+                        label='Código Postal'
+                        onChange={event => {
+                          const newValue = event.target.value
+                          if (newValue.length <= 5) {
+                            onChange(newValue)
+                          }
+                          if (newValue.length === 5) {
+                            dispatch(getColonies(newValue))
+                            dispatch(selectColony({}))
+                          }
+                        }}
+                        error={Boolean(addressErrors.zipCode)}
+                        placeholder='Código Postal'
+                        aria-describedby='validation-basic-zipCode'
                       />
                     )}
                   />
-                  {addressErrors.colony && (
+                  {addressErrors.zipCode?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={9}>
+                <FormControl fullWidth>
+                  <InputLabel id='colony-label'>Colonia</InputLabel>
+                  <Select
+                    labelId='colony-label'
+                    label='Colonia'
+                    value={selectedColony}
+                    required
+                    onChange={event => {
+                      const newValue = event.target.value
+                      dispatch(selectColony(newValue))
+                    }}
+                  >
+                    {colonies.map(zipCodeData => (
+                      <MenuItem value={zipCodeData}>{zipCodeData.colony}</MenuItem>
+                    ))}
+                  </Select>
+                  {!selectedColony.colony && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
                       El campo es requerido
                     </FormHelperText>
@@ -483,7 +530,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
                     name='city'
@@ -491,13 +538,13 @@ export default function Address() {
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        type='tel'
-                        value={value}
+                        value={selectedColony && selectedColony.city ? selectedColony.city : ' '}
                         label='Ciudad'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.city)}
                         placeholder='Ciudad'
                         aria-describedby='validation-basic-city'
+                        disabled
                       />
                     )}
                   />
@@ -517,12 +564,13 @@ export default function Address() {
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={value}
+                        value={selectedColony && selectedColony.federalEntity ? selectedColony.federalEntity : ' '}
                         label='Estado'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.federalEntity)}
                         placeholder='Entidad Federativa'
                         aria-describedby='validation-basic-state'
+                        disabled
                       />
                     )}
                   />
@@ -537,42 +585,18 @@ export default function Address() {
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
                   <Controller
-                    name='zipCode'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Código Postal'
-                        onChange={onChange}
-                        error={Boolean(addressErrors.zipCode)}
-                        placeholder='Código Postal'
-                        aria-describedby='validation-basic-zipCode'
-                      />
-                    )}
-                  />
-                  {addressErrors.zipCode?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
                     name='country'
                     control={addressControl}
                     rules={{ required: false }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
-                        value={value}
+                        value={'México'}
                         label='País'
-                        onChange={onChange}
+                        onChange={null}
                         error={Boolean(addressErrors.country)}
                         placeholder='País'
                         aria-describedby='validation-basic-country'
+                        disabled
                       />
                     )}
                   />
@@ -811,6 +835,30 @@ export default function Address() {
         return (
           <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
             <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='beneficiary'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Beneficiario'
+                        onChange={onChange}
+                        placeholder='Juan Lopez'
+                        error={Boolean(bankInfoErrors['beneficiary'])}
+                        aria-describedby='stepper-linear-bankInfo-beneficiary'
+                      />
+                    )}
+                  />
+                  {bankInfoErrors['beneficiary'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-clabe'>
+                      {bankInfoErrors['beneficiary'].message ?? 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller

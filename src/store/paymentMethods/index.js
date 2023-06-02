@@ -84,6 +84,8 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
       api_get(`${PROJECT_ADDRESS}/addresses/user/${uuid}`, auth)
     ])
 
+    
+
     thunkApi.dispatch(setAddresses(responseAddress.content))
 
     paymentInfo.paymentMethods = responseMethods.content.filter(method => method.cardUse === 'Pago')
