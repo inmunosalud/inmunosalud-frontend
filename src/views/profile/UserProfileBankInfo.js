@@ -12,15 +12,13 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import Tooltip from '@mui/material/Tooltip';
-
+import Tooltip from '@mui/material/Tooltip'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Pencil } from 'mdi-material-ui';
-
+import { Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import { useForm } from 'react-hook-form'
@@ -33,6 +31,7 @@ import { createMethod, setModal, updateMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBankInfo from '../components/dialogs/DialogBankInfo'
 import { loadInfo } from 'src/store/paymentMethods'
+import { Divider } from '@mui/material'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -41,10 +40,12 @@ const CARD_LOGOS = {
 }
 
 const defaultBankInfoValues = {
+  beneficiary: '',
   clabe: ''
 }
 
 const bankInfoSchema = yup.object().shape({
+  beneficiary: yup.string().required(),
   clabe: yup
     .string()
     .required()
@@ -122,17 +123,27 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
           >
             <div>
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-                <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria</Typography>
+                <Typography sx={{ fontWeight: 500 }}>Beneficiario: </Typography>
+              </Box>
+              <Typography variant='body2'>Juan Lopez</Typography>
+              <Divider />
+              <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria:</Typography>
               </Box>
               <Typography variant='body2'>{bankInfo.clabe}</Typography>
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-            <Tooltip title="Editar" placement="top">
-              <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(bankInfo)} color="warning">
-                <Pencil/>
-              </Button>
-            </Tooltip>
+              <Tooltip title='Editar' placement='top'>
+                <Button
+                  variant='outlined'
+                  sx={{ mr: 3 }}
+                  onClick={() => handleEditCardClickOpen(bankInfo)}
+                  color='warning'
+                >
+                  <Pencil />
+                </Button>
+              </Tooltip>
             </Box>
           </Box>
         </CardContent>
