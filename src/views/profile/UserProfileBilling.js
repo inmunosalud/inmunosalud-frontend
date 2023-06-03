@@ -12,15 +12,13 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import Tooltip from '@mui/material/Tooltip';
-
+import Tooltip from '@mui/material/Tooltip'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Pencil } from 'mdi-material-ui';
-
+import { Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -61,22 +59,22 @@ const paymentSchema = yup.object().shape({
   year: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(4, 'Deben ser 4 dígitos')
+    .max(4, 'Deben ser 4 dígitos'),
   cardNumber: yup
     .string()
     .required()
-    .matches(/^[\d*]+$/, 'Solo digitos o *')
-    .min(16, 'Deben ser 16 digitos')
-    .max(16, 'Deben ser 16 digitos'),
+    .matches(/^[\d*]+$/, 'Solo dígitos o *')
+    .min(16, 'Deben ser 16 dígitos')
+    .max(16, 'Deben ser 16 dígitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(3, 'Deben ser 3 digitos')
-    .max(3, 'Deben ser 3 digitos')
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(3, 'Deben ser 3 dígitos mínimo')
+    .max(4, 'Deben ser 4 dígitos máximo')
 })
 
 const paymentSchemaEdit = yup.object().shape({
@@ -85,9 +83,9 @@ const paymentSchemaEdit = yup.object().shape({
   year: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(4, 'Deben ser 4 dígitos')
+    .max(4, 'Deben ser 4 dígitos'),
   nameOnCard: yup.string().required()
 })
 
@@ -202,15 +200,20 @@ const UserProfileBilling = ({ methods = [] }) => {
               </div>
 
               <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-              <Tooltip title="Editar" placement="top">
-                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen(item)} color="warning">
-                <Pencil/>
-                </Button>
+                <Tooltip title='Editar' placement='top'>
+                  <Button
+                    variant='outlined'
+                    sx={{ mr: 3 }}
+                    onClick={() => handleEditCardClickOpen(item)}
+                    color='warning'
+                  >
+                    <Pencil />
+                  </Button>
                 </Tooltip>
-                <Tooltip title="Eliminar" placement="top">
-                <Button variant='outlined' onClick={() => handleModalDelete(item)} color="error">
-                  <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                </Button>
+                <Tooltip title='Eliminar' placement='top'>
+                  <Button variant='outlined' onClick={() => handleModalDelete(item)} color='error'>
+                    <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                  </Button>
                 </Tooltip>
                 <Typography variant='body2' sx={{ mt: 5 }}>
                   Expira el {item.expDate}

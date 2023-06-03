@@ -37,22 +37,22 @@ const paymentSchema = yup.object().shape({
   year: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(4, 'Deben ser 4 dígitos')
+    .max(4, 'Deben ser 4 dígitos'),
   cardNumber: yup
     .string()
     .required()
-    .matches(/^[\d*]+$/, 'Solo digitos o *')
-    .min(16, 'Deben ser 16 digitos')
-    .max(16, 'Deben ser 16 digitos'),
+    .matches(/^[\d*]+$/, 'Solo dígitos o *')
+    .min(16, 'Deben ser 16 dígitos')
+    .max(16, 'Deben ser 16 dígitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(3, 'Deben ser 3 digitos')
-    .max(3, 'Deben ser 3 digitos')
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(3, 'Deben ser 3 dígitos mínimo')
+    .max(4, 'Deben ser 4 dígitos máximo')
 })
 
 const CardsModal = ({ open = false, onClose = () => {} }) => {
