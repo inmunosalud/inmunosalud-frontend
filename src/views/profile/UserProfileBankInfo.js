@@ -49,9 +49,9 @@ const bankInfoSchema = yup.object().shape({
   clabe: yup
     .string()
     .required()
-    .matches(/^[\d*]+$/, 'Solo digitos o *')
-    .min(18, 'Deben ser 18 digitos')
-    .max(18, 'Deben ser 18 digitos')
+    .matches(/^[\d*]+$/, 'Solo dígitos o *')
+    .min(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos')
 })
 
 const UserProfileBankInfo = ({ bankInfo = {} }) => {

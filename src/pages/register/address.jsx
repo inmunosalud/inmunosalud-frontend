@@ -118,9 +118,9 @@ const dataSchema = yup.object().shape({
   phone: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(10, 'Deben ser 10 digitos')
-    .max(10, 'Deben ser 10 digitos')
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(10, 'Deben ser 10 dígitos')
+    .max(10, 'Deben ser 10 dígitos')
   // birthDate: yup.date()
 })
 
@@ -138,23 +138,23 @@ const paymentSchema = yup.object().shape({
   year: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(4, 'Deben ser 4 digitos')
-    .max(4, 'Deben ser 4 digitos'),
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(4, 'Deben ser 4 dígitos')
+    .max(4, 'Deben ser 4 dígitos'),
   cardNumber: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(16, 'Deben ser 16 digitos')
-    .max(16, 'Deben ser 16 digitos'),
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(16, 'Deben ser 16 dígitos')
+    .max(16, 'Deben ser 16 dígitos'),
 
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(3, 'Deben ser 3 digitos')
-    .max(3, 'Deben ser 3 digitos')
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(3, 'Deben ser 3 dígitos')
+    .max(3, 'Deben ser 3 dígitos')
 })
 
 const bankInfoSchema = yup.object().shape({
@@ -162,9 +162,9 @@ const bankInfoSchema = yup.object().shape({
   clabe: yup
     .string()
     .required()
-    .matches(/^[0-9]+$/, 'Solo digitos')
-    .min(18, 'Deben ser 18 digitos')
-    .max(18, 'Deben ser 18 digitos')
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos')
 })
 
 function PAGE() {
