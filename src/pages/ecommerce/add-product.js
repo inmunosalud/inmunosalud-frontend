@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { useForm, Controller } from 'react-hook-form'
@@ -16,7 +16,8 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  DialogContentText
+  DialogContentText,
+  FormHelperText
 } from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -25,12 +26,12 @@ import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
 import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions'
 import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
 import { parseDataToEdit } from 'src/utils/functions'
-import { closeSnackBar } from 'src/store/notifications'
+import { closeSnackBar, openSnackBar } from 'src/store/notifications'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal } from 'src/store/users'
 
-const Modal = ({ open = false, onHandleOpenModal = () => { }, onSubmitConfirm = () => { } }) => {
+const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {} }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -175,32 +176,36 @@ const AddProduct = () => {
     return dispatch(uploadProductImages(body))
   }
 
-  const handleKeyDownInt = (event) => {
-    const keyCode = event.keyCode || event.which;
-    const keyValue = String.fromCharCode(keyCode);
+  const handleKeyDownInt = event => {
+    const keyCode = event.keyCode || event.which
+    const keyValue = String.fromCharCode(keyCode)
 
     if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46) {
-      event.preventDefault();
+      event.preventDefault()
     }
-  };
+  }
 
-  const handleInputFloat = (event) => {
-    const { value } = event.target;
+  const handleInputFloat = event => {
+    const { value } = event.target
 
     if (!/^\d*\.?\d*$/.test(value)) {
-      event.target.value = value.slice(0, -1);
+      event.target.value = value.slice(0, -1)
     } else if (value === '.') {
-      event.target.value = '0.';
+      event.target.value = '0.'
     } else if (value.includes('.') && value.split('.')[1].length > 3) {
-      event.target.value = parseFloat(value).toFixed(3);
+      event.target.value = parseFloat(value).toFixed(3)
     }
-  };
-
-
+  }
 
   const onSubmit = (data, event) => {
     event.preventDefault()
 
+    if (images.length === 0) {
+      dispatch(
+        openSnackBar({ open: true, message: 'Debes agregar al menos una imagen del producto', severity: 'error' })
+      )
+      return
+    }
     handleImagesUpload(data.product).then(productImages => {
       const newProperties = getCustomStructure(values)
       const body = {
@@ -295,18 +300,18 @@ const AddProduct = () => {
                   render={({ field, fieldState }) => (
                     <TextField
                       error={!!errors.capsuleQuantity}
-                      label="Cantidad de Cápsulas"
+                      label='Cantidad de Cápsulas'
                       fullWidth
                       {...field}
-                      type="text"
+                      type='text'
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="end">
-                            <Typography variant="subtitle2" color="textSecondary">
+                          <InputAdornment position='end'>
+                            <Typography variant='subtitle2' color='textSecondary'>
                               cápsulas
                             </Typography>
                           </InputAdornment>
-                        ),
+                        )
                       }}
                       onKeyDown={handleKeyDownInt}
                     />
@@ -326,12 +331,12 @@ const AddProduct = () => {
                       {...field}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="end">
-                            <Typography variant="subtitle2" color="textSecondary">
+                          <InputAdornment position='end'>
+                            <Typography variant='subtitle2' color='textSecondary'>
                               mg en cada cápsula
                             </Typography>
                           </InputAdornment>
-                        ),
+                        )
                       }}
                       onInput={handleInputFloat}
                     />
@@ -359,54 +364,34 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-              <Grid item xs={12} sm={12}>
-                <Controller
-                  control={control}
-                  name='price'
-                  rules={{ required: true }}
-                  render={({ field, formState }) => {
-                    const { value } = field
-                    if (value >= 0) {
+                <Grid item xs={12} sm={12}>
+                  <Controller
+                    control={control}
+                    name='price'
+                    rules={{ required: true }}
+                    render={({ field, formState }) => {
+                      const { value } = field
                       return (
                         <TextField
                           label='Precio'
                           fullWidth
+                          error={!!errors.price}
                           {...field}
                           InputProps={{
                             startAdornment: (
-                              <InputAdornment position="start">
-                                <Typography variant="subtitle2" color="textSecondary">
+                              <InputAdornment position='start'>
+                                <Typography variant='subtitle2' color='textSecondary'>
                                   $
                                 </Typography>
                               </InputAdornment>
-                            ),
+                            )
                           }}
                           onInput={handleInputFloat}
                         />
                       )
-                    } else {
-                      return (
-                        <TextField
-                          label='Precio'
-                          fullWidth
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Typography variant="subtitle2" color="textSecondary">
-                                  $
-                                </Typography>
-                              </InputAdornment>
-                            ),
-                          }}
-                          onInput={handleInputFloat}
-                          {...field}
-                          error
-                        />
-                      )
-                    }
-                  }}
-                />
-              </Grid>
+                    }}
+                  />
+                </Grid>
                 <Grid item xs={12} sm={6} sx={{ marginTop: '20px' }}>
                   <Controller
                     control={control}
@@ -415,18 +400,18 @@ const AddProduct = () => {
                     render={({ field, fieldState }) => (
                       <TextField
                         error={!!errors.capsuleQuantity}
-                        label="Cantidad en almacén"
+                        label='Cantidad en almacén'
                         fullWidth
                         {...field}
-                        type="text"
+                        type='text'
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">
-                              <Typography variant="subtitle2" color="textSecondary">
+                            <InputAdornment position='end'>
+                              <Typography variant='subtitle2' color='textSecondary'>
                                 en almacén
                               </Typography>
                             </InputAdornment>
-                          ),
+                          )
                         }}
                         onKeyDown={handleKeyDownInt}
                       />
@@ -455,38 +440,43 @@ const AddProduct = () => {
                 <Typography sx={{ margin: '8px 0px' }} variant='h6'>
                   Componentes principales
                 </Typography>
-                {fields.map((field, index) => (
-                  <Grid container item xs={12} spacing={5} key={index}>
-                    <Grid item xs={6} sx={{ marginTop: '10px' }}>
-                      <TextField
-                        label='Componente Principal'
-                        variant='outlined'
-                        value={field.property}
-                        fullWidth
-                        onChange={e => handleFieldChange(index, 'property', e.target.value)}
-                      />
+                {fields.map((field, index) => {
+                  return (
+                    <Grid container item xs={12} spacing={5} key={index}>
+                      <Grid item xs={6} sx={{ marginTop: '10px' }}>
+                        <TextField
+                          label='Componente Principal'
+                          variant='outlined'
+                          value={field.property}
+                          error={field.property == ''}
+                          fullWidth
+                          onChange={e => handleFieldChange(index, 'property', e.target.value)}
+                        />
+                      </Grid>
+                      <Grid item xs={6} sx={{ marginTop: '10px' }}>
+                        <TextField
+                          label='Valor'
+                          variant='outlined'
+                          value={field.value}
+                          error={field.value == ''}
+                          fullWidth
+                          onChange={e => handleFieldChange(index, 'value', e.target.value)}
+                          type='text'
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <Typography variant='subtitle2' color='textSecondary'>
+                                  mg en cada cápsula
+                                </Typography>
+                              </InputAdornment>
+                            )
+                          }}
+                          onInput={handleInputFloat}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6} sx={{ marginTop: '10px' }}>
-                      <TextField
-                        label='Valor'
-                        variant='outlined'
-                        value={field.value}
-                        fullWidth
-                        onChange={e => handleFieldChange(index, 'value', e.target.value)}
-                        type="text"
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <Typography variant="subtitle2" color="textSecondary">
-                                mg en cada cápsula
-                              </Typography>
-                            </InputAdornment>
-                          ),
-                        }}
-                        onInput={handleInputFloat} />
-                    </Grid>
-                  </Grid>
-                ))}
+                  )
+                })}
                 <Grid item sx={{ marginTop: '10px' }}></Grid>
               </Grid>
               <Grid item xs={12}>
