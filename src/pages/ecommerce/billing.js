@@ -63,7 +63,7 @@ const BillingPage = () => {
     setTabValue(newValue);
   };
 
-  if (userInfo.profile === 'Administrador General') {
+  if (userInfo.profile === 'Afiliado') {
     return (
       <Container maxWidth="md">
         <Box mt={4} mb={2}>
@@ -81,7 +81,7 @@ const BillingPage = () => {
         </Box>
       </Container>
     );
-  } else if (userInfo.profile === '') {
+  } else if (userInfo.profile === 'Administrador General') {
     return (
       <Container maxWidth="md">
         <Box mt={4} mb={2}>
