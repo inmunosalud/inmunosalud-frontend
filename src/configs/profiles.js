@@ -32,7 +32,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceEditOrders,
     PERMISSIONS.ecommerceMonthlyPurchase,
   ],
-  Socio: [
+  Afiliado: [
     PERMISSIONS.home,
     PERMISSIONS.join,
     PERMISSIONS.dashboardUsers,
@@ -117,5 +117,5 @@ export const PROFILES_USER = {
   admin: 'Administrador General',
   productsAdmin: 'Administrador de Productos',
   consumerUser: 'Consumidor',
-  associatedUser: 'Socio'
+  affiliatedUser: 'Afiliado'
 }

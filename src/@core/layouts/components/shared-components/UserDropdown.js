@@ -134,7 +134,7 @@ const UserDropdown = props => {
         {user?.profile === PROFILES_USER.consumerUser ? (
           <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
             <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-            Convertirme en Socio
+            Convertirme en Afiliado
           </MenuItem>
         ) : null}
 

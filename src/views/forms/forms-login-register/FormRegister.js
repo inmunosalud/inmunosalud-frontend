@@ -97,7 +97,7 @@ const FormRegister = () => {
     const body = { email, password, recommenderId }
 
     if (checkedProfile) {
-      body.profile = PROFILES_USER.associatedUser
+      body.profile = PROFILES_USER.affiliatedUser
     }
     dispatch(createUser(body))
   }
@@ -170,7 +170,7 @@ const FormRegister = () => {
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox checked={checkedProfile} onChange={handleChangeProfile} />}
-                    label='Ser Socio'
+                    label='Ser Afiliado'
                   />
                 </FormGroup>
                 {errors ? (

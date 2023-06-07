@@ -15,19 +15,19 @@ const BillingPage = () => {
     setTabValue(newValue);
   };
 
-  // Función de simulación para determinar el tipo de usuario (socio o administrador general)
+  // Función de simulación para determinar el tipo de usuario (afiliado o administrador general)
   const getUserType = () => {
-    return 'socio'; // Reemplaza esto con la lógica real para determinar el tipo de usuario
+    return 'afiliado'; // Reemplaza esto con la lógica real para determinar el tipo de usuario
   };
 
   const userType = getUserType();
 
-  if (userType === 'socio') {
+  if (userType === 'afiliado') {
     return (
       <Container maxWidth="md">
         <Box mt={4} mb={2}>
           <Typography variant="h4" component="h1" align="center">
-            Facturación - Socio
+            Facturación - Afiliado
           </Typography>
         </Box>
         <Tabs value={tabValue} onChange={handleChangeTab} centered>
@@ -51,7 +51,7 @@ const BillingPage = () => {
           </Typography>
         </Box>
         <Tabs value={tabValue} onChange={handleChangeTab} centered>
-          <Tab label="Facturas de Socios" />
+          <Tab label="Facturas de Afiliados" />
           <Tab label="Actualizar Template" />
         </Tabs>
         <Box mt={2}>

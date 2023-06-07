@@ -26,7 +26,7 @@ import { useForm, Controller } from 'react-hook-form'
 const PROFILES = [
   { label: 'Administrador General', value: 'Administrador General' },
   { label: 'Administrador de Productos', value: 'Administrador de Productos' },
-  { label: 'Socio', value: 'Socio' },
+  { label: 'Afiliado', value: 'Afiliado' },
   { label: 'Consumidor', value: 'Consumidor' }
 ]
 

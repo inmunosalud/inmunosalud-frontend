@@ -67,8 +67,8 @@ const Constants = () => {
         minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
         maintenanceCost: constants.maintenanceCost ?? 0
       })
-      setAssociateProductList(constants.associatedPackage)
-      isAddProductDisabled(constants.associatedPackage.length === products.content.length)
+      setAssociateProductList(constants.affiliatedPackage)
+      isAddProductDisabled(constants.affiliatedPackage.length === products.content.length)
     }
   }, [loading])
   const generateRandomCharacters = () => {
@@ -144,7 +144,7 @@ const Constants = () => {
         shippingCost: data.shippingCost,
         minimalAmountOfPurchase: data.minimalAmountOfPurchase,
         maintenanceCost: data.maintenanceCost,
-        associatedPackage: associateProductList
+        affiliatedPackage: associateProductList
       })
       handleModalConfirm()
     }
@@ -365,7 +365,7 @@ const Constants = () => {
                   <FormHelperText>Hello</FormHelperText>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant='h6'>Paquete de socios</Typography>
+                  <Typography variant='h6'>Paquete de afiliados</Typography>
                 </Grid>
                 {associateProductList
                   ? associateProductList.map((product, index) => (
