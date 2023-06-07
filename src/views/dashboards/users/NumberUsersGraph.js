@@ -79,74 +79,74 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
       }
     },
     xaxis: {
-      categories: ['B']
+      categories: ["nivel 1"]
     },
     fill: {
       opacity: 1
     }
   }
 
-  const optionsC = {
+  const options2 = {
     ...options,
     xaxis: {
-      categories: ['C']
+      categories: ["nivel 2"]
     }
   }
 
-  const optionsD = {
+  const options3 = {
     ...options,
     xaxis: {
-      categories: ['D']
+      categories: ["nivel 3"]
     }
   }
 
-  const optionsE = {
+  const options4 = {
     ...options,
     xaxis: {
-      categories: ['E']
+      categories: ["nivel 4"]
     }
   }
 
   const series = [
     {
       name: 'Activos',
-      data: sumValid('B').totalValid ? [sumValid('B').totalValid] : []
+      data: sumValid(1).totalValid ? [sumValid(1).totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: sumValid('B').totalInvalid ? [sumValid('B').totalInvalid] : []
+      data: sumValid(1).totalInvalid ? [sumValid(1).totalInvalid] : []
     }
   ]
 
-  const seriesC = [
+  const series2 = [
     {
       name: 'Activos',
-      data: sumValid('C').totalValid ? [sumValid('C').totalValid] : []
+      data: sumValid(2).totalValid ? [sumValid(2).totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: sumValid('C').totalInvalid ? [sumValid('C').totalInvalid] : []
+      data: sumValid(2).totalInvalid ? [sumValid(2).totalInvalid] : []
     }
   ]
 
-  const seriesD = [
+  const series3 = [
     {
       name: 'Activos',
-      data: sumValid('D').totalValid ? [sumValid('D').totalValid] : []
+      data: sumValid(3).totalValid ? [sumValid(3).totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: sumValid('D').totalInvalid ? [sumValid('D').totalInvalid] : []
+      data: sumValid(3).totalInvalid ? [sumValid(3).totalInvalid] : []
     }
   ]
-  const seriesE = [
+  const series4 = [
     {
       name: 'Activos',
-      data: sumValid('E').totalValid ? [sumValid('E').totalValid] : []
+      data: sumValid(4).totalValid ? [sumValid(4).totalValid] : []
     },
     {
       name: 'Inactivos',
-      data: sumValid('E').totalInvalid ? [sumValid('E').totalInvalid] : []
+      data: sumValid(4).totalInvalid ? [sumValid(4).totalInvalid] : []
     }
   ]
 
@@ -171,9 +171,9 @@ const NumberUsersGraph = ({ title = '', user = {} }) => {
             Número de Usuarios en tu Red por nivel:
         </Typography>
         <ReactApexcharts options={options} series={series} type='bar' height={80} />
-        <ReactApexcharts options={optionsC} series={seriesC} type='bar' height={80} />
-        <ReactApexcharts options={optionsD} series={seriesD} type='bar' height={80} />
-        <ReactApexcharts options={optionsE} series={seriesE} type='bar' height={80} />
+        <ReactApexcharts options={options2} series={series2} type='bar' height={80} />
+        <ReactApexcharts options={options3} series={series3} type='bar' height={80} />
+        <ReactApexcharts options={options4} series={series4} type='bar' height={80} />
       </CardContent>
     </Card>
   )
