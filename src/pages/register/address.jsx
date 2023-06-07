@@ -242,11 +242,11 @@ export default function Address() {
   }
 
   const handleReset = () => {
-    router.push({ pathname: '/ecommerce/cart', query: { type: 'associated' } })
+    router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
   const onDataSubmit = values => {
-    values.profile = PROFILES_USER.associatedUser
+    values.profile = PROFILES_USER.affiliatedUser
     dispatch(updateUser({ body: values, uuid: user.id }))
   }
 

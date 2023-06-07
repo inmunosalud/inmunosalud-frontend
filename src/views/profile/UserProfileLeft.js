@@ -55,7 +55,7 @@ const roleColors = {
   'Administrador de Productos': 'error',
 
   'Administrador General': 'warning',
-  Socio: 'success',
+  Afiliado: 'success',
   Consumidor: 'primary'
 }
 

@@ -160,7 +160,7 @@ const Users = () => {
 
   React.useEffect(() => {
     dispatch(getUserInfo(user?.id))
-    if (user.profile === 'Socio') {
+    if (user.profile === 'Afiliado') {
       getMonthlyCountdown(data[0].stats)
     }
   }, [dispatch])

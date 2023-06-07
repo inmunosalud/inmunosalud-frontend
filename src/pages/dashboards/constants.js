@@ -41,10 +41,10 @@ const Constants = () => {
     defaultValues: {
       cutoffDay: '',
       iva: 0,
-      b: 0.0,
-      c: 0.0,
-      d: 0.0,
-      e: 0.0,
+      1: 0.0,
+      2: 0.0,
+      3: 0.0,
+      4: 0.0,
       shippingCost: 0,
       minimalAmountOfPurchase: 0,
       maintenanceCost: 0
@@ -59,16 +59,16 @@ const Constants = () => {
       reset({
         cutoffDay: constants.cutoffDay,
         iva: constants.iva,
-        b: (constants.commissionPercentajePerLevel.B * 100).toFixed(2) ?? 0,
-        c: (constants.commissionPercentajePerLevel.C * 100).toFixed(2) ?? 0,
-        d: (constants.commissionPercentajePerLevel.D * 100).toFixed(2) ?? 0,
-        e: (constants.commissionPercentajePerLevel.E * 100).toFixed(2) ?? 0,
+        1: (constants.commissionPercentajePerLevel[1] * 100).toFixed(2) ?? 0,
+        2: (constants.commissionPercentajePerLevel[2] * 100).toFixed(2) ?? 0,
+        3: (constants.commissionPercentajePerLevel[3] * 100).toFixed(2) ?? 0,
+        4: (constants.commissionPercentajePerLevel[4] * 100).toFixed(2) ?? 0,
         shippingCost: constants.shippingCost,
         minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
         maintenanceCost: constants.maintenanceCost ?? 0
       })
-      setAssociateProductList(constants.associatedPackage)
-      isAddProductDisabled(constants.associatedPackage.length === products.content.length)
+      setAssociateProductList(constants.affiliatedPackage)
+      isAddProductDisabled(constants.affiliatedPackage.length === products.content.length)
     }
   }, [loading])
   const generateRandomCharacters = () => {
@@ -136,15 +136,15 @@ const Constants = () => {
         cutoffDay: data.cutoffDay,
         iva: data.iva,
         commissionPercentajePerLevel: {
-          B: (data.b / 100).toFixed(4),
-          C: (data.c / 100).toFixed(4),
-          D: (data.d / 100).toFixed(4),
-          E: (data.e / 100).toFixed(4)
+          1: (data[1] / 100).toFixed(4),
+          2: (data[2] / 100).toFixed(4),
+          3: (data[3] / 100).toFixed(4),
+          4: (data[4] / 100).toFixed(4)
         },
         shippingCost: data.shippingCost,
         minimalAmountOfPurchase: data.minimalAmountOfPurchase,
         maintenanceCost: data.maintenanceCost,
-        associatedPackage: associateProductList
+        affiliatedPackage: associateProductList
       })
       handleModalConfirm()
     }
@@ -283,20 +283,20 @@ const Constants = () => {
                 <Grid item xs={12} sm={3}>
                   <Controller
                     control={control}
-                    name='b'
+                    name='1'
                     rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
-                        label='B'
+                        label='1'
                         type='number'
                         fullWidth
                         required
-                        error={!!errors.b}
+                        error={!!errors[1]}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
-                        helperText={errors.b && 'Debe colocar un porcentaje correcto entre 0 a 100'}
+                        helperText={errors[1] && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -304,20 +304,20 @@ const Constants = () => {
                 <Grid item xs={12} sm={3}>
                   <Controller
                     control={control}
-                    name='c'
+                    name='2'
                     rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
-                        label='C'
+                        label='2'
                         type='number'
                         fullWidth
                         required
-                        error={!!errors.c}
+                        error={!!errors[2]}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
-                        helperText={errors.c && 'Debe colocar un porcentaje correcto entre 0 a 100'}
+                        helperText={errors[2] && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -325,20 +325,20 @@ const Constants = () => {
                 <Grid item xs={12} sm={3}>
                   <Controller
                     control={control}
-                    name='d'
+                    name='3'
                     rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
-                        label='D'
+                        label='3'
                         type='number'
                         fullWidth
                         required
-                        error={!!errors.d}
+                        error={!!errors[3]}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
-                        helperText={errors.d && 'Debe colocar un porcentaje correcto entre 0 a 100'}
+                        helperText={errors[3] && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
@@ -346,26 +346,26 @@ const Constants = () => {
                 <Grid item xs={12} sm={3}>
                   <Controller
                     control={control}
-                    name='e'
+                    name='4'
                     rules={{ required: true, min: 0, max: 100 }}
                     render={({ field }) => (
                       <TextField
-                        label='E'
+                        label='4'
                         type='number'
                         fullWidth
-                        error={!!errors.e}
+                        error={!!errors[4]}
                         InputProps={{
                           startAdornment: <InputAdornment position='start'>%</InputAdornment>
                         }}
                         {...field}
-                        helperText={errors.e && 'Debe colocar un porcentaje correcto entre 0 a 100'}
+                        helperText={errors[4] && 'Debe colocar un porcentaje correcto entre 0 a 100'}
                       />
                     )}
                   />
                   <FormHelperText>Hello</FormHelperText>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant='h6'>Paquete de socios</Typography>
+                  <Typography variant='h6'>Paquete de afiliados</Typography>
                 </Grid>
                 {associateProductList
                   ? associateProductList.map((product, index) => (
@@ -411,7 +411,7 @@ const Constants = () => {
                       <Grid item xs={1}>
                         <Tooltip title="Eliminar" placement="top">
                           <Button onClick={() => handleDeleteProduct(product)} color="error" variant='outlined' >
-                            <Delete sx={{ mb: 2.5, mt: 2.5, fontSize: '1.125rem' }}  />
+                            <Delete sx={{ mb: 2.5, mt: 2.5, fontSize: '1.125rem' }} />
                           </Button>
                         </Tooltip>
                       </Grid>

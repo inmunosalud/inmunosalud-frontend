@@ -63,11 +63,11 @@ const GraphRow = ({ type, value }) => {
     xaxis: {
       categories: [''],
       maxHeight: 100,
-      max: type === "E" ? 100 : null,
+      max: type === 4 ? 100 : null,
       tickAmount: 2,
       labels: {
         formatter: function (val) {
-          return type === "E" ? `${val}%` : val.toFixed(1)
+          return type === 4 ? `${val}%` : val.toFixed(1)
         },
       }
     },

@@ -19,7 +19,7 @@ export default function AffiliationPage() {
 
     useEffect(() => {
         dispatch(getConstants())
-    }, [])
+    }, [dispatch])
 
     const questions = [
         {
@@ -48,7 +48,6 @@ export default function AffiliationPage() {
         },
     ]
 
-    console.log(constants)
     const CustomBox = ({ text, percentage }) => {
         const theme = useTheme();
         return (
@@ -111,20 +110,29 @@ export default function AffiliationPage() {
                             <Typography variant="h6" sx={{ marginBottom: '10px', marginTop: '30px' }}>
                                 De todas las personas que tú refieres recibes el:
                             </Typography>
-                            <CustomBox percentage="%5" text="total de Compra" />
+                            {constants && constants.commissionPercentajePerLevel && (
+                                <CustomBox percentage={`${(constants.commissionPercentajePerLevel[1] * 100).toFixed(0)}%`} text="total de Compra" />
+                            )}
                             <Typography variant="h6" sx={{ marginBottom: '10px', marginTop: '30px' }}>
                                 Si ellos refirieran a alguien más, se te da el:
                             </Typography>
-                            <CustomBox percentage="%10" text="total de Compra" />
+                            {constants && constants.commissionPercentajePerLevel && (
+                                <CustomBox percentage={`${(constants.commissionPercentajePerLevel[2] * 100).toFixed(0)}%`} text="total de Compra" />
+                            )}
                             <Typography variant="h6" sx={{ marginBottom: '10px', marginTop: '30px' }}>
                                 De los referidos de tu segunda línea, se te otorga el:
                             </Typography>
-                            <CustomBox percentage="%15" text="total de Compra" />
+                            {constants && constants.commissionPercentajePerLevel && (
+                                <CustomBox percentage={`${(constants.commissionPercentajePerLevel[3] * 100).toFixed(0)}%`} text="total de Compra" />
+                            )}
                             <Typography variant="h6" sx={{ marginBottom: '10px', marginTop: '30px' }}>
                                 y los referidos de tu tercera línea te otorgan un:
                             </Typography>
-                            <CustomBox percentage="%15" text="total de Compra" sx={{ marginBottom: '60px' }} />
+                            {constants && constants.commissionPercentajePerLevel && (
+                                <CustomBox percentage={`${(constants.commissionPercentajePerLevel[4] * 100).toFixed(0)}%`} text="total de Compra" sx={{ marginBottom: '60px' }} />
+                            )}
                         </Box>
+
                         <Box maxWidth="fit-content" sx={{ margin: '0 auto', marginTop: '60px' }}>
                             <Card variant="outlined">
                                 <TableContainer>

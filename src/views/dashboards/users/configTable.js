@@ -42,7 +42,7 @@ export const columns = [
     renderCell: params => {
       return (
         <Box sx={{ height: '80px' }}>
-          <GraphRow type='E' value={params.row.efficiency} />
+          <GraphRow type={4} value={params.row.efficiency} />
         </Box>
       )
     }
@@ -113,10 +113,10 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: 'B',
-    field: 'B',
+    headerName: "Nivel 1",
+    field: 1,
     renderCell: params => {
-      const value = getValidUsers(params.row, 'B')
+      const value = getValidUsers(params.row, 1)
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -128,10 +128,10 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: 'C',
-    field: 'C',
+    headerName: "Nivel 2",
+    field: 2,
     renderCell: params => {
-      const value = getValidUsers(params.row, 'C')
+      const value = getValidUsers(params.row, 2)
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -143,10 +143,10 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: 'D',
-    field: 'D',
+    headerName: "Nivel 3",
+    field: 3,
     renderCell: params => {
-      const value = getValidUsers(params.row, 'D')
+      const value = getValidUsers(params.row, 3)
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -158,10 +158,10 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: 'E',
-    field: 'E',
+    headerName: "Nivel 4",
+    field: 4,
     renderCell: params => {
-      const value = getValidUsers(params.row, 'E')
+      const value = getValidUsers(params.row, 4)
 
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -173,12 +173,12 @@ export const columns = [
   // {
   //   flex: 0.175,
   //   minWidth: 140,
-  //   headerName: 'E',
-  //   field: 'E',
+  //   headerName: 4,
+  //   field: 4,
   //   renderCell: params => {
   //     return (
   //       <Box sx={{ height: '80px' }}>
-  //         <GraphRow type='E' params={params} />
+  //         <GraphRow type={4} params={params} />
   //       </Box>
   //     )
   //   }

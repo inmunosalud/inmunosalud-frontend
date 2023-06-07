@@ -117,7 +117,7 @@ const NumberUsers = ({ data = null }) => {
               <Typography variant='body2'>Administradores Generales: <b>{data?.countByProfile.admin ?? 0}</b></Typography>
               <Typography variant='body2'>Administradores de Productos: <b>{data?.countByProfile.productsAdmin ?? 0}</b></Typography>
               <Typography variant='body2'>Consumidores: <b>{data?.countByProfile.consumerUser ?? 0}</b></Typography>
-              <Typography variant='body2'>Socios: <b>{data?.countByProfile.associatedUser ?? 0}</b></Typography>
+              <Typography variant='body2'>Afiliados: <b>{data?.countByProfile.affiliatedUser ?? 0}</b></Typography>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Grid container>

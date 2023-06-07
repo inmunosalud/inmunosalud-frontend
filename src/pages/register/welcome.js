@@ -29,7 +29,7 @@ const Welcome = () => {
   const handleSubmit = e => {
     e.preventDefault()
     dispatch(setActiveStep(0))
-    router.push(user.profile === PROFILES_USER.associatedUser ? '/register/address' :'/ecommerce/products')
+    router.push(user.profile === PROFILES_USER.affiliatedUser ? '/register/address' :'/ecommerce/products')
   }
 
   return (
