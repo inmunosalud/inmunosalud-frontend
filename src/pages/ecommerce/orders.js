@@ -26,6 +26,8 @@ import TableCell from '@mui/material/TableCell'
 import CardContent from '@mui/material/CardContent'
 
 import Image from 'next/image'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import { closeSnackBar } from 'src/store/notifications'
 
 const CardContentStyles = {
   margin: '10px 20px'
@@ -301,7 +303,8 @@ const Cards = props => {
 
 const Orders = () => {
   const dispatch = useDispatch()
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
+  const { open, message, severity } = useSelector(state => state.notifications)
   const { orders, isLoading, messageValid } = useSelector(state => state.orders)
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
@@ -323,7 +326,13 @@ const Orders = () => {
     )
   }
 
-  return <React.Fragment>{orders.length && orders.map(order => <Cards key={order.id} {...order} />)}</React.Fragment>
+  return( 
+  <React.Fragment>
+    {orders.length && orders.map(order => <Cards key={order.id} {...order} />)}
+    
+    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+    </React.Fragment>
+    )
 }
 
 export default Orders
