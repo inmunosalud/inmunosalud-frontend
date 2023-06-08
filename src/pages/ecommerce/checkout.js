@@ -13,8 +13,9 @@ import { updateCart } from 'src/store/cart'
 import { getCart } from 'src/store/cart'
 import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
 
-const InvoicePreview = ({}) => {
+const InvoicePreview = ({ }) => {
   const dispatch = useDispatch()
   // ** State
   const [error, setError] = useState(false)
@@ -30,6 +31,7 @@ const InvoicePreview = ({}) => {
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCard } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
+  const { isLoading } = useSelector(state => state.orders)
 
   const data = {
     products,
@@ -77,6 +79,8 @@ const InvoicePreview = ({}) => {
           /> */}
         </Grid>
       </Grid>
+      
+      <BackDropLoader isLoading={isLoading}/>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )

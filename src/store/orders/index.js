@@ -3,6 +3,7 @@ import Router from 'next/router'
 import { ORDERS, api_post, api_get, api_put, api_delete } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
+import { getCart } from '../cart'
 
 export const getOrders = createAsyncThunk('order/getAllOrders', async thunkApi => {
   const token = localStorage.getItem('im-user')
@@ -47,9 +48,11 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
   try {
     const response = await api_post(`${ORDERS}/orders/${idUser}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(getCart(idUser))
     Router.push('/ecommerce/orders')
     return response
   } catch (error) {
+    console.log(error)
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -142,7 +145,14 @@ export const ordersSlice = createSlice({
       state.orders = payload
     })
     builder.addCase(createOrder.fulfilled, (state, { payload }) => {
+      state.isLoading = false
       state.orders = payload
+    })
+    builder.addCase(createOrder.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(createOrder.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(deleteOrder.fulfilled, (state, { payload }) => {
       state.orders = payload
