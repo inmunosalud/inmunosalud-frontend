@@ -154,7 +154,7 @@ const paymentSchema = yup.object().shape({
     .required()
     .matches(/^[0-9]+$/, 'Solo dígitos')
     .min(3, 'Deben ser 3 dígitos')
-    .max(3, 'Deben ser 3 dígitos')
+    .max(4, 'Deben ser 4 dígitos')
 })
 
 const bankInfoSchema = yup.object().shape({
