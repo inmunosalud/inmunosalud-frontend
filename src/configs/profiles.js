@@ -46,6 +46,20 @@ export const PROFILES = {
     PERMISSIONS.ecommerceMonthlyPurchase,
     PERMISSIONS.ecommerceBilling
   ],
+  'Afiliado sin compras': [
+    PERMISSIONS.home,
+    PERMISSIONS.join,
+    PERMISSIONS.dashboardProfile,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
+    PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceBilling
+  ],
+
   'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.join,
