@@ -19,7 +19,7 @@ module.exports = withTM({
     jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
   },
   images: {
-    domains: ['products-images-9fe5.s3.amazonaws.com'],
+    domains: ['products-images-9fe5.s3.amazonaws.com','products-images-9fe5.s3.us-east-1.amazonaws.com'],
   },
   webpack: config => {
     config.resolve.alias = {
