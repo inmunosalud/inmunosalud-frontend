@@ -50,11 +50,14 @@ const VerticalNavItems = props => {
     dispatch(getUserInfo(user.id))
   }, [])
 
-  const filteredItems = useMemo(() => resolvePermissions(userInfo, verticalNavItems), [userInfo, verticalNavItems])
+  const filteredItems = useMemo(() => resolvePermissions(user, verticalNavItems), [user, verticalNavItems])
 
   // ** Props
 
   const RenderMenuItems = filteredItems.map((item, index) => {
+    if (item.title === 'Dashboard' && userInfo?.profile === 'Afiliado' && userInfo?.numberOfPurchases === 0) {
+      return null
+    }
     const TagName = resolveNavItemComponent(item)
 
     return <TagName {...props} key={index} item={item} />
