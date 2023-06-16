@@ -1,6 +1,25 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, CardActions, Button, Modal, Box, Typography, TextField, MenuItem, InputLabel, Grid } from '@mui/material';
+import {
+    Card,
+    CardHeader,
+    CardContent,
+    CardActions,
+    Button,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    MenuItem,
+    InputLabel,
+    Grid
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'
+import XmlViewer from 'src/views/general/XmlViewer'
+import { Document, Page } from 'react-pdf'; // Importa las dependencias necesarias
+import { pdfjs } from 'react-pdf'; // Importa pdfjs para la carga del PDF
+import PdfViewer from 'src/views/general/PdfViewer'
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const TableBilling = ({
     invoices,
@@ -35,157 +54,116 @@ const TableBilling = ({
             case 'pdfViewer':
                 return (
                     <>
-                        <Typography variant="h6">Ver archivo PDF</Typography>
-                        <Box sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '80%',
-                            height: '80%',
-                            bgcolor: 'background.paper',
-                            border: '2px solid #000',
-                            boxShadow: 24,
-                            p: 4,
-                        }}>
-                            <iframe
-                                src={selectedInvoice.pdf}
-                                width="100%"
-                                height="100%"
-                                title="PDF Viewer"
-                            />                        </Box>
+                        <PdfViewer PDF={selectedInvoice.pdf} onClose={handleClose} />
                     </>
                 );
             case 'xmlViewer':
                 return (
                     <>
-                        <Typography variant="h6">Ver archivo XML</Typography>
-                        <Box sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '80%',
-                            height: '80%',
-                            bgcolor: 'background.paper',
-                            border: '2px solid #000',
-                            boxShadow: 24,
-                            p: 4,
-                        }}>
-                            <iframe
-                                src={selectedInvoice.xml}
-                                width="100%"
-                                height="100%"
-                                title="XML Viewer"
-                            />                             </Box>
+                        <XmlViewer XML={selectedInvoice.xml} onClose={handleClose} />
                     </>
                 );
             case 'updateStatus':
                 return (
                     <>
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 400,
-                                bgcolor: 'background.paper',
-                                boxShadow: 24,
-                                p: 4,
-                            }}
-                        >
-                            <Card>
-                                <CardHeader title="Actualizar estado de la factura" />
-                                <CardContent sx={{ justifyContent: 'flex-end', mb: 2 }}>
-                                    <TextField
-                                        select
-                                        label={selectedInvoice.status}
-                                        onChange={handleChangeStatus}
-                                        sx={{ mt: 2 }}
-                                        fullWidth
-                                    >
-                                        {Object.entries(BILL_STATUS_SP).map(([value, label]) => (
-                                            <MenuItem key={value} value={value}>
-                                                {label}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-                                </CardContent>
-                                <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                                    <Button variant="contained" color="primary" onClick={handleUpdateStatus}>
-                                        Aceptar
-                                    </Button>
-                                    <Button variant="contained" color="secondary" onClick={handleClose}>
-                                        Cancelar
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Box>
+                        <Card>
+                            <CardHeader title="Actualizar estado de la factura" />
+                            <CardContent sx={{ justifyContent: 'flex-end', mb: 2 }}>
+                                <TextField
+                                    select
+                                    label={selectedInvoice.status}
+                                    onChange={handleChangeStatus}
+                                    sx={{ mt: 2 }}
+                                    fullWidth
+                                >
+                                    {Object.entries(BILL_STATUS_SP).map(([value, label]) => (
+                                        <MenuItem key={value} value={value}>
+                                            {label}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </CardContent>
+                            <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                                <Button variant="contained" color="primary" onClick={handleUpdateStatus}>
+                                    Aceptar
+                                </Button>
+                                <Button variant="contained" color="secondary" onClick={handleClose}>
+                                    Cancelar
+                                </Button>
+                            </CardActions>
+                        </Card>
                     </>
                 );
             case 'uploadFiles':
                 return (
                     <>
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 600,
-                                bgcolor: 'background.paper',
-                                boxShadow: 24,
-                                p: 4,
-                            }}
+                        <Card
                             component="form"
                             onSubmit={handleSubmit}
+                            sx={{ width: 700 }}
                         >
                             <CardHeader title="Actualizar factura" />
                             <CardContent>
                                 <Grid container spacing={2}>
 
                                     <Grid item xs={6}>
-                                        <Typography variant="subtitle1">Subir archivo PDF</Typography>
+                                        <Typography sx={{ mb: 2 }} variant="subtitle1">Subir archivo PDF</Typography>
                                         <Grid container spacing={2}>
                                             <Grid item xs={4}>
-                                                <Box display="flex"
-                                                >
-                                                    <input
-                                                        id="pdf-input"
-                                                        type="file"
-                                                        accept="application/pdf"
-                                                        onChange={handlePdfFileChange}
-                                                        required
-                                                    />
+                                                <Box display="flex">
+                                                    <label htmlFor="pdf-input">
+                                                        <Button variant="contained" component="span" color="secondary" size="small">
+                                                            Examinar
+                                                        </Button>
+                                                        <input
+                                                            id="pdf-input"
+                                                            type="file"
+                                                            accept="application/pdf"
+                                                            onChange={handlePdfFileChange}
+                                                            style={{ opacity: 0}}
+                                                            required
+                                                        />
+                                                    </label>
                                                 </Box>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                <Box display="flex" height="100%">
-                                                    {pdfFile && <Typography variant="body2">{pdfFile.name} ({formatFileSize(pdfFile.size)})</Typography>}
-                                                </Box>
+                                            <Grid item xs={8} sx={{ height: 20 }}>
+                                                {pdfFile && (
+                                                    <>
+                                                        <Typography variant="body2">Archivo Seleccionado:</Typography>
+                                                        <Typography sx={{ marginLeft: '1em' }} variant="body2">{pdfFile.name} ({formatFileSize(pdfFile.size)})</Typography>
+                                                    </>
+                                                )}
                                             </Grid>
                                         </Grid>
                                     </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Typography variant="subtitle1">Subir archivo XML</Typography>
+                                    <Grid item xs={6} >
+                                        <Typography sx={{ mb: 2, }} variant="subtitle1">Subir archivo XML</Typography>
                                         <Grid container spacing={2}>
                                             <Grid item xs={4}>
                                                 <Box display="flex">
-                                                    <input
-                                                        id="xml-input"
-                                                        type="file"
-                                                        accept="text/xml"
-                                                        onChange={handleXmlFileChange}
-                                                        required
-                                                    />
+                                                    <label htmlFor="xml-input">
+                                                        <Button variant="contained" component="span" color="secondary" size="small">
+                                                            Examinar
+                                                        </Button>
+                                                        <input
+                                                            id="xml-input"
+                                                            type="file"
+                                                            accept="text/xml"
+                                                            onChange={handleXmlFileChange}
+                                                            style={{ opacity: 0}}
+                                                            required
+                                                        />
+                                                    </label>
                                                 </Box>
                                             </Grid>
-                                            <Grid item xs={8}>
-                                                <Box display="flex" height="100%">
-                                                    {xmlFile && <Typography variant="body2">{xmlFile.name} ({formatFileSize(xmlFile.size)})</Typography>}
-                                                </Box>
+                                            <Grid item xs={8} sx={{ height: 20 }}>
+                                                {xmlFile && (
+                                                    <>
+                                                        <Typography variant="body2">Archivo Seleccionado:</Typography>
+                                                        <Typography sx={{ marginLeft: '1em' }} variant="body2">{xmlFile.name} ({formatFileSize(xmlFile.size)})</Typography>
+                                                    </>
+                                                )}
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -219,40 +197,25 @@ const TableBilling = ({
                                     Cancelar
                                 </Button>
                             </CardActions>
-                        </Box>
-
+                        </Card>
                     </>
                 );
             case 'deleteInvoice':
                 return (
                     <>
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 400,
-                                height: 200,
-                                bgcolor: 'background.paper',
-                                boxShadow: 24,
-                                p: 4,
-                            }}
-                        >
-                            <Card>
-                                <CardHeader title="¿Seguro que desea eliminar la factura?" />
-                                <CardContent sx={{ justifyContent: 'flex-end', mb: 2 }}>
-                                </CardContent>
-                                <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                                    <Button variant="contained" color="primary" onClick={handleClose}>
-                                        Aceptar
-                                    </Button>
-                                    <Button variant="contained" color="secondary" onClick={handleClose}>
-                                        Cancelar
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Box>
+                        <Card>
+                            <CardHeader title="¿Seguro que desea eliminar la factura?" />
+                            <CardContent sx={{ justifyContent: 'flex-end', mb: 2 }}>
+                            </CardContent>
+                            <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                                <Button variant="contained" color="primary" onClick={handleClose}>
+                                    Aceptar
+                                </Button>
+                                <Button variant="contained" color="secondary" onClick={handleClose}>
+                                    Cancelar
+                                </Button>
+                            </CardActions>
+                        </Card>
                     </>
                 );
             default:
@@ -270,7 +233,15 @@ const TableBilling = ({
                 rowsPerPageOptions={[5, 10, 20]}
                 autoHeight
             />
-            <Modal open={openModal} onClose={handleClose}>
+            <Modal
+                open={openModal}
+                onClose={handleClose}
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
                 {renderModalContent()}
             </Modal>
         </Card>

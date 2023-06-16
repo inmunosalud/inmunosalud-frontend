@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Box, Button, Container, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, CardMedia, Card, CardActions, Tab, Tabs, Modal } from '@mui/material';
 import { Pencil, Delete, Magnify, CloudUpload } from 'mdi-material-ui'
 import { CircularProgress } from '@mui/material';
+import PdfViewer from 'src/views/general/PdfViewer'
 
-import VideoCard from 'src/views/general/VideoCard'
 import TableBilling from 'src/views/table/data-grid/TableBilling'
 import SnackbarAlert from 'src/views/components/snackbar/SnackbarAlert'
 import { closeSnackBar } from 'src/store/notifications'
@@ -133,6 +133,14 @@ const BillingPage = () => {
     setPdfFile64(null);
   };
 
+  const handleChangeTab = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
+
   const handleDelete = (invoiceId) => {
     onDelete(invoiceId);
   };
@@ -174,7 +182,7 @@ const BillingPage = () => {
       field: 'pdf', headerName: 'PDF', width: 60, align: 'center',
       renderCell: (params) => (
         <>
-          <Button onClick={() => handleOpenViewPdf(params.row)} color="info" disabled={params.row.pdf === ""}>
+          <Button onClick={() => handleOpenViewPdf(params.row)} color="info" disabled={params.row.pdf === ""} sx={{ width: '100%' }}>
             <Magnify />
           </Button>
         </>
@@ -184,7 +192,7 @@ const BillingPage = () => {
       field: 'xml', headerName: 'XML', width: 60, align: 'center',
       renderCell: (params) => (
         <>
-          <Button onClick={() => handleOpenViewXml(params.row)} color="info" disabled={params.row.xml === ""}>
+          <Button onClick={() => handleOpenViewXml(params.row)} color="info" disabled={params.row.xml === ""} sx={{ width: '100%' }}>
             <Magnify />
           </Button>
         </>
@@ -231,8 +239,8 @@ const BillingPage = () => {
       width: 150,
       align: 'center',
       renderCell: (params) => (
-        <Button onClick={() => handleOpenEdit(params.row)} color="warning" >
-          <CloudUpload />
+        <Button onClick={() => handleOpenEdit(params.row)} color="warning" sx={{ width: '100%' }} >
+          <CloudUpload style={{ fontSize: '2rem' }}/>
         </Button>
       ),
     },
@@ -245,8 +253,8 @@ const BillingPage = () => {
       field: 'pdf', headerName: 'PDF', width: 60, align: 'center',
       renderCell: (params) => (
         <>
-          <Button onClick={() => handleOpenViewPdf(params.row)} color="info" disabled={params.row.pdf === ""}>
-            <Magnify />
+          <Button onClick={() => handleOpenViewPdf(params.row)} color="info" disabled={params.row.pdf === ""} sx={{ width: '100%' }}>
+            <Magnify  />
           </Button>
         </>
       )
@@ -255,8 +263,8 @@ const BillingPage = () => {
       field: 'xml', headerName: 'XML', width: 60, align: 'center',
       renderCell: (params) => (
         <>
-          <Button onClick={() => handleOpenViewXml(params.row)} color="info" disabled={params.row.xml === ""}>
-            <Magnify />
+          <Button onClick={() => handleOpenViewXml(params.row)} color="info" disabled={params.row.xml === ""} sx={{ width: '100%' }}>
+            <Magnify  />
           </Button>
         </>
       )
@@ -317,10 +325,10 @@ const BillingPage = () => {
       align: 'center',
       renderCell: (params) => (
         <>
-          <Button onClick={() => handleOpenEdit(params.row)} color="warning" >
+          <Button onClick={() => handleOpenEdit(params.row)} color="warning" sx={{ width: '100%' }}>
             <Pencil />
           </Button>
-          <Button onClick={() => handleOpenDelete(params.row)} color="error" >
+          <Button onClick={() => handleOpenDelete(params.row)} color="error" sx={{ width: '100%' }}>
             <Delete />
           </Button>
         </>
@@ -343,10 +351,6 @@ const BillingPage = () => {
     }
     if (user.profile === 'Afiliado') dispatch(getInvoicesByUser(user.id))
   }, [dispatch, user])
-
-  const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   if (user.profile === 'Afiliado') {
     return (loading ? (
@@ -383,12 +387,33 @@ const BillingPage = () => {
             </Box>
           )}
           {tabValue === 1 && (
-            <Box sx={{ maxWidth: '710px', margin: '0 auto' }}>
-              <VideoCard videoId="aQx-cc3Jd48" pdfUrl="https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf" />
-            </Box>
+            <>
+              <Card style={{ maxWidth: '720px', margin: '0 auto' }}>
+                <CardMedia
+                  component="iframe"
+                  width="600"
+                  height="400"
+                  src={`https://www.youtube.com/embed/aQx-cc3Jd48`}
+                  title="YouTube video player"
+                />
+                <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end', mt: 2 }}>
+                  <Button variant="contained" onClick={handleOpen}>Ver PDF</Button>
+                </CardActions>
+              </Card>
+              <Modal
+                open={openModal}
+                onClose={handleClose}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <PdfViewer pdfUrl="https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf" onClose={handleClose}/>
+              </Modal>
+            </>
           )}
         </Box>
-        <SnackbarAlert isOpen={open} message={message} severity={severity}/>
+        <SnackbarAlert isOpen={open} message={message} severity={severity} />
 
       </>
     ));
