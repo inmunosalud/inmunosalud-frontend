@@ -3,9 +3,9 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateOrder } from 'src/store/orders'
 
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -16,15 +16,15 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css'
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
-import { InputLabel, MenuItem, Select } from '@mui/material';
+import { yupResolver } from '@hookform/resolvers/yup'
+import { InputLabel, MenuItem, Select } from '@mui/material'
 
 const CustomInput = React.forwardRef(({ ...props }, ref) => {
   return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />
@@ -34,14 +34,14 @@ const defaultOrdersValues = {
   trackingUrl: '',
   company: '',
   validDeliveryDate: null,
-  deliveryStatus: '',
+  deliveryStatus: ''
 }
 
 const ordersSchema = yup.object().shape({
   trackingUrl: yup.string().required(),
   company: yup.string().required(),
   validDeliveryDate: yup.string().required(),
-  deliveryStatus: yup.string().required(),
+  deliveryStatus: yup.string().required()
 })
 
 const EditOrder = () => {
@@ -65,25 +65,25 @@ const EditOrder = () => {
         trackingUrl: itemUpdated.shipment?.trackingUrl,
         company: itemUpdated.shipment?.company,
         validDeliveryDate: itemUpdated.validDeliveryDate,
-        deliveryStatus: itemUpdated.deliveryStatus,
+        deliveryStatus: itemUpdated.deliveryStatus
       })
     }
   }, [])
 
-  const onSubmit = (values) => {
+  const onSubmit = values => {
     let body
-    const formattedDate = format(new Date(values.validDeliveryDate), "dd/MM/yyyy");
+    const formattedDate = format(new Date(values.validDeliveryDate), 'dd/MM/yyyy')
 
     body = {
       shipment: {
-        trackingUrl : values.trackingUrl,
-        company : values.company,
-        id: itemUpdated?.id,
+        trackingUrl: values.trackingUrl,
+        company: values.company,
+        id: itemUpdated?.id
       },
       deliveryStatus: values.deliveryStatus,
       deliveryDate: formattedDate,
       idParam: itemUpdated?.id
-    } 
+    }
     dispatch(updateOrder(body))
   }
 
@@ -95,117 +95,111 @@ const EditOrder = () => {
           <Grid container spacing={5}>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-              <Controller
-                name="validDeliveryDate"
-                control={control}
-                rules={{ required: true }}
+                <Controller
+                  name='validDeliveryDate'
+                  control={control}
+                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => {
-                  console.log({value});
-                  return (
-                    <DatePickerWrapper>
-                      <DatePicker
-                        selected={value}
-                        onChange={onChange}
-                        placeholderText="DD/MM/YYYY"
-                        dateFormat="dd/MM/yyyy"
-                        customInput={<CustomInput label="Fecha de entrega" />}
-                      />
-                    </DatePickerWrapper>
-                  );
-                }}
-              />
-              
-              {ordersErrors.validDeliveryDate && (
-                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                  This field is required
-                </FormHelperText>
-              )}
+                    console.log({ value })
+                    return (
+                      <DatePickerWrapper>
+                        <DatePicker
+                          selected={value}
+                          onChange={onChange}
+                          placeholderText='DD/MM/YYYY'
+                          dateFormat='dd/MM/yyyy'
+                          customInput={<CustomInput label='Fecha de entrega' />}
+                        />
+                      </DatePickerWrapper>
+                    )
+                  }}
+                />
+
+                {ordersErrors.validDeliveryDate && (
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    This field is required
+                  </FormHelperText>
+                )}
               </FormControl>
-              
             </Grid>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-                  <Controller
-                    name="trackingUrl"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Guia del pedido'
-                        onChange={onChange}
-                        //error={Boolean(ordersErrors.trackingUrl)}
-                        aria-describedby='validation-basic-first-name'
-                      />
-                    )}
+                <Controller
+                  name='trackingUrl'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      value={value}
+                      label='Guia del pedido'
+                      onChange={onChange}
+                      //error={Boolean(ordersErrors.trackingUrl)}
+                      aria-describedby='validation-basic-first-name'
+                    />
+                  )}
                 />
                 {ordersErrors.trackingUrl && (
-                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                  This field is required
-                </FormHelperText>
-              )}
-                </FormControl >
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    This field is required
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-                  <Controller
-                    name="company"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Compania de entrega'
-                        onChange={onChange}
-                        aria-describedby='validation-basic-last-name'
-                        //error={Boolean(ordersErrors.company)}
-                      />
-                    )}
+                <Controller
+                  name='company'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      value={value}
+                      label='Compania de entrega'
+                      onChange={onChange}
+                      aria-describedby='validation-basic-last-name'
+                      //error={Boolean(ordersErrors.company)}
+                    />
+                  )}
                 />
                 {ordersErrors.company && (
-                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                  This field is required
-                </FormHelperText>
-              )}
-                </FormControl>
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    This field is required
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-                    <InputLabel
-                      id='stepper-linear-payment-country'
-                      error={Boolean(ordersErrors.deliveryStatus)}
-                      htmlFor='stepper-linear-payment-country'
-                    >
-                      Estatus de Envio
-                    </InputLabel>
-                  <Controller
-                    name="deliveryStatus"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <Select
-                        fullWidth
-                        value={value}
-                        onChange={onChange}
-                        label="Estatus de envio"
-                      >
-                        <MenuItem value='Confirmando el Pago'>Confirmando el Pago</MenuItem>
-                        <MenuItem value='Preparando el Pedido'>Preparando el Pedido</MenuItem>
-                        <MenuItem value='Está en camino'>Está en camino</MenuItem>
-                        <MenuItem value='App Development'>Entregado</MenuItem>
-                        <MenuItem value='Cancelado'>Cancelado</MenuItem>
-                      </Select>
-                    )}
+                <InputLabel
+                  id='stepper-linear-payment-country'
+                  error={Boolean(ordersErrors.deliveryStatus)}
+                  htmlFor='stepper-linear-payment-country'
+                >
+                  Estatus de Envio
+                </InputLabel>
+                <Controller
+                  name='deliveryStatus'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <Select fullWidth value={value} onChange={onChange} label='Estatus de envio'>
+                      <MenuItem value='Confirmando el Pago'>Confirmando el Pago</MenuItem>
+                      <MenuItem value='Preparando el Pedido'>Preparando el Pedido</MenuItem>
+                      <MenuItem value='Está en camino'>Está en camino</MenuItem>
+                      <MenuItem value='App Development'>Entregado</MenuItem>
+                      <MenuItem value='Cancelado'>Cancelado</MenuItem>
+                    </Select>
+                  )}
                 />
                 {ordersErrors.deliveryStatus && (
-                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                  This field is required
-                </FormHelperText>
-              )}
-                </FormControl>
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    This field is required
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
-            <Grid item xs={12} sx={{display:"flex", gap: "8px"}}>
+            <Grid item xs={12} sx={{ display: 'flex', gap: '8px' }}>
               <Button size='large' variant='contained' type='submit'>
                 Enviar
               </Button>
@@ -221,6 +215,3 @@ const EditOrder = () => {
 }
 
 export default EditOrder
-
-
-

@@ -44,7 +44,7 @@ import GoBackButton from 'src/views/components/goback/GoBack'
 // ** Third Party Imports
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Custom Components Imports
 // import StepperCustomDot from './StepperCustomDot'

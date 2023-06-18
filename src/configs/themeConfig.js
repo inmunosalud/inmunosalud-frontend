@@ -9,7 +9,7 @@ import CircleOutline from 'mdi-material-ui/CircleOutline'
 
 const themeConfig = {
   // ** Layout Configs
-  templateName: 'Inmunosalud' /* App Name */,
+  templateName: 'Inmunosaalud' /* App Name */,
   layout: 'vertical' /* vertical | horizontal */,
   mode: 'light' /* light | dark */,
   direction: 'ltr' /* ltr | rtl */,
