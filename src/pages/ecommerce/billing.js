@@ -88,7 +88,7 @@ const BillingPage = () => {
 
   const handleUpdateStatus = () => {
     dispatch(updateStatus({ status: selectedStatus, invoiceId: selectedInvoice.id }))
-      .then((response) => {
+      .then(() => {
         dispatch(getInvoices());
         handleClose();
       })
@@ -349,7 +349,10 @@ const BillingPage = () => {
       setLoading(true);
       dispatch(getInvoices());
     }
-    if (user.profile === 'Afiliado') dispatch(getInvoicesByUser(user.id))
+    if (user.profile === 'Afiliado') {
+      setLoading(true);
+      dispatch(getInvoicesByUser(user.id))
+    }
   }, [dispatch, user])
 
   if (user.profile === 'Afiliado') {
