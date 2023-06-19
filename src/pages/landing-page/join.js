@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, Card, CardContent, Grid, useTheme } from '@mui/material';
+import { Container, Typography, Box, Card, CardContent, CardHeader, Grid, useTheme } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Image from 'next/image';
 
@@ -23,30 +23,38 @@ export default function AffiliationPage() {
 
     const questions = [
         {
-            id: 'Q1',
-            question: '¿Qué se necesita para afiliarte?',
+            id: 1,
+            question: '¿Cuanto es el porcentaje de comisión?',
             answer:
-                'Sesame snaps tart bonbon tiramisu jelly beans lemon drops bear claw candy gummi bears. Caramels pudding sweet donut tootsie roll gummies macaroon. Lemon drops caramels sesame snaps dessert jujubes. Cupcake chocolate bonbon cake tiramisu. Gummies candy canes ice cream biscuit. Jelly gummies wafer danish chupa chups sugar plum cookie.'
+                'Inmunosalud ofrece un generoso porcentaje de comisión de hasta el 45% sobre el total de las compras realizadas por tu red. El sistema de comisiones funciona de la siguiente manera: recibes el 5% de las compras por las personas que refieras y se afilien, el 10% de las compras realizadas por los referidos y afiliados de tus referidos, el 15% de los referidos y afiliados de tu segunda línea, y otro 15% de los referidos y afiliados de tu tercera línea. Para que el afiliado reciba comisiones deberá estar activo. Recibes comisión del consumo de los afiliados activos de tu red.',
         },
         {
-            id: 'Q2',
-            question: '¿He escuchado que los esquemas piramidales son fraudes, es cierto?',
+            id: 2,
+            question: '¿Como ingreso a alguien a mi red?',
             answer:
-                'Chocolate sweet roll lemon drops chocolate cake candy canes halvah. Donut fruitcake sweet roll brownie carrot cake cake. Donut jujubes pudding candy macaroon. Gummies gingerbread croissant bonbon. Cookie toffee cupcake cotton candy candy canes dessert cotton candy liquorice. Jelly beans gummi bears toffee chocolate bar chocolate cake.'
+                'Es muy sencillo. Lo único que tienes que hacer es pasarle tu código que se te asigna al convertirse en afiliado y que esta persona al crear su cuenta ponga tu código. Si esta persona ya creó su cuenta y no ha registrado ningún código de referencia, puede ir a su cuenta y asignar tu código para que pase a pertenecer a tu red. Una vez que un usuario registre un código, ya no se puede cambiar este.',
         },
         {
-            id: 'Q3',
-            question: '¿Cuánto es el porcentaje de comisión?',
+            id: 3,
+            question: '¿Como crezco mi red si soy afiliado?',
             answer:
-                'Liquorice pie donut tootsie roll marzipan liquorice topping pie. Muffin sweet roll soufflé croissant cookie cotton candy toffee. Tootsie roll chocolate cake wafer jelly beans soufflé danish tart. Halvah dragée chocolate bar gingerbread apple pie ice cream ice cream fruitcake. Chocolate bar pudding apple pie cheesecake dragée topping ice cream cookie.'
+                'Para ingresar a alguien a tu red, simplemente debes proporcionar tu código de referencia asignado a tu cuenta de afiliado, y ellos deberán ingresarlo al registrarse en Inmunosalud. Si la persona ya tiene una cuenta, pero no ha registrado un código de referencia, puede agregarlo en su cuenta para unirse a tu red. Una vez que un usuario registra un código, ya no puede cambiarlo. Para hacer crecer tu red, solo necesitas recomendar nuestros productos y compartir tu código de referencia con otras personas interesadas en adquirirlos.',
         },
         {
-            id: 'Q4',
-            question: '¿Cómo crezco mi red si spy consumidor afiliado?',
+            id: 4,
+            question: '¿Cuanto puede crecer mi red? ¿Donde recibo mis comisiones generadas?',
             answer:
-                'Halvah liquorice pastry marshmallow sugar plum. Dessert chocolate pastry gummi bears pastry. Gingerbread bonbon pudding oat cake jujubes pie wafer tart brownie. Soufflé jujubes icing powder liquorice. Sweet donut toffee liquorice dessert dragée. Topping cake danish chupa chups chupa chups gummies. Cotton candy gummies chocolate cake oat cake.'
+                'Tu red puede crecer sin límites dentro de los 4 niveles de comisión establecidos. Las comisiones generadas se depositan en la cuenta bancaria que proporcionaste durante el registro como afiliado.',
         },
-    ]
+        {
+            id: 5,
+            question: '¿Puedo vender estos productos?',
+            answer:
+                'Inmunosalud reconoce las ventas independientes de los productos, solo reconoce la venta de sus productos a través de nuestra página web oficial',
+            link: 'https://www.inmunosalud.mx'
+        }
+    ];
+
 
     const CustomBox = ({ text, percentage }) => {
         const theme = useTheme();
@@ -73,24 +81,36 @@ export default function AffiliationPage() {
         <Container maxWidth="md">
             <Grid container spacing={4}>
                 <Grid item xs={12} sx={{ marginBottom: '40px' }}>
-                    <Typography variant='h3' sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-                        ¡En InmunoSalud queremos que crezcas con nosotros!
-                    </Typography>
-                    <Typography variant="body1" sx={{ textAlign: 'justify' }}>
-                        En Inmunosalud creemos que la mejor manera de llegar a más personas es a través de nuestros
-                        consumidores por lo cual a nuestros afiliados los remuneramos con comisión de hasta un 45%*.
-                    </Typography>
-                    <br />
-                    <Typography variant="body1" sx={{ textAlign: 'justify' }}>
-                        Nuestra filosofía se basa en el mutuo beneficio y la colaboración.
-                        Al proporcionar a nuestros afiliados una comisión significativa, buscamos fomentar una relación
-                        sólida y duradera, donde podamos crecer juntos.
-                    </Typography>
+                    <Card>
+                        <CardHeader
+                            title={
+                                <Typography variant='h4' sx={{ textAlign: 'center' }}>
+                                    ¡En InmunoSalud queremos que crezcas con nosotros!
+                                </Typography>
+                            }
+                        />
+                        <CardContent>
+                            <Typography variant="body1" sx={{ textAlign: 'justify' }}>
+                                En Inmunosalud creemos que la mejor manera de llegar a más personas es a través de nuestros
+                                consumidores por lo cual a nuestros afiliados los remuneramos con comisión de hasta un 45%*.
+                            </Typography>
+                            <br />
+                            <Typography variant="body1" sx={{ textAlign: 'justify' }}>
+                                Nuestra filosofía se basa en el mutuo beneficio y la colaboración.
+                                Al proporcionar a nuestros afiliados una comisión significativa, buscamos fomentar una relación
+                                sólida y duradera, donde podamos crecer juntos.
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Card sx={{ marginBottom: '70px' }}>
                     <CardContent>
                         <Grid item xs={12} sx={{ marginBottom: '20px' }}>
-                            <Typography variant='h4' sx={{ mt: 4, mb: 4, textAlign: 'center' }}>ESQUEMA Y ARMADO DE RED DE CONSUMO</Typography>
+                        <CardHeader
+                            title={
+                                <Typography variant='h5' sx={{ textAlign: 'center' }}>ESQUEMA Y ARMADO DE RED DE CONSUMO</Typography>
+                            }
+                        />
                             <Typography variant="body1">
                                 El consumidor afiliado podrá referir para integrar personas directamente a su red, las cuáles
                                 serán de primer nivel. A su vez, los de primer nivel al ser consumidores afiliados, podrán referir
