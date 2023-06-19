@@ -18,12 +18,7 @@ const resolveNavItemComponent = item => {
 }
 
 const resolvePermissions = (user, items = []) => {
-  const userProfile =
-    user?.profile === 'Afiliado' && user?.numberOfPurchases === 0
-      ? PROFILES['Afiliado sin compras']
-      : user?.profile
-      ? PROFILES[user.profile]
-      : PROFILES.default
+  const userProfile = user?.profile ? PROFILES[user.profile] : PROFILES.default
   const newItems = items.map(item => {
     if (item.children) {
       return { ...item, children: resolvePermissions(user, item.children) }
