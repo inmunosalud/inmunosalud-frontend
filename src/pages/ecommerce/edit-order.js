@@ -23,7 +23,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { InputLabel, MenuItem, Select } from '@mui/material'
 
 const CustomInput = React.forwardRef(({ ...props }, ref) => {

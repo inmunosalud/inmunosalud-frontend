@@ -34,17 +34,16 @@ import TableContainer from '@mui/material/TableContainer'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import DialogContentText from '@mui/material/DialogContentText'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-import Tooltip from '@mui/material/Tooltip';
-
+import Tooltip from '@mui/material/Tooltip'
 
 // ** Icons Imports
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
-import { Pencil } from 'mdi-material-ui';
+import { Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
@@ -183,224 +182,224 @@ const UserProfileAddress = ({ addresses = [] }) => {
       </Card>
       {addresses.length
         ? addresses.map(address => (
-          <Card key={address.id} sx={{ margin: '20px 0px' }}>
-            <CardHeader
-              title='Dirección'
-              titleTypographyProps={{ variant: 'h6' }}
-              action={
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '10px'
-                  }}
-                >
-                  <Tooltip title="Editar" placement="top">
-                    <Button variant='outlined' onClick={() => handleEditAddressClickOpen(address)} color="warning">
-                      <Pencil />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Eliminar" placement="top">
-                    <Button onClick={() => handleDeleteModal(address)} color="error" variant='outlined'>
-                      <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                    </Button>
+            <Card key={address.id} sx={{ margin: '20px 0px' }}>
+              <CardHeader
+                title='Dirección'
+                titleTypographyProps={{ variant: 'h6' }}
+                action={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: '10px'
+                    }}
+                  >
+                    <Tooltip title='Editar' placement='top'>
+                      <Button variant='outlined' onClick={() => handleEditAddressClickOpen(address)} color='warning'>
+                        <Pencil />
+                      </Button>
                     </Tooltip>
-                </div>
-              }
-            />
-            <CardContent>
-              <Grid container spacing={6}>
-                <Grid item xs={12} lg={6}>
-                  <TableContainer>
-                    <Table size='small' sx={{ width: '95%' }}>
-                      <TableBody
-                        sx={{
-                          '& .MuiTableCell-root': {
-                            border: 0,
-                            pt: 2,
-                            pb: 2,
-                            pl: '0 !important',
-                            pr: '0 !important',
-                            '&:first-of-type': {
-                              width: 148
+                    <Tooltip title='Eliminar' placement='top'>
+                      <Button onClick={() => handleDeleteModal(address)} color='error' variant='outlined'>
+                        <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                }
+              />
+              <CardContent>
+                <Grid container spacing={6}>
+                  <Grid item xs={12} lg={6}>
+                    <TableContainer>
+                      <Table size='small' sx={{ width: '95%' }}>
+                        <TableBody
+                          sx={{
+                            '& .MuiTableCell-root': {
+                              border: 0,
+                              pt: 2,
+                              pb: 2,
+                              pl: '0 !important',
+                              pr: '0 !important',
+                              '&:first-of-type': {
+                                width: 148
+                              }
                             }
-                          }
-                        }}
-                      >
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Calle:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.street}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Número Exterior
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.extNumber}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Número Interior
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.intNumber}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Colonia:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.colony}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
+                          }}
+                        >
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Calle:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.street}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Número Exterior
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.extNumber}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Número Interior
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.intNumber}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Colonia:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.colony}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
 
-                <Grid item xs={12} lg={6}>
-                  <TableContainer>
-                    <Table size='small'>
-                      <TableBody
-                        sx={{
-                          '& .MuiTableCell-root': {
-                            border: 0,
-                            pt: 2,
-                            pb: 2,
-                            pl: '0 !important',
-                            pr: '0 !important',
-                            '&:first-of-type': {
-                              width: 148
+                  <Grid item xs={12} lg={6}>
+                    <TableContainer>
+                      <Table size='small'>
+                        <TableBody
+                          sx={{
+                            '& .MuiTableCell-root': {
+                              border: 0,
+                              pt: 2,
+                              pb: 2,
+                              pl: '0 !important',
+                              pr: '0 !important',
+                              '&:first-of-type': {
+                                width: 148
+                              }
                             }
-                          }
-                        }}
-                      >
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Ciudad:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.city}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Estado:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.federalEntity}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Código Postal:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.zipCode}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              País:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.country}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                fontSize: '0.875rem',
-                                whiteSpace: 'nowrap',
-                                lineHeight: '22px',
-                                letterSpacing: '0.1px'
-                              }}
-                            >
-                              Referencia:
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{address.refer}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                          }}
+                        >
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Ciudad:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.city}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Estado:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.federalEntity}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Código Postal:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.zipCode}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                País:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.country}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                sx={{
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  whiteSpace: 'nowrap',
+                                  lineHeight: '22px',
+                                  letterSpacing: '0.1px'
+                                }}
+                              >
+                                Referencia:
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{address.refer}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        ))
+              </CardContent>
+            </Card>
+          ))
         : null}
       <DialogAddress
         openAddressCard={showModal}

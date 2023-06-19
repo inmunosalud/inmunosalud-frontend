@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
 import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup/dist/yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
