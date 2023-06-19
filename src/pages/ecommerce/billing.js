@@ -88,7 +88,7 @@ const BillingPage = () => {
 
   const handleUpdateStatus = () => {
     dispatch(updateStatus({ status: selectedStatus, invoiceId: selectedInvoice.id }))
-      .then((response) => {
+      .then(() => {
         dispatch(getInvoices());
         handleClose();
       })
