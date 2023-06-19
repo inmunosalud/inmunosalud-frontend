@@ -192,18 +192,12 @@ const DialogAddress = ({
                         value={selectedColony && selectedColony.city ? selectedColony.city : ' '}
                         label='Ciudad'
                         onChange={null}
-                        error={Boolean(addressErrors.city)}
                         placeholder='Ciudad'
                         aria-describedby='validation-basic-city'
                         disabled
                       />
                     )}
                   />
-                  {addressErrors.city?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-city'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
@@ -218,18 +212,12 @@ const DialogAddress = ({
                         value={selectedColony && selectedColony.federalEntity ? selectedColony.federalEntity : ' '}
                         label='Estado'
                         onChange={null}
-                        error={Boolean(addressErrors.federalEntity)}
                         placeholder='Entidad Federativa'
                         aria-describedby='validation-basic-state'
                         disabled
                       />
                     )}
                   />
-                  {addressErrors.federalEntity?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-state'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
@@ -244,18 +232,12 @@ const DialogAddress = ({
                         value={'México'}
                         label='País'
                         onChange={null}
-                        error={Boolean(addressErrors.country)}
                         placeholder='País'
                         aria-describedby='validation-basic-country'
                         disabled
                       />
                     )}
                   />
-                  {addressErrors.country?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-country'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 

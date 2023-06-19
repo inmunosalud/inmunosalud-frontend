@@ -22,6 +22,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
+import { getUserInfo } from 'src/store/users'
 
 const UserLayout = ({ children }) => {
   // ** Hooks
@@ -29,9 +30,11 @@ const UserLayout = ({ children }) => {
   const { settings, saveSettings } = useSettings()
 
   const { user } = useSelector(state => state.dashboard.general)
+  const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
     dispatch(loadSession())
+    dispatch(getUserInfo(user.id))
   }, [])
 
   useEffect(() => {

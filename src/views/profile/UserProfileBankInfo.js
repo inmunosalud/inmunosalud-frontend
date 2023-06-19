@@ -92,7 +92,8 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   // Handle Edit Card dialog and get card ID
   const handleEditCardClickOpen = item => {
     reset({
-      clabe: item.clabe
+      clabe: item.clabe,
+      beneficiary: item.beneficiary
     })
 
     dispatch(setModal(true))
@@ -125,7 +126,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>Beneficiario: </Typography>
               </Box>
-              <Typography variant='body2'>Juan Lopez</Typography>
+              <Typography variant='body1'>{bankInfo.beneficiary}</Typography>
               <Divider />
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria:</Typography>

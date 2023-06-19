@@ -30,7 +30,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceAddProduct,
     PERMISSIONS.ecommerceOrders,
     PERMISSIONS.ecommerceEditOrders,
-    PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceMonthlyPurchase
   ],
   Afiliado: [
     PERMISSIONS.home,
@@ -44,8 +44,22 @@ export const PROFILES = {
     PERMISSIONS.ecommerceOrders,
     PERMISSIONS.ecommerceEditOrders,
     PERMISSIONS.ecommerceMonthlyPurchase,
-    PERMISSIONS.ecommerceBilling,
+    PERMISSIONS.ecommerceBilling
   ],
+  'Afiliado sin compras': [
+    PERMISSIONS.home,
+    PERMISSIONS.join,
+    PERMISSIONS.dashboardProfile,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceAddProduct,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
+    PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceBilling
+  ],
+
   'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.join,
@@ -57,7 +71,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceAddProduct,
     PERMISSIONS.ecommerceOrders,
     PERMISSIONS.ecommerceEditOrders,
-    PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceMonthlyPurchase
   ],
   'Administrador General': [
     PERMISSIONS.home,
@@ -76,8 +90,7 @@ export const PROFILES = {
     PERMISSIONS.ordersAdmin,
     PERMISSIONS.ecommerceMonthlyPurchase,
     PERMISSIONS.dashboardConstants,
-    PERMISSIONS.ecommerceBilling,
-
+    PERMISSIONS.ecommerceBilling
   ],
   default: [
     PERMISSIONS.home,
@@ -85,9 +98,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceOrders,
-    PERMISSIONS.ecommerceEditOrders
+    PERMISSIONS.ecommerceCheckout
   ]
 }
 
@@ -108,9 +119,7 @@ export const ROUTES_PERMISSION = {
   ['/ecommerce/edit-order']: PERMISSIONS.ecommerceEditOrders,
   ['/orders/admin-orders']: PERMISSIONS.ordersAdmin,
   ['/ecommerce/monthly-purchase']: PERMISSIONS.ecommerceMonthlyPurchase,
-  ['/ecommerce/billing']: PERMISSIONS.ecommerceBilling,
-
-
+  ['/ecommerce/billing']: PERMISSIONS.ecommerceBilling
 }
 
 export const PROFILES_USER = {
