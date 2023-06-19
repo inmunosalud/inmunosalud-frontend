@@ -408,7 +408,7 @@ const BillingPage = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <PdfViewer pdfUrl="https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf" onClose={handleClose}/>
+                <PdfViewer PDF="https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf" onClose={handleClose}/>
               </Modal>
             </>
           )}
