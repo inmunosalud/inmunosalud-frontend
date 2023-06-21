@@ -1,25 +1,33 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 
-const nextConfig = {
-  transpilePackages: [
-    '@fullcalendar/common',
-    '@fullcalendar/react',
-    '@fullcalendar/daygrid',
-    '@fullcalendar/list',
-    '@fullcalendar/timegrid'
-  ],
+// Remove this if you're not using Fullcalendar features
+const withTM = require('next-transpile-modules')([
+  '@fullcalendar/common',
+  '@fullcalendar/react',
+  '@fullcalendar/daygrid',
+  '@fullcalendar/list',
+  '@fullcalendar/timegrid'
+]);
+
+module.exports = withTM({
   trailingSlash: true,
   reactStrictMode: false,
+  experimental: {
+    esmExternals: false,
+    jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
+  },
   images: {
-    domains: ['products-images-9fe5.s3.amazonaws.com', 'products-images-9fe5.s3.us-east-1.amazonaws.com']
+    domains: ['products-images-9fe5.s3.amazonaws.com', 'products-images-9fe5.s3.us-east-1.amazonaws.com'],
   },
   webpack: config => {
     config.resolve.alias = {
-      ...config.resolve.alias
-    }
+      ...config.resolve.alias,
+      apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
+    };
 
-    return config
+    return config;
   }
-}
+});
 
-module.exports = nextConfig
