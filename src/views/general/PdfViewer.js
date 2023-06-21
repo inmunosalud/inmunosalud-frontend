@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardContent, CardActions, Button } from '@mui/material';
 // import { Document, Page, pdfjs } from 'react-pdf';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const PdfViewer = ({ PDF, onClose }) => {
     const handleDownload = () => {
