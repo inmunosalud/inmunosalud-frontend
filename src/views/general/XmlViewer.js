@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
-// import SyntaxHighlighter from 'react-syntax-highlighter'
-// import { nnfx } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-// import { nnfxDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { nnfx } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import { nnfxDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 import { useTheme, Box, Typography, Button, Card, CardContent, CardActions } from '@mui/material'
 
-// const customNnfx = {
-//   ...nnfx,
-//   'code[class*="language-"]': {
-//     ...nnfx['code[class*="language-"]'],
-//     color: '#000000' // Cambia el color del texto a negro
-//   }
-// }
+const customNnfx = {
+  ...nnfx,
+  'code[class*="language-"]': {
+    ...nnfx['code[class*="language-"]'],
+    color: '#000000' // Cambia el color del texto a negro
+  }
+}
 
 const XmlViewer = ({ XML, onClose }) => {
-  // const theme = useTheme()
-  // const codeStyle = theme.palette.mode === 'dark' ? nnfxDark : customNnfx
-  // const customStyle =
-  //   theme.palette.mode === 'light'
-  //     ? { whiteSpace: 'pre-wrap', color: '#000000', backgroundColor: '#f4f5fa' }
-  //     : { whiteSpace: 'pre-wrap' }
+  const theme = useTheme()
+  const codeStyle = theme.palette.mode === 'dark' ? nnfxDark : customNnfx
+  const customStyle =
+    theme.palette.mode === 'light'
+      ? { whiteSpace: 'pre-wrap', color: '#000000', backgroundColor: '#f4f5fa' }
+      : { whiteSpace: 'pre-wrap' }
   const [xml, setXml] = useState('')
 
   useEffect(() => {
@@ -45,12 +45,9 @@ const XmlViewer = ({ XML, onClose }) => {
     <Card>
       <CardContent>
         <Typography variant='subtitle1'>Ver archivo XML</Typography>
-        {/* <SyntaxHighlighter language='xml' style={codeStyle} customStyle={customStyle}>
+        <SyntaxHighlighter language='xml' style={codeStyle} customStyle={customStyle}>
           {xml}
-        </SyntaxHighlighter> */}
-        <Typography style={ {whiteSpace: 'pre-wrap'} }>
-          {xml}
-        </Typography>
+        </SyntaxHighlighter>
       </CardContent>
       <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end', mt: 4 }}>
         <Button variant='contained' color='primary' onClick={handleDownload}>
