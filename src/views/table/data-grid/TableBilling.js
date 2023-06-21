@@ -10,16 +10,16 @@ import {
     Typography,
     TextField,
     MenuItem,
-    InputLabel,
+    // InputLabel,
     Grid
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'
 import XmlViewer from 'src/views/general/XmlViewer'
-import { Document, Page } from 'react-pdf'; // Importa las dependencias necesarias
-import { pdfjs } from 'react-pdf'; // Importa pdfjs para la carga del PDF
+// import { Document, Page } from 'react-pdf'; // Importa las dependencias necesarias
+// import { pdfjs } from 'react-pdf'; // Importa pdfjs para la carga del PDF
 import PdfViewer from 'src/views/general/PdfViewer'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const TableBilling = ({
     invoices,
