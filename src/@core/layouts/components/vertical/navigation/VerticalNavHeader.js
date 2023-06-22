@@ -100,7 +100,7 @@ const VerticalNavHeader = props => {
       {userVerticalNavMenuBranding ? (
         userVerticalNavMenuBranding(props)
       ) : (
-        <Link href='/' passHref>
+        <Link href='/' passHref style={{ textDecoration: 'none' }}>
           <StyledLink>
             <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}>
               {themeConfig.templateName}
