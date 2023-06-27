@@ -224,7 +224,17 @@ const BillingPage = () => {
       },
     },
     {
-      field: 'amount', headerName: 'Cantidad', width: 120,
+      field: 'amount', headerName: 'SubTotal', width: 120,
+      valueGetter: (params) => {
+        const amount = params.row.amount;
+        return amount.toLocaleString('es-MX', {
+          style: 'currency',
+          currency: 'MXN',
+        });
+      },
+    },
+    {
+      field: 'commissionAmount', headerName: 'Total', width: 120,
       valueGetter: (params) => {
         const amount = params.row.amount;
         return amount.toLocaleString('es-MX', {
@@ -296,7 +306,7 @@ const BillingPage = () => {
     },
     {
       field: 'amount',
-      headerName: 'Cantidad',
+      headerName: 'SubTotal',
       width: 120,
       valueGetter: (params) => {
         const amount = params.row.amount;
@@ -308,7 +318,7 @@ const BillingPage = () => {
     },
     {
       field: 'commissionAmount',
-      headerName: 'Comisión',
+      headerName: 'Total',
       width: 110,
       valueGetter: (params) => {
         const commissionAmount = params.row.commissionAmount;
