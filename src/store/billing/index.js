@@ -48,7 +48,7 @@ export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files,
         const presignedUrlPdfResponse = await api_get(
             `${INVOICES}/billing/s3Upload/${files.idUser}`,
             presignedUrlPdfHeaders
-            );
+        );
 
         const presignedUrlPdf = presignedUrlPdfResponse?.content?.url;
 
@@ -92,6 +92,7 @@ export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files,
 const initialState = {
     invoicesAll: [],
     invoices: [],
+    loading: false,
 }
 
 
@@ -102,19 +103,28 @@ export const billingSlice = createSlice({
     },
     extraReducers: builder => {
         builder.addCase(getInvoicesByUser.pending, (state, action) => {
-        })
+            state.loading = true;
+        });
+
         builder.addCase(getInvoicesByUser.fulfilled, (state, { payload }) => {
-            state.invoices = payload.content
-        })
+            state.loading = false;
+            state.invoices = payload.content;
+        });
+
         builder.addCase(getInvoicesByUser.rejected, (state, { payload }) => {
-        })
+            state.loading = false;
+        });
+
         builder.addCase(getInvoices.pending, (state, action) => {
+            state.loading = true;
+
         })
         builder.addCase(getInvoices.fulfilled, (state, { payload }) => {
+            state.loading = false;
             state.invoicesAll = payload.content
         })
         builder.addCase(getInvoices.rejected, (state, { payload }) => {
-
+            state.loading = false;
         })
         builder.addCase(updateStatus.fulfilled, (state, { payload }) => {
         })

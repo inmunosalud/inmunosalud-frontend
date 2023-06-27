@@ -29,7 +29,7 @@ const BillingPage = () => {
   const [xmlFile, setXmlFile] = useState(null);
   const [pdfFile64, setPdfFile64] = useState(null);
   const [xmlFile64, setXmlFile64] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { loading } = useSelector(state => state.billing)
 
   const handleSchemeChange = (event) => {
     setSelectedScheme(event.target.value);
@@ -179,7 +179,7 @@ const BillingPage = () => {
   const columns = [
     { field: 'status', headerName: 'Estatus', width: 180 },
     {
-      field: 'pdf', headerName: 'PDF', width: 60, align: 'center',
+      field: 'pdf', headerName: 'PDF', width: 55, align: 'center',
       renderCell: (params) => (
         <>
           <Button onClick={() => handleOpenViewPdf(params.row)} color="info" disabled={params.row.pdf === ""} sx={{ width: '100%' }}>
@@ -189,7 +189,7 @@ const BillingPage = () => {
       )
     },
     {
-      field: 'xml', headerName: 'XML', width: 60, align: 'center',
+      field: 'xml', headerName: 'XML', width: 55, align: 'center',
       renderCell: (params) => (
         <>
           <Button onClick={() => handleOpenViewXml(params.row)} color="info" disabled={params.row.xml === ""} sx={{ width: '100%' }}>
@@ -202,7 +202,7 @@ const BillingPage = () => {
     {
       field: 'isr',
       headerName: 'ISR',
-      width: 100,
+      width: 80,
       valueGetter: (params) => {
         const isr = params.row.isr;
         return isr.toLocaleString('es-MX', {
@@ -224,7 +224,17 @@ const BillingPage = () => {
       },
     },
     {
-      field: 'amount', headerName: 'Cantidad', width: 120,
+      field: 'amount', headerName: 'SubTotal', width: 120,
+      valueGetter: (params) => {
+        const amount = params.row.amount;
+        return amount.toLocaleString('es-MX', {
+          style: 'currency',
+          currency: 'MXN',
+        });
+      },
+    },
+    {
+      field: 'commissionAmount', headerName: 'Total', width: 110,
       valueGetter: (params) => {
         const amount = params.row.amount;
         return amount.toLocaleString('es-MX', {
@@ -236,7 +246,7 @@ const BillingPage = () => {
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 150,
+      width: 90,
       align: 'center',
       renderCell: (params) => (
         <Button onClick={() => handleOpenEdit(params.row)} color="warning" sx={{ width: '100%' }} >
@@ -296,7 +306,7 @@ const BillingPage = () => {
     },
     {
       field: 'amount',
-      headerName: 'Cantidad',
+      headerName: 'SubTotal',
       width: 120,
       valueGetter: (params) => {
         const amount = params.row.amount;
@@ -308,7 +318,7 @@ const BillingPage = () => {
     },
     {
       field: 'commissionAmount',
-      headerName: 'Comisión',
+      headerName: 'Total',
       width: 110,
       valueGetter: (params) => {
         const commissionAmount = params.row.commissionAmount;
@@ -337,20 +347,14 @@ const BillingPage = () => {
   ];
 
   React.useEffect(() => {
-    setLoading(false);
-  }, [invoicesAll, invoices]);
-
-  React.useEffect(() => {
     setSelectedStatus(selectedInvoice?.status || '');
   }, [selectedInvoice]);
 
   React.useEffect(() => {
     if (user.profile === 'Administrador General') {
-      setLoading(true);
       dispatch(getInvoices());
     }
     if (user.profile === 'Afiliado') {
-      setLoading(true);
       dispatch(getInvoicesByUser(user.id))
     }
   }, [dispatch, user])
