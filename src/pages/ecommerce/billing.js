@@ -29,7 +29,7 @@ const BillingPage = () => {
   const [xmlFile, setXmlFile] = useState(null);
   const [pdfFile64, setPdfFile64] = useState(null);
   const [xmlFile64, setXmlFile64] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { loading } = useSelector(state => state.billing)
 
   const handleSchemeChange = (event) => {
     setSelectedScheme(event.target.value);
@@ -337,20 +337,14 @@ const BillingPage = () => {
   ];
 
   React.useEffect(() => {
-    setLoading(false);
-  }, [invoicesAll, invoices]);
-
-  React.useEffect(() => {
     setSelectedStatus(selectedInvoice?.status || '');
   }, [selectedInvoice]);
 
   React.useEffect(() => {
     if (user.profile === 'Administrador General') {
-      setLoading(true);
       dispatch(getInvoices());
     }
     if (user.profile === 'Afiliado') {
-      setLoading(true);
       dispatch(getInvoicesByUser(user.id))
     }
   }, [dispatch, user])
