@@ -236,7 +236,7 @@ const BillingPage = () => {
     {
       field: 'commissionAmount', headerName: 'Total', width: 110,
       valueGetter: (params) => {
-        const amount = params.row.amount;
+        const amount = params.row.commissionAmount;
         return amount.toLocaleString('es-MX', {
           style: 'currency',
           currency: 'MXN',
