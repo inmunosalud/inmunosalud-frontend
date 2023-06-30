@@ -200,8 +200,7 @@ export default function Address() {
   const { user } = useSelector(state => state.dashboard.general)
   const { isLoading } = useSelector(state => state.users)
   const { colonies, selectedColony } = useSelector(state => state.address)
-  // const { activeStep } = useSelector(state => state.register)
-  const  activeStep  = 4
+  const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
   const [showOtherIdentification, setShowOtherIdentification] = useState(false)
   const [idType, setIdType] = useState('')
