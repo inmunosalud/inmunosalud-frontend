@@ -28,6 +28,10 @@ import CardContent from '@mui/material/CardContent'
 import Image from 'next/image'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { closeSnackBar } from 'src/store/notifications'
+import { Flag } from 'mdi-material-ui'
+import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
+
+import {setModal } from 'src/store/contactus'
 
 const CardContentStyles = {
   margin: '10px 20px'
@@ -301,14 +305,18 @@ const Cards = props => {
   )
 }
 
+
 const Orders = () => {
+
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { orders, isLoading, messageValid } = useSelector(state => state.orders)
+  const { orders, isLoading } = useSelector(state => state.orders)
+
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
   }, [])
+
 
   if (isLoading) {
     return (
@@ -326,13 +334,25 @@ const Orders = () => {
     )
   }
 
-  return( 
-  <React.Fragment>
-    {orders.length && orders.map(order => <Cards key={order.id} {...order} />)}
-    
-    <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+  return (
+    <React.Fragment>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant='contained'
+          onClick={() => {
+            dispatch(setModal(true))
+          }}
+        >
+          <Flag sx={{ mr: 2, fontSize: '1.125rem' }} />
+          Tengo un problema
+        </Button>
+      </Box>
+
+      {orders.length && orders.map(order => <Cards key={order.id} {...order} />)}
+      {/* <ProblemFormModal  /> */}
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </React.Fragment>
-    )
+  )
 }
 
 export default Orders
