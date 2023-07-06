@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { PROJECT_ADDRESS, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { PROJECT_ADDRESS, api_post, api_get, api_patch, api_delete } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 
