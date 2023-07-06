@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 //api
-import { api_post, api_get, api_put, api_delete, PROJECT_PAYMENT_METHODS, PROJECT_ADDRESS } from '../../services/api'
+import { api_post, api_get, api_patch, api_delete, PROJECT_PAYMENT_METHODS, PROJECT_ADDRESS } from '../../services/api'
 import { setAddresses } from '../address'
 
 import { openSnackBar } from '../notifications'
@@ -37,7 +37,7 @@ export const updateMethod = createAsyncThunk(
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
-      const response = await api_put(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
+      const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(loadInfo(uuid))
@@ -83,8 +83,6 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
       api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth),
       api_get(`${PROJECT_ADDRESS}/addresses/user/${uuid}`, auth)
     ])
-
-    
 
     thunkApi.dispatch(setAddresses(responseAddress.content))
 

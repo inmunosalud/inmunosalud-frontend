@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { PROYECT_PRODUCTS, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { PROYECT_PRODUCTS, api_post, api_get, api_patch, api_delete } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
@@ -34,7 +34,7 @@ export const updateProduct = createAsyncThunk('product/updateProduct', async (bo
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_put(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
+    const response = await api_patch(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     Router.push('/ecommerce/products')
     return response
@@ -82,7 +82,7 @@ export const uploadProductImages = createAsyncThunk('product/uploadProductImages
           const buffer = Buffer.from(image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
           const headers = { 'Content-Type': `image/${filetype}`, 'Content-Encoding': 'base64' }
 
-          await api_put(presignedUrl, buffer, headers)
+          await api_patch(presignedUrl, buffer, headers)
           urlImages.push(presignedUrl.split('?')[0])
         }
       }

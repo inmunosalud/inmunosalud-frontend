@@ -103,7 +103,7 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
 export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
   debugger
   try {
-    const response = await api_put(`${PROYECT}/users/password`, body)
+    const response = await api_patch(`${PROYECT}/users/password`, body)
     debugger
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
