@@ -2,17 +2,16 @@
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 
 import Box from '@mui/material/Box'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { PROFILES_USER } from 'src/configs/profiles'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setActiveStep } from 'src/store/register'
+import { sendVerificationCode, validateNewUser } from 'src/store/users'
+import VerificationInput from 'react-verification-input'
 
 // ** Styled Components
 const BoxWrapper = styled(Box)(({ theme }) => ({
@@ -22,14 +21,23 @@ const BoxWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const Welcome = () => {
-  const { user, token } = useSelector(state => state.users)
+  const { email } = useSelector(state => state.users)
+  const [verificationCode, setVerificationCode] = useState('')
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    dispatch(setActiveStep(0))
-    router.push(user.profile === PROFILES_USER.affiliatedUser ? '/register/address' :'/ecommerce/products')
+  const handleSubmit = () => {
+    if (email === '' || verificationCode === '' || verificationCode.length < 6) return
+    const body = {
+      email,
+      code: verificationCode
+    }
+    dispatch(validateNewUser(body))
+  }
+
+  const resendVerificationCode = () => {
+    if (email === '') return
+    dispatch(sendVerificationCode({ email }))
   }
 
   return (
@@ -43,11 +51,36 @@ const Welcome = () => {
             <Typography variant='body2'>Tu registro ha sido exitoso.</Typography>
             <Typography variant='body2'>Te enviamos un codigo a tu correo para verificar tu cuenta.</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <TextField autoFocus size='small' type='email' placeholder='Introduce tu codigo' />
-              <Button type='submit' variant='contained' sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }}>
+              <VerificationInput
+                classNames={{
+                  container: 'container',
+                  character: 'character',
+                  characterInactive: 'character--inactive',
+                  characterSelected: 'character--selected'
+                }}
+                onChange={value => {
+                  setVerificationCode(value)
+                  if (value.length === 6) {
+                    handleSubmit()
+                  }
+                }}
+                validChars='0-9'
+                inputProps={{ inputMode: 'numeric' }}
+              />
+            </Box>
+            <Box Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+              <Button type='submit' variant='contained' sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }} onClick={handleSubmit}>
                 Verificar
+              </Button>
+              <Button
+                type='submit'
+                variant='outlined'
+                sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }}
+                onClick={resendVerificationCode}
+              >
+                Reenviar código
               </Button>
             </Box>
           </form>

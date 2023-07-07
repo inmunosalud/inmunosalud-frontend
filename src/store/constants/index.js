@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { CONSTANTS, api_get, api_put } from 'src/services/api'
+import { CONSTANTS, api_get, api_patch } from 'src/services/api'
 import { openSnackBar } from '../notifications'
 
 //Get all constants from system
@@ -19,7 +19,7 @@ export const updateConstants = createAsyncThunk('constants/updateConstants', asy
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
-    const response = await api_put(`${CONSTANTS}/constants`, body, auth)
+    const response = await api_patch(`${CONSTANTS}/constants`, body, auth)
     thunkApi.dispatch(setModalUpdate(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response.content

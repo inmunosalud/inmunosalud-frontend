@@ -5,13 +5,12 @@ import { PROYECT, api_post, api_get, api_delete, api_patch } from '../../service
 
 import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
-import { nextStep } from '../register'
+import { nextStep, setActiveStep } from '../register'
 
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users`, body)
-    console.log(response)
     const newUser = {
       user: {
         profile: response.content.profile,
@@ -21,9 +20,7 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
       },
       token: response.content.token
     }
-
     Router.push({ pathname: '/register/welcome' })
-
     return newUser
   } catch (error) {
     const data = error.response.data
@@ -106,7 +103,7 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
 export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
   debugger
   try {
-    const response = await api_put(`${PROYECT}/users/password`, body)
+    const response = await api_patch(`${PROYECT}/users/password`, body)
     debugger
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
@@ -149,6 +146,36 @@ export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async i
   return response
 })
 
+export const sendVerificationCode = createAsyncThunk('user/verificationCode', async (email, thunkApi) => {
+  try {
+    const response = await api_post(`${PROYECT}/users/verificationCode`, email)
+    alert('Se ha enviado un código de verificación a su correo electrónico')
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const validateNewUser = createAsyncThunk('user/validateNewUser', async (body, thunkApi) => {
+  try {
+    const response = await api_post(`${PROYECT}/users/validateVerificationCode`, body)
+    localStorage.setItem('im-user', response.content.token)
+    if (response.content.profile === PROFILES_USER.affiliatedUser) {
+      thunkApi.dispatch(setActiveStep(0))
+      Router.push('/register/address')
+    } else {
+      Router.push('/ecommerce/products')
+    }
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
@@ -168,6 +195,8 @@ const initialState = {
 
   //user info
   userInfo: {},
+  //email
+  email: '',
 
   stripeLink: '',
 
@@ -212,6 +241,7 @@ export const usersSlice = createSlice({
     setUser: (state, { payload }) => {
       state.token = payload.token
       state.user = payload.user
+      state.email = payload.user.email
       localStorage.setItem('im-user', payload.token)
     },
     setRecoveryCode: (state, { payload }) => {
@@ -230,6 +260,7 @@ export const usersSlice = createSlice({
       state.isLoading = false
       state.token = token
       state.user = user
+      state.email = user.email
       localStorage.setItem('im-user', token)
     })
     builder.addCase(createUser.rejected, (state, action) => {
@@ -287,6 +318,11 @@ export const usersSlice = createSlice({
     })
     builder.addCase(recoverPassword.rejected, state => {
       state.patchPassword = false
+    })
+    //Validate new user
+    builder.addCase(validateNewUser.fulfilled, (state, { payload }) => {
+      const { content } = payload
+      state.user = content
     })
   }
 })

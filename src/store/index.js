@@ -24,6 +24,7 @@ import comissions from 'src/store/comissions'
 import orders from 'src/store/orders'
 import constants from 'src/store/constants'
 import billing from 'src/store/billing'
+import contact from 'src/store/contactus'
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
     monthlyPurchase,
     constants,
     billing,
+    contact
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
