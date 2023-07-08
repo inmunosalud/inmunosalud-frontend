@@ -6,11 +6,11 @@ import { CircularProgress } from '@mui/material';
 import CountUp from 'react-countup';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
 
-import diagrama from '/public/images/cards/diagrama.PNG';
-import nivel1 from '/public/images/cards/nivel1.PNG';
-import nivel2 from '/public/images/cards/nivel2.PNG';
-import nivel3 from '/public/images/cards/nivel3.PNG';
-import nivel4 from '/public/images/cards/nivel4.PNG';
+import diagrama from '/public/images/cards/diagrama.png';
+import nivel1 from '/public/images/cards/nivel1.png';
+import nivel2 from '/public/images/cards/nivel2.png';
+import nivel3 from '/public/images/cards/nivel3.png';
+import nivel4 from '/public/images/cards/nivel4.png';
 
 
 import { getConstants } from 'src/store/constants';
@@ -176,7 +176,7 @@ export default function AffiliationPage() {
                                     A continuación vemos la red que ha armado Juan
                                 </Typography>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Image src={diagrama} sx={{ textAlign: 'center' }} alt="Diagrama" />
+                                    <Image src={diagrama} layout='responsive' objectFit='cover' width='100%' height='105%' sx={{ textAlign: 'center' }} alt="Diagrama" />
                                 </Box>
                                 <Typography>
                                     <strong>
@@ -229,7 +229,7 @@ export default function AffiliationPage() {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <Image src={nivel1} alt="Diagrama" />
+                                    <Image src={nivel1} layout='responsive' objectFit='cover' width='100%' height='75%' alt="Diagrama" />
                                 </Grid>
                             </Grid>
                             <Grid item spacing={2} sx={{ mb: '20px' }}>
@@ -278,7 +278,7 @@ export default function AffiliationPage() {
                                     </Grid>
                                 </Grid>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Image src={nivel2} sx={{ textAlign: 'center' }} alt="Diagrama" />
+                                    <Image src={nivel2} layout='responsive' objectFit='cover' width='100%' height='90%' sx={{ textAlign: 'center' }} alt="Diagrama" />
                                 </Box>
                                 <Grid container spacing={2} sx={{ textAlign: 'justify' }}>
                                     <Grid item xs={12} sm={4}>
@@ -328,7 +328,7 @@ export default function AffiliationPage() {
                                     pasan a ser su nivel 3.
                                 </Typography>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Image src={nivel3} sx={{ textAlign: 'center' }} alt="Diagrama" />
+                                    <Image src={nivel3} layout='responsive' objectFit='cover' width='100%' height='100%' sx={{ textAlign: 'center' }} alt="Diagrama" />
                                 </Box>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={4}>
@@ -368,7 +368,7 @@ export default function AffiliationPage() {
                                     de Juan pasan a ser su nivel 4.
                                 </Typography>
                                 <Box sx={{ textAlign: 'center' }}>
-                                    <Image src={nivel4} alt="Diagrama" />
+                                    <Image src={nivel4} layout='responsive' objectFit='cover' width='100%' height='130%' alt="Diagrama" />
                                 </Box>
                                 <Grid container spacing={2} sx={{ mb: '20px' }}>
                                     <Grid item xs={12} sm={4}>
@@ -376,7 +376,7 @@ export default function AffiliationPage() {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
-                                        <Typography>
+                                        <Typography variant="body2">
                                             Sergio se mantiene activo consumiendo
                                             el paquete afiliado mes con mes. Lo
                                             cual genera el 5% de comisión del total
