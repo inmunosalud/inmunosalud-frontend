@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Box, Card, CardContent, CardHeader, Grid, useTheme } from '@mui/material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
 import Image from 'next/image';
+import { useRouter } from 'next/router'
 import { CircularProgress } from '@mui/material';
 import CountUp from 'react-countup';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
@@ -12,7 +13,7 @@ import nivel2 from '/public/images/cards/nivel2.png';
 import nivel3 from '/public/images/cards/nivel3.png';
 import nivel4 from '/public/images/cards/nivel4.png';
 
-
+import { PROFILES_USER } from 'src/configs/profiles'
 import { getConstants } from 'src/store/constants';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -23,11 +24,18 @@ import FAQs from 'src/views/landing-page/FAQs';
 export default function AffiliationPage() {
 
     const { constants, isLoading } = useSelector(state => state.constants)
+    const { user } = useSelector(state => state.dashboard.general)
+    const router = useRouter()
     const dispatch = useDispatch()
+
 
     useEffect(() => {
         dispatch(getConstants())
     }, [dispatch])
+
+    const handleConvertProfile = () => {
+        router.push({ pathname: '/register/address', query: { newAssociate: true } })
+      }
 
     const questions = [
         {
@@ -304,7 +312,7 @@ export default function AffiliationPage() {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
-                                        <Typography variant="body2" sx={{  ml: '10px' }} >
+                                        <Typography variant="body2" sx={{ ml: '10px' }} >
                                             Como José se encuentra
                                             inactivo, no recibirá la
                                             comisión de Sebastián.
@@ -477,6 +485,13 @@ export default function AffiliationPage() {
                         <Typography variant="body1" sx={{ textAlign: 'center' }}>
                             <strong>Inmunosalud te recompensa por cuidarte</strong>
                         </Typography>
+                        {user?.profile === PROFILES_USER.consumerUser && (
+                        <Box display="flex" justifyContent="center" sx={{mt: '20px'}}>
+                            <Button variant="contained" color="primary" size="large" onClick={handleConvertProfile}>
+                                Afíliate a nosotros
+                            </Button>
+                        </Box>
+                        )}
                     </Grid>
                     <FAQs data={questions} />
                 </Container>
