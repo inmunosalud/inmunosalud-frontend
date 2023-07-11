@@ -38,22 +38,21 @@ const AvailableOptions = () => {
   ))
 }
 //New param showOnlyName to show only name and lastname at user name edition
-const Modal = ({ label = '', open = false, handleModal = () => { }, item = {}, showOnlyName = false }) => {
-  //console.log({item})
+const Modal = ({ label = '', open = false, handleModal = () => {}, item = {}, showOnlyName = false }) => {
   const dispatch = useDispatch()
   //Check showOnlyName, if true only define names, if false define entire user info
-  const defaultValues = showOnlyName ?
-    {
-      firstName: '',
-      lastName: '',
-    } :
-    {
-      firstName: '',
-      lastName: '',
-      phone: '',
-      profile: '',
-      recommenderId: ''
-    }
+  const defaultValues = showOnlyName
+    ? {
+        firstName: '',
+        lastName: ''
+      }
+    : {
+        firstName: '',
+        lastName: '',
+        phone: '',
+        profile: '',
+        recommenderId: ''
+      }
 
   // ** Hooks
   const {
@@ -67,7 +66,6 @@ const Modal = ({ label = '', open = false, handleModal = () => { }, item = {}, s
 
   const onSubmit = values => {
     const uuid = item?.id
-    console.log(JSON.stringify(values))
     const form = {
       body: values,
       uuid: uuid,
@@ -78,23 +76,22 @@ const Modal = ({ label = '', open = false, handleModal = () => { }, item = {}, s
 
   React.useEffect(() => {
     if (item && Object.keys(item).length) {
-
       //Check showOnlyName, if true only define names, if false define entire user info
-      const resetValues = showOnlyName ?
-        {
-          firstName: item?.firstName,
-          lastName: item?.lastName,
-        } :
-        {
-          firstName: item?.firstName,
-          lastName: item?.lastName,
-          phone: item?.phone,
-          profile: item?.profile,
-          recommenderId: item?.recommenderId
-        }
+      const resetValues = showOnlyName
+        ? {
+            firstName: item?.firstName,
+            lastName: item?.lastName
+          }
+        : {
+            firstName: item?.firstName,
+            lastName: item?.lastName,
+            phone: item?.phone,
+            profile: item?.profile,
+            recommenderId: item?.recommenderId
+          }
       reset(resetValues)
     }
-  }, [item]);
+  }, [item])
 
   return (
     <React.Fragment>
@@ -163,91 +160,93 @@ const Modal = ({ label = '', open = false, handleModal = () => { }, item = {}, s
                 </FormControl>
               </Grid>
               {/* Check showOnlyName value, if true hide unnecessary inputs, if false show all inputs*/}
-              {!showOnlyName && <>
-                <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='phone'
-                      control={control}
-                      rules={{ required: true, maxLength: 10 }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          type='tel'
-                          value={value}
-                          label='Telefono'
-                          onChange={onChange}
-                          error={Boolean(errors.phone)}
-                          placeholder='3321409021'
-                          aria-describedby='validation-basic-phone'
-                        />
+              {!showOnlyName && (
+                <>
+                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
+                    <FormControl fullWidth>
+                      <Controller
+                        name='phone'
+                        control={control}
+                        rules={{ required: true, maxLength: 10 }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            type='tel'
+                            value={value}
+                            label='Telefono'
+                            onChange={onChange}
+                            error={Boolean(errors.phone)}
+                            placeholder='3321409021'
+                            aria-describedby='validation-basic-phone'
+                          />
+                        )}
+                      />
+                      {errors.phone?.type === 'required' && (
+                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
+                          El campo es requerido
+                        </FormHelperText>
                       )}
-                    />
-                    {errors.phone?.type === 'required' && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                    {errors.phone?.type === 'maxLength' && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
-                        El telefono debe tener 10 caracteres
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                  <FormControl fullWidth>
-                    <InputLabel
-                      id='validation-basic-select'
-                      error={Boolean(errors.select)}
-                      htmlFor='validation-basic-select'
-                    >
-                      Perfil
-                    </InputLabel>
-                    <Controller
-                      disabled
-                      name='profile'
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <Select
-                          value={value}
-                          label='Perfil'
-                          onChange={onChange}
-                          error={Boolean(errors.profile)}
-                          labelId='validation-basic-profile'
-                          aria-describedby='validation-basic-profile'
-                          disabled={() => (item && item.profile !== 'Consumidor') ? true : false}
-                        >
-                          {item && Object.keys(item).length ? AvailableOptions() : null}
-                        </Select>
+                      {errors.phone?.type === 'maxLength' && (
+                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
+                          El telefono debe tener 10 caracteres
+                        </FormHelperText>
                       )}
-                    />
-                    {errors.select && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-select'>
-                        El campo es requerido
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='recommenderId'
-                      control={control}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='Codigo de Recomendado'
-                          onChange={onChange}
-                          placeholder='32u4234-234234-234234-422'
-                          aria-describedby='validation-basic-recommenderId'
-                          disabled={item?.recommenderId ? true : false}
-                        />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
+                    <FormControl fullWidth>
+                      <InputLabel
+                        id='validation-basic-select'
+                        error={Boolean(errors.select)}
+                        htmlFor='validation-basic-select'
+                      >
+                        Perfil
+                      </InputLabel>
+                      <Controller
+                        disabled
+                        name='profile'
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <Select
+                            value={value}
+                            label='Perfil'
+                            onChange={onChange}
+                            error={Boolean(errors.profile)}
+                            labelId='validation-basic-profile'
+                            aria-describedby='validation-basic-profile'
+                            disabled={() => (item && item.profile !== 'Consumidor' ? true : false)}
+                          >
+                            {item && Object.keys(item).length ? AvailableOptions() : null}
+                          </Select>
+                        )}
+                      />
+                      {errors.select && (
+                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-select'>
+                          El campo es requerido
+                        </FormHelperText>
                       )}
-                    />
-                  </FormControl>
-                </Grid>
-              </>}
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
+                    <FormControl fullWidth>
+                      <Controller
+                        name='recommenderId'
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            value={value}
+                            label='Codigo de Recomendado'
+                            onChange={onChange}
+                            placeholder='32u4234-234234-234234-422'
+                            aria-describedby='validation-basic-recommenderId'
+                            disabled={item?.recommenderId ? true : false}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Grid>
+                </>
+              )}
             </Grid>
             <DialogActions className='dialog-actions-dense'>
               <Grid item xs={12} sx={{ margin: '7px auto' }}>

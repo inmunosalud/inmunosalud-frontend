@@ -138,7 +138,6 @@ const UserProfileAddress = ({ addresses = [] }) => {
       const selectedColony = colonies.payload.find(zipCode => zipCode.colony === address.colony)
       dispatch(selectColony(selectedColony))
       setEditItem(prevState => ({ ...prevState, colony: selectedColony }))
-      console.log(editItem)
     })
     dispatch(setModal(true))
     reset(address)

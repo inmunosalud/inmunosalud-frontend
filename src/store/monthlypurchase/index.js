@@ -8,8 +8,6 @@ export const getMonthlyPurchase = createAsyncThunk('monthlyPurchase/getMonthlyPu
   try {
     const response = await api_get(`${HOST_MONTHLY_PURCHASE}/monthlyPurchase/${id}`, auth)
 
-    console.log(response)
-
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -21,10 +19,8 @@ export const updateMonthlyPurchase = createAsyncThunk(
   async ({ id: monthlyPurchaseId, body }, thunkApi) => {
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
-    console.log(monthlyPurchaseId)
     try {
       const response = await api_patch(`${HOST_MONTHLY_PURCHASE}/monthlyPurchase/${monthlyPurchaseId}`, body, auth)
-      console.log(response)
 
       return response
     } catch (error) {

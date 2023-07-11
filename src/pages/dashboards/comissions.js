@@ -132,7 +132,6 @@ const Comissions = () => {
   }, [open])
 
   const confirmSubmit = password => {
-    console.log({ rowSelectionModel })
     dispatch(liquidationComisions({ rowsId: rowSelectionModel, password }))
   }
 

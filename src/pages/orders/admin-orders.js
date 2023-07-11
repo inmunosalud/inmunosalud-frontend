@@ -1,7 +1,7 @@
 // ** React Import
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -9,11 +9,10 @@ import CardHeader from '@mui/material/CardHeader'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { DataGrid } from '@mui/x-data-grid'
 import { Pencil } from 'mdi-material-ui'
-import { Typography } from "@mui/material"
+import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
 
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
-
 
 const columns = [
   {
@@ -50,7 +49,7 @@ const columns = [
     minWidth: 100,
     field: 'totalProducts',
     headerName: 'Productos',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 140,
@@ -66,26 +65,26 @@ const columns = [
     minWidth: 180,
     field: 'deliveryStatus',
     headerName: 'Estatus de envio',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 180,
     headerName: 'Fecha de compra',
     field: 'purchaseDate',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 160,
     headerName: 'Fecha estimada de envio',
     field: 'deliveryEstimateDate',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 120,
     headerName: 'Fecha de entrega',
     field: 'deliveryDate',
-    renderCell: params => { }
-  },
+    renderCell: params => {}
+  }
 ]
 
 const AdminOrders = () => {
@@ -96,12 +95,11 @@ const AdminOrders = () => {
   const { users } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { ordersAll } = useSelector(state => state.orders)
-  console.log({ ordersAll });
   React.useEffect(() => {
     dispatch(getOrders())
   }, [dispatch])
 
-  const handleOpenModalEdit = (item) => {
+  const handleOpenModalEdit = item => {
     dispatch(setUpdatedOrder(item))
     router.push('/ecommerce/edit-order')
   }
@@ -115,7 +113,7 @@ const AdminOrders = () => {
       renderCell: params => {
         const row = params?.row
         return (
-          <Pencil sx={{ margin: '5px', cursor: "pointer" }} color="warning" onClick={() => handleOpenModalEdit(row)} />
+          <Pencil sx={{ margin: '5px', cursor: 'pointer' }} color='warning' onClick={() => handleOpenModalEdit(row)} />
         )
       }
     }
@@ -125,20 +123,9 @@ const AdminOrders = () => {
     <>
       <Card>
         <CardHeader title='Pedidos' />
-        <DataGrid
-          autoHeight
-          pageSize={50}
-          rows={ordersAll}
-          columns={config}
-          sx={{ width: "100%" }}
-        />
+        <DataGrid autoHeight pageSize={50} rows={ordersAll} columns={config} sx={{ width: '100%' }} />
       </Card>
-      <CustomSnackbar
-        open={open}
-        message={message}
-        severity={severity}
-        handleClose={() => dispatch(closeSnackBar())}
-      />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
 }
