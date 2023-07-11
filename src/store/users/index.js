@@ -61,11 +61,8 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
 export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, loadUserData }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  console.log(auth)
   try {
-    console.log('ENTRO')
     const response = await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
-    console.log(response)
     thunkApi.dispatch(nextStep())
     thunkApi.dispatch(setModal(false))
     // If param loadUserData values is true, load the user info again
@@ -89,7 +86,6 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
     const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    console.log(response)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -132,7 +128,6 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const response = await api_get(`${PROYECT}/users/${id}`, auth)
-  console.log(response)
   return response
 })
 
@@ -293,7 +288,6 @@ export const usersSlice = createSlice({
     //update user
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
       const updatedUser = payload?.content
-      console.log({ updatedUser })
       state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
     })
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {

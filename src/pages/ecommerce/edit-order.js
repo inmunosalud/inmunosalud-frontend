@@ -100,7 +100,6 @@ const EditOrder = () => {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => {
-                    console.log({ value })
                     return (
                       <DatePickerWrapper>
                         <DatePicker
