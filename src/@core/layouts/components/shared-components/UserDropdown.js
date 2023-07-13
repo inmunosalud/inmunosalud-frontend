@@ -22,7 +22,6 @@ import AccountTie from 'mdi-material-ui/AccountTie'
 import { Flag } from 'mdi-material-ui'
 import { setModal } from 'src/store/contactus'
 
-
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,
@@ -50,7 +49,6 @@ const UserDropdown = props => {
 
   // ** Vars
   const { direction } = settings
-
 
   const handleDropdownOpen = event => {
     setAnchorEl(event.currentTarget)
@@ -87,8 +85,6 @@ const UserDropdown = props => {
     const id = user.id
     dispatch(stripeRegister(id))
   }
-
-
 
   return (
     <Fragment>
@@ -145,7 +141,7 @@ const UserDropdown = props => {
           </MenuItem>
         ) : null}
 
-        {true && (
+        {user?.profile != null && (
           <MenuItem sx={{ py: 2 }} onClick={handleRegister}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
