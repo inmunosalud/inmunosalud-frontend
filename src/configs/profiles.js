@@ -84,14 +84,7 @@ export const PROFILES = {
     PERMISSIONS.dashboardConstants,
     PERMISSIONS.ecommerceBilling
   ],
-  default: [
-    PERMISSIONS.home,
-    PERMISSIONS.join,
-    PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart,
-    PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceCheckout
-  ]
+  default: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts]
 }
 
 export const ROUTES_PERMISSION = {
