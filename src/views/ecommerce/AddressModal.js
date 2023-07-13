@@ -17,6 +17,8 @@ import DialogAddress from '../components/dialogs/DialogAddress'
 
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { IconButton } from '@mui/material'
+import { Close } from 'mdi-material-ui'
 
 const defaultAddressValues = {
   street: '',
@@ -98,6 +100,9 @@ const AddressModal = ({ open = false, onClose = () => {} }) => {
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
       >
+        <IconButton size='small' onClick={onClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
+          <Close />
+        </IconButton>
         <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
         <DialogContent dividers={'paper'}>
           <AddressList />

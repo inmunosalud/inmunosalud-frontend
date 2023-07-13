@@ -189,7 +189,7 @@ export default function DialogBilling({
                     <Controller
                       name='cvc'
                       control={paymentControl}
-                      rules={{ required: true }}
+                      rules={{ required: true, min: 3, max: 4 }}
                       render={({ field: { value, onChange } }) => (
                         <TextField
                           value={value}
