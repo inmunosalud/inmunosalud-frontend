@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Pencil } from 'mdi-material-ui'
+import { CheckboxBlankCircleOutline, Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import { useForm } from 'react-hook-form'
@@ -60,7 +60,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, banco } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -77,7 +77,8 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const onBankInfoSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro'
+      cardUse: 'Cobro',
+      banco: banco
     }
 
     dispatch(
@@ -132,6 +133,11 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
                 <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria:</Typography>
               </Box>
               <Typography variant='body2'>{bankInfo.clabe}</Typography>
+              <Divider />
+              <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                <Typography sx={{ fontWeight: 500 }}>Banco:</Typography>
+              </Box>
+              <Typography variant='body2'>{banco}</Typography>
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
