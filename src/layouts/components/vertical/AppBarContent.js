@@ -12,10 +12,12 @@ import UserDropdown from 'src/@core/layouts/components/shared-components/UserDro
 import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import CartButton from 'src/@core/layouts/components/shared-components/CartButton'
+import { useSelector } from 'react-redux'
 
 const AppBarContent = props => {
   // ** Props
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
+  const { user } = useSelector(state => state.dashboard.general)
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -28,7 +30,7 @@ const AppBarContent = props => {
       </Box>
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-        <CartButton />
+        {user.profile != null ? <CartButton /> : null}
         <UserDropdown settings={settings} />
       </Box>
     </Box>
