@@ -15,7 +15,7 @@ import {
   MenuItem
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { setBanco } from 'src/store/paymentMethods'
+import { setBank } from 'src/store/paymentMethods'
 
 const BANCOS = [
   'ABC Capital',
@@ -80,9 +80,9 @@ export default function DialogBankInfo({
 }) {
   const dispatch = useDispatch()
   const handleBankSelected = value => {
-    dispatch(setBanco(value))
+    dispatch(setBank(value))
   }
-  const { banco } = useSelector(state => state.paymentMethods)
+  const { bank } = useSelector(state => state.paymentMethods)
   return (
     <Card>
       <Dialog
@@ -152,7 +152,7 @@ export default function DialogBankInfo({
                   <Select
                     labelId='product-label'
                     label='Banco'
-                    value={banco}
+                    value={bank}
                     required={true}
                     onChange={e => handleBankSelected(e.target.value)}
                   >
@@ -160,7 +160,7 @@ export default function DialogBankInfo({
                       <MenuItem value={item}>{item}</MenuItem>
                     ))}
                   </Select>
-                  {banco === '' && <FormHelperText sx={{ color: 'red' }}>Elige un banco</FormHelperText>}
+                  {bank === '' && <FormHelperText sx={{ color: 'red' }}>Elige un banco</FormHelperText>}
                 </FormControl>
               </Grid>
             </Grid>

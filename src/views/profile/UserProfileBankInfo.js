@@ -60,7 +60,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete, banco } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, bank } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -78,7 +78,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
     const body = {
       ...values,
       cardUse: 'Cobro',
-      banco: banco
+      bank: bank
     }
 
     dispatch(
@@ -137,7 +137,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>Banco:</Typography>
               </Box>
-              <Typography variant='body2'>{banco}</Typography>
+              <Typography variant='body2'>{bank}</Typography>
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
