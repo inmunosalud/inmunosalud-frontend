@@ -341,6 +341,15 @@ export default function Address() {
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
+  const getValidDate = () => {
+    const date = new Date()
+    const year = date.getFullYear() - 18
+    const month = date.getMonth()
+    const day = date.getDate()
+    const date18YearsAgo = new Date(year, month, day)
+    return date18YearsAgo.toISOString().substr(0, 10)
+  }
+
   const getStepContent = step => {
     switch (step) {
       case 0:
@@ -431,6 +440,8 @@ export default function Address() {
                         error={Boolean(dataErrors.birthDate)}
                         aria-describedby='validation-basic-date'
                         InputLabelProps={{ shrink: true }}
+                        InputProps={{ inputProps: { max: getValidDate() } }}
+                        defaultDate={`${currentYear - 18}-01-01`}
                       />
                     )}
                   />
