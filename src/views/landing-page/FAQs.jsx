@@ -58,7 +58,7 @@ const FAQs = (props) => {
             <Typography>{item.question}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="body2">
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
               {item.answer}
               {item.link && (
                 <Typography variant="body2" component="span">
