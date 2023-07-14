@@ -9,8 +9,6 @@ export const getProducts = createAsyncThunk('product/getProducts', async thunkAp
     //thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {
-    console.log(error)
-
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -25,7 +23,6 @@ export const createProduct = createAsyncThunk('product/createProduct', async ({ 
     Router.push('/ecommerce/products')
     return response
   } catch (error) {
-    console.log(error)
     return thunkApi.rejectWithValue('error')
   }
 })

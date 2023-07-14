@@ -112,6 +112,7 @@ const initialState = {
   /* users table */
   paymentMethods: [],
   clabe: {},
+  bank: '',
   //modal props
   isOpen: false,
   isOpenDelete: false,
@@ -136,6 +137,9 @@ export const paymentMethodsSlice = createSlice({
     },
     setSelectedPaymentMethodInCart: (state, { payload }) => {
       ;(state.selectedPaymentMethod = payload), (state.isSelectedPaymentMethod = true)
+    },
+    setBank: (state, { payload }) => {
+      state.bank = payload
     }
   },
   extraReducers: builder => {
@@ -159,6 +163,7 @@ export const paymentMethodsSlice = createSlice({
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
       state.clabe = payload.clabe
+      state.bank = payload.clabe.bank
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(loadInfo.rejected, (state, action) => {
@@ -187,4 +192,5 @@ export const paymentMethodsSlice = createSlice({
 
 export default paymentMethodsSlice.reducer
 
-export const { setErrors, setModal, setModalDelete, setSelectedPaymentMethodInCart } = paymentMethodsSlice.actions
+export const { setErrors, setModal, setModalDelete, setSelectedPaymentMethodInCart, setBank } =
+  paymentMethodsSlice.actions

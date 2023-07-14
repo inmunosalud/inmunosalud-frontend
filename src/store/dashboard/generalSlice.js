@@ -14,9 +14,7 @@ export const loadSession = createAsyncThunk('general/loadSession', async (body, 
   } catch (error) {
     const data = error.response.data
 
-    if (data.content.errors) {
-      console.log('error')
-    } else {
+    if (!data.content.errors) {
       const newErrors = []
       newErrors.push({ msg: data.message })
     }
@@ -29,8 +27,6 @@ export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${PROYECT}/users/dashboard`, auth)
-
-    console.log(response)
 
     return response
   } catch (error) {

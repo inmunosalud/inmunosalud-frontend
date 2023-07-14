@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from 'src/store/products'
 import Router from 'next/router'
 import Link from 'next/link'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
@@ -78,36 +79,41 @@ const questions = [
   {
     id: 'Q1',
     question: '¿Es un medicamento?',
-    answer: 'No, nuestros productos no son medicamentos. Son suplementos naturales respaldados por estudios científicos que se pueden encontrar en ',
+    answer:
+      'No, nuestros productos no son medicamentos. Son suplementos naturales respaldados por estudios científicos que se pueden encontrar en ',
     link: 'https://pubmed.ncbi.nlm.nih.gov/'
   },
   {
     id: 'Q2',
     question: '¿Es de confianza? ¿Cómo sé que es de confianza?',
-    answer: 'Realizamos análisis de calidad de las materias primas que utilizamos y seguimos rigurosos estándares de buenas prácticas de manufactura. Además, nuestras fórmulas se basan en investigaciones científicas sobre los beneficios para la salud de los ingredientes utilizados.'
+    answer:
+      'Realizamos análisis de calidad de las materias primas que utilizamos y seguimos rigurosos estándares de buenas prácticas de manufactura. Además, nuestras fórmulas se basan en investigaciones científicas sobre los beneficios para la salud de los ingredientes utilizados.'
   },
   {
     id: 'Q3',
     question: '¿En dónde lo puedo conseguir? ¿Cuánto tiempo tardan en entregarlo?',
-    answer: 'Puedes adquirir nuestros productos exclusivamente a través de nuestra página web. Trabajamos con paqueterías nacionales e internacionales para el envío, y el tiempo estimado de entrega es de 2 a 3 días.'
+    answer:
+      'Puedes adquirir nuestros productos exclusivamente a través de nuestra página web. Trabajamos con paqueterías nacionales e internacionales para el envío, y el tiempo estimado de entrega es de 2 a 3 días.'
   },
   {
     id: 'Q4',
     question: '¿Qué se necesita para afiliarte?',
-    answer: 'Simplemente debes adquirir nuestro paquete inicial. Este es el pedido mínimo para mantener tu afiliación activa el cual contiene las dosis necesarias para consumir en el mes. Es necesario hacer el pedido mínimo cada mes para mantener tu cuenta activa.'
+    answer:
+      'Simplemente debes adquirir nuestro paquete inicial. Este es el pedido mínimo para mantener tu afiliación activa el cual contiene las dosis necesarias para consumir en el mes. Es necesario hacer el pedido mínimo cada mes para mantener tu cuenta activa.'
   },
   {
     id: 'Q5',
     question: '¿Cómo garantizamos la calidad de nuestros productos?',
-    answer: 'Mediante el análisis de todas nuestras materias primas y el cumplimiento de rigurosos estándares de calidad respaldados por buenas prácticas de manufactura.'
+    answer:
+      'Mediante el análisis de todas nuestras materias primas y el cumplimiento de rigurosos estándares de calidad respaldados por buenas prácticas de manufactura.'
   }
-];
-
+]
 
 const Pricing = () => {
   // ** States
   const [plan, setPlan] = useState('monthly')
   const { products, isLoading } = useSelector(state => state.products)
+  const { user } = useSelector(state => state.dashboard.general)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -178,12 +184,13 @@ const Pricing = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={8}>
-            <Box sx={{  margin: '1rem' }}>
-              <Image src={Banner} alt='aboutUs'/>
+            <Box sx={{ margin: '1rem' }}>
+              <Image src={Banner} alt='aboutUs' />
             </Box>
           </Grid>
         </Grid>
-          <Grid item xs={12}>
+        <Grid item xs={12}>
+          {user.profile != PROFILES_USER.affiliatedUser ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
               <Link href='/landing-page/join' passHref>
                 <Button variant='outlined' size='large'>
@@ -191,7 +198,8 @@ const Pricing = () => {
                 </Button>
               </Link>
             </Box>
-          </Grid>
+          ) : null}
+        </Grid>
       </Card>
 
       <FAQs data={questions} />

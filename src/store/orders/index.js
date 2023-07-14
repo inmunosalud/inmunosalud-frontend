@@ -28,7 +28,6 @@ export const getOrdersByUser = createAsyncThunk('order/getOrders', async (id, th
 })
 
 export const updateOrder = createAsyncThunk('order/editOrder', async (body, thunkApi) => {
-  console.log({ body })
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -52,7 +51,6 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     Router.push('/ecommerce/orders')
     return response
   } catch (error) {
-    console.log(error)
     return thunkApi.rejectWithValue('error')
   }
 })

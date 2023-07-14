@@ -18,7 +18,14 @@ const initialSettings = {
   toastPosition: themeConfig.toastPosition,
   verticalNavToggleType: themeConfig.verticalNavToggleType,
   skin: themeConfig.layout === 'horizontal' && themeConfig.skin === 'semi-dark' ? 'default' : themeConfig.skin,
-  appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar
+  appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar,
+  components: {
+    '.MuiInput-formControl': {
+      '&::placeholder': {
+        color: 'lightgray'
+      }
+    }
+  }
 }
 
 const staticSettings = {

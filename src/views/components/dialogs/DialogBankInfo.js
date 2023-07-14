@@ -9,8 +9,66 @@ import {
   TextField,
   FormHelperText,
   Card,
-  Button
+  Button,
+  Select,
+  InputLabel,
+  MenuItem
 } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBank } from 'src/store/paymentMethods'
+
+const BANCOS = [
+  'ABC Capital',
+  'American Express Bank (México)',
+  'Banca Afirme',
+  'Banca Mifel',
+  'Banco Actinver',
+  'Banco Autofin México',
+  'Banco Azteca',
+  'Banco Bancrea',
+  'Banco Base',
+  'Banco Covalto',
+  'Banco Compartamos',
+  'Banco Credit Suisse (México)',
+  'Banco de Inversión Afirme',
+  'Banco del Bajío',
+  'Banco Forjadores',
+  'Banco Inbursa',
+  'Banco Inmobiliario Mexicano',
+  'Banco Invex',
+  'Banco JP Morgan',
+  'Banco KEB Hana México',
+  'Banco Monex',
+  'Banco Multiva',
+  'Banco PagaTodo',
+  'Banco Regional de Monterrey',
+  'Banco S3 Caceis México',
+  'Banco Sabadell',
+  'Banco Santander',
+  'Banco Shinhan de México',
+  'Banco Ve por Más',
+  'BanCoppel',
+  'Bank of America Mexico',
+  'Bank of China Mexico',
+  'Bankaool',
+  'Banorte',
+  'Bansí',
+  'Barclays Bank México',
+  'BBVA México',
+  'BNP Paribas',
+  'Citibanamex',
+  'CIBanco',
+  'Consubanco',
+  'Deutsche Bank México',
+  'Fundación Dondé Banco',
+  'HSBC México',
+  'Industrial and Commercial Bank of China',
+  'Intercam Banco',
+  'Mizuho Bank',
+  'MUFG Bank Mexico',
+  'Nu',
+  'Scotiabank'
+]
 
 export default function DialogBankInfo({
   isOpen = false,
@@ -20,6 +78,11 @@ export default function DialogBankInfo({
   handleSubmit = () => {},
   onBankInfoSubmit = () => {}
 }) {
+  const dispatch = useDispatch()
+  const handleBankSelected = value => {
+    dispatch(setBank(value))
+  }
+  const { bank } = useSelector(state => state.paymentMethods)
   return (
     <Card>
       <Dialog
@@ -81,6 +144,23 @@ export default function DialogBankInfo({
                       {bankInfoErrors['clabe'].message ?? 'El campo es requerido'}
                     </FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id='product-label'>Banco *</InputLabel>
+                  <Select
+                    labelId='product-label'
+                    label='Banco'
+                    value={bank}
+                    required={true}
+                    onChange={e => handleBankSelected(e.target.value)}
+                  >
+                    {BANCOS.map(item => (
+                      <MenuItem value={item}>{item}</MenuItem>
+                    ))}
+                  </Select>
+                  {bank === '' && <FormHelperText sx={{ color: 'red' }}>Elige un banco</FormHelperText>}
                 </FormControl>
               </Grid>
             </Grid>
