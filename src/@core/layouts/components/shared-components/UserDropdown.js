@@ -12,12 +12,14 @@ import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme  } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton';
 
 // ** Icons Imports
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountTie from 'mdi-material-ui/AccountTie'
+
 
 import { Flag } from 'mdi-material-ui'
 import { setModal } from 'src/store/contactus'
@@ -30,7 +32,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
-import { Account, Router } from 'mdi-material-ui'
+import { Account, Router, AccountCog, AccountCircle } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { stripeRegister } from 'src/store/users'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
@@ -46,6 +48,7 @@ const UserDropdown = props => {
   const { stripeLink } = useSelector(state => state.users)
   // ** Hooks
   const router = useRouter()
+  const theme = useTheme();
 
   // ** Vars
   const { direction } = settings
@@ -88,18 +91,9 @@ const UserDropdown = props => {
 
   return (
     <Fragment>
-      <Badge
-        overlap='circular'
-        onClick={handleDropdownOpen}
-        sx={{ ml: 2, cursor: 'pointer' }}
-        badgeContent={<BadgeContentSpan />}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-      >
-        <Avatar alt='joe doe' onClick={handleDropdownOpen} sx={{ width: 40, height: 40 }} src='/images/avatars/1.png' />
-      </Badge>
+        <IconButton onClick={handleDropdownOpen} color='inherit' size='medium'>
+          <Account sx={{ fontSize: '2rem' }}/>
+        </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -118,7 +112,7 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+          <Account color='inherit' sx={{ fontSize: '2rem' }}/>
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 600 }}>{user?.firstName}</Typography>
@@ -130,7 +124,7 @@ const UserDropdown = props => {
         </Box>
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={() => handleGoTo('/profile')}>
-            <Account sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            <AccountCog sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
             Perfil
           </MenuItem>
         ) : null}
