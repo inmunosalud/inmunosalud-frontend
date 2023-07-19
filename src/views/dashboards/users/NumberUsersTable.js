@@ -23,7 +23,7 @@ const NumberUsersTable = ({ title = '', user = {} }) => {
       />
       <CardContent>
         <Typography sx={{ mb: 2 }} variant='body1'>
-          Usuarios totales: {network?.totalUsers}
+          Usuarios totales: {network?.totalUsers ?? 0}
         </Typography>
         <Typography variant='body2'>Número de Usuarios en tu Red por nivel:</Typography>
         <Grid container spacing={3} textAlign={'center'} marginTop={'2px'}>
@@ -45,28 +45,33 @@ const NumberUsersTable = ({ title = '', user = {} }) => {
               </Typography>
             </Grid>
           </Grid>
-          {Object.keys(network).map((level, index) => {
-            if (index < Object.keys(network).length - 1) {
-              return (
-                <Grid item container flexDirection={'row'} justifyContent={'space-around'}>
-                  <Grid item xs={3}>
-                    <Typography variant='body2'>
-                      <b>Nivel {level}</b>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant='body2'>{network[level].valid}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant='body2'>{network[level].invalid}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant='body2'>{network[level].users.length}</Typography>
-                  </Grid>
-                </Grid>
-              )
-            }
-          })}
+          {network != undefined
+            ? Object.keys(network).map((level, index) => {
+                if (index < Object.keys(network).length - 1) {
+                  console.log(level)
+                  return (
+                    <Grid item container flexDirection={'row'} justifyContent={'space-around'}>
+                      <Grid item xs={3}>
+                        <Typography variant='body2'>
+                          <b>Nivel {level}</b>
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant='body2'>{network[level].valid ? network[level].valid : 0}</Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant='body2'>{network[level].invalid ? network[level].invalid : 0}</Typography>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Typography variant='body2'>
+                          {network[level].users ? network[level].users.length : 0}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  )
+                }
+              })
+            : null}
         </Grid>
       </CardContent>
     </Card>
