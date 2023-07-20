@@ -18,6 +18,8 @@ import pose_f9 from 'public/images/cards/pose_f9.png';
 import pose_m18 from 'public/images/cards/pose_m18.png';
 import pose_m35 from 'public/images/cards/pose_m35.png';
 
+import banner2 from 'public/images/banners/banner-2.jpg';
+
 
 
 
@@ -105,23 +107,33 @@ export default function AffiliationPage() {
                 <Container>
                     {!isMobile ? (
                         <>
-                            <Parallax speed={-5} translateY={[20, 20]} >
-                                <Box sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', mb: '400px' }}>
-                                    <Typography variant="h2" sx={{ textAlign: 'center' }}>
-                                        ¡En InmunoSalud queremos que crezcas con nosotros!
-                                    </Typography>
-                                </Box>
-                            </Parallax>
+                            <Box
+                                sx={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', mb: '400px' }}>
+                                <ParallaxBanner
+                                    layers={[{ image: '/images/banners/banner-2.jpg', speed: -10 }]}
+                                    className="aspect-[2/1]"
+                                    style={{ height: '250px' }}
+                                >
+                                    <Parallax speed={0} translateY={[170,-10]}>
+                                        <Typography color="#fff" variant="h2" sx={{ textAlign: 'center' }}>
+                                            ¡En InmunoSalud queremos que crezcas con nosotros!
+                                        </Typography>
+                                    </Parallax>
+                                </ParallaxBanner>
+                            </Box>
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
+
+                            <Parallax speed={-5} translateY={[20, 40]}>
                                 <Grid container spacing={10} sx={{ mb: '400px' }}>
                                     <Grid item xs={12} sm={6}>
                                         <Box display="flex" alignItems="center" height="100%">
+                                    <Parallax speed={-5} translateY={[-200, 200]}>
                                             <Typography variant="body1">
                                                 En Inmunosalud creemos que la mejor manera de llegar a más personas es a través de nuestros
                                                 consumidores por lo cual a nuestros afiliados los remuneramos con comisión de hasta un 45%*.
                                             </Typography>
+                                        </Parallax>
                                         </Box>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -141,11 +153,14 @@ export default function AffiliationPage() {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Box display="flex" alignItems="center" height="100%">
+                                        <Parallax speed={-5} translateY={[200, -200]}>
+
                                             <Typography variant="body1" >
                                                 Nuestra filosofía se basa en el mutuo beneficio y la colaboración.
                                                 Al proporcionar a nuestros afiliados una comisión significativa, buscamos fomentar una relación
                                                 sólida y duradera, donde podamos crecer juntos.
                                             </Typography>
+                                            </Parallax>
                                         </Box>
                                     </Grid>
                                 </Grid>
@@ -154,25 +169,27 @@ export default function AffiliationPage() {
 
 
                             <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid container spacing={10} sx={{ mb: '600px' }}>
                                     <Grid item xs={12} sm={6}>
-                                        <Box display="flex" flexDirection="column" justifyContent="center" height="100%">
-                                            <Typography variant='h5' sx={{ mb: '20px' }}>ESQUEMA Y ARMADO DE RED DE CONSUMO</Typography>
-                                            <Typography variant="body1" sx={{ mb: '20px' }}>
-                                                El consumidor afiliado podrá referir para integrar personas directamente a su red, las cuáles
-                                                serán de primer nivel. A su vez, los de primer nivel al ser consumidores afiliados, podrán referir
-                                                e integrar personas en su red.
-                                                La red puede crecer hasta el cuarto nivel.
-                                            </Typography>
-                                        </Box>
+
+                                        <Parallax speed={5} translateY={[-10, 200]}>
+                                            <Box display="flex" flexDirection="column" justifyContent="center" height="100%">
+                                                <Typography variant='h5' sx={{ mb: '20px' }}>ESQUEMA Y ARMADO DE RED DE CONSUMO</Typography>
+                                                <Typography variant="body1" sx={{ mb: '20px' }}>
+                                                    El consumidor afiliado podrá referir para integrar personas directamente a su red, las cuáles
+                                                    serán de primer nivel. A su vez, los de primer nivel al ser consumidores afiliados, podrán referir
+                                                    e integrar personas en su red.
+                                                    La red puede crecer hasta el cuarto nivel.
+                                                </Typography>
+                                            </Box>
+                                        </Parallax>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Grid container spacing={10} sx={{ mb: '40px' }}>
                                             <Grid item xs={12}>
-                                                <Box style={{ textAlign: 'center' }}>
-                                                    <Parallax speed={-5} translateY={[20, 20]}>
+                                                <Parallax speed={-5} translateY={[20, 20]}>
+                                                    <Box style={{ textAlign: 'center' }}>
                                                         <Grid container spacing={4}>
-
                                                             <Grid item xs={12} sm={6}>
                                                                 <Card>
                                                                     <CardHeader title="De todas las personas que tú refieres recibes el:" sx={{ textAlign: 'left' }} />
@@ -248,8 +265,8 @@ export default function AffiliationPage() {
                                                                 </Card>
                                                             </Grid>
                                                         </Grid>
-                                                    </Parallax>
-                                                </Box>
+                                                    </Box>
+                                                </Parallax>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -257,8 +274,7 @@ export default function AffiliationPage() {
                             </Parallax>
 
                             <Grid container spacing={10} sx={{ mb: '40px' }}>
-                                <Parallax speed={-5} translateY={[20, 20]}>
-                                    <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                    <Grid container spacing={10} sx={{ mb: '600px' }}>
                                         <Grid item xs={12} sm={6}>
                                             <Parallax speed={5} translateY={[-10, 20]}>
                                                 <Box sx={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>
@@ -268,6 +284,8 @@ export default function AffiliationPage() {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <Box display="flex" flexDirection="column" justifyContent="center" height="100%" >
+                                            <Parallax speed={-5} translateY={[50, -50]}>
+
                                                 <Typography variant="h6" sx={{ mb: '20px' }}>
                                                     La manera en la que funciona nuestro sistema de comisiones es la siguiente:
                                                 </Typography>
@@ -293,15 +311,15 @@ export default function AffiliationPage() {
                                                     <strong style={{ color: 'gray' }}>(Gris)</strong> Consumidor inactivo: Usuario registrado para consumir sin capacidad de invitar
                                                     personas y NO genera comisión al que lo refirió.
                                                 </Typography>
+                                                </Parallax>
                                             </Box>
                                         </Grid>
                                     </Grid>
-                                </Parallax>
 
 
-                                <Parallax speed={-5} translateY={[20, 20]}>
                                     <Grid container spacing={10} sx={{ mb: '400px' }}>
                                         <Grid item xs={12} sm={6}>
+                                            <Parallax speed={-5} translateY={[-20, 200]}>
                                             <Box display="flex" flexDirection="column" justifyContent="center" height="100%" sx={{ paddingLeft: '40px' }}>
                                                 <Typography>
                                                     <strong>
@@ -331,6 +349,7 @@ export default function AffiliationPage() {
                                                     debido a que está inactivo.
                                                 </Typography>
                                             </Box>
+                                                </Parallax>
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <Parallax speed={5} translateY={[-10, 20]}>
@@ -340,7 +359,6 @@ export default function AffiliationPage() {
                                             </Parallax>
                                         </Grid>
                                     </Grid>
-                                </Parallax>
 
 
                                 <Grid item spacing={10} sx={{ mb: '600px' }}>
@@ -558,9 +576,9 @@ export default function AffiliationPage() {
 
 
 
-                            <Parallax speed={5} translateY={[-40, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid container spacing={10} sx={{ mb: '600px' }}>
                                     <Grid container xs={12} sm={6}>
+                                    <Parallax speed={-5} translateY={[-10, 100]}>
                                         <Box display="flex" justifyContent="center" flexDirection="column" sx={{ paddingLeft: '40px' }}>
                                             <Typography variant='h6' sx={{ mb: 4 }}>Requisitos</Typography>
                                             <Typography variant="body1">
@@ -573,6 +591,7 @@ export default function AffiliationPage() {
                                                 • Tener referidos activos.
                                             </Typography>
                                         </Box>
+                                        </Parallax>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Box sx={{ textAlign: 'center', width: '30%', margin: '0 auto' }}>
@@ -582,12 +601,10 @@ export default function AffiliationPage() {
                                         </Box>
                                     </Grid>
                                 </Grid>
-                            </Parallax>
 
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid container spacing={10} sx={{ mb: '600px' }}>
                                     <Grid item xs={12} sm={6}>
                                         <Parallax speed={5} translateY={[-10, 20]}>
                                             <Box sx={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
@@ -597,6 +614,8 @@ export default function AffiliationPage() {
                                     </Grid>
                                     <Grid container xs={12} sm={6}>
                                         <Box display="flex" justifyContent="center" flexDirection="column">
+
+                                        <Parallax speed={-5} translateY={[100, -100]}>
                                             <Typography variant='h6' sx={{ mb: 4 }} >Qué hacer para permanecer activo</Typography>
                                             <Typography variant="body1" >
                                                 Consumir mensualmente el monto mínimo de compra antes de la fecha de corte.
@@ -607,16 +626,17 @@ export default function AffiliationPage() {
                                                 En caso de estar activo, se pagará el monto correspondiente de cada nivel con su
                                                 respectivo porcentaje de comisión {constants.waitingDaysForTransfers} días después de la fecha de corte.
                                             </Typography>
+                                            </Parallax>
                                         </Box>
                                     </Grid>
                                 </Grid>
-                            </Parallax>
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid container spacing={10} sx={{ mb: '800px' }}>
                                     <Grid container xs={12} sm={6}>
                                         <Box display="flex" justifyContent="center" flexDirection="column" sx={{ paddingLeft: '40px' }}>
+                                        <Parallax speed={-5} translateY={[-50, 50]}>
+
                                             <Typography variant='h5' sx={{ mb: '20px' }}>Tips para crecer tu red</Typography>
                                             <Typography variant="body1" paragraph>
                                                 Referir nunca fue tan fácil,
@@ -636,6 +656,7 @@ export default function AffiliationPage() {
                                                 al momento de hacer su primera compra. Estos ya formaran a ser parte de tu red para recibir los beneficios
                                                 de ser afiliado.
                                             </Typography>
+                                            </Parallax>
                                         </Box>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -646,7 +667,6 @@ export default function AffiliationPage() {
                                         </Parallax>
                                     </Grid>
                                 </Grid>
-                            </Parallax>
 
 
 

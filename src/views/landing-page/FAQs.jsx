@@ -10,6 +10,8 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import MuiAccordion from '@mui/material/Accordion'
 import MuiCardContent from '@mui/material/CardContent'
+import { useTheme } from '@mui/material/styles'
+
 
 // ** Icons Imports
 import ChevronDown from 'mdi-material-ui/ChevronDown'
@@ -41,6 +43,8 @@ const FAQs = (props) => {
 
   // ** Props
   const [expanded, setExpanded] = useState(false)
+  const theme = useTheme()
+
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -64,7 +68,7 @@ const FAQs = (props) => {
                 <Typography variant="body2" component="span">
                   {' '}
                   <Link href={item.link}>
-                    <a target="_blank" rel="noopener noreferrer" style={{ color: '#B98EFF' }}>
+                    <a target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main }}>
                       {item.link}
                     </a>
                   </Link>
