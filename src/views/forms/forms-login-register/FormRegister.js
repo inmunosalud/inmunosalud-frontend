@@ -1,63 +1,63 @@
-import * as React from 'react';
-import { useRouter } from 'next/router';
-import { useSelector, useDispatch } from 'react-redux';
+import * as React from 'react'
+import Router, { useRouter } from 'next/router'
+import { useSelector, useDispatch } from 'react-redux'
 
 // ** MUI Imports
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import CardHeader from '@mui/material/CardHeader';
-import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
-import CardContent from '@mui/material/CardContent';
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import CardHeader from '@mui/material/CardHeader'
+import InputLabel from '@mui/material/InputLabel'
+import IconButton from '@mui/material/IconButton'
+import CardContent from '@mui/material/CardContent'
+import FormControl from '@mui/material/FormControl'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputAdornment from '@mui/material/InputAdornment'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Alert from '@mui/material/Alert'
+import Typography from '@mui/material/Typography'
 
-import { CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material'
 
 // ** Icons Imports
-import EyeOutline from 'mdi-material-ui/EyeOutline';
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline';
+import EyeOutline from 'mdi-material-ui/EyeOutline'
+import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // Actions
-import { createUser, setErrors } from 'src/store/users';
-import { closeSnackBar } from 'src/store/notifications';
-import { PROFILES_USER } from 'src/configs/profiles';
+import { createUser, setErrors } from 'src/store/users'
+import { closeSnackBar } from 'src/store/notifications'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 // ** Custom Snackbar Component
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar';
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 const BASIC_ERRORS = {
   email: {
     value: '',
     msg: 'El correo electrónico ingresado es una dirección invalida.',
     param: 'email',
-    location: 'body',
+    location: 'body'
   },
 
   password: {
     value: '',
     msg: 'La contraseña debe ser ingresada y debe contener mínimo 8 caracteres para completar la solicitud.',
     param: 'password',
-    location: 'body',
-  },
-};
+    location: 'body'
+  }
+}
 
 const FormRegister = () => {
-  const dispatch = useDispatch();
-  const { query } = useRouter();
+  const dispatch = useDispatch()
+  const { query } = useRouter()
 
-  const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector((state) => state.users);
-  const { open, message, positioned, severity } = useSelector((state) => state.notifications);
+  const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
+  const { open, message, positioned, severity } = useSelector(state => state.notifications)
 
   // ** States
   const [values, setValues] = React.useState({
@@ -69,80 +69,80 @@ const FormRegister = () => {
     termsAndConditionsChecked: false,
     consentChecked: false,
     affiliateChecked: false,
-    affiliateContractChecked: false,
-  });
+    affiliateContractChecked: false
+  })
 
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+  const handleChange = prop => event => {
+    setValues({ ...values, [prop]: event.target.value })
+  }
 
-  const handleChangeCheckbox = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.checked });
-  };
+  const handleChangeCheckbox = prop => event => {
+    setValues({ ...values, [prop]: event.target.checked })
+  }
 
   const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
+    setValues({ ...values, showPassword: !values.showPassword })
+  }
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  const handleMouseDownPassword = event => {
+    event.preventDefault()
+  }
 
   const submitRegister = async () => {
-    const { email, password, recommenderId } = values;
-    const errors = [];
+    const { email, password, recommenderId } = values
+    const errors = []
 
     if (!email) {
-      errors.push(BASIC_ERRORS.email);
+      errors.push(BASIC_ERRORS.email)
     }
     if (!password) {
-      errors.push(BASIC_ERRORS.password);
+      errors.push(BASIC_ERRORS.password)
     }
 
     // Validar que todos los checkboxes obligatorios estén marcados
     if (!values.privacyPolicyChecked || !values.termsAndConditionsChecked || !values.consentChecked) {
       errors.push({
         value: '',
-        msg: 'Debes aceptar los términos y condiciones, aviso de privacidad y dar tu consentimiento expreso.',
-      });
+        msg: 'Debes aceptar los términos y condiciones, aviso de privacidad y dar tu consentimiento expreso.'
+      })
     }
 
     if (values.affiliateChecked && !values.affiliateContractChecked) {
       errors.push({
         value: '',
-        msg: 'Debes aceptar el contrato de adhesión si deseas ser afiliado.',
-      });
+        msg: 'Debes aceptar el contrato de adhesión si deseas ser afiliado.'
+      })
     }
 
     if (errors.length > 0) {
-      dispatch(setErrors(errors));
-      return;
+      dispatch(setErrors(errors))
+      return
     }
 
-    const body = { email, password, recommenderId };
+    const body = { email, password, recommenderId }
 
     if (values.affiliateChecked) {
-      body.profile = PROFILES_USER.affiliatedUser;
+      body.profile = PROFILES_USER.affiliatedUser
     }
 
-    dispatch(createUser(body));
-  };
+    dispatch(createUser(body))
+  }
 
   React.useEffect(() => {
     if (query && query.id) {
       setValues({
         ...values,
-        ['recommenderId']: query.id,
-      });
+        ['recommenderId']: query.id
+      })
     }
-  }, [query?.id]);
+  }, [query?.id])
 
   return (
     <>
       <Card>
         <CardHeader title='Registrarse' titleTypographyProps={{ variant: 'h6' }} />
         <CardContent>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={e => e.preventDefault()}>
             <Grid container spacing={4}>
               <Grid item xs={12}>
                 <TextField
@@ -195,28 +195,20 @@ const FormRegister = () => {
                 <FormGroup>
                   <FormControlLabel
                     control={
-                      <Checkbox
-                        checked={values.affiliateChecked}
-                        onChange={handleChangeCheckbox('affiliateChecked')}
-                      />
+                      <Checkbox checked={values.affiliateChecked} onChange={handleChangeCheckbox('affiliateChecked')} />
                     }
-                    label={
-                      <Typography variant="body2">
-                        Ser Afiliado.
-                      </Typography>
-                    }
+                    label={<Typography variant='body2'>Ser Afiliado.</Typography>}
                   />
                 </FormGroup>
                 <FormGroup>
                   <FormControlLabel
                     control={
-                      <Checkbox checked={values.privacyPolicyChecked} onChange={handleChangeCheckbox('privacyPolicyChecked')} />
+                      <Checkbox
+                        checked={values.privacyPolicyChecked}
+                        onChange={handleChangeCheckbox('privacyPolicyChecked')}
+                      />
                     }
-                    label={
-                      <Typography variant="body2">
-                        Aviso de privacidad.
-                      </Typography>
-                    }
+                    label={<Typography variant='body2'>Aviso de privacidad.</Typography>}
                   />
                   <FormControlLabel
                     control={
@@ -225,19 +217,16 @@ const FormRegister = () => {
                         onChange={handleChangeCheckbox('termsAndConditionsChecked')}
                       />
                     }
-                    label={
-                      <Typography variant="body2">
-                        Términos y condiciones.
-                      </Typography>
-                    }
+                    label={<Typography variant='body2'>Términos y condiciones.</Typography>}
                   />
                   <FormControlLabel
                     control={
                       <Checkbox checked={values.consentChecked} onChange={handleChangeCheckbox('consentChecked')} />
                     }
                     label={
-                      <Typography variant="body2">
-                        Acepto y doy consentimiento expreso para que inmunosalud obtenga mis datos sensibles de acuerdo al articulo que de la ley federal de protección de datos personales.
+                      <Typography variant='body2'>
+                        Acepto y doy consentimiento expreso para que inmunosalud obtenga mis datos sensibles de acuerdo
+                        al articulo que de la ley federal de protección de datos personales.
                       </Typography>
                     }
                   />
@@ -249,11 +238,7 @@ const FormRegister = () => {
                           onChange={handleChangeCheckbox('affiliateContractChecked')}
                         />
                       }
-                      label={
-                        <Typography variant="body2">
-                          He leído y acepto el contrato de adhesión.
-                        </Typography>
-                      }
+                      label={<Typography variant='body2'>He leído y acepto el contrato de adhesión.</Typography>}
                     />
                   )}
                 </FormGroup>
@@ -271,7 +256,7 @@ const FormRegister = () => {
                     display: 'flex',
                     flexWrap: 'wrap',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'space-between'
                   }}
                 >
                   {isLoading ? (
@@ -295,7 +280,7 @@ const FormRegister = () => {
         handleClose={() => dispatch(closeSnackBar())}
       />
     </>
-  );
-};
+  )
+}
 
-export default FormRegister;
+export default FormRegister

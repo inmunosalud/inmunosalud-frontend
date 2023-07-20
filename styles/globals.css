@@ -26,3 +26,23 @@ code[class*='language-'] {
 input[type='file'] {
   color: rgba(0, 0, 0, 0)
 }
+
+.character {
+  border: 1px solid #9165fd;
+  font-size: 20px;
+  border-radius: 8px;
+ 
+  /* light theme */
+  color: #fff;
+  background-color: #d400ff;
+  box-shadow: 0 2px 0 #e4e2f5;
+ 
+  /* dark theme */
+  color: #000;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+::placeholder {
+  color: rgba(0, 0, 0, 0.1)
+}

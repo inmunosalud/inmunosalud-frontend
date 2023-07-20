@@ -77,6 +77,11 @@ const GlobalStyles = (theme, settings) => {
         position: 'fixed',
         backgroundColor: theme.palette.primary.main
       }
+    },
+    input: {
+      '&::placeholder': {
+        opacity: 0.5
+      }
     }
   }
 }

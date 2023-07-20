@@ -19,6 +19,9 @@ import Typography from '@mui/material/Typography'
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountTie from 'mdi-material-ui/AccountTie'
 
+import { Flag } from 'mdi-material-ui'
+import { setModal } from 'src/store/contactus'
+
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,
@@ -30,6 +33,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 import { Account, Router } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { stripeRegister } from 'src/store/users'
+import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -40,7 +44,6 @@ const UserDropdown = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const { user } = useSelector(state => state.dashboard.general)
   const { stripeLink } = useSelector(state => state.users)
-
   // ** Hooks
   const router = useRouter()
 
@@ -138,7 +141,7 @@ const UserDropdown = props => {
           </MenuItem>
         ) : null}
 
-        {true && (
+        {user?.profile != null && (
           <MenuItem sx={{ py: 2 }} onClick={handleRegister}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -162,7 +165,10 @@ const UserDropdown = props => {
             Registrarme en Stripe
           </MenuItem>
         )}
-
+        <MenuItem sx={{ py: 2 }} onClick={() => dispatch(setModal(true))}>
+          <Flag sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+          Tengo un problema
+        </MenuItem>
         <Divider />
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
@@ -176,6 +182,7 @@ const UserDropdown = props => {
           </MenuItem>
         )}
       </Menu>
+      <ProblemFormModal />
     </Fragment>
   )
 }

@@ -11,7 +11,6 @@ export const getComissions = createAsyncThunk('comissions/getComissions', async 
     const response = await api_get(`${COMISSIONS}/commissions`, auth)
     return response
   } catch (error) {
-    console.log(error)
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -28,9 +27,6 @@ export const liquidationComisions = createAsyncThunk('comissions/liquidationProd
 
     return response
   } catch (error) {
-    console.log(error)
-    console.log(response)
-
     thunkApi.dispatch(openSnackBar({ open: true, message: error.response.data.message, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
@@ -48,7 +44,6 @@ export const comissionsSlice = createSlice({
   initialState,
   reducers: {
     setOpenModal(state, { payload }) {
-      console.log({ payload })
       state.openModal = payload
     }
   },

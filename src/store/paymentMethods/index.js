@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 //api
-import { api_post, api_get, api_put, api_delete, PROJECT_PAYMENT_METHODS, PROJECT_ADDRESS } from '../../services/api'
+import { api_post, api_get, api_patch, api_delete, PROJECT_PAYMENT_METHODS, PROJECT_ADDRESS } from '../../services/api'
 import { setAddresses } from '../address'
 
 import { openSnackBar } from '../notifications'
@@ -37,7 +37,7 @@ export const updateMethod = createAsyncThunk(
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
-      const response = await api_put(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
+      const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(loadInfo(uuid))
@@ -84,8 +84,6 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
       api_get(`${PROJECT_ADDRESS}/addresses/user/${uuid}`, auth)
     ])
 
-    
-
     thunkApi.dispatch(setAddresses(responseAddress.content))
 
     paymentInfo.paymentMethods = responseMethods.content.filter(method => method.cardUse === 'Pago')
@@ -114,6 +112,7 @@ const initialState = {
   /* users table */
   paymentMethods: [],
   clabe: {},
+  bank: '',
   //modal props
   isOpen: false,
   isOpenDelete: false,
@@ -138,6 +137,9 @@ export const paymentMethodsSlice = createSlice({
     },
     setSelectedPaymentMethodInCart: (state, { payload }) => {
       ;(state.selectedPaymentMethod = payload), (state.isSelectedPaymentMethod = true)
+    },
+    setBank: (state, { payload }) => {
+      state.bank = payload
     }
   },
   extraReducers: builder => {
@@ -161,6 +163,7 @@ export const paymentMethodsSlice = createSlice({
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
       state.clabe = payload.clabe
+      state.bank = payload.clabe.bank
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(loadInfo.rejected, (state, action) => {
@@ -189,4 +192,5 @@ export const paymentMethodsSlice = createSlice({
 
 export default paymentMethodsSlice.reducer
 
-export const { setErrors, setModal, setModalDelete, setSelectedPaymentMethodInCart } = paymentMethodsSlice.actions
+export const { setErrors, setModal, setModalDelete, setSelectedPaymentMethodInCart, setBank } =
+  paymentMethodsSlice.actions

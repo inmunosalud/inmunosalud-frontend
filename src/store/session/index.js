@@ -11,12 +11,14 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
   try {
     const response = await api_post(`${PROYECT}/users/login`, body)
 
-    // thunkApi.dispatch(setUser(response.content.user))
     thunkApi.dispatch(setUser(response.content))
-
-    Router.push('/ecommerce/products')
-
-    return response
+    if (response.content.user.active === false) {
+      Router.push({ pathname: '/register/welcome' })
+      return response
+    } else {
+      Router.push('/ecommerce/products')
+      return response
+    }
   } catch (error) {
     const data = error.response.data
 

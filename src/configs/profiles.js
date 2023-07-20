@@ -22,15 +22,13 @@ export const PROFILES = {
   Consumidor: [
     PERMISSIONS.home,
     PERMISSIONS.join,
-    PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
     PERMISSIONS.ecommerceCheckout,
     PERMISSIONS.ecommerceAddProduct,
     PERMISSIONS.ecommerceOrders,
-    PERMISSIONS.ecommerceEditOrders,
-    PERMISSIONS.ecommerceMonthlyPurchase
+    PERMISSIONS.ecommerceEditOrders
   ],
   Afiliado: [
     PERMISSIONS.home,
@@ -63,15 +61,9 @@ export const PROFILES = {
   'Administrador de Productos': [
     PERMISSIONS.home,
     PERMISSIONS.join,
-    PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart,
-    PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceOrders,
-    PERMISSIONS.ecommerceEditOrders,
-    PERMISSIONS.ecommerceMonthlyPurchase
+    PERMISSIONS.ecommerceAddProduct
   ],
   'Administrador General': [
     PERMISSIONS.home,
@@ -92,14 +84,7 @@ export const PROFILES = {
     PERMISSIONS.dashboardConstants,
     PERMISSIONS.ecommerceBilling
   ],
-  default: [
-    PERMISSIONS.home,
-    PERMISSIONS.join,
-    PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.ecommerceCart,
-    PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceCheckout
-  ]
+  default: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts]
 }
 
 export const ROUTES_PERMISSION = {

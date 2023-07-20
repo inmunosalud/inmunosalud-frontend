@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
 import ShoppingOutline from 'mdi-material-ui/ShoppingOutline'
 import ViewDashboard from 'mdi-material-ui/ViewDashboard'
-import AccountGroupIcon from 'mdi-material-ui/AccountGroup';
+import AccountGroupIcon from 'mdi-material-ui/AccountGroup'
 import OrderBoolDescending from 'mdi-material-ui/OrderBoolDescending'
 import { PERMISSIONS, PROFILES_USER } from 'src/configs/profiles'
 
 const navigation = () => {
-  const { user } = useSelector(state => state.session)
+  const { user } = useSelector(state => state.dashboard.general)
 
   const isAuthorized = permission => {
     // Check if the current user has the given permission
@@ -25,7 +25,7 @@ const navigation = () => {
     },
     {
       icon: AccountGroupIcon,
-      title: 'Afíliate',
+      title: user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate',
       path: '/landing-page/join',
       permission: PERMISSIONS.join,
       visible: true
@@ -47,6 +47,11 @@ const navigation = () => {
           permission: PERMISSIONS.dashboardUsers
         },
         {
+          title: 'Pedido del mes',
+          path: '/ecommerce/monthly-purchase/',
+          permission: PERMISSIONS.ecommerceMonthlyPurchase
+        },
+        {
           title: 'Comisiones',
           path: '/dashboards/comissions',
           permission: PERMISSIONS.dashboardComissions
@@ -60,7 +65,7 @@ const navigation = () => {
           title: 'Constantes',
           path: '/dashboards/constants',
           permission: PERMISSIONS.dashboardConstants
-        },
+        }
       ]
     },
     {
@@ -85,7 +90,7 @@ const navigation = () => {
           permission: PERMISSIONS.ecommerceBilling
         }
       ]
-    },
+    }
     // {
     //   title: 'Pedidos',
     //   icon: OrderBoolDescending,
