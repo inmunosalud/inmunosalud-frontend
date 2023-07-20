@@ -17,6 +17,7 @@ import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
 import { Carousel } from '@mui/material'
 
+
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
@@ -71,7 +72,8 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 }))
 
 // carousel product
-const CarouselProducts = ({ images }) => {
+const CarouselProducts = ({ images, theme }) => {
+
   // const [url1, url2] = images ?? []
   if (images) {
     return (
@@ -109,8 +111,8 @@ const CarouselProducts = ({ images }) => {
             </div>
           </SwiperSlide>
         ))}
-        <div className='swiper-button-next' style={{ color: '#9155FD' }} />
-        <div className='swiper-button-prev' style={{ color: '#9155FD' }} />
+        <div className='swiper-button-next' style={{ color: theme.palette.primary.main }} />
+        <div className='swiper-button-prev' style={{ color: theme.palette.primary.main }} />
       </Swiper>
     )
   }
@@ -274,7 +276,7 @@ export const ProductItem = props => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-                <CarouselProducts images={props.urlImages} />
+                <CarouselProducts images={props.urlImages} theme={theme} />
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>
