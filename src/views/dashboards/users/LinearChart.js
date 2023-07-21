@@ -13,11 +13,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 
-const columnColors = {
-  bg: '#f8d3ff',
-  series1: '#826af9',
-  series2: '#d2b0ff'
-}
+
 
 const LinearChart = ({ title = '', series = [], categories = [] }) => {
   const theme = useTheme()
@@ -31,8 +27,8 @@ const LinearChart = ({ title = '', series = [], categories = [] }) => {
     markers: {
       strokeWidth: 7,
       strokeOpacity: 1,
-      colors: [theme.palette.primary.main, columnColors.series1, columnColors.series2, columnColors.bg],
-      strokeColors: ['#fff']
+      colors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.error.main, theme.palette.info.main],
+      strokeColors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.error.main, theme.palette.info.main]
     },
     dataLabels: {
       enabled: false
@@ -40,7 +36,7 @@ const LinearChart = ({ title = '', series = [], categories = [] }) => {
     stroke: {
       curve: 'straight'
     },
-    colors: [theme.palette.primary.main, columnColors.series1, columnColors.series2, columnColors.bg],
+    colors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.error.main, theme.palette.info.main],
     grid: {
       xaxis: {
         lines: {

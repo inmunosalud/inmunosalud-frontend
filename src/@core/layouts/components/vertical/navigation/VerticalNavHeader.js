@@ -1,5 +1,6 @@
 // ** Next Import
 import Link from 'next/link'
+import Image from 'next/image';
 
 // ** MUI Imports
 import IconButton from '@mui/material/IconButton'
@@ -14,6 +15,13 @@ import RecordCircleOutline from 'mdi-material-ui/RecordCircleOutline'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
+
+// ** Images
+import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png';
+import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png';
+import NegroIotipo from '/public/images/logos/Negro-Isotipo.png';
+import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png';
+
 
 // ** Styled Components
 const MenuHeaderWrapper = styled(Box)(({ theme }) => ({
@@ -42,13 +50,8 @@ const StyledLink = styled('a')({
 const VerticalNavHeader = props => {
   // ** Props
   const {
-    hidden,
     navHover,
     settings,
-    saveSettings,
-    collapsedNavWidth,
-    toggleNavVisibility,
-    navigationBorderWidth,
     menuLockedIcon: userMenuLockedIcon,
     menuUnlockedIcon: userMenuUnlockedIcon,
     verticalNavMenuBranding: userVerticalNavMenuBranding
@@ -64,7 +67,7 @@ const VerticalNavHeader = props => {
       if (userVerticalNavMenuBranding) {
         return 0
       } else {
-        return (collapsedNavWidth - navigationBorderWidth - 30) / 8
+        return
       }
     } else {
       return 6
@@ -100,34 +103,27 @@ const VerticalNavHeader = props => {
       {userVerticalNavMenuBranding ? (
         userVerticalNavMenuBranding(props)
       ) : (
-        <Link href='/' passHref style={{ textDecoration: 'none' }}>
-          <StyledLink>
-            <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 3 }) }}>
-              {themeConfig.templateName}
-            </HeaderTitle>
-          </StyledLink>
-        </Link>
-      )}
-
-      {hidden ? (
+        <>
+          <Link href='/' passHref style={{ textDecoration: 'none' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', ...menuCollapsedStyles }}>
+              <StyledLink sx={{ margin: '10px' }}>
+                <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' width={180} height={25} />
+              </StyledLink>
+            </Box>
+          </Link>
+      <Link href='/' passHref style={{ textDecoration: 'none' }}>
         <IconButton
           disableRipple
           disableFocusRipple
-          onClick={toggleNavVisibility}
-          sx={{ p: 0, backgroundColor: 'transparent !important' }}
-        >
-          <Close fontSize='small' />
-        </IconButton>
-      ) : (
-        <IconButton
-          disableRipple
-          disableFocusRipple
-          onClick={() => saveSettings({ ...settings, navCollapsed: !navCollapsed })}
           sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
         >
-          {navCollapsed ? MenuUnlockedIcon() : MenuLockedIcon()}
+          <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' width={30} height={30} />
         </IconButton>
+      </Link>
+        </>
       )}
+
+
     </MenuHeaderWrapper>
   )
 }

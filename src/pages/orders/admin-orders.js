@@ -11,6 +11,8 @@ import { DataGrid } from '@mui/x-data-grid'
 import { Pencil } from 'mdi-material-ui'
 import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
+import { Button } from '@mui/material'
+
 
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
@@ -49,7 +51,7 @@ const columns = [
     minWidth: 100,
     field: 'totalProducts',
     headerName: 'Productos',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 140,
@@ -65,25 +67,25 @@ const columns = [
     minWidth: 180,
     field: 'deliveryStatus',
     headerName: 'Estatus de envio',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 180,
     headerName: 'Fecha de compra',
     field: 'purchaseDate',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 160,
     headerName: 'Fecha estimada de envio',
     field: 'deliveryEstimateDate',
-    renderCell: params => {}
+    renderCell: params => { }
   },
   {
     minWidth: 120,
     headerName: 'Fecha de entrega',
     field: 'deliveryDate',
-    renderCell: params => {}
+    renderCell: params => { }
   }
 ]
 
@@ -113,7 +115,9 @@ const AdminOrders = () => {
       renderCell: params => {
         const row = params?.row
         return (
-          <Pencil sx={{ margin: '5px', cursor: 'pointer' }} color='warning' onClick={() => handleOpenModalEdit(row)} />
+          <Button onClick={() => handleOpenModalEdit(row)} color='warning' size='small'>
+            <Pencil />
+          </Button>
         )
       }
     }
