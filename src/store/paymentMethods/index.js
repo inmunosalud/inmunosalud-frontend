@@ -57,11 +57,12 @@ export const updateMethod = createAsyncThunk(
   }
 )
 
-export const deleteMethod = createAsyncThunk('user/deleteMethod', async (id, thunkApi) => {
+export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, uuid }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_delete(`${PROJECT_PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
+    thunkApi.dispatch(loadInfo(uuid))
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response

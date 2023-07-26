@@ -173,11 +173,11 @@ const DialogAddress = ({
                       </>
                     )}
                   />
-                  {selectColony.colony && (
+                  {!selectedColony ? (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
                       El campo es requerido
                     </FormHelperText>
-                  )}
+                  ) : null}
                 </FormControl>
               </Grid>
 
