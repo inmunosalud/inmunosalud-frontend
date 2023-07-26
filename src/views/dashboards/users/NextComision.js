@@ -22,12 +22,6 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Account } from 'mdi-material-ui'
 
-const columnColors = {
-  bg: '#f8d3ff',
-  series1: '#826af9',
-  series2: '#d2b0ff'
-}
-
 const NextComision = () => {
   // ** Hook
   const theme = useTheme()
@@ -69,7 +63,7 @@ const NextComision = () => {
       position: 'top',
       horizontalAlign: 'left'
     },
-    colors: [columnColors.series1, columnColors.series2, columnColors.bg],
+    colors: [theme.palette.primary.main, theme.palette.secondary.light, theme.palette.background.default],
     stroke: {
       show: true,
       colors: ['transparent']

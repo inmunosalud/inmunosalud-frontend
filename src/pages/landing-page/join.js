@@ -18,6 +18,8 @@ import pose_f9 from 'public/images/cards/pose_f9.png';
 import pose_m18 from 'public/images/cards/pose_m18.png';
 import pose_m35 from 'public/images/cards/pose_m35.png';
 
+import banner2 from 'public/images/banners/banner-2.jpg';
+
 
 
 
@@ -105,57 +107,68 @@ export default function AffiliationPage() {
                 <Container>
                     {!isMobile ? (
                         <>
-                            <Parallax speed={-5} translateY={[20, 20]} >
-                                <Box sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', mb: '400px' }}>
-                                    <Typography variant="h2" sx={{ textAlign: 'center' }}>
-                                        ¡En InmunoSalud queremos que crezcas con nosotros!
-                                    </Typography>
-                                </Box>
-                            </Parallax>
+                            <Box
+                                sx={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', mb: '400px' }}>
+                                <ParallaxBanner
+                                    layers={[{ image: '/images/banners/banner-31.jpg', speed: 10 }]}
+                                    className="aspect-[2/1]"
+                                    style={{ height: '400px' }}
+                                >
+                                    <Parallax speed={-60} >
+                                        <Typography color="#fff" variant="h2" sx={{ textAlign: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
+                                            <strong>
+                                                ¡En InmunoSalud queremos que crezcas con nosotros!
+                                            </strong>
+                                        </Typography>
+                                    </Parallax>
+                                </ParallaxBanner>
+                            </Box>
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid item xs={12} sm={6}>
-                                        <Box display="flex" alignItems="center" height="100%">
+
+                            <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid item xs={12} sm={6}>
+                                    <Box display="flex" alignItems="center" height="100%">
+                                        <Parallax speed={-5} translateY={[-200, 200]}>
                                             <Typography variant="body1">
                                                 En Inmunosalud creemos que la mejor manera de llegar a más personas es a través de nuestros
                                                 consumidores por lo cual a nuestros afiliados los remuneramos con comisión de hasta un 45%*.
                                             </Typography>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Parallax speed={5} translateY={[-10, 20]}>
-                                            <Image src={illustrationJohn2} layout='responsive' sx={{ textAlign: 'center' }} alt="Diagrama" />
                                         </Parallax>
-                                    </Grid>
+                                    </Box>
                                 </Grid>
-                            </Parallax>
+                                <Grid item xs={12} sm={6}>
+                                    <Parallax speed={5} translateY={[-10, 20]}>
+                                        <Image src={illustrationJohn2} layout='responsive' sx={{ textAlign: 'center' }} alt="Diagrama" />
+                                    </Parallax>
+                                </Grid>
+                            </Grid>
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid item xs={12} sm={6}>
-                                        <Parallax speed={5} translateY={[-10, 20]}>
-                                            <Image src={illustrationJohn} layout='responsive' sx={{ textAlign: 'center' }} alt="Diagrama" />
-                                        </Parallax>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Box display="flex" alignItems="center" height="100%">
+                            <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                <Grid item xs={12} sm={6}>
+                                    <Parallax speed={5} translateY={[-10, 20]}>
+                                        <Image src={illustrationJohn} layout='responsive' sx={{ textAlign: 'center' }} alt="Diagrama" />
+                                    </Parallax>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Box display="flex" alignItems="center" height="100%">
+                                        <Parallax translateY={[200, -200]}>
+
                                             <Typography variant="body1" >
                                                 Nuestra filosofía se basa en el mutuo beneficio y la colaboración.
                                                 Al proporcionar a nuestros afiliados una comisión significativa, buscamos fomentar una relación
                                                 sólida y duradera, donde podamos crecer juntos.
                                             </Typography>
-                                        </Box>
-                                    </Grid>
+                                        </Parallax>
+                                    </Box>
                                 </Grid>
-                            </Parallax>
+                            </Grid>
 
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid item xs={12} sm={6}>
+                            <Grid container spacing={10} sx={{ mb: '600px' }}>
+                                <Grid item xs={12} sm={6}>
+                                    <Parallax speed={5} translateY={[-10, 150]}>
                                         <Box display="flex" flexDirection="column" justifyContent="center" height="100%">
                                             <Typography variant='h5' sx={{ mb: '20px' }}>ESQUEMA Y ARMADO DE RED DE CONSUMO</Typography>
                                             <Typography variant="body1" sx={{ mb: '20px' }}>
@@ -165,109 +178,109 @@ export default function AffiliationPage() {
                                                 La red puede crecer hasta el cuarto nivel.
                                             </Typography>
                                         </Box>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Grid container spacing={10} sx={{ mb: '40px' }}>
-                                            <Grid item xs={12}>
-                                                <Box style={{ textAlign: 'center' }}>
-                                                    <Parallax speed={-5} translateY={[20, 20]}>
-                                                        <Grid container spacing={4}>
-
-                                                            <Grid item xs={12} sm={6}>
-                                                                <Card>
-                                                                    <CardHeader title="De todas las personas que tú refieres recibes el:" sx={{ textAlign: 'left' }} />
-                                                                    <CardContent>
-                                                                        <Typography variant="h2" sx={{ fontSize: '3rem' }}>
-                                                                            <strong>
-                                                                                <CountUp end={constants.commissionPercentajePerLevel[1] * 100} duration={3} suffix="%" />
-                                                                            </strong>
-                                                                        </Typography>
-                                                                        <Typography variant="body1" sx={{ textAlign: 'right' }}>
-                                                                            <strong>
-                                                                                total de Compra
-                                                                            </strong>
-                                                                        </Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            </Grid>
-                                                            <Grid item xs={12} sm={6}>
-                                                                <Card>
-                                                                    <CardHeader title={
-                                                                        <Typography variant="h6">
-                                                                            Si ellos refirieran a otra,
-                                                                            se te da el:
-                                                                            <br />
-                                                                        </Typography>
-                                                                    } sx={{ whiteSpace: 'pre-line', textAlign: 'left' }} />
-                                                                    <CardContent>
-                                                                        <Typography variant="h2" sx={{ fontSize: '3rem' }}>
-                                                                            <strong>
-                                                                                <CountUp end={constants.commissionPercentajePerLevel[2] * 100} duration={3} suffix="%" />
-                                                                            </strong>
-                                                                        </Typography>
-                                                                        <Typography variant="body1" sx={{ textAlign: 'right' }}>
-                                                                            <strong>
-                                                                                total de Compra
-                                                                            </strong>
-                                                                        </Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            </Grid>
-                                                            <Grid item xs={12} sm={6}>
-                                                                <Card>
-                                                                    <CardHeader title="De los referidos de tu segunda línea, se te otorga el:" sx={{ textAlign: 'left' }} />
-                                                                    <CardContent>
-                                                                        <Typography variant="h2" sx={{ fontSize: '3rem' }}>
-                                                                            <strong>
-                                                                                <CountUp end={constants.commissionPercentajePerLevel[3] * 100} duration={3} suffix="%" />
-                                                                            </strong>
-                                                                        </Typography>
-                                                                        <Typography variant="body1" sx={{ textAlign: 'right' }}>
-                                                                            <strong>
-                                                                                total de Compra
-                                                                            </strong>
-                                                                        </Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            </Grid>
-                                                            <Grid item xs={12} sm={6}>
-                                                                <Card>
-                                                                    <CardHeader title="y los referidos de tu tercera línea te otorgan un:" sx={{ textAlign: 'left' }} />
-                                                                    <CardContent>
-                                                                        <Typography variant="h2" sx={{ fontSize: '3rem' }}>
-                                                                            <strong>
-                                                                                <CountUp end={constants.commissionPercentajePerLevel[4] * 100} duration={3} suffix="%" />
-                                                                            </strong>
-                                                                        </Typography>
-                                                                        <Typography variant="body1" sx={{ textAlign: 'right' }}>
-                                                                            <strong>
-                                                                                total de Compra
-                                                                            </strong>
-                                                                        </Typography>
-                                                                    </CardContent>
-                                                                </Card>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Parallax>
-                                                </Box>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
+                                    </Parallax>
                                 </Grid>
-                            </Parallax>
-
-                            <Grid container spacing={10} sx={{ mb: '40px' }}>
-                                <Parallax speed={-5} translateY={[20, 20]}>
-                                    <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                        <Grid item xs={12} sm={6}>
-                                            <Parallax speed={5} translateY={[-10, 20]}>
-                                                <Box sx={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>
-                                                    <Image src={diagrama} layout='responsive' alt="Diagrama" />
+                                <Grid item xs={12} sm={6}>
+                                    <Grid container spacing={10} sx={{ mb: '40px' }}>
+                                        <Grid item xs={12}>
+                                            <Parallax speed={-5} translateY={[20, 20]}>
+                                                <Box style={{ textAlign: 'center' }}>
+                                                    <Grid container spacing={4}>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Card>
+                                                                <CardHeader title="De todas las personas que tú refieres recibes el:" sx={{ textAlign: 'left' }} />
+                                                                <CardContent>
+                                                                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>
+                                                                        <strong>
+                                                                            <CountUp end={constants.commissionPercentajePerLevel[1] * 100} duration={3} suffix="%" />
+                                                                        </strong>
+                                                                    </Typography>
+                                                                    <Typography variant="body1" sx={{ textAlign: 'right' }}>
+                                                                        <strong>
+                                                                            total de Compra
+                                                                        </strong>
+                                                                    </Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grid>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Card>
+                                                                <CardHeader title={
+                                                                    <Typography variant="h6">
+                                                                        Si ellos refirieran a otra,
+                                                                        se te da el:
+                                                                        <br />
+                                                                    </Typography>
+                                                                } sx={{ whiteSpace: 'pre-line', textAlign: 'left' }} />
+                                                                <CardContent>
+                                                                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>
+                                                                        <strong>
+                                                                            <CountUp end={constants.commissionPercentajePerLevel[2] * 100} duration={3} suffix="%" />
+                                                                        </strong>
+                                                                    </Typography>
+                                                                    <Typography variant="body1" sx={{ textAlign: 'right' }}>
+                                                                        <strong>
+                                                                            total de Compra
+                                                                        </strong>
+                                                                    </Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grid>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Card>
+                                                                <CardHeader title="De los referidos de tu segunda línea, se te otorga el:" sx={{ textAlign: 'left' }} />
+                                                                <CardContent>
+                                                                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>
+                                                                        <strong>
+                                                                            <CountUp end={constants.commissionPercentajePerLevel[3] * 100} duration={3} suffix="%" />
+                                                                        </strong>
+                                                                    </Typography>
+                                                                    <Typography variant="body1" sx={{ textAlign: 'right' }}>
+                                                                        <strong>
+                                                                            total de Compra
+                                                                        </strong>
+                                                                    </Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grid>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Card>
+                                                                <CardHeader title="y los referidos de tu tercera línea te otorgan un:" sx={{ textAlign: 'left' }} />
+                                                                <CardContent>
+                                                                    <Typography variant="h2" sx={{ fontSize: '3rem' }}>
+                                                                        <strong>
+                                                                            <CountUp end={constants.commissionPercentajePerLevel[4] * 100} duration={3} suffix="%" />
+                                                                        </strong>
+                                                                    </Typography>
+                                                                    <Typography variant="body1" sx={{ textAlign: 'right' }}>
+                                                                        <strong>
+                                                                            total de Compra
+                                                                        </strong>
+                                                                    </Typography>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </Grid>
+                                                    </Grid>
                                                 </Box>
                                             </Parallax>
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <Box display="flex" flexDirection="column" justifyContent="center" height="100%" >
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid container spacing={10} sx={{ mb: '40px' }}>
+                                <Grid container spacing={10} sx={{ mb: '600px' }}>
+                                    <Grid item xs={12} sm={6}>
+                                        <Parallax speed={5} translateY={[-10, 20]}>
+                                            <Box sx={{ textAlign: 'center', width: '100%', margin: '0 auto' }}>
+                                                <Image src={diagrama} layout='responsive' alt="Diagrama" />
+                                            </Box>
+                                        </Parallax>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Box display="flex" flexDirection="column" justifyContent="center" height="100%" >
+                                            <Parallax speed={-5} translateY={[50, -50]}>
+
                                                 <Typography variant="h6" sx={{ mb: '20px' }}>
                                                     La manera en la que funciona nuestro sistema de comisiones es la siguiente:
                                                 </Typography>
@@ -293,15 +306,15 @@ export default function AffiliationPage() {
                                                     <strong style={{ color: 'gray' }}>(Gris)</strong> Consumidor inactivo: Usuario registrado para consumir sin capacidad de invitar
                                                     personas y NO genera comisión al que lo refirió.
                                                 </Typography>
-                                            </Box>
-                                        </Grid>
+                                            </Parallax>
+                                        </Box>
                                     </Grid>
-                                </Parallax>
+                                </Grid>
 
 
-                                <Parallax speed={-5} translateY={[20, 20]}>
-                                    <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                        <Grid item xs={12} sm={6}>
+                                <Grid container spacing={10} sx={{ mb: '400px' }}>
+                                    <Grid item xs={12} sm={6}>
+                                        <Parallax speed={-5} translateY={[-20, 150]}>
                                             <Box display="flex" flexDirection="column" justifyContent="center" height="100%" sx={{ paddingLeft: '40px' }}>
                                                 <Typography>
                                                     <strong>
@@ -331,16 +344,16 @@ export default function AffiliationPage() {
                                                     debido a que está inactivo.
                                                 </Typography>
                                             </Box>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <Parallax speed={5} translateY={[-10, 20]}>
-                                                <Box sx={{ textAlign: 'center' }}>
-                                                    <Image src={nivel1} layout='responsive' alt="Diagrama" />
-                                                </Box>
-                                            </Parallax>
-                                        </Grid>
+                                        </Parallax>
                                     </Grid>
-                                </Parallax>
+                                    <Grid item xs={12} sm={6}>
+                                        <Parallax speed={5} translateY={[-10, 20]}>
+                                            <Box sx={{ textAlign: 'center' }}>
+                                                <Image src={nivel1} layout='responsive' alt="Diagrama" />
+                                            </Box>
+                                        </Parallax>
+                                    </Grid>
+                                </Grid>
 
 
                                 <Grid item spacing={10} sx={{ mb: '600px' }}>
@@ -558,9 +571,9 @@ export default function AffiliationPage() {
 
 
 
-                            <Parallax speed={5} translateY={[-40, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid container xs={12} sm={6}>
+                            <Grid container spacing={10} sx={{ mb: '600px' }}>
+                                <Grid container xs={12} sm={6}>
+                                    <Parallax speed={-5} translateY={[-10, 100]}>
                                         <Box display="flex" justifyContent="center" flexDirection="column" sx={{ paddingLeft: '40px' }}>
                                             <Typography variant='h6' sx={{ mb: 4 }}>Requisitos</Typography>
                                             <Typography variant="body1">
@@ -573,30 +586,31 @@ export default function AffiliationPage() {
                                                 • Tener referidos activos.
                                             </Typography>
                                         </Box>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Box sx={{ textAlign: 'center', width: '30%', margin: '0 auto' }}>
-                                            <Parallax speed={5} translateY={[-10, 20]}>
-                                                <Image src={pose_m18} layout='responsive' alt="Diagrama" />
-                                            </Parallax>
-                                        </Box>
-                                    </Grid>
+                                    </Parallax>
                                 </Grid>
-                            </Parallax>
-
-
-
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={6}>
+                                    <Box sx={{ textAlign: 'center', width: '30%', margin: '0 auto' }}>
                                         <Parallax speed={5} translateY={[-10, 20]}>
-                                            <Box sx={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
-                                                <Image src={pose_f9} layout='responsive' alt="Diagrama" />
-                                            </Box>
+                                            <Image src={pose_m18} layout='responsive' alt="Diagrama" />
                                         </Parallax>
-                                    </Grid>
-                                    <Grid container xs={12} sm={6}>
-                                        <Box display="flex" justifyContent="center" flexDirection="column">
+                                    </Box>
+                                </Grid>
+                            </Grid>
+
+
+
+                            <Grid container spacing={10} sx={{ mb: '600px' }}>
+                                <Grid item xs={12} sm={6}>
+                                    <Parallax speed={5} translateY={[-10, 20]}>
+                                        <Box sx={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
+                                            <Image src={pose_f9} layout='responsive' alt="Diagrama" />
+                                        </Box>
+                                    </Parallax>
+                                </Grid>
+                                <Grid container xs={12} sm={6}>
+                                    <Box display="flex" justifyContent="center" flexDirection="column">
+
+                                        <Parallax speed={-5} translateY={[100, -100]}>
                                             <Typography variant='h6' sx={{ mb: 4 }} >Qué hacer para permanecer activo</Typography>
                                             <Typography variant="body1" >
                                                 Consumir mensualmente el monto mínimo de compra antes de la fecha de corte.
@@ -607,16 +621,17 @@ export default function AffiliationPage() {
                                                 En caso de estar activo, se pagará el monto correspondiente de cada nivel con su
                                                 respectivo porcentaje de comisión {constants.waitingDaysForTransfers} días después de la fecha de corte.
                                             </Typography>
-                                        </Box>
-                                    </Grid>
+                                        </Parallax>
+                                    </Box>
                                 </Grid>
-                            </Parallax>
+                            </Grid>
 
 
-                            <Parallax speed={-5} translateY={[20, 20]}>
-                                <Grid container spacing={10} sx={{ mb: '400px' }}>
-                                    <Grid container xs={12} sm={6}>
-                                        <Box display="flex" justifyContent="center" flexDirection="column" sx={{ paddingLeft: '40px' }}>
+                            <Grid container spacing={10} sx={{ mb: '800px' }}>
+                                <Grid container xs={12} sm={6}>
+                                    <Box display="flex" justifyContent="center" flexDirection="column" sx={{ paddingLeft: '40px' }}>
+                                        <Parallax speed={-5} translateY={[-50, 50]}>
+
                                             <Typography variant='h5' sx={{ mb: '20px' }}>Tips para crecer tu red</Typography>
                                             <Typography variant="body1" paragraph>
                                                 Referir nunca fue tan fácil,
@@ -636,17 +651,17 @@ export default function AffiliationPage() {
                                                 al momento de hacer su primera compra. Estos ya formaran a ser parte de tu red para recibir los beneficios
                                                 de ser afiliado.
                                             </Typography>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <Parallax speed={5} translateY={[-10, 20]}>
-                                            <Box sx={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
-                                                <Image src={pose_m35} layout='responsive' alt="Diagrama" />
-                                            </Box>
                                         </Parallax>
-                                    </Grid>
+                                    </Box>
                                 </Grid>
-                            </Parallax>
+                                <Grid item xs={12} sm={6}>
+                                    <Parallax speed={5} translateY={[-10, 20]}>
+                                        <Box sx={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
+                                            <Image src={pose_m35} layout='responsive' alt="Diagrama" />
+                                        </Box>
+                                    </Parallax>
+                                </Grid>
+                            </Grid>
 
 
 

@@ -19,6 +19,7 @@ import { Card, CardContent, Button } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
 import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 
 const data = [
   {
@@ -140,11 +141,17 @@ const Users = () => {
   const { user } = useSelector(state => state.dashboard.general)
 
   React.useEffect(() => {
-    dispatch(getUserInfo(user?.id))
+    dispatch(loadSession())
+  }, [])
+
+  React.useEffect(() => {
+    dispatch(getUserInfo(user?.id)).then(user => {
+      console.log(user)
+    })
     if (user.profile === 'Afiliado') {
       getMonthlyCountdown(data[0].stats)
     }
-  }, [dispatch])
+  }, [user])
 
   React.useEffect(() => {
     if (userInfo?.cutoffDate) {
