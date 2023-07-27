@@ -80,7 +80,7 @@ const COLUMNS = [
 ]
 
 const COMMISSION_STATUS_SP = {
-  confirming: 'Confirmando comisión',
+  confirming: 'Confirmando',
   liquidate: 'Comisión liquidada',
   pendingPayment: 'Pago pendiente',
   cancelled: 'Comisión cancelada'
@@ -113,11 +113,12 @@ const Comissions = () => {
         case COMMISSION_STATUS_SP.pendingPayment:
           setPendingPaymentComissions(prevState => [...prevState, comission])
           break
-        case COMMISSION_STATUS_SP.confirming:
-          setConfirmingComissions(prevState => [...prevState, comission])
-          break
         default:
-          setFinishedComissions(prevState => [...prevState, comission])
+          if (comission.status.includes(COMMISSION_STATUS_SP.confirming)) {
+            setConfirmingComissions(prevState => [...prevState, comission])
+          } else {
+            setFinishedComissions(prevState => [...prevState, comission])
+          }
           break
       }
     })
