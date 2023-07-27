@@ -146,8 +146,6 @@ const BillingPage = () => {
 
   const BILL_STATUS_SP = {
     'Confirmando factura': 'Confirmando factura',
-    'Factura liquidada': 'Factura liquidada',
-    'Factura cancelada': 'Factura cancelada',
     'Factura mal formada': 'Factura mal formada',
     'Factura sin archivos': 'Factura sin archivos',
     'Factura sin pdf': 'Factura sin pdf',
@@ -368,16 +366,20 @@ const BillingPage = () => {
       headerName: 'Acciones',
       width: 120,
       align: 'center',
-      renderCell: params => (
-        <>
-          <Button onClick={() => handleOpenEdit(params.row)} color='warning' sx={{ width: '100%' }}>
-            <Pencil />
-          </Button>
-          <Button onClick={() => handleOpenDelete(params.row)} color='error' sx={{ width: '100%' }}>
-            <Delete />
-          </Button>
-        </>
-      )
+      renderCell: params => {
+        if (params.row.status != 'Factura cancelada' && params.row.status != 'Factura liquidada') {
+          return (
+            <>
+              <Button onClick={() => handleOpenEdit(params.row)} color='warning' sx={{ width: '100%' }}>
+                <Pencil />
+              </Button>
+              <Button onClick={() => handleOpenDelete(params.row)} color='error' sx={{ width: '100%' }}>
+                <Delete />
+              </Button>
+            </>
+          )
+        }
+      }
     }
   ]
 
