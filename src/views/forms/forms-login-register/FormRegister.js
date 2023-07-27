@@ -107,13 +107,6 @@ const FormRegister = () => {
       })
     }
 
-    if (values.affiliateChecked && !values.affiliateContractChecked) {
-      errors.push({
-        value: '',
-        msg: 'Debes aceptar el contrato de adhesión si deseas ser afiliado.'
-      })
-    }
-
     if (errors.length > 0) {
       dispatch(setErrors(errors))
       return
@@ -230,17 +223,6 @@ const FormRegister = () => {
                       </Typography>
                     }
                   />
-                  {values.affiliateChecked && (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={values.affiliateContractChecked}
-                          onChange={handleChangeCheckbox('affiliateContractChecked')}
-                        />
-                      }
-                      label={<Typography variant='body2'>He leído y acepto el contrato de adhesión.</Typography>}
-                    />
-                  )}
                 </FormGroup>
                 {errors ? (
                   <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
