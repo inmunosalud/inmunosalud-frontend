@@ -12,6 +12,8 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { sendVerificationCode, validateNewUser } from 'src/store/users'
 import VerificationInput from 'react-verification-input'
+import { closeSnackBar } from 'src/store/notifications'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 // ** Styled Components
 const BoxWrapper = styled(Box)(({ theme }) => ({
@@ -23,6 +25,7 @@ const BoxWrapper = styled(Box)(({ theme }) => ({
 const Welcome = () => {
   const { email } = useSelector(state => state.users)
   const [verificationCode, setVerificationCode] = useState('')
+  const { open, message, severity } = useSelector(state => state.notifications)
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -86,6 +89,7 @@ const Welcome = () => {
           </form>
         </BoxWrapper>
       </Box>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Box>
   )
 }

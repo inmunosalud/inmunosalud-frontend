@@ -61,6 +61,7 @@ import { loadSession } from 'src/store/dashboard/generalSlice'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import { BANKS } from 'src/configs/banks'
 
 const steps = [
   {
@@ -80,7 +81,7 @@ const steps = [
     subtitle: 'Ingresa la información para recibir tu pago de comisiones'
   },
   {
-    title: 'Datos Fiscales',
+    title: 'Contrato de Adhesión',
     subtitle: 'Ingresa la información para la elaboración del contrato'
   }
 ]
@@ -114,7 +115,8 @@ const defaultPaymentValues = {
 
 const defaultBankInfoValues = {
   beneficiary: '',
-  clabe: ''
+  clabe: '',
+  bank: ''
 }
 
 const defaultTaxInfoValues = {
@@ -176,7 +178,8 @@ const bankInfoSchema = yup.object().shape({
     .required()
     .matches(/^[0-9]+$/, 'Solo dígitos')
     .min(18, 'Deben ser 18 dígitos')
-    .max(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos'),
+  bank: yup.string().required()
 })
 
 const taxInfoSchema = yup.object().shape({
@@ -919,7 +922,7 @@ export default function Address() {
                     )}
                   />
                   {bankInfoErrors['beneficiary'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-clabe'>
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-beneficiary'>
                       {bankInfoErrors['beneficiary'].message ?? 'El campo es requerido'}
                     </FormHelperText>
                   )}
@@ -947,6 +950,25 @@ export default function Address() {
                       {bankInfoErrors['clabe'] ? bankInfoErrors['clabe'].message : 'El campo es requerido'}
                     </FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='bank'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <Fragment>
+                        <InputLabel id='product-label'>Banco</InputLabel>
+                        <Select labelId='product-label' label='Bank' value={value} required={true} onChange={onChange}>
+                          {BANKS.map(item => (
+                            <MenuItem value={item}>{item}</MenuItem>
+                          ))}
+                        </Select>
+                      </Fragment>
+                    )}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
