@@ -9,17 +9,17 @@ import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import { styled, useTheme  } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton'
+import PolicyIcon from '@mui/icons-material/Policy'
+import ArticleIcon from '@mui/icons-material/Article'
 
 // ** Icons Imports
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountTie from 'mdi-material-ui/AccountTie'
-
 
 import { Flag } from 'mdi-material-ui'
 import { setModal } from 'src/store/contactus'
@@ -36,6 +36,7 @@ import { Account, Router, AccountCog, AccountCircle } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { stripeRegister } from 'src/store/users'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
+import { Link } from '@mui/material'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -48,7 +49,7 @@ const UserDropdown = props => {
   const { stripeLink } = useSelector(state => state.users)
   // ** Hooks
   const router = useRouter()
-  const theme = useTheme();
+  const theme = useTheme()
 
   // ** Vars
   const { direction } = settings
@@ -91,9 +92,9 @@ const UserDropdown = props => {
 
   return (
     <Fragment>
-        <IconButton onClick={handleDropdownOpen} color='inherit' size='medium'>
-          <Account sx={{ fontSize: '2rem' }}/>
-        </IconButton>
+      <IconButton onClick={handleDropdownOpen} color='inherit' size='medium'>
+        <Account sx={{ fontSize: '2rem' }} />
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -112,7 +113,7 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-          <Account color='inherit' sx={{ fontSize: '2rem' }}/>
+              <Account color='inherit' sx={{ fontSize: '2rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 600 }}>{user?.firstName}</Typography>
@@ -162,6 +163,18 @@ const UserDropdown = props => {
         <MenuItem sx={{ py: 2 }} onClick={() => dispatch(setModal(true))}>
           <Flag sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
           Tengo un problema
+        </MenuItem>
+        <MenuItem>
+          <PolicyIcon sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+          <Link href={'/docs/Privacy.pdf'} underline='none' color={'inherit'}>
+            Aviso de privacidad
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <ArticleIcon sx={{ mr: 1, fontSize: '1.375rem', color: 'text.secondary' }} />
+          <Link href={'/docs/TyC.pdf'} underline='none' color={'inherit'}>
+            Términos y condiciones
+          </Link>
         </MenuItem>
         <Divider />
         {user?.id ? (
