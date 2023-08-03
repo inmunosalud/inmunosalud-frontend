@@ -27,9 +27,9 @@ export const createProduct = createAsyncThunk('product/createProduct', async ({ 
   }
 })
 
-export const updateProduct = createAsyncThunk('product/updateProduct', async (body, thunkApi) => {
+export const updateProduct = createAsyncThunk('product/updateProduct', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
     const response = await api_patch(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
