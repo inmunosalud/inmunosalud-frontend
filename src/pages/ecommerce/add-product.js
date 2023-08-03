@@ -31,15 +31,15 @@ import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal } from 'src/store/users'
 
-const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {} }) => {
+const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {}, isEditItem = false }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
-        <DialogContentText>Presione confirmar para crear el producto.</DialogContentText>
+        <DialogContentText>Presione confirmar para {isEditItem ? 'editar' : 'crear'} el producto.</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onHandleOpenModal}>Salir</Button>
-        <Button onClick={onSubmitConfirm}>Crear producto</Button>
+        <Button onClick={onSubmitConfirm}>{isEditItem ? 'Editar producto' : 'Crear producto'}</Button>
       </DialogActions>
     </Dialog>
   )
@@ -51,7 +51,7 @@ const AddProduct = () => {
   const { editItem, mainComponents } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { showConfirmModal } = useSelector(state => state.users)
-  const [authPasword, setAuthPassword] = React.useState('')
+  const [authPassword, setAuthPassword] = React.useState('')
   const {
     control,
     reset,
@@ -101,7 +101,11 @@ const AddProduct = () => {
   const submitConfirm = () => {
     handleOpenModal()
     dispatch(setShowConfirmModal(false))
-    dispatch(createProduct({ body: formBody, headers: { password: authPasword } }))
+    dispatch(
+      !Boolean(editItem)
+        ? createProduct({ body: formBody, headers: { password: authPassword } })
+        : updateProduct({ body: formBody, headers: { password: authPassword } })
+    )
   }
 
   /* main component handle on change select */
@@ -217,7 +221,7 @@ const AddProduct = () => {
         instructions: data?.instructions,
         price: data?.price,
         ingredients: data?.ingredients,
-        quantity: 1,
+        quantity: data?.quantity,
         properties: newProperties,
         urlImages: productImages.payload,
         id: editItem?.id ?? ''
@@ -225,12 +229,8 @@ const AddProduct = () => {
       if (productImages.payload === 'error') {
         return
       }
-      if (Boolean(editItem)) {
-        dispatch(updateProduct(body))
-      } else {
-        setFormBody(body)
-        handleOpenModal()
-      }
+      setFormBody(body)
+      handleOpenModal()
     })
   }
 
@@ -510,6 +510,7 @@ const AddProduct = () => {
         open={openModal}
         onHandleOpenModal={handleOpenModal}
         onSubmitConfirm={() => dispatch(setShowConfirmModal(true))}
+        isEditItem={Boolean(editItem)}
       />
       <DialogForm
         text={'Ingrese su contraseña para continuar'}
