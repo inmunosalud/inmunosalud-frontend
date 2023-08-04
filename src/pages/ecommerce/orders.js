@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Dialog, DialogContent, DialogActions, DialogContentText } from '@mui/material'
+import { Dialog, DialogContent, DialogActions, DialogContentText, Link } from '@mui/material'
 import { deleteOrder, getOrdersByUser } from 'src/store/orders'
 import TrashCanOutline from 'mdi-material-ui/TrashCanOutline'
 // ** MUI Imports
@@ -31,7 +31,7 @@ import { closeSnackBar } from 'src/store/notifications'
 import { Flag } from 'mdi-material-ui'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 
-import {setModal } from 'src/store/contactus'
+import { setModal } from 'src/store/contactus'
 
 const CardContentStyles = {
   margin: '10px 20px'
@@ -110,7 +110,7 @@ const RepeaterWrapper = styled(CardContent)(({ theme }) => ({
   }
 }))
 
-const Modal = ({ open = false, onHandleOpenModal = () => { }, onSubmitDelete = () => { } }) => {
+const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = () => {} }) => {
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -126,14 +126,25 @@ const Modal = ({ open = false, onHandleOpenModal = () => { }, onSubmitDelete = (
 
 const DeliveryInfo = ({ allOrderInfo }) => {
   const paymentMethod = allOrderInfo.paymentMethod
+  React.useEffect(() => {
+    console.log(allOrderInfo)
+  }, [])
 
   return (
-    <section style={DeliveryInfoStyles}>
-      <div>
-        <Typography>
-          <strong>Estatus del pedido</strong>
-        </Typography>
-        <Typography>{allOrderInfo.deliveryStatus}</Typography>
+    <Grid container style={DeliveryInfoStyles} xs={12} sm={9}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div>
+          <Typography>
+            <strong>Estatus del pedido</strong>
+          </Typography>
+          <Typography>{allOrderInfo.deliveryStatus}</Typography>
+        </div>
+        <div style={{ marginRight: '20px' }}>
+          <Typography>
+            <strong>Pedido realizado</strong>
+          </Typography>
+          <Typography>{allOrderInfo.purchaseDate}</Typography>
+        </div>
       </div>
       <div>
         <Typography>
@@ -144,18 +155,27 @@ const DeliveryInfo = ({ allOrderInfo }) => {
         </Typography>
         <Typography>{paymentMethod.expDate}</Typography>
       </div>
-      <div style={{ display: 'flex' }}>
-        <div style={{ marginRight: '20px' }}>
-          <Typography>
-            <strong>Pedido realizado</strong>
-          </Typography>
-          <Typography>{allOrderInfo.purchaseDate}</Typography>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {allOrderInfo.deliveryStatus === 'Está en camino' || allOrderInfo.deliveryStatus === 'Entregado' ? (
+          <div>
+            <Typography>
+              <strong>Envío:</strong>
+            </Typography>
+            <Typography>Compañia: {allOrderInfo.shipment.company}</Typography>
+            <Typography>
+              Guía de envío: <Link href={allOrderInfo.shipment.trackingUrl}>{allOrderInfo.shipment.id}</Link>
+            </Typography>
+          </div>
+        ) : null}
         <div>
           <Typography>
-            <strong>Entrega estimada</strong>
+            <strong>{allOrderInfo.deliveryStatus === 'Entregado' ? 'Entregado' : 'Entrega estimada'}</strong>
           </Typography>
-          <Typography>{allOrderInfo.deliveryEstimateDate}</Typography>
+          <Typography>
+            {allOrderInfo.deliveryStatus === 'Entregado'
+              ? allOrderInfo.deliveryDate
+              : allOrderInfo.deliveryEstimateDate}
+          </Typography>
         </div>
       </div>
       <section id='section-total-purchase'>
@@ -181,13 +201,13 @@ const DeliveryInfo = ({ allOrderInfo }) => {
           <Typography>${allOrderInfo.total}</Typography>
         </div>
       </section>
-    </section>
+    </Grid>
   )
 }
 
 const Address = ({ address }) => {
   return (
-    <section style={AdreessContainer}>
+    <Grid style={AdreessContainer} xs={12} sm={2} textAlign={{ xs: 'center', sm: 'initial' }}>
       <Typography variant='h3' style={{ fontSize: '19px', marginBottom: '10px' }}>
         <strong>Dirección de envío</strong>
       </Typography>
@@ -196,7 +216,7 @@ const Address = ({ address }) => {
       <Typography style={{ marginBottom: '5px' }}>
         {`${address.city}, ${address.federalEntity}, ${address.zipCode}`}
       </Typography>
-    </section>
+    </Grid>
   )
 }
 
@@ -252,8 +272,9 @@ const Product = ({ products }) => {
   )
 }
 
-const Actions = ({ onHandleModal = () => { }, status = '' }) => {
-  if ((status == 'Está en camino' || status == 'Cancelado' || status == 'Entregado')) return <div style={ButtonActionStyles} />
+const Actions = ({ onHandleModal = () => {}, status = '' }) => {
+  if (status == 'Está en camino' || status == 'Cancelado' || status == 'Entregado')
+    return <div style={ButtonActionStyles} />
   return (
     <Tooltip title='Cancelar pedido' arrow>
       <Button style={ButtonActionStyles} onClick={onHandleModal}>
@@ -288,11 +309,15 @@ const Cards = props => {
               flexDirection: 'column'
             }}
           >
-            <div id='header-info' style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <Grid
+              container
+              id='header-info'
+              style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
+            >
               <Address address={address} />
               <DeliveryInfo allOrderInfo={props} />
-              < Actions onHandleModal={handleOpenModal} status={props.deliveryStatus} />
-            </div>
+              <Actions onHandleModal={handleOpenModal} status={props.deliveryStatus} />
+            </Grid>
             <Divider />
             <RepeaterWrapper>
               <Product products={products} />
@@ -305,9 +330,7 @@ const Cards = props => {
   )
 }
 
-
 const Orders = () => {
-
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -316,7 +339,6 @@ const Orders = () => {
   React.useEffect(() => {
     dispatch(getOrdersByUser(user?.id))
   }, [])
-
 
   if (isLoading) {
     return (
