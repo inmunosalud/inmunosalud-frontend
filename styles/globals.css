@@ -28,13 +28,13 @@ input[type='file'] {
 }
 
 .character {
-  border: 1px solid #9165fd;
+  border: 1px solid #f59f00;
   font-size: 20px;
   border-radius: 8px;
  
   /* light theme */
   color: #fff;
-  background-color: #d400ff;
+  background-color: #f59f00;
   box-shadow: 0 2px 0 #e4e2f5;
  
   /* dark theme */
