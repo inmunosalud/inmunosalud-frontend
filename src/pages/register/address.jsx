@@ -8,6 +8,8 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardActions,
+  FlexContainer,
   Divider,
   FormControl,
   FormControlLabel,
@@ -28,6 +30,10 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button
 } from '@mui/material'
 
@@ -43,6 +49,8 @@ import * as yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import SignatureCanvas from 'react-signature-canvas'
+import { Document, Page, pdfjs } from 'react-pdf'
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 
 // ** Custom Components Imports
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -51,7 +59,7 @@ import GoBackButton from 'src/views/components/goback/GoBack'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 // ** Store Imports
-import { sendNewUser, updateUser } from 'src/store/users'
+import { sendNewUser, updateUser, createContract } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
 import { createAddress, getColonies, selectColony } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
@@ -61,6 +69,7 @@ import { loadSession } from 'src/store/dashboard/generalSlice'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 
 const steps = [
   {
@@ -82,6 +91,10 @@ const steps = [
   {
     title: 'Datos Fiscales',
     subtitle: 'Ingresa la información para la elaboración del contrato'
+  },
+  {
+    title: 'Contrato',
+    subtitle: 'Revisa tu contrato y descargalo'
   }
 ]
 
@@ -118,6 +131,14 @@ const defaultBankInfoValues = {
 }
 
 const defaultTaxInfoValues = {
+  rfc: '',
+  identificationType: '',
+  otherIdentification: '',
+  signature: ''
+}
+
+const defaultContractInfoValues = {
+  phone: '',
   rfc: '',
   identificationType: '',
   otherIdentification: '',
@@ -180,14 +201,47 @@ const bankInfoSchema = yup.object().shape({
 })
 
 const taxInfoSchema = yup.object().shape({
-  rfc: yup.string().required('El campo es requerido'),
+  rfc: yup
+    .string()
+    .required('El campo es requerido')
+    .matches(
+      /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
+      'RFC inválido'
+    )
+    .test('exact-length', 'El RFC debe tener exactamente 13 caracteres', value => {
+      return value?.length === 13
+    }),
   identificationType: yup.string().required('El campo es requerido'),
   otherIdentification: yup.string().when('identificationType', {
     is: 'Otro',
     then: yup.string().required('El campo es requerido'),
     otherwise: yup.string().notRequired()
-  }),
-  signature: yup.string().required('La firma electrónica es requerida')
+  })
+})
+
+const contractInfoSchema = yup.object().shape({
+  phone: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(10, 'Deben ser 10 dígitos')
+    .max(10, 'Deben ser 10 dígitos'),
+  rfc: yup
+    .string()
+    .required('El campo es requerido')
+    .matches(
+      /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
+      'RFC inválido'
+    )
+    .test('exact-length', 'El RFC debe tener exactamente 13 caracteres', value => {
+      return value?.length === 13
+    }),
+  identificationType: yup.string().required('El campo es requerido'),
+  otherIdentification: yup.string().when('identificationType', {
+    is: 'Otro',
+    then: yup.string().required('El campo es requerido'),
+    otherwise: yup.string().notRequired()
+  })
 })
 
 function PAGE() {
@@ -200,11 +254,21 @@ export default function Address() {
   const { user } = useSelector(state => state.dashboard.general)
   const { isLoading } = useSelector(state => state.users)
   const { colonies, selectedColony } = useSelector(state => state.address)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { setValue } = useForm()
+
   const { activeStep } = useSelector(state => state.register)
+  //const activeStep = 4
+
   const { open, message, severity } = useSelector(state => state.notifications)
   const [showOtherIdentification, setShowOtherIdentification] = useState(false)
-  const [idType, setIdType] = useState('')
-  const signatureRef = useRef(null)
+  const signatureRef1 = useRef(null)
+  const [isSignature1Empty, setIsSignature1Empty] = useState(true)
+  const signatureRef2 = useRef(null)
+  const [isSignature2Empty, setIsSignature2Empty] = useState(false)
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
+
+  const pdfs = ['https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-caratulaContratro.pdf', 'https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-contrato.pdf']
 
   // Get the current year
   const currentYear = new Date().getFullYear()
@@ -215,9 +279,78 @@ export default function Address() {
     label: `${currentYear + i}`.slice(-2)
   }))
 
+  async function mergePDFs(pdfs) {
+    const mergedPdf = await PDFDocument.create();
+    
+    for (const pdfUrl of pdfs) {
+      const pdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
+      const pdf = await PDFDocument.load(pdfBytes);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach((page) => mergedPdf.addPage(page));
+    }
+  
+    return await mergedPdf.save();
+  }
+
   useEffect(() => {
     dispatch(loadSession())
   }, [])
+
+  useEffect(() => {
+    // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
+    setIsSignature1Empty(signatureRef1.current && signatureRef1.current.isEmpty())
+  }, [signatureRef1.current])
+
+  useEffect(() => {
+    // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
+    const loadSignatureAfterDelay = () => {
+      setIsSignature2Empty(signatureRef2.current && signatureRef2.current.isEmpty())
+    }
+
+    const delay = 150
+    const timer = setTimeout(loadSignatureAfterDelay, delay)
+
+    return () => clearTimeout(timer)
+  }, [signatureRef2.current])
+
+  useEffect(() => {
+    const formData = JSON.parse(sessionStorage.getItem('formData'))
+    if (formData && formData.signature) {
+      const signature = formData.signature
+      // Función que carga el valor inicial de la firma después de 1 segundo
+      const loadSignatureAfterDelay = () => {
+        setValue('phone', formData.phone)
+        setValue('rfc', formData.rfc)
+        setValue('identificationType', formData.identificationType)
+        setValue('otherIdentificationType', formData.otherIdentificationType)
+
+        if (signatureRef2.current && signature) {
+          // Obtener las dimensiones del canvas
+          const canvasWidth = signatureRef2.current._canvas.width
+          const canvasHeight = signatureRef2.current._canvas.height
+
+          // Crear una nueva imagen para cargar el valor de la firma
+          const image = new Image()
+
+          // Cuando la imagen se carga, establecer las dimensiones del canvas según el tamaño de la imagen
+          image.onload = () => {
+            signatureRef2.current.fromDataURL(signature, {
+              width: canvasWidth,
+              height: canvasHeight
+            })
+          }
+
+          // Establecer la fuente de la imagen como el valor de la firma
+          image.src = signature
+        }
+      }
+
+      const delay = 100
+      const timer = setTimeout(loadSignatureAfterDelay, delay)
+
+      if (isModalOpen === true) return () => clearTimeout(timer)
+    }
+  }, [isModalOpen])
 
   // ** Hooks
   const {
@@ -269,15 +402,15 @@ export default function Address() {
     resolver: yupResolver(taxInfoSchema)
   })
 
-  const handleTaxInfoChange = event => {
-    const value = event.target.value
-    setIdType(value)
-    if (value === 'Otro') {
-      setShowOtherIdentification(true)
-    } else {
-      setShowOtherIdentification(false)
-    }
-  }
+  const {
+    reset: contractInfoReset,
+    control: contractInfoControl,
+    handleSubmit: handleContractInfoSubmit,
+    formState: { errors: contractInfoErrors }
+  } = useForm({
+    defaultValues: defaultContractInfoValues,
+    resolver: yupResolver(contractInfoSchema)
+  })
 
   // Handle Stepper
   const handleBack = () => {
@@ -291,8 +424,34 @@ export default function Address() {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
+  const handleDownload = async () => {
+    const mergedPdfBytes = await mergePDFs(pdfs);
+    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Contrato.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const onDataSubmit = values => {
     values.profile = PROFILES_USER.affiliatedUser
+
+    // Recuperar los datos existentes del sessionStorage
+    const existingDataJSON = sessionStorage.getItem('formData')
+    const existingData = existingDataJSON ? JSON.parse(existingDataJSON) : {}
+
+    // Fusionar los nuevos datos con los datos existentes
+    const updatedData = {
+      ...existingData,
+      ...values
+    }
+
+    // Guardar el objeto actualizado en sessionStorage
+    const updatedDataJSON = JSON.stringify(updatedData)
+    sessionStorage.setItem('formData', updatedDataJSON)
+
     dispatch(updateUser({ body: values, uuid: user.id }))
   }
 
@@ -309,6 +468,21 @@ export default function Address() {
         country: 'Mexico',
         refer: values.refer
       }
+
+      // Recuperar los datos existentes del sessionStorage
+      const existingDataJSON = sessionStorage.getItem('formData')
+      const existingData = existingDataJSON ? JSON.parse(existingDataJSON) : {}
+
+      // Fusionar los nuevos datos con los datos existentes
+      const updatedData = {
+        ...existingData,
+        ...body
+      }
+
+      // Guardar el objeto actualizado en sessionStorage
+      const updatedDataJSON = JSON.stringify(updatedData)
+      sessionStorage.setItem('formData', updatedDataJSON)
+
       dispatch(createAddress({ body: body, uuid: user.id }))
     }
   }
@@ -319,6 +493,19 @@ export default function Address() {
       cardUse: 'Pago',
       expDate: `${values.month}/${values.year}`
     }
+    // Recuperar los datos existentes del sessionStorage
+    const existingDataJSON = sessionStorage.getItem('formData')
+    const existingData = existingDataJSON ? JSON.parse(existingDataJSON) : {}
+
+    // Fusionar los nuevos datos con los datos existentes
+    const updatedData = {
+      ...existingData,
+      ...body
+    }
+
+    // Guardar el objeto actualizado en sessionStorage
+    const updatedDataJSON = JSON.stringify(updatedData)
+    sessionStorage.setItem('formData', updatedDataJSON)
 
     dispatch(createMethod({ body, uuid: user.id }))
   }
@@ -329,16 +516,100 @@ export default function Address() {
       cardUse: 'Cobro'
     }
 
+    // Recuperar los datos existentes del sessionStorage
+    const existingDataJSON = sessionStorage.getItem('formData')
+    const existingData = existingDataJSON ? JSON.parse(existingDataJSON) : {}
+
+    // Fusionar los nuevos datos con los datos existentes
+    const updatedData = {
+      ...existingData,
+      ...body
+    }
+
+    // Guardar el objeto actualizado en sessionStorage
+    const updatedDataJSON = JSON.stringify(updatedData)
+    sessionStorage.setItem('formData', updatedDataJSON)
+
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
   const onTaxInfoSubmit = values => {
-    const signatureData = signatureRef.current.toDataURL() // Obtiene la imagen de la firma
-    const body = {
-      ...values
+    // Validar el campo de firma manualmente
+    const isCanvasEmpty = signatureRef1.current.isEmpty()
+    if (isCanvasEmpty) {
+      // El canvas de firma está vacío
+      console.log('La firma electrónica es requerida')
+      return
     }
 
-    dispatch(createMethod({ body, uuid: user.id }))
+    // El canvas de firma no está vacío
+    const signatureData = signatureRef1.current.toDataURL()
+
+    const body = {
+      ...values,
+      signature: signatureData // Agrega la imagen de la firma al cuerpo del formulario
+    }
+
+    // Recuperar los datos existentes del sessionStorage
+    const existingDataJSON = sessionStorage.getItem('formData')
+    const existingData = existingDataJSON ? JSON.parse(existingDataJSON) : {}
+
+    // Fusionar los nuevos datos con los datos existentes
+    const updatedData = {
+      ...existingData,
+      ...body
+    }
+
+    // Guardar el objeto actualizado en sessionStorage
+    const updatedDataJSON = JSON.stringify(updatedData)
+    sessionStorage.setItem('formData', updatedDataJSON)
+
+    setIsModalOpen(true)
+  }
+
+  const onContractInfoSubmit = values => {
+    // Validar el campo de firma manualmente
+    const isCanvasEmpty = signatureRef2.current.isEmpty()
+    if (isCanvasEmpty) {
+      // El canvas de firma está vacío
+      console.log('La firma electrónica es requerida')
+      return
+    }
+
+    const formData = JSON.parse(sessionStorage.getItem('formData'))
+
+    const fullName = formData.firstName + ' ' + formData.lastName
+
+    // El canvas de firma no está vacío
+    const signatureData = signatureRef2.current.toDataURL()
+
+    const body = {
+      inmunoSign: 'firma inmuno',
+      userSign: signatureData,
+      name: fullName,
+      rfc: values.rfc,
+      street: formData.street,
+      extNumber: formData.extNumber,
+      intNumber: formData.intNumber,
+      colony: formData.colony,
+      federalEntity: formData.federalEntity,
+      zipCode: formData.zipCode,
+      email: formData.email,
+      phone: values.phone,
+      ine: true,
+      package: 'paquete tal',
+      monthlyPurchase: 'pago de mes',
+      cardNumber: formData.cardNumber,
+      bank: 'bbva',
+      clave: formData.clabe,
+      regNumber: '1234567851',
+      city: formData.city
+    }
+
+    dispatch(createContract({ body, uuid: user.id }))
+
+    //Cierra el modal después de confirmar
+    setIsModalOpen(false)
   }
 
   const getValidDate = () => {
@@ -452,7 +723,6 @@ export default function Address() {
                   )}
                 </FormControl>
               </Grid>
-
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
                   Atras
@@ -899,7 +1169,7 @@ export default function Address() {
         )
       case 3:
         return (
-          <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
+          <form key={5} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -962,27 +1232,33 @@ export default function Address() {
         )
       case 4:
         return (
-          <form onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
+          <form key={3} onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='identification'
+                    name='rfc'
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
                         label='RFC'
-                        onChange={onChange}
+                        onInput={e => {
+                          // Convertir el valor a mayúsculas antes de actualizar el estado
+                          e.target.value = e.target.value.toUpperCase()
+                          onChange(e)
+                        }}
                         placeholder='RFC'
-                        error={Boolean(taxInfoErrors['identification'])}
+                        style={{ textTransform: 'uppercase' }}
+                        error={Boolean(taxInfoErrors['rfc'])}
                       />
                     )}
                   />
-                  {taxInfoErrors['identification'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identification'>
-                      {taxInfoErrors['identification'].message ?? 'El campo es requerido'}
+                  <FormHelperText id='helper-linear-taxInfo-rfc'>Ingrese el RFC sin guiones o espacios</FormHelperText>
+                  {taxInfoErrors['rfc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc'>
+                      {taxInfoErrors['rfc'] ? taxInfoErrors['rfc'].message : 'El campo es requerido'}
                     </FormHelperText>
                   )}
                 </FormControl>
@@ -995,7 +1271,18 @@ export default function Address() {
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <RadioGroup value={idType} onChange={handleTaxInfoChange}>
+                      <RadioGroup
+                        value={value}
+                        onChange={e => {
+                          const value = e.target.value
+                          if (value === 'Otro') {
+                            setShowOtherIdentification(true)
+                          } else {
+                            setShowOtherIdentification(false)
+                          }
+                          onChange(value)
+                        }}
+                      >
                         <FormControlLabel value='INE' control={<Radio />} label='INE' />
                         <FormControlLabel value='Pasaporte' control={<Radio />} label='Pasaporte' />
                         <FormControlLabel value='Otro' control={<Radio />} label='Otro' />
@@ -1039,16 +1326,24 @@ export default function Address() {
                   Firma
                 </InputLabel>
                 <FormControl sx={{ backgroundColor: 'white', border: '2px solid black' }}>
-                  <SignatureCanvas ref={signatureRef} canvasProps={{ width: 500, height: 200 }} />
-                  <Button variant='outlined' onClick={() => signatureRef.current.clear()}>
+                  <SignatureCanvas
+                    ref={signatureRef1}
+                    canvasProps={{ width: 500, height: 200 }}
+                    onEnd={() => {
+                      setIsSignature1Empty(false)
+                    }}
+                  />
+                  <Button variant='contained' color='secondary' onClick={() => signatureRef1.current.clear()}>
                     Limpiar
                   </Button>
                 </FormControl>
+                {isSignature1Empty && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-signature'>
+                    La firma electrónica es requerida
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={() => {}}>
-                  Atrás
-                </Button>
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -1056,6 +1351,33 @@ export default function Address() {
             </Grid>
           </form>
         )
+      case 5:
+        return (
+          <Grid container spacing={5} alignItems='center' justifyContent='center'>
+              <Box
+                sx={{
+                  overflowY: 'auto',
+                  height: '60vh',
+                  ml:'20px'
+                }}
+                >
+                {pdfs.map((pdf, index) => (
+                <Document file={pdf} options={{ workerSrc: '/pdf.worker.js' }} key={index}>
+                  <Page pageNumber={1} scale={1.5} width={500} key={index} />
+                </Document>
+                  ))}
+              </Box>
+            <Grid container justifyContent='space-between' alignItems='center'  sx={{ mt: '20px' }} >
+              <Button variant='contained' color='info' sx={{ marginLeft: '20px' }} onClick={handleDownload}>
+                Descargar
+              </Button>
+              <Button type='submit' variant='contained' color='primary'>
+                Confirmar
+              </Button>
+            </Grid>
+          </Grid>
+        )
+
       default:
         return null
     }
@@ -1146,6 +1468,154 @@ export default function Address() {
           <CardContent>{renderContent()}</CardContent>
         </Card>
       </Box>
+
+      <Dialog open={isModalOpen}>
+        <DialogTitle>Verifica que tus datos sean correctos, corrígelos de ser necesario</DialogTitle>
+        <form key={4} onSubmit={handleContractInfoSubmit(onContractInfoSubmit)}>
+          <DialogContent>
+            <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth sx={{ mt: '10px' }}>
+                  <Controller
+                    name='phone'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Teléfono'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors.phone)}
+                        placeholder='Teléfono'
+                        aria-describedby='validation-basic-number'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.phone && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-number2'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='rfc'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='RFC'
+                        onInput={e => {
+                          // Convertir el valor a mayúsculas antes de actualizar el estado
+                          e.target.value = e.target.value.toUpperCase()
+                          onChange(e)
+                        }}
+                        placeholder='RFC'
+                        style={{ textTransform: 'uppercase' }}
+                        error={Boolean(contractInfoErrors['rfc'])}
+                      />
+                    )}
+                  />
+                  <FormHelperText id='helper-linear-taxInfo-rfc2'>Ingrese el RFC sin guiones o espacios</FormHelperText>
+                  {contractInfoErrors['rfc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc2'>
+                      {contractInfoErrors['rfc'] ? contractInfoErrors['rfc'].message : 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel id='identificationType-label2'>Tipo de Identificación Oficial</InputLabel>
+                <FormControl component='fieldset' fullWidth>
+                  <Controller
+                    name='identificationType'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <RadioGroup
+                        value={value}
+                        onChange={e => {
+                          const value = e.target.value
+                          if (value === 'Otro') {
+                            setShowOtherIdentification(true)
+                          } else {
+                            setShowOtherIdentification(false)
+                          }
+                          onChange(value)
+                        }}
+                      >
+                        <FormControlLabel value='INE' control={<Radio />} label='INE' />
+                        <FormControlLabel value='Pasaporte' control={<Radio />} label='Pasaporte' />
+                        <FormControlLabel value='Otro' control={<Radio />} label='Otro' />
+                      </RadioGroup>
+                    )}
+                  />
+                  {contractInfoErrors['identificationType'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identificationType2'>
+                      {contractInfoErrors['identificationType']?.message || 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              {showOtherIdentification && (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='otherIdentification'
+                      control={contractInfoControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Otro tipo de identificación'
+                          onChange={onChange}
+                          placeholder='Otro tipo de identificación'
+                          error={Boolean(contractInfoErrors['otherIdentification'])}
+                        />
+                      )}
+                    />
+                    {contractInfoErrors['otherIdentification'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-otherIdentification2'>
+                        {contractInfoErrors['otherIdentification'].message ?? 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <InputLabel id='signature-label2' sx={{ mb: 2 }}>
+                  Firma
+                </InputLabel>
+                <FormControl sx={{ backgroundColor: 'white', border: '2px solid black' }}>
+                  <SignatureCanvas
+                    ref={signatureRef2}
+                    canvasProps={{ width: 500, height: 200 }}
+                    onEnd={() => {
+                      setIsSignature2Empty(false)
+                    }}
+                  />
+                  <Button variant='contained' color='secondary' onClick={() => signatureRef2.current.clear()}>
+                    Limpiar
+                  </Button>
+                </FormControl>
+                {isSignature2Empty && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-signature2'>
+                    La firma electrónica es requerida
+                  </FormHelperText>
+                )}
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button type='submit' variant='contained' color='primary'>
+              Confirmar
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>

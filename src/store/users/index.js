@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post, api_get, api_delete, api_patch } from '../../services/api'
+import { PROYECT, api_post, api_get, api_delete, api_patch, PROJECT_CONTRACT } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
@@ -95,6 +95,31 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
   }
 })
 
+export const createContract = createAsyncThunk('contracts/newContract', async ({ body, uuid }, thunkApi) => {
+  const token = localStorage.getItem('im-user');
+  const auth = { headers: { Authorization: `Bearer ${token}` } };
+
+  try {
+      const response = await api_post(`${PROJECT_CONTRACT}/users/contract/${uuid}`, body, auth);
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }));
+      thunkApi.dispatch(setModal(false));
+      thunkApi.dispatch(loadInfo(uuid));
+      thunkApi.dispatch(nextStep());
+
+      return response;
+  } catch (error) {
+      const data = error.response.data;
+
+      if (data.message) {
+          thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }));
+          thunkApi.dispatch(setModal(false));
+      }
+
+      return thunkApi.rejectWithValue('error');
+  }
+});
+
+
 //update Password
 export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
   debugger
@@ -184,6 +209,8 @@ const initialState = {
   // new user
   isLoading: 'idle',
   user: {},
+  //user contract
+  contract: {},
   //edit user
   showModal: false,
   modalRow: null,
@@ -292,6 +319,9 @@ export const usersSlice = createSlice({
     })
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
       state.users = payload.content
+    })
+    builder.addCase(createContract.fulfilled, (state, { payload }) => {
+      state.contract = payload.content
     })
     //get info user
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {

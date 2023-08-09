@@ -32,6 +32,8 @@ const Welcome = () => {
       email,
       code: verificationCode
     }
+    const formData = JSON.stringify(email)
+    sessionStorage.setItem('formData', formData)
     dispatch(validateNewUser(body))
   }
 
