@@ -55,6 +55,7 @@ const BASIC_ERRORS = {
 const FormRegister = () => {
   const dispatch = useDispatch()
   const { query } = useRouter()
+  const newAssociate = query.newAssociate === 'true'
 
   const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
   const { open, message, positioned, severity } = useSelector(state => state.notifications)
@@ -65,11 +66,11 @@ const FormRegister = () => {
     password: '',
     recommenderId: '',
     showPassword: false,
-    privacyPolicyChecked: false,
-    termsAndConditionsChecked: false,
-    consentChecked: false,
-    affiliateChecked: false,
-    affiliateContractChecked: false
+    privacyPolicyChecked: newAssociate,
+    termsAndConditionsChecked: newAssociate,
+    consentChecked: newAssociate,
+    affiliateChecked: newAssociate,
+    affiliateContractChecked: newAssociate
   })
 
   const handleChange = prop => event => {

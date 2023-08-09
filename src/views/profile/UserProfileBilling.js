@@ -97,7 +97,7 @@ const UserProfileBilling = ({ methods = [] }) => {
   const [deleteID, setDeleteID] = useState(null)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, paymentMethods } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -149,7 +149,7 @@ const UserProfileBilling = ({ methods = [] }) => {
 
   const sendDelete = () => {
     if (deleteID) {
-      dispatch(deleteMethod(deleteID))
+      dispatch(deleteMethod({ id: deleteID, uuid: user.id }))
     }
   }
 
@@ -177,7 +177,7 @@ const UserProfileBilling = ({ methods = [] }) => {
           }
         />
         <CardContent>
-          {methods.map((item, index) => (
+          {paymentMethods.map(item => (
             <Box
               key={index}
               sx={{

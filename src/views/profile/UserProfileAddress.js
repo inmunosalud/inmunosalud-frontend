@@ -95,7 +95,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
   const { user } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
 
-  const { showModal } = useSelector(state => state.address)
+  const { showModal, selectedColony } = useSelector(state => state.address)
 
   // ** Hooks
   const {
@@ -109,7 +109,7 @@ const UserProfileAddress = ({ addresses = [] }) => {
   })
 
   const onSubmit = data => {
-    if (data.colony.colony != null) {
+    if (selectedColony.colony != null) {
       let body = {
         street: data.street,
         extNumber: data.extNumber,
@@ -135,8 +135,8 @@ const UserProfileAddress = ({ addresses = [] }) => {
   const handleEditAddressClickOpen = address => {
     setEditItem(address)
     dispatch(getColonies(address.zipCode)).then(colonies => {
-      const selectedColony = colonies.payload.find(zipCode => zipCode.colony === address.colony)
-      dispatch(selectColony(selectedColony))
+      const colony = colonies.payload.find(zipCode => zipCode.colony === address.colony)
+      dispatch(selectColony(colony))
       setEditItem(prevState => ({ ...prevState, colony: selectedColony }))
     })
     dispatch(setModal(true))
