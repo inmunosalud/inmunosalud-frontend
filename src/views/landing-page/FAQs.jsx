@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
+import Link from 'next/link' // <-- Add this line
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -9,6 +10,8 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import MuiAccordion from '@mui/material/Accordion'
 import MuiCardContent from '@mui/material/CardContent'
+import { useTheme } from '@mui/material/styles'
+
 
 // ** Icons Imports
 import ChevronDown from 'mdi-material-ui/ChevronDown'
@@ -34,19 +37,21 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   }
 }))
 
-const FAQs = props => {
+const FAQs = (props) => {
   // ** Props
   const { data } = props
 
   // ** Props
   const [expanded, setExpanded] = useState(false)
+  const theme = useTheme()
 
-  const handleChange = panel => (event, isExpanded) => {
+
+  const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
 
   const renderAccordion = () => {
-    return data?.map(item => {
+    return data?.map((item) => {
       return (
         <Accordion key={item.id} elevation={0} expanded={expanded === item.id} onChange={handleChange(item.id)}>
           <AccordionSummary
@@ -57,7 +62,19 @@ const FAQs = props => {
             <Typography>{item.question}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant='body2'>{item.answer}</Typography>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+              {item.answer}
+              {item.link && (
+                <Typography variant="body2" component="span">
+                  {' '}
+                  <Link href={item.link}>
+                    <a target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main }}>
+                      {item.link}
+                    </a>
+                  </Link>
+                </Typography>
+              )}
+            </Typography>
           </AccordionDetails>
         </Accordion>
       )

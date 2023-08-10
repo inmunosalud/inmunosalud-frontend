@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from 'src/store/products'
 import Router from 'next/router'
 import Link from 'next/link'
+import { PROFILES_USER } from 'src/configs/profiles'
 
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
@@ -79,31 +80,32 @@ const questions = [
     id: 'Q1',
     question: '¿Es un medicamento?',
     answer:
-      'Sesame snaps tart bonbon tiramisu jelly beans lemon drops bear claw candy gummi bears. Caramels pudding sweet donut tootsie roll gummies macaroon. Lemon drops caramels sesame snaps dessert jujubes. Cupcake chocolate bonbon cake tiramisu. Gummies candy canes ice cream biscuit. Jelly gummies wafer danish chupa chups sugar plum cookie.'
+      'No, nuestros productos no son medicamentos. Son suplementos naturales respaldados por estudios científicos que se pueden encontrar en ',
+    link: 'https://pubmed.ncbi.nlm.nih.gov/'
   },
   {
     id: 'Q2',
     question: '¿Es de confianza? ¿Cómo sé que es de confianza?',
     answer:
-      'Chocolate sweet roll lemon drops chocolate cake candy canes halvah. Donut fruitcake sweet roll brownie carrot cake cake. Donut jujubes pudding candy macaroon. Gummies gingerbread croissant bonbon. Cookie toffee cupcake cotton candy candy canes dessert cotton candy liquorice. Jelly beans gummi bears toffee chocolate bar chocolate cake.'
+      'Realizamos análisis de calidad de las materias primas que utilizamos y seguimos rigurosos estándares de buenas prácticas de manufactura. Además, nuestras fórmulas se basan en investigaciones científicas sobre los beneficios para la salud de los ingredientes utilizados.'
   },
   {
     id: 'Q3',
     question: '¿En dónde lo puedo conseguir? ¿Cuánto tiempo tardan en entregarlo?',
     answer:
-      'Liquorice pie donut tootsie roll marzipan liquorice topping pie. Muffin sweet roll soufflé croissant cookie cotton candy toffee. Tootsie roll chocolate cake wafer jelly beans soufflé danish tart. Halvah dragée chocolate bar gingerbread apple pie ice cream ice cream fruitcake. Chocolate bar pudding apple pie cheesecake dragée topping ice cream cookie.'
+      'Puedes adquirir nuestros productos exclusivamente a través de nuestra página web. Trabajamos con paqueterías nacionales e internacionales para el envío, y el tiempo estimado de entrega es de 2 a 3 días.'
   },
   {
     id: 'Q4',
     question: '¿Qué se necesita para afiliarte?',
     answer:
-      'Halvah liquorice pastry marshmallow sugar plum. Dessert chocolate pastry gummi bears pastry. Gingerbread bonbon pudding oat cake jujubes pie wafer tart brownie. Soufflé jujubes icing powder liquorice. Sweet donut toffee liquorice dessert dragée. Topping cake danish chupa chups chupa chups gummies. Cotton candy gummies chocolate cake oat cake.'
+      'Simplemente debes adquirir nuestro paquete inicial. Este es el pedido mínimo para mantener tu afiliación activa el cual contiene las dosis necesarias para consumir en el mes. Es necesario hacer el pedido mínimo cada mes para mantener tu cuenta activa.'
   },
   {
     id: 'Q5',
     question: '¿Cómo garantizamos la calidad de nuestros productos?',
     answer:
-      'Halvah liquorice pastry marshmallow sugar plum. Dessert chocolate pastry gummi bears pastry. Gingerbread bonbon pudding oat cake jujubes pie wafer tart brownie. Soufflé jujubes icing powder liquorice. Sweet donut toffee liquorice dessert dragée. Topping cake danish chupa chups chupa chups gummies. Cotton candy gummies chocolate cake oat cake.'
+      'Mediante el análisis de todas nuestras materias primas y el cumplimiento de rigurosos estándares de calidad respaldados por buenas prácticas de manufactura.'
   }
 ]
 
@@ -111,6 +113,7 @@ const Pricing = () => {
   // ** States
   const [plan, setPlan] = useState('monthly')
   const { products, isLoading } = useSelector(state => state.products)
+  const { user } = useSelector(state => state.dashboard.general)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -181,12 +184,13 @@ const Pricing = () => {
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={8}>
-            <Box sx={{  margin: '1rem' }}>
-              <Image src={Banner} alt='aboutUs'/>
+            <Box sx={{ margin: '1rem' }}>
+              <Image src={Banner} alt='aboutUs' />
             </Box>
           </Grid>
         </Grid>
-          <Grid item xs={12}>
+        <Grid item xs={12}>
+          {user.profile != PROFILES_USER.affiliatedUser ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
               <Link href='/landing-page/join' passHref>
                 <Button variant='outlined' size='large'>
@@ -194,7 +198,8 @@ const Pricing = () => {
                 </Button>
               </Link>
             </Box>
-          </Grid>
+          ) : null}
+        </Grid>
       </Card>
 
       <FAQs data={questions} />

@@ -13,13 +13,13 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
+import { useRouter } from 'next/router'
 
 // ** Styled Component for the wrapper of whole component
 const BoxWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
   padding: theme.spacing(5),
-  borderRadius: theme.shape.borderRadius,
-  
+  borderRadius: theme.shape.borderRadius
 }))
 
 // ** Styled Component for the wrapper of all the features of a plan
@@ -33,6 +33,7 @@ const BoxFeature = styled(Box)(({ theme }) => ({
 const Product = props => {
   // ** Props
   const { plan, data } = props
+  const router = useRouter()
 
   const renderFeatures = () => {
     return data?.planBenefits.map((item, index) => (
@@ -45,12 +46,12 @@ const Product = props => {
 
   return (
     <BoxWrapper
-   sx={{
-    border: theme => `1px solid ${theme.palette.divider}`,
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%'
-  }}
+      sx={{
+        border: theme => `1px solid ${theme.palette.divider}`,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}
     >
       {data?.popularPlan ? (
         <CustomChip
@@ -70,25 +71,26 @@ const Product = props => {
           }}
         />
       ) : null}
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px',}}>
-        <Image
-          src={`${data?.urlImages[0]}`}
-          width={80}
-          height={100}
-          alt={`${data?.product.toLowerCase()}-plan-img`}
-        />
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <Image src={`${data?.urlImages[0]}`} width={80} height={100} alt={`${data?.product.toLowerCase()}-plan-img`} />
       </Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant='h5'>{data?.product}</Typography>
       </Box>
-      <Box sx={{ textAlign: 'center', marginBottom: '20px',}}>
+      <Box sx={{ textAlign: 'center', marginBottom: '20px' }}>
         <Typography variant='body2'>{data?.description}</Typography>
       </Box>
       <Box sx={{ marginTop: 'auto' }}>
-      <Button fullWidth color='primary' variant={'outlined'}>
-        {'Agregar a carrito'}
-      </Button>
-
+        <Button
+          fullWidth
+          color='primary'
+          variant={'outlined'}
+          onClick={() => {
+            router.push('/ecommerce/products/')
+          }}
+        >
+          {'Agregar a carrito'}
+        </Button>
       </Box>
     </BoxWrapper>
   )

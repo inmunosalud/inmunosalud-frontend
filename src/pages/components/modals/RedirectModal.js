@@ -4,6 +4,7 @@ import Router from 'next/router'
 
 const RedirectModal = ({ open, handleClose, pageToRedirect }) => {
   const handleRedirect = () => {
+    handleClose()
     Router.push(pageToRedirect)
   }
 
@@ -23,30 +24,17 @@ const RedirectModal = ({ open, handleClose, pageToRedirect }) => {
     <Modal open={open} handleClose={handleClose}>
       <Box sx={{ ...style, width: 400 }}>
         <Typography id='modal-tittle' variant='h6' component={'h2'}>
-          Inicia sesion para continuar
+          Inicia sesión para continuar
         </Typography>
         <Typography id='modal-text' sx={{ mt: 2 }}>
-          Al parecer no estas registrado o no haz iniciado sesion, porfavor inicia sesion para continuar
+          Al parecer no estás registrado o no haz iniciado sesión, por favor inicia sesión para continuar.
         </Typography>
-        <Stack spacing={10} direction={'row'}>
-          <Button variant='contained' onClick={handleClose}>
+        <Stack spacing={10} direction={'row'} justifyContent={'center'} sx={{ mt: 2 }}>
+          <Button variant='outlined' onClick={handleClose}>
             Cancelar
           </Button>
           <Button variant='contained' onClick={handleRedirect}>
-            Register | Login
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke-width='1.5'
-              stroke='currentColor'
-              class='icon'
-              style={{
-                width: '24px'
-              }}
-            >
-              <path stroke-linecap='round' stroke-linejoin='round' d='M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3' />
-            </svg>
+            Iniciar sesión
           </Button>
         </Stack>
       </Box>

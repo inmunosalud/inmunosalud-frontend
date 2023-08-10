@@ -29,14 +29,9 @@ const AuthGuard = props => {
       }
 
       if (!resolveProfile(user, router.pathname)) {
-        if (router.asPath !== '/') {
-          router.replace({
-            pathname: '/ecommerce/products'
-            // query: { returnUrl: router.asPath }
-          })
-        } else {
-          router.replace('/ecommerce/products')
-        }
+        router.replace({
+          pathname: '/landing-page/home/'
+        })
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

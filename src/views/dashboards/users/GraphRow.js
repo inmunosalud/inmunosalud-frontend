@@ -1,15 +1,14 @@
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import { useTheme } from '@mui/material/styles';
 
 //util
 
-const columnColors = {
-  bg: '#f8d3ff',
-  series1: '#826af9',
-  series2: '#d2b0ff'
-}
+
 
 const GraphRow = ({ type, value }) => {
+  const theme = useTheme();
+
   const options = {
     chart: {
       offsetX: -10,
@@ -54,7 +53,7 @@ const GraphRow = ({ type, value }) => {
       position: 'top',
       horizontalAlign: 'left'
     },
-    colors: [columnColors.series1, columnColors.series2, columnColors.bg],
+    colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.background.default],
     stroke: {
       show: true,
       colors: ['transparent']

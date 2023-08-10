@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
+import { useTheme } from '@mui/material/styles';
 
 // ** Third Party Imports
 import format from 'date-fns/format'
@@ -19,15 +20,10 @@ import ChevronDown from 'mdi-material-ui/ChevronDown'
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
-const columnColors = {
-  bg: '#f8d3ff',
-  series1: '#826af9',
-  series2: '#d2b0ff'
-}
-
 const AverageEfectiveness = ({ score = 0 }) => {
   const [endDate, setEndDate] = useState(null)
   const [startDate, setStartDate] = useState(new Date())
+  const theme = useTheme();
 
   const options = {
     chart: {
@@ -66,7 +62,7 @@ const AverageEfectiveness = ({ score = 0 }) => {
       position: 'top',
       horizontalAlign: 'left'
     },
-    colors: [columnColors.series1, columnColors.series2, columnColors.bg],
+    colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.background.default],
     stroke: {
       show: true,
       colors: ['transparent']

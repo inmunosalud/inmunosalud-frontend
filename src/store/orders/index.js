@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { ORDERS, api_post, api_get, api_put, api_delete } from '../../services/api'
+import { ORDERS, api_post, api_get, api_patch, api_delete } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 import { getCart } from '../cart'
@@ -28,11 +28,10 @@ export const getOrdersByUser = createAsyncThunk('order/getOrders', async (id, th
 })
 
 export const updateOrder = createAsyncThunk('order/editOrder', async (body, thunkApi) => {
-  console.log({ body })
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_put(`${ORDERS}/orders/${body.idParam}`, body, auth)
+    const response = await api_patch(`${ORDERS}/orders/${body.idParam}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(getOrders())
     Router.push('/orders/admin-orders')
@@ -52,7 +51,6 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     Router.push('/ecommerce/orders')
     return response
   } catch (error) {
-    console.log(error)
     return thunkApi.rejectWithValue('error')
   }
 })

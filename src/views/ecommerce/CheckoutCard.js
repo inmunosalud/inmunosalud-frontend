@@ -83,14 +83,13 @@ const getCurrentDate = () => {
     'octubre',
     'noviembre',
     'diciembre'
-  ];
+  ]
 
-  const date = moment(new Date()).format('MM/DD/YYYY').split('/');
-  const month = Number(date[0]) - 1;
+  const date = moment(new Date()).format('MM/DD/YYYY').split('/')
+  const month = Number(date[0]) - 1
 
-  return `${date[1]} de ${months[month]} del ${date[2]}`;
-};
-
+  return `${date[1]} de ${months[month]} del ${date[2]}`
+}
 
 const CheckoutCard = ({ data }) => {
   // ** Hook
@@ -98,8 +97,6 @@ const CheckoutCard = ({ data }) => {
 
   // ** Selectors
   const { total, products, selectedPaymentMethod, selectedAddressInCard, userInfo } = data
-
-  console.log(products)
 
   // ** Ref
   const PreviewRef = useRef(null)

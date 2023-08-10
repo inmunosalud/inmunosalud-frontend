@@ -9,15 +9,20 @@ import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Badge from '@mui/material/Badge'
-import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import PolicyIcon from '@mui/icons-material/Policy'
+import ArticleIcon from '@mui/icons-material/Article'
 
 // ** Icons Imports
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountTie from 'mdi-material-ui/AccountTie'
+
+import { Flag } from 'mdi-material-ui'
+import { setModal } from 'src/store/contactus'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -27,9 +32,11 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
 }))
-import { Account, Router } from 'mdi-material-ui'
+import { Account, Router, AccountCog, AccountCircle } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { stripeRegister } from 'src/store/users'
+import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
+import { Link } from '@mui/material'
 
 const UserDropdown = props => {
   const dispatch = useDispatch()
@@ -40,9 +47,9 @@ const UserDropdown = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const { user } = useSelector(state => state.dashboard.general)
   const { stripeLink } = useSelector(state => state.users)
-
   // ** Hooks
   const router = useRouter()
+  const theme = useTheme()
 
   // ** Vars
   const { direction } = settings
@@ -85,18 +92,9 @@ const UserDropdown = props => {
 
   return (
     <Fragment>
-      <Badge
-        overlap='circular'
-        onClick={handleDropdownOpen}
-        sx={{ ml: 2, cursor: 'pointer' }}
-        badgeContent={<BadgeContentSpan />}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-      >
-        <Avatar alt='joe doe' onClick={handleDropdownOpen} sx={{ width: 40, height: 40 }} src='/images/avatars/1.png' />
-      </Badge>
+      <IconButton onClick={handleDropdownOpen} color='inherit' size='medium'>
+        <Account sx={{ fontSize: '2rem' }} />
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -115,7 +113,7 @@ const UserDropdown = props => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Account color='inherit' sx={{ fontSize: '2rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography sx={{ fontWeight: 600 }}>{user?.firstName}</Typography>
@@ -127,7 +125,7 @@ const UserDropdown = props => {
         </Box>
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={() => handleGoTo('/profile')}>
-            <Account sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+            <AccountCog sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
             Perfil
           </MenuItem>
         ) : null}
@@ -138,7 +136,7 @@ const UserDropdown = props => {
           </MenuItem>
         ) : null}
 
-        {true && (
+        {user?.profile != null && (
           <MenuItem sx={{ py: 2 }} onClick={handleRegister}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -162,7 +160,22 @@ const UserDropdown = props => {
             Registrarme en Stripe
           </MenuItem>
         )}
-
+        <MenuItem sx={{ py: 2 }} onClick={() => dispatch(setModal(true))}>
+          <Flag sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+          Tengo un problema
+        </MenuItem>
+        <MenuItem>
+          <PolicyIcon sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
+          <Link href={'/docs/Privacy.pdf'} underline='none' color={'inherit'}>
+            Aviso de privacidad
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <ArticleIcon sx={{ mr: 1, fontSize: '1.375rem', color: 'text.secondary' }} />
+          <Link href={'/docs/TyC.pdf'} underline='none' color={'inherit'}>
+            Términos y condiciones
+          </Link>
+        </MenuItem>
         <Divider />
         {user?.id ? (
           <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
@@ -176,6 +189,7 @@ const UserDropdown = props => {
           </MenuItem>
         )}
       </Menu>
+      <ProblemFormModal />
     </Fragment>
   )
 }

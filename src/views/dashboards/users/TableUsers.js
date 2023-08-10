@@ -9,6 +9,8 @@ import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import DialogDelete from 'src/views/components/dialogs/DialogDelete'
 import { DataGrid } from '@mui/x-data-grid'
 import { getLocaleText } from '../../../configs/defaultLocaleText'
+import { Button } from '@mui/material'
+
 
 import { Pencil, Delete } from 'mdi-material-ui'
 
@@ -52,18 +54,22 @@ const TableUsers = () => {
     ...columns,
     {
       flex: 0.125,
-      minWidth: 100,
+      minWidth: 150,
       field: 'actions',
       headerName: 'Acciones',
       renderCell: params => {
         const row = params?.row
         return (
-          <Typography variant='body2' sx={{ color: '#6495ED', cursor: 'pointer' }}>
+          <>
             {row.profile.includes('Admin') ? (
-              <Pencil sx={{ margin: '5px' }} onClick={() => saveItemModal(row)} />
-            ) : null}
-            <Delete sx={{ margin: '5px' }} onClick={() => setItemDeleteModal(row)} />
-          </Typography>
+              <Button onClick={() => saveItemModal(row)} color='warning' size='small'>
+                <Pencil />
+              </Button>
+            ) : <Button disableRipple disabled />}
+            <Button onClick={() => setItemDeleteModal(row)} color='error' size='small'>
+              <Delete />
+            </Button>
+          </>
         )
       }
     }

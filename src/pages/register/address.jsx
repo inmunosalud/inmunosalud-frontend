@@ -1,65 +1,67 @@
 // ** React Imports
-import { forwardRef, useState, useEffect, Fragment } from 'react'
+import React, { forwardRef, useState, useEffect, Fragment, useRef } from 'react'
 import { useRouter } from 'next/router'
-//mui components
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
 
-import Select from '@mui/material/Select'
-import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import FormHelperText from '@mui/material/FormHelperText'
-import InputAdornment from '@mui/material/InputAdornment'
-import { CircularProgress } from '@mui/material'
-
-import Box from '@mui/material/Box'
-import Step from '@mui/material/Step'
-import Stepper from '@mui/material/Stepper'
-import StepLabel from '@mui/material/StepLabel'
-import Typography from '@mui/material/Typography'
-
-import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
+// ** MUI Components Imports
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Radio,
+  RadioGroup,
+  Select,
+  Step,
+  Stepper,
+  StepLabel,
+  TextField,
+  Typography,
+  CircularProgress,
+  Button
+} from '@mui/material'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
-
-// ** Styled Components
-import { useDispatch, useSelector } from 'react-redux'
-import { sendNewUser, updateUser } from 'src/store/users'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-import GoBackButton from 'src/views/components/goback/GoBack'
+import { CardsPlayingSpade } from 'mdi-material-ui'
 
 // ** Third Party Imports
-import * as yup from 'yup'
-import toast from 'react-hot-toast'
+import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
+import SignatureCanvas from 'react-signature-canvas'
 
 // ** Custom Components Imports
-// import StepperCustomDot from './StepperCustomDot'
-
-// // ** Styled Components
-import StepperWrapper from 'src/@core/styles/mui/stepper'
-
-import { closeSnackBar } from 'src/store/notifications'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import GoBackButton from 'src/views/components/goback/GoBack'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
+
+// ** Store Imports
+import { sendNewUser, updateUser } from 'src/store/users'
+import { closeSnackBar } from 'src/store/notifications'
 import { createAddress, getColonies, selectColony } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { loadSession } from 'src/store/dashboard/generalSlice'
-import { CardsPlayingSpade } from 'mdi-material-ui'
+
+// ** Styled Components
+import StepperWrapper from 'src/@core/styles/mui/stepper'
+import { BANKS } from 'src/configs/banks'
 
 const steps = [
   {
@@ -72,11 +74,15 @@ const steps = [
   },
   {
     title: 'Forma de pago',
-    subtitle: 'Ingresa la informacion de tu forma de pago'
+    subtitle: 'Ingresa la información de tu forma de pago'
   },
   {
     title: 'Datos Bancarios',
-    subtitle: 'Ingresa la informacion para recibir tu pago de comisiones'
+    subtitle: 'Ingresa la información para recibir tu pago de comisiones'
+  },
+  {
+    title: 'Contrato de Adhesión',
+    subtitle: 'Ingresa la información para la elaboración del contrato'
   }
 ]
 
@@ -109,7 +115,15 @@ const defaultPaymentValues = {
 
 const defaultBankInfoValues = {
   beneficiary: '',
-  clabe: ''
+  clabe: '',
+  bank: ''
+}
+
+const defaultTaxInfoValues = {
+  rfc: '',
+  identificationType: '',
+  otherIdentification: '',
+  signature: ''
 }
 
 const dataSchema = yup.object().shape({
@@ -164,7 +178,19 @@ const bankInfoSchema = yup.object().shape({
     .required()
     .matches(/^[0-9]+$/, 'Solo dígitos')
     .min(18, 'Deben ser 18 dígitos')
-    .max(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos'),
+  bank: yup.string().required()
+})
+
+const taxInfoSchema = yup.object().shape({
+  rfc: yup.string().required('El campo es requerido'),
+  identificationType: yup.string().required('El campo es requerido'),
+  otherIdentification: yup.string().when('identificationType', {
+    is: 'Otro',
+    then: yup.string().required('El campo es requerido'),
+    otherwise: yup.string().notRequired()
+  }),
+  signature: yup.string().required('La firma electrónica es requerida')
 })
 
 function PAGE() {
@@ -179,6 +205,9 @@ export default function Address() {
   const { colonies, selectedColony } = useSelector(state => state.address)
   const { activeStep } = useSelector(state => state.register)
   const { open, message, severity } = useSelector(state => state.notifications)
+  const [showOtherIdentification, setShowOtherIdentification] = useState(false)
+  const [idType, setIdType] = useState('')
+  const signatureRef = useRef(null)
 
   // Get the current year
   const currentYear = new Date().getFullYear()
@@ -233,6 +262,26 @@ export default function Address() {
     resolver: yupResolver(bankInfoSchema)
   })
 
+  const {
+    reset: taxInfoReset,
+    control: taxInfoControl,
+    handleSubmit: handleTaxInfoSubmit,
+    formState: { errors: taxInfoErrors }
+  } = useForm({
+    defaultValues: defaultTaxInfoValues,
+    resolver: yupResolver(taxInfoSchema)
+  })
+
+  const handleTaxInfoChange = event => {
+    const value = event.target.value
+    setIdType(value)
+    if (value === 'Otro') {
+      setShowOtherIdentification(true)
+    } else {
+      setShowOtherIdentification(false)
+    }
+  }
+
   // Handle Stepper
   const handleBack = () => {
     const newStep = activeStep - 1
@@ -284,6 +333,24 @@ export default function Address() {
     }
 
     dispatch(createMethod({ body, uuid: user.id }))
+  }
+
+  const onTaxInfoSubmit = values => {
+    const signatureData = signatureRef.current.toDataURL() // Obtiene la imagen de la firma
+    const body = {
+      ...values
+    }
+
+    dispatch(createMethod({ body, uuid: user.id }))
+  }
+
+  const getValidDate = () => {
+    const date = new Date()
+    const year = date.getFullYear() - 18
+    const month = date.getMonth()
+    const day = date.getDate()
+    const date18YearsAgo = new Date(year, month, day)
+    return date18YearsAgo.toISOString().substr(0, 10)
   }
 
   const getStepContent = step => {
@@ -376,6 +443,8 @@ export default function Address() {
                         error={Boolean(dataErrors.birthDate)}
                         aria-describedby='validation-basic-date'
                         InputLabelProps={{ shrink: true }}
+                        InputProps={{ inputProps: { max: getValidDate() } }}
+                        defaultDate={`${currentYear - 18}-01-01`}
                       />
                     )}
                   />
@@ -853,7 +922,7 @@ export default function Address() {
                     )}
                   />
                   {bankInfoErrors['beneficiary'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-clabe'>
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-bankInfo-beneficiary'>
                       {bankInfoErrors['beneficiary'].message ?? 'El campo es requerido'}
                     </FormHelperText>
                   )}
@@ -883,9 +952,124 @@ export default function Address() {
                   )}
                 </FormControl>
               </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='bank'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <Fragment>
+                        <InputLabel id='product-label'>Banco</InputLabel>
+                        <Select labelId='product-label' label='Bank' value={value} required={true} onChange={onChange}>
+                          {BANKS.map(item => (
+                            <MenuItem value={item}>{item}</MenuItem>
+                          ))}
+                        </Select>
+                      </Fragment>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
                   Atras
+                </Button>
+                <Button size='large' type='submit' variant='contained'>
+                  Siguiente
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )
+      case 4:
+        return (
+          <form onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
+            <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='identification'
+                    control={taxInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='RFC'
+                        onChange={onChange}
+                        placeholder='RFC'
+                        error={Boolean(taxInfoErrors['identification'])}
+                      />
+                    )}
+                  />
+                  {taxInfoErrors['identification'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identification'>
+                      {taxInfoErrors['identification'].message ?? 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel id='identificationType-label'>Tipo de Identificación Oficial</InputLabel>
+                <FormControl component='fieldset' fullWidth>
+                  <Controller
+                    name='identificationType'
+                    control={taxInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <RadioGroup value={idType} onChange={handleTaxInfoChange}>
+                        <FormControlLabel value='INE' control={<Radio />} label='INE' />
+                        <FormControlLabel value='Pasaporte' control={<Radio />} label='Pasaporte' />
+                        <FormControlLabel value='Otro' control={<Radio />} label='Otro' />
+                      </RadioGroup>
+                    )}
+                  />
+                  {taxInfoErrors['identificationType'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identificationType'>
+                      {taxInfoErrors['identificationType']?.message || 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              {showOtherIdentification && (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='otherIdentification'
+                      control={taxInfoControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Otro tipo de identificación'
+                          onChange={onChange}
+                          placeholder='Otro tipo de identificación'
+                          error={Boolean(taxInfoErrors['otherIdentification'])}
+                        />
+                      )}
+                    />
+                    {taxInfoErrors['otherIdentification'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-otherIdentification'>
+                        {taxInfoErrors['otherIdentification'].message ?? 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <InputLabel id='signature-label' sx={{ mb: 2 }}>
+                  Firma
+                </InputLabel>
+                <FormControl sx={{ backgroundColor: 'white', border: '2px solid black' }}>
+                  <SignatureCanvas ref={signatureRef} canvasProps={{ width: 500, height: 200 }} />
+                  <Button variant='outlined' onClick={() => signatureRef.current.clear()}>
+                    Limpiar
+                  </Button>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button size='large' variant='outlined' color='secondary' onClick={() => {}}>
+                  Atrás
                 </Button>
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente

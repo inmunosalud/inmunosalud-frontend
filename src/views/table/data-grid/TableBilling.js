@@ -10,7 +10,6 @@ import {
     Typography,
     TextField,
     MenuItem,
-    InputLabel,
     Grid
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'

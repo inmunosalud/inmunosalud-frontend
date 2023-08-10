@@ -9,8 +9,14 @@ import {
   TextField,
   FormHelperText,
   Card,
-  Button
+  Button,
+  Select,
+  InputLabel,
+  MenuItem
 } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBank } from 'src/store/paymentMethods'
+import { BANKS } from 'src/configs/banks'
 
 export default function DialogBankInfo({
   isOpen = false,
@@ -20,6 +26,11 @@ export default function DialogBankInfo({
   handleSubmit = () => {},
   onBankInfoSubmit = () => {}
 }) {
+  const dispatch = useDispatch()
+  const handleBankSelected = value => {
+    dispatch(setBank(value))
+  }
+  const { bank } = useSelector(state => state.paymentMethods)
   return (
     <Card>
       <Dialog
@@ -81,6 +92,23 @@ export default function DialogBankInfo({
                       {bankInfoErrors['clabe'].message ?? 'El campo es requerido'}
                     </FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id='product-label'>Banco *</InputLabel>
+                  <Select
+                    labelId='product-label'
+                    label='Banco'
+                    value={bank}
+                    required={true}
+                    onChange={e => handleBankSelected(e.target.value)}
+                  >
+                    {BANKS.map(item => (
+                      <MenuItem value={item}>{item}</MenuItem>
+                    ))}
+                  </Select>
+                  {bank === '' && <FormHelperText sx={{ color: 'red' }}>Elige un banco</FormHelperText>}
                 </FormControl>
               </Grid>
             </Grid>

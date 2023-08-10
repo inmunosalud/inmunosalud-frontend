@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -18,18 +19,22 @@ import FormHelperText from '@mui/material/FormHelperText'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import Alert from '@mui/material/Alert'
+import Typography from '@mui/material/Typography'
+
 import { CircularProgress } from '@mui/material'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-//actions
+// Actions
 import { createUser, setErrors } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
+
+// ** Custom Snackbar Component
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 const BASIC_ERRORS = {
   email: {
@@ -50,6 +55,7 @@ const BASIC_ERRORS = {
 const FormRegister = () => {
   const dispatch = useDispatch()
   const { query } = useRouter()
+  const newAssociate = query.newAssociate === 'true'
 
   const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
   const { open, message, positioned, severity } = useSelector(state => state.notifications)
@@ -59,16 +65,20 @@ const FormRegister = () => {
     email: '',
     password: '',
     recommenderId: '',
-    showPassword: false
+    showPassword: false,
+    privacyPolicyChecked: newAssociate,
+    termsAndConditionsChecked: newAssociate,
+    consentChecked: newAssociate,
+    affiliateChecked: newAssociate,
+    affiliateContractChecked: newAssociate
   })
-  const [checkedProfile, setCheckedProfile] = React.useState(false)
-
-  const handleChangeProfile = event => {
-    setCheckedProfile(event.target.checked)
-  }
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
+  }
+
+  const handleChangeCheckbox = prop => event => {
+    setValues({ ...values, [prop]: event.target.checked })
   }
 
   const handleClickShowPassword = () => {
@@ -85,20 +95,37 @@ const FormRegister = () => {
 
     if (!email) {
       errors.push(BASIC_ERRORS.email)
-      dispatch(setErrors(errors))
-      return
     }
     if (!password) {
       errors.push(BASIC_ERRORS.password)
+    }
+
+    // Validar que todos los checkboxes obligatorios estén marcados
+    if (!values.privacyPolicyChecked || !values.termsAndConditionsChecked || !values.consentChecked) {
+      errors.push({
+        value: '',
+        msg: 'Debes aceptar los términos y condiciones, aviso de privacidad y dar tu consentimiento expreso.'
+      })
+    }
+
+    if (values.affiliateChecked && !values.affiliateContractChecked) {
+      errors.push({
+        value: '',
+        msg: 'Debes aceptar el contrato de adhesión si deseas ser afiliado.'
+      })
+    }
+
+    if (errors.length > 0) {
       dispatch(setErrors(errors))
       return
     }
 
     const body = { email, password, recommenderId }
 
-    if (checkedProfile) {
+    if (values.affiliateChecked) {
       body.profile = PROFILES_USER.affiliatedUser
     }
+
     dispatch(createUser(body))
   }
 
@@ -166,12 +193,55 @@ const FormRegister = () => {
                   placeholder='85e3b573-84ec-495f-982f-8dc7063e30f8'
                   helperText='(Opcional)'
                 />
-
                 <FormGroup>
                   <FormControlLabel
-                    control={<Checkbox checked={checkedProfile} onChange={handleChangeProfile} />}
-                    label='Ser Afiliado'
+                    control={
+                      <Checkbox checked={values.affiliateChecked} onChange={handleChangeCheckbox('affiliateChecked')} />
+                    }
+                    label={<Typography variant='body2'>Ser Afiliado.</Typography>}
                   />
+                </FormGroup>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={values.privacyPolicyChecked}
+                        onChange={handleChangeCheckbox('privacyPolicyChecked')}
+                      />
+                    }
+                    label={<Typography variant='body2'>Aviso de privacidad.</Typography>}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={values.termsAndConditionsChecked}
+                        onChange={handleChangeCheckbox('termsAndConditionsChecked')}
+                      />
+                    }
+                    label={<Typography variant='body2'>Términos y condiciones.</Typography>}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={values.consentChecked} onChange={handleChangeCheckbox('consentChecked')} />
+                    }
+                    label={
+                      <Typography variant='body2'>
+                        Acepto y doy consentimiento expreso para que inmunosalud obtenga mis datos sensibles de acuerdo
+                        al articulo que de la ley federal de protección de datos personales.
+                      </Typography>
+                    }
+                  />
+                  {values.affiliateChecked && (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={values.affiliateContractChecked}
+                          onChange={handleChangeCheckbox('affiliateContractChecked')}
+                        />
+                      }
+                      label={<Typography variant='body2'>He leído y acepto el contrato de adhesión.</Typography>}
+                    />
+                  )}
                 </FormGroup>
                 {errors ? (
                   <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
@@ -213,4 +283,5 @@ const FormRegister = () => {
     </>
   )
 }
+
 export default FormRegister

@@ -23,7 +23,6 @@ const Profile = () => {
   useEffect(() => {
     if (user.id) {
       dispatch(loadInfo(user.id))
-      console.log(address)
     }
   }, [])
 
