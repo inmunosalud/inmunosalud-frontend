@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Box, Button, CardMedia, Card, CardActions, Tab, Tabs, Modal } from '@mui/material'
+import { Box, Button, CardMedia, Card, CardActions, Tab, Tabs, Modal, Typography } from '@mui/material'
 import { Pencil, Delete, Magnify, CloudUpload } from 'mdi-material-ui'
 import { CircularProgress } from '@mui/material'
 import PdfViewer from 'src/views/general/PdfViewer'
@@ -140,10 +140,6 @@ const BillingPage = () => {
     setOpenModal(true)
   }
 
-  const handleDelete = invoiceId => {
-    onDelete(invoiceId)
-  }
-
   const BILL_STATUS_SP = {
     'Confirmando factura': 'Confirmando factura',
     'Factura mal formada': 'Factura mal formada',
@@ -168,6 +164,12 @@ const BillingPage = () => {
     {
       id: 2,
       scheme: 'Régimen de Incorporación Física',
+      iva: 0.1067,
+      isr: 0
+    },
+    {
+      id: 3,
+      scheme: 'Régimen Para Persona Moral',
       iva: 0.1067,
       isr: 0
     }
@@ -373,9 +375,6 @@ const BillingPage = () => {
               <Button onClick={() => handleOpenEdit(params.row)} color='warning' sx={{ width: '100%' }}>
                 <Pencil />
               </Button>
-              <Button onClick={() => handleOpenDelete(params.row)} color='error' sx={{ width: '100%' }}>
-                <Delete />
-              </Button>
             </>
           )
         }
@@ -442,7 +441,7 @@ const BillingPage = () => {
                 />
                 <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end', mt: 2 }}>
                   <Button variant='contained' onClick={handleOpen}>
-                    Ver PDF
+                    MANUAL PARA GENERAR Y CARGAR TU FACTURA AL SISTEMA
                   </Button>
                 </CardActions>
               </Card>
@@ -455,10 +454,7 @@ const BillingPage = () => {
                   justifyContent: 'center'
                 }}
               >
-                <PdfViewer
-                  PDF='https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf'
-                  onClose={handleClose}
-                />
+                <PdfViewer PDF='/docs/ManualSAT.pdf' onClose={handleClose} />
               </Modal>
             </>
           )}
@@ -472,7 +468,7 @@ const BillingPage = () => {
         <CircularProgress />
       </Box>
     ) : (
-      <>
+      <Fragment>
         <Box>
           <TableBilling
             {...{
@@ -490,7 +486,7 @@ const BillingPage = () => {
           />
         </Box>
         <SnackbarAlert message={message} isOpen={open} severity={severity} />
-      </>
+      </Fragment>
     )
   }
 }
