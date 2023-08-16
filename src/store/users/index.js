@@ -7,6 +7,19 @@ import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { nextStep, setActiveStep } from '../register'
 
+async function mergePDFs(pdfs) {
+  const mergedPdf = await PDFDocument.create()
+
+  for (const pdfUrl of pdfs) {
+    const pdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer())
+    const pdf = await PDFDocument.load(pdfBytes)
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices())
+    copiedPages.forEach(page => mergedPdf.addPage(page))
+  }
+
+  return await mergedPdf.save()
+}
+
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
@@ -321,8 +334,12 @@ export const usersSlice = createSlice({
       state.users = payload.content
     })
     builder.addCase(createContract.fulfilled, (state, { payload }) => {
-      state.contract = payload.content
-    })
+      // Llamar a la función mergePDFs para obtener el PDF combinado
+      const combinedPdf = mergePDFs(payload.content);
+    
+      // Actualizar el estado con el PDF combinado
+      state.contract = combinedPdf // Agregar el PDF combinado al estado
+    });
     //get info user
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       const { content } = payload
