@@ -8,6 +8,8 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CardActions,
+  FlexContainer,
   Divider,
   FormControl,
   FormControlLabel,
@@ -28,6 +30,10 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button
 } from '@mui/material'
 
@@ -43,6 +49,8 @@ import * as yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import SignatureCanvas from 'react-signature-canvas'
+import { Document, Page, pdfjs } from 'react-pdf'
+import { PDFDocument, StandardFonts } from 'pdf-lib'
 
 // ** Custom Components Imports
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -51,7 +59,7 @@ import GoBackButton from 'src/views/components/goback/GoBack'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 // ** Store Imports
-import { sendNewUser, updateUser } from 'src/store/users'
+import { sendNewUser, updateUser, createContract } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
 import { createAddress, getColonies, selectColony } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
@@ -61,6 +69,7 @@ import { loadSession } from 'src/store/dashboard/generalSlice'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import { BANKS } from 'src/configs/banks'
 
 const steps = [
@@ -83,6 +92,10 @@ const steps = [
   {
     title: 'Contrato de Adhesión',
     subtitle: 'Ingresa la información para la elaboración del contrato'
+  },
+  {
+    title: 'Contrato',
+    subtitle: 'Revisa tu contrato y descargalo'
   }
 ]
 
@@ -183,14 +196,69 @@ const bankInfoSchema = yup.object().shape({
 })
 
 const taxInfoSchema = yup.object().shape({
-  rfc: yup.string().required('El campo es requerido'),
-  identificationType: yup.string().required('El campo es requerido'),
+  rfc: yup
+    .string()
+    .required('El campo es requerido')
+    .matches(
+      /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
+      'RFC inválido'
+    )
+    .test('exact-length', 'El RFC debe tener exactamente 13 caracteres', value => {
+      return value?.length === 13
+    }),
+  identificationType: yup.number().required('El campo es requerido'),
   otherIdentification: yup.string().when('identificationType', {
-    is: 'Otro',
+    is: 3,
+    then: yup.string().required('El campo es requerido'),
+    otherwise: yup.string().notRequired()
+  })
+})
+
+const contractInfoSchema = yup.object().shape({
+  fullName: yup.string().required(),
+  email: yup.string().required('El campo es requerido').email('Correo electrónico inválido'),
+  phone: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(10, 'Deben ser 10 dígitos')
+    .max(10, 'Deben ser 10 dígitos'),
+  rfc: yup
+    .string()
+    .required('El campo es requerido')
+    .matches(
+      /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
+      'RFC inválido'
+    )
+    .test('exact-length', 'El RFC debe tener exactamente 13 caracteres', value => {
+      return value?.length === 13
+    }),
+  zipCode: yup.string().required(),
+  extNumber: yup.string().required(),
+  intNumber: yup.string(),
+  street: yup.string().required(),
+  city: yup.string().required(),
+  colony: yup.string().required(),
+  federalEntity: yup.string().required(),
+  identificationType: yup.number().required('El campo es requerido'),
+  otherIdentification: yup.string().when('identificationType', {
+    is: 3,
     then: yup.string().required('El campo es requerido'),
     otherwise: yup.string().notRequired()
   }),
-  signature: yup.string().required('La firma electrónica es requerida')
+  cardNumber: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(16, 'Deben ser 16 dígitos')
+    .max(16, 'Deben ser 16 dígitos'),
+  bank: yup.string().required(),
+  clabe: yup
+    .string()
+    .required()
+    .matches(/^[0-9]+$/, 'Solo dígitos')
+    .min(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos')
 })
 
 function PAGE() {
@@ -201,16 +269,69 @@ export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { user } = useSelector(state => state.dashboard.general)
+  const { email } = useSelector(state => state.users)
+  const { contract } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
   const { colonies, selectedColony } = useSelector(state => state.address)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [data, setData] = useState({
+    email: email,
+    firstName: '',
+    lastName: '',
+    rfc: '',
+    phone: '',
+    street: '',
+    extNumber: '',
+    intNumber: '',
+    zipCode: '',
+    colony: '',
+    federalEntity: '',
+    identificationType: '',
+    otherIdentification: '',
+    userSign: '',
+    cardNumber: '',
+    bank: '',
+    clabe: '',
+    city: ''
+  })
+
   const { activeStep } = useSelector(state => state.register)
+  //const activeStep = 4
+
   const { open, message, severity } = useSelector(state => state.notifications)
   const [showOtherIdentification, setShowOtherIdentification] = useState(false)
-  const [idType, setIdType] = useState('')
-  const signatureRef = useRef(null)
+  const signatureRef1 = useRef(null)
+  const [isSignature1Empty, setIsSignature1Empty] = useState(true)
+  const signatureRef2 = useRef(null)
+  const [isSignature2Empty, setIsSignature2Empty] = useState(false)
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
+
+  const pdfs = [
+    'https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-caratulaContratro.pdf',
+    'https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-contrato.pdf'
+  ]
 
   // Get the current year
   const currentYear = new Date().getFullYear()
+
+  const defaultContractInfoValues = {
+    email: data.email,
+    fullName: `${data.firstName} ${data.lastName}`,
+    rfc: data.rfc,
+    phone: data.phone,
+    street: data.street,
+    extNumber: data.extNumber,
+    intNumber: data.intNumber,
+    zipCode: data.zipCode,
+    colony: data.colony,
+    federalEntity: data.federalEntity,
+    identificationType: data.identificationType,
+    otherIdentification: data.otherIdentification,
+    cardNumber: data.cardNumber,
+    bank: data.bank,
+    clabe: data.clabe,
+    city: data.city
+  }
 
   // Generate an array of options for the next 6 years
   const options = Array.from({ length: 6 }, (_, i) => ({
@@ -218,9 +339,66 @@ export default function Address() {
     label: `${currentYear + i}`.slice(-2)
   }))
 
+  async function mergePDFs(pdfs) {
+    const mergedPdf = await PDFDocument.create()
+
+    for (const pdfUrl of pdfs) {
+      const pdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer())
+      const pdf = await PDFDocument.load(pdfBytes)
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices())
+      copiedPages.forEach(page => mergedPdf.addPage(page))
+    }
+
+    return await mergedPdf.save()
+  }
+
   useEffect(() => {
     dispatch(loadSession())
   }, [])
+
+  useEffect(() => {
+    // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
+    setIsSignature1Empty(signatureRef1.current && signatureRef1.current.isEmpty())
+  }, [signatureRef1.current])
+
+  useEffect(() => {
+    // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
+    const loadSignatureAfterDelay = () => {
+      setIsSignature2Empty(signatureRef2.current && signatureRef2.current.isEmpty())
+    }
+
+    const delay = 250
+    const timer = setTimeout(loadSignatureAfterDelay, delay)
+
+    return () => clearTimeout(timer)
+  }, [signatureRef2.current])
+
+  useEffect(() => {
+    const signature = data.signature
+
+    const loadSignatureAfterDelay = () => {
+      if (signatureRef2.current && signature) {
+        const canvasWidth = signatureRef2.current._canvas.width
+        const canvasHeight = signatureRef2.current._canvas.height
+
+        const image = new Image()
+
+        image.onload = () => {
+          signatureRef2.current.fromDataURL(signature, {
+            width: canvasWidth,
+            height: canvasHeight
+          })
+        }
+
+        image.src = signature
+      }
+    }
+
+    const delay = 100
+    const timer = setTimeout(loadSignatureAfterDelay, delay)
+
+    if (isModalOpen === true) return () => clearTimeout(timer)
+  }, [isModalOpen])
 
   // ** Hooks
   const {
@@ -272,15 +450,15 @@ export default function Address() {
     resolver: yupResolver(taxInfoSchema)
   })
 
-  const handleTaxInfoChange = event => {
-    const value = event.target.value
-    setIdType(value)
-    if (value === 'Otro') {
-      setShowOtherIdentification(true)
-    } else {
-      setShowOtherIdentification(false)
-    }
-  }
+  const {
+    reset: contractInfoReset,
+    control: contractInfoControl,
+    handleSubmit: handleContractInfoSubmit,
+    formState: { errors: contractInfoErrors }
+  } = useForm({
+    defaultValues: defaultContractInfoValues,
+    resolver: yupResolver(contractInfoSchema)
+  })
 
   // Handle Stepper
   const handleBack = () => {
@@ -294,8 +472,24 @@ export default function Address() {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
+  const handleDownload = async (mergedPdfBytes) => {
+    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'Contrato.pdf'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const onDataSubmit = values => {
     values.profile = PROFILES_USER.affiliatedUser
+
+    setData(prevValues => ({
+      ...prevValues,
+      ...values
+    }))
+
     dispatch(updateUser({ body: values, uuid: user.id }))
   }
 
@@ -312,6 +506,12 @@ export default function Address() {
         country: 'Mexico',
         refer: values.refer
       }
+
+      setData(prevValues => ({
+        ...prevValues,
+        ...body
+      }))
+
       dispatch(createAddress({ body: body, uuid: user.id }))
     }
   }
@@ -323,6 +523,11 @@ export default function Address() {
       expDate: `${values.month}/${values.year}`
     }
 
+    setData(prevValues => ({
+      ...prevValues,
+      ...body
+    }))
+
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
@@ -332,16 +537,77 @@ export default function Address() {
       cardUse: 'Cobro'
     }
 
+    setData(prevValues => ({
+      ...prevValues,
+      ...body
+    }))
+
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
   const onTaxInfoSubmit = values => {
-    const signatureData = signatureRef.current.toDataURL() // Obtiene la imagen de la firma
-    const body = {
-      ...values
+    // Validar el campo de firma manualmente
+    const isCanvasEmpty = signatureRef1.current.isEmpty()
+    if (isCanvasEmpty) {
+      // El canvas de firma está vacío
+      console.log('La firma electrónica es requerida')
+      return
     }
 
-    dispatch(createMethod({ body, uuid: user.id }))
+    setData(prevValues => ({
+      ...prevValues,
+      ...values,
+      signature: signatureRef1.current.toDataURL()
+    }))
+
+    contractInfoReset(defaultContractInfoValues)
+    setIsModalOpen(true)
+  }
+
+  const onContractInfoSubmit = values => {
+    // Validar el campo de firma manualmente
+    const isCanvasEmpty = signatureRef2.current.isEmpty()
+    if (isCanvasEmpty) {
+      // El canvas de firma está vacío
+      console.log('La firma electrónica es requerida')
+      return
+    }
+
+    // El canvas de firma no está vacío
+    const signatureData = signatureRef2.current.toDataURL()
+
+    const body = {
+      user: {
+        name: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        rfc: values.rfc,
+        sign: signatureData
+      },
+      address: {
+        street: values.street,
+        extNumber: values.extNumber,
+        intNumber: values.intNumber,
+        city: values.city,
+        colony: values.colony,
+        federalEntity: values.federalEntity,
+        zipCode: values.zipCode
+      },
+      identification: {
+        type: values.identificationType,
+        otherIdentification: values.otherIdentification
+      },
+      paymentMethod: {
+        cardNumber: values.cardNumber,
+        bank: values.bank,
+        clabe: values.clabe
+      }
+    }
+
+    dispatch(createContract({ body, uuid: user.id }))
+
+    //Cierra el modal después de confirmar
+    setIsModalOpen(false)
   }
 
   const getValidDate = () => {
@@ -455,7 +721,6 @@ export default function Address() {
                   )}
                 </FormControl>
               </Grid>
-
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
                   Atras
@@ -902,7 +1167,7 @@ export default function Address() {
         )
       case 3:
         return (
-          <form key={3} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
+          <form key={5} onSubmit={handleBankInfoSubmit(onBankInfoSubmit)}>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -984,43 +1249,85 @@ export default function Address() {
         )
       case 4:
         return (
-          <form onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
+          <form key={3} onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
             <Grid container spacing={5}>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
                   <Controller
-                    name='identification'
+                    name='rfc'
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
                         label='RFC'
-                        onChange={onChange}
+                        sx={{ mt: '30px' }}
+                        onInput={e => {
+                          // Convertir el valor a mayúsculas antes de actualizar el estado
+                          e.target.value = e.target.value.toUpperCase()
+                          onChange(e)
+                          setData(prevData => ({
+                            ...prevData,
+                            rfc: e.target.value
+                          }))
+                        }}
                         placeholder='RFC'
-                        error={Boolean(taxInfoErrors['identification'])}
+                        style={{ textTransform: 'uppercase' }}
+                        error={Boolean(taxInfoErrors['rfc'])}
                       />
                     )}
                   />
-                  {taxInfoErrors['identification'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identification'>
-                      {taxInfoErrors['identification'].message ?? 'El campo es requerido'}
+                  <FormHelperText id='helper-linear-taxInfo-rfc'>Ingrese el RFC sin guiones o espacios</FormHelperText>
+                  {taxInfoErrors['rfc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc'>
+                      {taxInfoErrors['rfc'] ? taxInfoErrors['rfc'].message : 'El campo es requerido'}
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
                 <InputLabel id='identificationType-label'>Tipo de Identificación Oficial</InputLabel>
-                <FormControl component='fieldset' fullWidth>
+                <FormControl component='fieldset'>
                   <Controller
                     name='identificationType'
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <RadioGroup value={idType} onChange={handleTaxInfoChange}>
-                        <FormControlLabel value='INE' control={<Radio />} label='INE' />
-                        <FormControlLabel value='Pasaporte' control={<Radio />} label='Pasaporte' />
-                        <FormControlLabel value='Otro' control={<Radio />} label='Otro' />
+                      <RadioGroup
+                        value={value}
+                        sx={{ mr: '100px' }}
+                        onChange={e => {
+                          const value = e.target.value
+                          if (value === '3') {
+                            setShowOtherIdentification(true)
+                          } else {
+                            setShowOtherIdentification(false)
+                          }
+                          onChange(value)
+                          setData(prevData => ({
+                            ...prevData,
+                            identificationType: value
+                          }))
+                        }}
+                      >
+                        <FormControlLabel
+                          value={1}
+                          control={<Radio size='small' />}
+                          label={<Typography variant='body2'>INE</Typography>}
+                          sx={{ marginY: 0 }}
+                        />
+                        <FormControlLabel
+                          value={2}
+                          control={<Radio size='small' />}
+                          label={<Typography variant='body2'>Pasaporte</Typography>}
+                          sx={{ marginY: -3 }}
+                        />
+                        <FormControlLabel
+                          value={3}
+                          control={<Radio size='small' />}
+                          label={<Typography variant='body2'>Otro</Typography>}
+                          sx={{ marginY: 0 }}
+                        />
                       </RadioGroup>
                     )}
                   />
@@ -1032,7 +1339,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
               {showOtherIdentification && (
-                <Grid item xs={12}>
+                <Grid item xs={12} md={4}>
                   <FormControl fullWidth>
                     <Controller
                       name='otherIdentification'
@@ -1041,8 +1348,16 @@ export default function Address() {
                       render={({ field: { value, onChange } }) => (
                         <TextField
                           value={value}
+                          sx={{ mt: '30px' }}
                           label='Otro tipo de identificación'
-                          onChange={onChange}
+                          onChange={e => {
+                            const value = e.target.value
+                            onChange(value)
+                            setData(prevData => ({
+                              ...prevData,
+                              otherIdentification: value
+                            }))
+                          }}
                           placeholder='Otro tipo de identificación'
                           error={Boolean(taxInfoErrors['otherIdentification'])}
                         />
@@ -1061,16 +1376,24 @@ export default function Address() {
                   Firma
                 </InputLabel>
                 <FormControl sx={{ backgroundColor: 'white', border: '2px solid black' }}>
-                  <SignatureCanvas ref={signatureRef} canvasProps={{ width: 500, height: 200 }} />
-                  <Button variant='outlined' onClick={() => signatureRef.current.clear()}>
+                  <SignatureCanvas
+                    ref={signatureRef1}
+                    canvasProps={{ width: 500, height: 200 }}
+                    onEnd={() => {
+                      setIsSignature1Empty(false)
+                    }}
+                  />
+                  <Button variant='contained' color='secondary' onClick={() => signatureRef1.current.clear()}>
                     Limpiar
                   </Button>
                 </FormControl>
+                {isSignature1Empty && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-signature'>
+                    La firma electrónica es requerida
+                  </FormHelperText>
+                )}
               </Grid>
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={() => {}}>
-                  Atrás
-                </Button>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -1078,6 +1401,31 @@ export default function Address() {
             </Grid>
           </form>
         )
+      case 5:
+        return (
+          <Grid container spacing={5} alignItems='center' justifyContent='center'>
+            <Box
+              sx={{
+                overflowY: 'auto',
+                height: '60vh',
+                ml: '20px'
+              }}
+            >
+                <Document file={contract} options={{ workerSrc: '/pdf.worker.js' }}>
+                  <Page pageNumber={1} scale={1.5} width={500}/>
+                </Document>
+            </Box>
+            <Grid container justifyContent='space-between' alignItems='center' sx={{ mt: '20px' }}>
+              <Button variant='contained' color='info' sx={{ marginLeft: '20px' }} onClick={handleDownload(contract)}>
+                Descargar
+              </Button>
+              <Button type='submit' variant='contained' color='primary'>
+                Confirmar
+              </Button>
+            </Grid>
+          </Grid>
+        )
+
       default:
         return null
     }
@@ -1168,6 +1516,442 @@ export default function Address() {
           <CardContent>{renderContent()}</CardContent>
         </Card>
       </Box>
+
+      <Dialog open={isModalOpen}>
+        <DialogTitle>Verifica que tus datos sean correctos, corrígelos de ser necesario</DialogTitle>
+        <form key={4} onSubmit={handleContractInfoSubmit(onContractInfoSubmit)}>
+          <DialogContent>
+            <Grid container spacing={5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth sx={{ mt: '10px' }}>
+                  <Controller
+                    name='fullName'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Nombre completo'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['fullName'])}
+                        placeholder='Nombre completo'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.fullName && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-string'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='phone'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Teléfono'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors.phone)}
+                        placeholder='Teléfono'
+                        aria-describedby='validation-basic-number'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.phone && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-number2'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='email'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Correo electronico'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['email'])}
+                        placeholder='Correo Electronico'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.email && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-email'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='street'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Calle'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['street'])}
+                        placeholder='Calle'
+                        aria-describedby='validation-basic-calle'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.street && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-calle'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='extNumber'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Numero Exterior'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['extNumber'])}
+                        placeholder='Numero Exterior'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.extNumber && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-extNumber'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='intNumber'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Numero Interior'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['intNumber'])}
+                        placeholder='Numero Interior'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.intNumber && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-intNumber'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='city'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Ciudad'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['city'])}
+                        placeholder='Ciudad'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.city && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-city'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='colony'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Colonia'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['colony'])}
+                        placeholder='Colonia'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.colony && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='federalEntity'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Entidad Federal'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['federalEntity'])}
+                        placeholder='Colonia'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.federalEntity && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-federalEntity'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='zipCode'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Código Postal'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['zipCode'])}
+                        placeholder='Código Postal'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.zipCode && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='cardNumber'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Numero de tarjeta'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['cardNumber'])}
+                        placeholder='Numero de tarjeta'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.cardNumber && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-cardNumber'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='bank'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <>
+                        <InputLabel id='product-label'>Banco</InputLabel>
+                        <Select labelId='product-label' label='Bank' value={value} required={true} onChange={onChange}>
+                          {BANKS.map(item => (
+                            <MenuItem value={item}>{item}</MenuItem>
+                          ))}
+                        </Select>
+                      </>
+                    )}
+                  />
+                  {contractInfoErrors.bank && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-bank'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='clabe'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Clabe interbancaria'
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors['clabe'])}
+                        placeholder='Clabe interbancaria'
+                        aria-describedby='validation-basic-string'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.clabe && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-clabe2'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='rfc'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='RFC'
+                        onInput={e => {
+                          // Convertir el valor a mayúsculas antes de actualizar el estado
+                          e.target.value = e.target.value.toUpperCase()
+                          onChange(e)
+                        }}
+                        placeholder='RFC'
+                        style={{ textTransform: 'uppercase' }}
+                        error={Boolean(contractInfoErrors['rfc'])}
+                      />
+                    )}
+                  />
+                  <FormHelperText id='helper-linear-taxInfo-rfc2'>Ingrese el RFC sin guiones o espacios</FormHelperText>
+                  {contractInfoErrors['rfc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc2'>
+                      {contractInfoErrors['rfc'] ? contractInfoErrors['rfc'].message : 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel id='identificationType-label2'>Tipo de Identificación Oficial</InputLabel>
+                <FormControl component='fieldset' fullWidth>
+                  <Controller
+                    name='identificationType'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <RadioGroup
+                        value={value}
+                        onChange={e => {
+                          const value = e.target.value
+                          if (value === '3') {
+                            setShowOtherIdentification(true)
+                          } else {
+                            setShowOtherIdentification(false)
+                          }
+                          onChange(value)
+                        }}
+                      >
+                        <FormControlLabel value={1} control={<Radio />} label='INE' />
+                        <FormControlLabel value={2} control={<Radio />} label='Pasaporte' />
+                        <FormControlLabel value={3} control={<Radio />} label='Otro' />
+                      </RadioGroup>
+                    )}
+                  />
+                  {contractInfoErrors['identificationType'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identificationType2'>
+                      {contractInfoErrors['identificationType']?.message || 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              {showOtherIdentification && (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name='otherIdentification'
+                      control={contractInfoControl}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          value={value}
+                          label='Otro tipo de identificación'
+                          onChange={onChange}
+                          placeholder='Otro tipo de identificación'
+                          error={Boolean(contractInfoErrors['otherIdentification'])}
+                        />
+                      )}
+                    />
+                    {contractInfoErrors['otherIdentification'] && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-otherIdentification2'>
+                        {contractInfoErrors['otherIdentification'].message ?? 'El campo es requerido'}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <InputLabel id='signature-label2' sx={{ mb: 2 }}>
+                  Firma
+                </InputLabel>
+                <FormControl sx={{ backgroundColor: 'white', border: '2px solid black' }}>
+                  <SignatureCanvas
+                    ref={signatureRef2}
+                    canvasProps={{ width: 500, height: 200 }}
+                    onEnd={() => {
+                      setIsSignature2Empty(false)
+                    }}
+                  />
+                  <Button variant='contained' color='secondary' onClick={() => signatureRef2.current.clear()}>
+                    Limpiar
+                  </Button>
+                </FormControl>
+                {isSignature2Empty && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-signature2'>
+                    La firma electrónica es requerida
+                  </FormHelperText>
+                )}
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button type='submit' variant='contained' color='primary'>
+              Confirmar
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
 
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
