@@ -27,7 +27,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 // import required modules
 import { Navigation } from 'swiper'
 
-import { setEdit, deleteProduct } from 'src/store/products'
+import { setEdit, deleteProduct, setProductId } from 'src/store/products'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -127,10 +127,10 @@ export const ProductItem = props => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
+  const { productId } = useSelector(state => state.products)
   const [authPassword, setAuthPassword] = React.useState('')
 
   const handleModalClose = () => {
-    showModalDelete
     setShowModalDelete(false)
   }
 
@@ -144,6 +144,7 @@ export const ProductItem = props => {
   }
 
   const handleDelete = () => {
+    dispatch(setProductId(props.id))
     setShowModalDelete(true)
   }
 
@@ -153,7 +154,7 @@ export const ProductItem = props => {
   }
 
   const submitDelete = () => {
-    dispatch(deleteProduct({ id: props.id, headers: { password: authPassword } }))
+    dispatch(deleteProduct({ id: productId, headers: { password: authPassword } }))
     handleCloseConfirmModal()
     setAnchorEl(null)
   }

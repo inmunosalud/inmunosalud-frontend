@@ -28,6 +28,24 @@ export function getCustomStructureMainComponents(obj) {
 export function getCustomStructure(obj) {
   return Object.entries(obj).map(([property, value]) => ({property: propertiesName.parse[property], value: value}));
 }
+export function parseDate(dateString) {
+  const months = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  const parts = dateString.split(' ');
+  const day = parseInt(parts[0]);
+  const month = months.indexOf(parts[2]) + 1;
+  const year = parseInt(parts[4]);
+
+  return new Date(year, month - 1, day);
+}
+
+export function compareByPurchaseDate(a, b) {
+  const dateA = new Date(parseDate(a.purchaseDate));
+  const dateB = new Date(parseDate(b.purchaseDate));
+  return dateB - dateA; // Orden descendente
+}
 
 const parseDataToEdit = (properties) => {
   const initialValues = properties.reduce((acc, { property, value }) => {

@@ -99,7 +99,8 @@ const initialState = {
   products: [],
   productImages: [],
   editItem: null,
-  mainComponents: []
+  mainComponents: [],
+  productId: ""
 }
 
 export const productsSlice = createSlice({
@@ -111,7 +112,10 @@ export const productsSlice = createSlice({
     },
     setRemoveEdit(state, { payload }) {
       state.editItem = null
-    }
+    },
+    setProductId: (state, { payload }) => {
+      state.productId = payload
+    },
   },
   extraReducers: builder => {
     builder.addCase(getProducts.pending, (state, action) => {
@@ -153,5 +157,5 @@ export const productsSlice = createSlice({
   }
 })
 
-export const { setEdit, setRemoveEdit } = productsSlice.actions
+export const { setEdit, setRemoveEdit, setProductId } = productsSlice.actions
 export default productsSlice.reducer

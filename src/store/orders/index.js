@@ -5,6 +5,8 @@ import { ORDERS, api_post, api_get, api_patch, api_delete } from '../../services
 import { openSnackBar } from '../notifications'
 import { getCart } from '../cart'
 
+import { compareByPurchaseDate } from '../../utils/functions'
+
 export const getOrders = createAsyncThunk('order/getAllOrders', async thunkApi => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
@@ -55,6 +57,19 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
   }
 })
 
+export const cancelOrder = createAsyncThunk('order/cancel', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const body = { deliveryStatus: "Cancelado" }
+  try {
+    const response = await api_patch(`${ORDERS}/orders/cancel/${id}`, body, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 export const deleteOrder = createAsyncThunk('order/deleteOrder', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
@@ -99,7 +114,8 @@ export const ordersSlice = createSlice({
     builder.addCase(getOrdersByUser.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.messageValid = payload.message
-      state.orders = payload.content
+      const sortedOrders = payload.content.sort(compareByPurchaseDate);
+      state.orders = sortedOrders
     })
     builder.addCase(getOrdersByUser.rejected, (state, { payload }) => {
       state.isLoading = false
@@ -154,6 +170,10 @@ export const ordersSlice = createSlice({
     })
     builder.addCase(deleteOrder.fulfilled, (state, { payload }) => {
       state.orders = payload
+    })
+    builder.addCase(cancelOrder.fulfilled, (state, { payload }) => {
+      const sortedOrders = payload.content.sort(compareByPurchaseDate);
+      state.orders = sortedOrders
     })
   }
 })
