@@ -10,15 +10,12 @@ import {
   Typography,
   TextField,
   MenuItem,
-  Grid
+  Grid,
+  FormHelperText
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
-import XmlViewer from 'src/views/general/XmlViewer'
-import { Document, Page } from 'react-pdf' // Importa las dependencias necesarias
-import { pdfjs } from 'react-pdf' // Importa pdfjs para la carga del PDF
+import XmlViewer from 'src/views/general/XmlViewer' // Importa pdfjs para la carga del PDF
 import PdfViewer from 'src/views/general/PdfViewer'
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 const TableBilling = ({
   invoices,
@@ -37,7 +34,9 @@ const TableBilling = ({
   handleXmlFileChange,
   handleSubmit,
   xmlFile,
-  pdfFile
+  pdfFile,
+  pdfError,
+  xmlError
 }) => {
   const formatFileSize = bytes => {
     if (bytes === 0) return '0 bytes'
@@ -52,13 +51,13 @@ const TableBilling = ({
       case 'pdfViewer':
         return (
           <>
-            <PdfViewer PDF={selectedInvoice.pdf} onClose={handleClose} />
+            <PdfViewer PDF={selectedInvoice.pdf} onClose={handleClose} title={'PDF'} />
           </>
         )
       case 'xmlViewer':
         return (
           <>
-            <XmlViewer XML={selectedInvoice.xml} onClose={handleClose} />
+            <XmlViewer XML={selectedInvoice.xml} onClose={handleClose} title={'XML'} />
           </>
         )
       case 'updateStatus':
@@ -116,6 +115,9 @@ const TableBilling = ({
                         </Box>
                       </Grid>
                       <Grid item xs={8} sx={{ height: 20 }}>
+                        {pdfError && (
+                          <FormHelperText error>Por favor, selecciona un archivo PDF válido.</FormHelperText>
+                        )}
                         {pdfFile && (
                           <>
                             <Typography variant='body2'>Archivo Seleccionado:</Typography>
@@ -151,6 +153,9 @@ const TableBilling = ({
                         </Box>
                       </Grid>
                       <Grid item xs={8} sx={{ height: 20 }}>
+                        {xmlError && (
+                          <FormHelperText error>Por favor, selecciona un archivo XML válido.</FormHelperText>
+                        )}
                         {xmlFile && (
                           <>
                             <Typography variant='body2'>Archivo Seleccionado:</Typography>
@@ -168,7 +173,7 @@ const TableBilling = ({
                   <Grid item xs={12}>
                     <TextField
                       select
-                      label={selectedInvoice.satScheme}
+                      label={'Régimen'}
                       fullWidth
                       onChange={handleSchemeChange}
                       required
