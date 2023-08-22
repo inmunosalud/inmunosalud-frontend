@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { INVOICES, api_post, api_get, api_patch, api_delete } from '../../services/api'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { INVOICES, api_get, api_patch, api_put } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getInvoices = createAsyncThunk('billing/getAllInvoices', async thunkApi => {
@@ -54,7 +54,7 @@ export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files,
     if (presignedUrlPdf) {
       const bufferPdf = Buffer.from(files.pdf.replace(/^data:application\/pdf;base64,/, ''), 'base64')
       const headersPdf = { 'Content-Type': 'application/pdf', 'Content-Encoding': 'base64' }
-      await api_patch(presignedUrlPdf, bufferPdf, headersPdf)
+      await api_put(presignedUrlPdf, bufferPdf, headersPdf)
     }
 
     const filetype2 = files.xml.split(';')[0].split('/')[1]
@@ -69,7 +69,7 @@ export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files,
     if (presignedUrlXml) {
       const bufferXml = Buffer.from(files.xml.replace(/^data:text\/xml;base64,/, ''), 'base64')
       const headersXml = { 'Content-Type': 'text/xml', 'Content-Encoding': 'base64' }
-      await api_patch(presignedUrlXml, bufferXml, headersXml)
+      await api_put(presignedUrlXml, bufferXml, headersXml)
     }
 
     const header = { headers: { Authorization: `Bearer ${token}` } }

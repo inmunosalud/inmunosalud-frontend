@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { PROYECT_PRODUCTS, api_post, api_get, api_patch, api_delete, api_put } from '../../services/api'
+import { PROYECT_PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
