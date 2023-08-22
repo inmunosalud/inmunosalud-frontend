@@ -144,7 +144,10 @@ const UserProfileAddress = ({ addresses = [] }) => {
   }
 
   const sendDelete = () => {
-    if (deleteID) dispatch(deleteAddress(deleteID))
+    if (deleteID) {
+      dispatch(deleteAddress(deleteID))
+    }
+    setOpenDeleteCard(false)
   }
 
   const handleAddressClose = () => {
