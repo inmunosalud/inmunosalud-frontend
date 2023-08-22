@@ -136,6 +136,8 @@ const UserDropdown = props => {
           </MenuItem>
         ) : null}
 
+        {/*
+         Sustituir boton con Mercadopago
         {user?.profile != null && (
           <MenuItem sx={{ py: 2 }} onClick={handleRegister}>
             <svg
@@ -159,7 +161,7 @@ const UserDropdown = props => {
             </svg>
             Registrarme en Stripe
           </MenuItem>
-        )}
+        )} */}
         <MenuItem sx={{ py: 2 }} onClick={() => dispatch(setModal(true))}>
           <Flag sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
           Tengo un problema
