@@ -177,7 +177,7 @@ const UserProfileBilling = ({ methods = [] }) => {
           }
         />
         <CardContent>
-          {paymentMethods.map(item => (
+          {paymentMethods.map((item, index) => (
             <Box
               key={index}
               sx={{

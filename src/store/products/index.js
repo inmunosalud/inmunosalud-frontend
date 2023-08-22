@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { PROYECT_PRODUCTS, api_post, api_get, api_patch, api_delete } from '../../services/api'
+import { PROYECT_PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
@@ -73,18 +73,17 @@ export const uploadProductImages = createAsyncThunk('product/uploadProductImages
           `${PROYECT_PRODUCTS}/products/s3Upload/${body.productName}`,
           presignedUrlHeaders
         )
-        const presignedUrl = presignedUrlResponse?.content?.presignedUrl
+        const presignedUrl = presignedUrlResponse?.content?.url
 
         if (presignedUrl) {
           const buffer = Buffer.from(image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
           const headers = { 'Content-Type': `image/${filetype}`, 'Content-Encoding': 'base64' }
 
-          await api_patch(presignedUrl, buffer, headers)
+          await api_put(presignedUrl, buffer, headers)
           urlImages.push(presignedUrl.split('?')[0])
         }
       }
     }
-
     return urlImages
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -100,7 +99,7 @@ const initialState = {
   productImages: [],
   editItem: null,
   mainComponents: [],
-  productId: ""
+  productId: ''
 }
 
 export const productsSlice = createSlice({
@@ -115,7 +114,7 @@ export const productsSlice = createSlice({
     },
     setProductId: (state, { payload }) => {
       state.productId = payload
-    },
+    }
   },
   extraReducers: builder => {
     builder.addCase(getProducts.pending, (state, action) => {

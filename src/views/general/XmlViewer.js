@@ -51,15 +51,11 @@ const XmlViewer = ({ XML, onClose, title }) => {
       <CardHeader title={title} />
       <CardContent>
         {loaded ? (
-          <>
-            <SyntaxHighlighter
-              language='xml'
-              style={{ ...codeStyle, width: '100%', height: '100%' }}
-              customStyle={customStyle}
-            >
+          <div style={{ width: '100%', maxHeight: '400px', overflowY: 'auto' }}>
+            <SyntaxHighlighter language='xml' style={{ ...codeStyle, width: '100%' }} customStyle={customStyle}>
               {formattedXml}
             </SyntaxHighlighter>
-          </>
+          </div>
         ) : (
           <Box
             sx={{
