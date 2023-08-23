@@ -1,7 +1,7 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadInfo, setSelectedPaymentMethodInCart } from 'src/store/paymentMethods'
+import { loadInfo } from 'src/store/paymentMethods'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -12,25 +12,21 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
+import { setPayment } from 'src/store/cart'
 
 export const PaymentMethods = () => {
   const dispatch = useDispatch()
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
 
   const { user } = useSelector(state => state.dashboard.general)
   const { paymentMethods } = useSelector(state => state.paymentMethods)
-
-  useEffect(() => {
-    if (user.id) dispatch(loadInfo(user.id))
-  }, [paymentMethods])
+  const { selectedPayment } = useSelector(state => state.cart)
 
   useEffect(() => {
     if (user.id) dispatch(loadInfo(user.id))
   }, [dispatch])
 
   const handleSelectPaymentMethod = item => {
-    setSelectedPaymentMethod(item.id)
-    dispatch(setSelectedPaymentMethodInCart(item))
+    dispatch(setPayment(item))
   }
 
   return (
@@ -46,8 +42,7 @@ export const PaymentMethods = () => {
             justifyContent: ['space-between'],
             alignItems: ['flex-start', 'center'],
             mb: item.id === paymentMethods.length - 1 ? undefined : 4,
-            border: theme =>
-              selectedPaymentMethod === item.id ? `1px solid white` : `1px solid ${theme.palette.divider}`,
+            border: theme => (selectedPayment === item ? `1px solid white` : `1px solid ${theme.palette.divider}`),
             '&:hover': {
               border: '1px solid #D9D4D3',
               color: 'gray'
@@ -73,7 +68,7 @@ export const PaymentMethods = () => {
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
             <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleSelectPaymentMethod(item)}>
-              {selectedPaymentMethod === item.id ? 'Seleccionado' : 'Seleccionar'}
+              {selectedPayment === item ? 'Seleccionado' : 'Seleccionar'}
             </Button>
             <Typography variant='body2' sx={{ mt: 5 }}>
               Expira el {item.expDate}

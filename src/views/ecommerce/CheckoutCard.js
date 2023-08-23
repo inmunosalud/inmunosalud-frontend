@@ -96,7 +96,7 @@ const CheckoutCard = ({ data }) => {
   const theme = useTheme()
 
   // ** Selectors
-  const { total, products, selectedPaymentMethod, selectedAddressInCard, userInfo } = data
+  const { total, products, selectedPayment, selectedAddress, userInfo } = data
 
   // ** Ref
   const PreviewRef = useRef(null)
@@ -196,24 +196,24 @@ const CheckoutCard = ({ data }) => {
                   </Typography>
                 </Box>
 
-                {userInfo && selectedPaymentMethod && selectedAddressInCard ? (
+                {userInfo && selectedPayment && selectedAddress ? (
                   <>
                     <Box sx={{ mb: 2 }}>
                       <Typography variant='h6' sx={{ mb: 1 }}>
                         Dirección
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {selectedAddressInCard
-                          ? `${selectedAddressInCard.street ?? ''} ${selectedAddressInCard.extNumber ?? ''} ${
-                              selectedAddressInCard.intNumber ? `- ${selectedAddressInCard.intNumber}` : ''
+                        {selectedAddress
+                          ? `${selectedAddress.street ?? ''} ${selectedAddress.extNumber ?? ''} ${
+                              selectedAddress.intNumber ? `- ${selectedAddress.intNumber}` : ''
                             }`
                           : null}
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {selectedAddressInCard
-                          ? `${selectedAddressInCard.colony ?? ''}, ${selectedAddressInCard.zipCode ?? ''}, ${
-                              selectedAddressInCard.federalEntity ?? ''
-                            }, ${selectedAddressInCard.country ?? ''}`
+                        {selectedAddress
+                          ? `${selectedAddress.colony ?? ''}, ${selectedAddress.zipCode ?? ''}, ${
+                              selectedAddress.federalEntity ?? ''
+                            }, ${selectedAddress.country ?? ''}`
                           : null}
                       </Typography>
                       <Typography variant='body2'>
@@ -225,8 +225,8 @@ const CheckoutCard = ({ data }) => {
                         Método de pago
                       </Typography>
                       <Typography variant='body2' sx={{ mb: 1 }}>
-                        {selectedPaymentMethod
-                          ? `${selectedPaymentMethod.cardType} - ${selectedPaymentMethod.cardNumber.slice(-4)}`
+                        {selectedPayment
+                          ? `${selectedPayment.cardType} - ${selectedPayment.cardNumber.slice(-4)}`
                           : null}
                       </Typography>
                     </Box>

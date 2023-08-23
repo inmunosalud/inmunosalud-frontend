@@ -15,7 +15,7 @@ import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
 
-const InvoicePreview = ({ }) => {
+const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
   // ** State
   const [error, setError] = useState(false)
@@ -28,29 +28,28 @@ const InvoicePreview = ({ }) => {
   const { total, products, id } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
-  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
-  const { selectedAddressInCard } = useSelector(state => state.address)
+  const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { isLoading } = useSelector(state => state.orders)
 
   const data = {
     products,
     total,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
     userInfo
   }
 
   const handleConfirmOrder = () => {
     const body = {
-      idAddress: selectedAddressInCard.id,
-      idPaymentMethod: selectedPaymentMethod.id,
+      idAddress: selectedAddress.id,
+      idPaymentMethod: selectedPayment.id,
       products: products.map(product => {
         return { id: product.id, quantity: product.quantity }
       })
@@ -79,8 +78,8 @@ const InvoicePreview = ({ }) => {
           /> */}
         </Grid>
       </Grid>
-      
-      <BackDropLoader isLoading={isLoading}/>
+
+      <BackDropLoader isLoading={isLoading} />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )

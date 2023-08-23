@@ -51,9 +51,26 @@ export const cartSlice = createSlice({
       iva: 0,
       total: 0,
       shippingCost: 0
+    },
+    isPaymentsModalOpen: false,
+    isAddressesModalOpen: false,
+    selectedPayment: null,
+    selectedAddress: null
+  },
+  reducers: {
+    setOpenPaymentsModal(state, { payload }) {
+      state.isPaymentsModalOpen = payload
+    },
+    setOpenAddressesModal(state, { payload }) {
+      state.isAddressesModalOpen = payload
+    },
+    setPayment(state, { payload }) {
+      state.selectedPayment = payload
+    },
+    setAddress(state, { payload }) {
+      state.selectedAddress = payload
     }
   },
-  reducers: {},
   extraReducers: builder => {
     builder.addCase(getCart.pending, (state, action) => {
       state.isLoading = true
@@ -92,4 +109,5 @@ export const cartSlice = createSlice({
   }
 })
 
+export const { setOpenAddressesModal, setOpenPaymentsModal, setPayment, setAddress } = cartSlice.actions
 export default cartSlice.reducer

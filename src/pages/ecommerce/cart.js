@@ -24,7 +24,6 @@ const Cart = () => {
   const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState(null)
   const [clients, setClients] = useState([])
-  const [openCardModal, setOpenCardModal] = useState(false)
   const [openAddressModal, setOpenAddressModal] = useState(false)
   const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
 
@@ -41,11 +40,11 @@ const Cart = () => {
           />
         </Grid>
         <Grid item xl={3} md={4} xs={12}>
-          <CartActions onMethodClick={() => setOpenCardModal(true)} onAddressClick={() => setOpenAddressModal(true)} />
+          <CartActions onAddressClick={() => setOpenAddressModal(true)} />
         </Grid>
       </Grid>
-      <CardsModal open={openCardModal} onClose={() => setOpenCardModal(false)} />
-      <AddressModal open={openAddressModal} onClose={() => setOpenAddressModal(false)} />
+      <CardsModal />
+      <AddressModal />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )

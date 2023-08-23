@@ -19,12 +19,13 @@ import DialogContentText from '@mui/material/DialogContentText'
 import { PaymentMethods } from './PaymentMethods'
 import { setModal, createMethod } from 'src/store/paymentMethods'
 import DialogBilling from '../components/dialogs/DialogBilling'
+import { setOpenPaymentsModal } from 'src/store/cart'
 
 const defaultPaymentValues = {
   alias: '',
   month: '',
   year: '',
-  cardUse: '',
+  cardUse: 'Pago',
   nameOnCard: '',
   cardNumber: '',
   cvc: ''
@@ -55,10 +56,11 @@ const paymentSchema = yup.object().shape({
     .max(4, 'Deben ser 4 dígitos máximo')
 })
 
-const CardsModal = ({ open = false, onClose = () => {} }) => {
+const CardsModal = () => {
   const dispatch = useDispatch()
 
   const {
+    reset,
     control: paymentControl,
     handleSubmit,
     formState: { errors: paymentErrors }
@@ -71,18 +73,20 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
   const descriptionElementRef = useRef(null)
 
   const { isOpen } = useSelector(state => state.paymentMethods)
+  const { isPaymentsModalOpen } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
 
   useEffect(() => {
-    if (open) {
+    if (isPaymentsModalOpen) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
         descriptionElement.focus()
       }
     }
-  }, [open])
+  }, [isPaymentsModalOpen])
 
   const handleNewPayment = () => {
+    reset(defaultPaymentValues)
     dispatch(setModal(true))
   }
 
@@ -99,22 +103,31 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
     handleEditCardClose()
   }
 
+  const handleCloseModal = () => {
+    dispatch(setOpenPaymentsModal(false))
+  }
+
+  // const handleSubmitCustom = e => {
+  //   e.preventDefaults()
+  //   console.log(e)
+  // }
+
   return (
     <div className='demo-space-x'>
       <Dialog
-        open={open}
+        open={isPaymentsModalOpen}
         scroll='paper'
         maxWidth='md'
-        onClose={onClose}
+        onClose={handleCloseModal}
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
       >
         <DialogTitle id='scroll-dialog-title'>Métodos de pago</DialogTitle>
-        <IconButton size='small' onClick={onClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
+        <IconButton size='small' onClick={handleCloseModal} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
           <Close />
         </IconButton>
         <DialogContent dividers='paper'>
-          <PaymentMethods onClose={onClose} />
+          <PaymentMethods onClose={handleCloseModal} />
           <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -122,7 +135,7 @@ const CardsModal = ({ open = false, onClose = () => {} }) => {
             <Plus />
             Nuevo Método
           </Button>
-          <Button onClick={onClose}>Confirmar</Button>
+          <Button onClick={handleCloseModal}>Confirmar</Button>
         </DialogActions>
       </Dialog>
       <DialogBilling

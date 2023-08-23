@@ -143,7 +143,11 @@ export default function DialogBilling({
                         aria-describedby='stepper-linear-payment-year'
                       >
                         {options.map((year, _) => {
-                          return <MenuItem value={year.value}>{year.label}</MenuItem>
+                          return (
+                            <MenuItem key={year} value={year.value}>
+                              {year.label}
+                            </MenuItem>
+                          )
                         })}
                       </Select>
                     )}
