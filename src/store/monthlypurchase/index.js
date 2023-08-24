@@ -25,13 +25,16 @@ export const updateMonthlyPurchase = createAsyncThunk(
 
       return response
     } catch (error) {
-      thunkApi.dispatch(
-        openSnackBar({
-          open: true,
-          message: 'El total del pedido no puede ser menor a la compra mensual requerida',
-          severity: 'error'
-        })
-      )
+      console.log(error.response)
+      if (error.response.status == 500) {
+        thunkApi.dispatch(
+          openSnackBar({
+            open: true,
+            message: 'El total del pedido no puede ser menor a la compra mensual requerida',
+            severity: 'error'
+          })
+        )
+      }
       return thunkApi.rejectWithValue('El total del pedido no puede ser menor a la compra mensual requerida')
     }
   }

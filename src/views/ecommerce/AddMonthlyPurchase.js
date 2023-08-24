@@ -85,16 +85,21 @@ const AddMonthlyPurchase = () => {
   const theme = useTheme()
 
   useEffect(() => {
-    dispatch(getMonthlyPurchase(user.id)).then(result => {
-      const product = result.payload.content.products[0]
+    if (user.id != null) {
+      dispatch(getMonthlyPurchase(user.id))
+    }
+  }, [dispatch])
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const product = products[0]
       const body = {
         id: product.id,
         quantity: product.quantity
       }
-
       dispatch(updateMonthlyPurchase({ id, body }))
-    })
-  }, [dispatch])
+    }
+  }, [products])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
