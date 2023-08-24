@@ -129,13 +129,6 @@ const AddCard = props => {
   }
 
   useEffect(() => {
-    if (!user.id) {
-      dispatch(loadSession())
-    }
-    dispatch(loadInfo(user.id))
-  }, [dispatch])
-
-  useEffect(() => {
     if (selectedPayment == null) {
       dispatch(setPayment(selectedPaymentMethod))
     }
@@ -412,7 +405,7 @@ const AddCard = props => {
             <CalcWrapper>
               <Typography variant='body2'>Monto de envío:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                ${total.shippingCost ?? 0}
+                ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
               </Typography>
             </CalcWrapper>
             <CalcWrapper>
@@ -425,7 +418,7 @@ const AddCard = props => {
             <CalcWrapper>
               <Typography variant='body2'>Total:</Typography>
               <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                ${total.total}
+                ${total.subtotal > 0 ? total.total : 0}
               </Typography>
             </CalcWrapper>
           </Grid>
