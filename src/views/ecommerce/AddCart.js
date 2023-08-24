@@ -142,7 +142,7 @@ const AddCard = props => {
   }, [selectedPayment, selectedAddress])
 
   useEffect(() => {
-    if (products.filter(product => !product.canBeRemoved)) {
+    if (products.filter(product => !product.canBeRemoved).length > 0) {
       dispatch(getMonthlyPurchase(user.id))
       dispatch(
         openSnackBar({
@@ -165,7 +165,7 @@ const AddCard = props => {
 
   const getMinQuantity = (idProduct, canBeRemoved) => {
     const monthlyProduct = monthlyPaymentProducts.find(product => product.id === idProduct)
-    if (!canBeRemoved && monthlyProduct) {
+    if (!canBeRemoved && monthlyProduct != null) {
       return monthlyProduct.quantity
     } else {
       return 0
