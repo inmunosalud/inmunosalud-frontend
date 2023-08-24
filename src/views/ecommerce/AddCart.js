@@ -50,6 +50,7 @@ import { setSelectedAddressInCart } from 'src/store/address'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 import { closeSnackBar, openSnackBar } from 'src/store/notifications'
+import { getMonthlyPurchase } from 'src/store/monthlypurchase'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
@@ -114,10 +115,12 @@ const AddCard = props => {
   const dispatch = useDispatch()
 
   // ** Selectors
+  const monthlyPaymentProducts = useSelector(state => state.monthlyPurchase.products)
   const { total, products, id, selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCard } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
+  const { user } = useSelector(state => state.dashboard.general)
 
   // ** Hook
   const theme = useTheme()
@@ -131,17 +134,16 @@ const AddCard = props => {
   }
 
   useEffect(() => {
-    if (selectedPayment == null) {
+    if (selectedPayment == null || selectedAddress == null) {
+      dispatch(loadInfo(user.id))
       dispatch(setPayment(selectedPaymentMethod))
-    }
-
-    if (selectedAddress == null) {
       dispatch(setAddress(selectedAddressInCard))
     }
   }, [selectedPayment, selectedAddress])
 
   useEffect(() => {
-    if (products.some(product => !product.canBeRemoved)) {
+    if (products.filter(product => !product.canBeRemoved)) {
+      dispatch(getMonthlyPurchase(user.id))
       dispatch(
         openSnackBar({
           open: true,
@@ -158,11 +160,16 @@ const AddCard = props => {
       quantity
     }
 
-    if (!canBeRemoved && quantity <= 0) {
-      return
-    }
-
     dispatch(updateCart({ id, body }))
+  }
+
+  const getMinQuantity = (idProduct, canBeRemoved) => {
+    const monthlyProduct = monthlyPaymentProducts.find(product => product.id === idProduct)
+    if (!canBeRemoved && monthlyProduct) {
+      return monthlyProduct.quantity
+    } else {
+      return 0
+    }
   }
 
   return (
@@ -365,7 +372,7 @@ const AddCard = props => {
                           type='number'
                           placeholder='1'
                           defaultValue={product.quantity}
-                          InputProps={{ inputProps: { min: 0 } }}
+                          InputProps={{ inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) } }}
                           onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
                         />
                       </Grid>
