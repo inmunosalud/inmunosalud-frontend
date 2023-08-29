@@ -17,7 +17,6 @@ import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
 import { Carousel } from '@mui/material'
 
-
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
@@ -73,7 +72,6 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 
 // carousel product
 const CarouselProducts = ({ images, theme }) => {
-
   // const [url1, url2] = images ?? []
   if (images) {
     return (

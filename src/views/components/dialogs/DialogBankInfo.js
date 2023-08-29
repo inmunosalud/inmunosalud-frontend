@@ -26,10 +26,6 @@ export default function DialogBankInfo({
   handleSubmit = () => {},
   onBankInfoSubmit = () => {}
 }) {
-  const dispatch = useDispatch()
-  const handleBankSelected = value => {
-    dispatch(setBank(value))
-  }
   const { bank } = useSelector(state => state.paymentMethods)
   return (
     <Card>
@@ -84,6 +80,9 @@ export default function DialogBankInfo({
                         placeholder='XXXXXXXXXXXXXXXXXX'
                         error={Boolean(bankInfoErrors['clabe'])}
                         aria-describedby='stepper-linear-bankInfo-clabe'
+                        inputProps={{
+                          maxLength: 18
+                        }}
                       />
                     )}
                   />
@@ -96,18 +95,21 @@ export default function DialogBankInfo({
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='product-label'>Banco *</InputLabel>
-                  <Select
-                    labelId='product-label'
-                    label='Banco'
-                    value={bank}
-                    required={true}
-                    onChange={e => handleBankSelected(e.target.value)}
-                  >
-                    {BANKS.map(item => (
-                      <MenuItem value={item}>{item}</MenuItem>
-                    ))}
-                  </Select>
+                  <Controller
+                    name='bank'
+                    control={bankInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <React.Fragment>
+                        <InputLabel id='product-label'>Banco *</InputLabel>
+                        <Select labelId='product-label' label='Banco' value={value} required={true} onChange={onChange}>
+                          {BANKS.map(item => (
+                            <MenuItem value={item}>{item}</MenuItem>
+                          ))}
+                        </Select>
+                      </React.Fragment>
+                    )}
+                  />
                   {bank === '' && <FormHelperText sx={{ color: 'red' }}>Elige un banco</FormHelperText>}
                 </FormControl>
               </Grid>

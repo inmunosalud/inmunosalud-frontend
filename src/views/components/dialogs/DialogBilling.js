@@ -175,6 +175,10 @@ export default function DialogBilling({
                           placeholder='XXXX-XXXX-XXXX-XXXX'
                           error={Boolean(paymentErrors['cardNumber'])}
                           aria-describedby='stepper-linear-payment-cardNumber'
+                          inputProps={{
+                            maxLength: 16,
+                            pattern: '[0-9]*'
+                          }}
                         />
                       )}
                     />
