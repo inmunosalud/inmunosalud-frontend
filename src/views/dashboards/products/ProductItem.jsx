@@ -251,6 +251,11 @@ export const ProductItem = props => {
     dispatch(updateCart({ id: props.cartId, body }))
   }
 
+  const handleDeleteConfirm = () => {
+    handleModalClose()
+    dispatch(setShowConfirmModal(true))
+  }
+
   return (
     <>
       <Card>
@@ -349,7 +354,7 @@ export const ProductItem = props => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleModalClose}>Cancelar</Button>
-          <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
+          <Button onClick={handleDeleteConfirm}>Eliminar</Button>
         </DialogActions>
       </Dialog>
       <DialogForm
