@@ -90,17 +90,6 @@ const AddMonthlyPurchase = () => {
     }
   }, [dispatch])
 
-  useEffect(() => {
-    if (products.length > 0) {
-      const product = products[0]
-      const body = {
-        id: product.id,
-        quantity: product.quantity
-      }
-      dispatch(updateMonthlyPurchase({ id, body }))
-    }
-  }, [products])
-
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
     const body = {
       id: idProduct,
@@ -328,15 +317,6 @@ const AddMonthlyPurchase = () => {
             </Grid>
           </Grid>
         </CardContent>
-        {/* 
-      <Divider />
-
-      <CardContent>
-        <InputLabel htmlFor='invoice-note' sx={{ mb: 2 }}>
-          Nota:
-        </InputLabel>
-        <TextField rows={2} fullWidth multiline id='invoice-note' />
-      </CardContent> */}
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Fragment>
