@@ -67,8 +67,8 @@ const paymentSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[\d*]+$/, 'Solo dígitos o *')
-    .min(16, 'Deben ser 16 dígitos')
-    .max(16, 'Deben ser 16 dígitos'),
+    .min(15, 'Deben ser al menos 15 dígitos (solo American Express)')
+    .max(16, 'Deben ser maximo 16 dígitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
