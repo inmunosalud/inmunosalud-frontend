@@ -147,7 +147,7 @@ const AddCard = props => {
       dispatch(
         openSnackBar({
           open: true,
-          message: 'No es posible eliminar algunos productos porque forman parte de tu compra minima mensual',
+          message: 'No es posible eliminar algunos productos porque forman parte de tu compra mínima inicial.',
           severity: 'info'
         })
       )
