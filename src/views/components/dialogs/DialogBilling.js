@@ -49,32 +49,30 @@ export default function DialogBilling({
         <DialogContent style={{ paddingTop: '5px' }}>
           <form onSubmit={handleSubmit(onPaymentSubmit)}>
             <Grid container spacing={5}>
-              {isFormEditing ? null : (
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='alias'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='Alias'
-                          onChange={onChange}
-                          placeholder='Alias'
-                          error={Boolean(paymentErrors['alias'])}
-                          aria-describedby='stepper-linear-payment-alias'
-                        />
-                      )}
-                    />
-                    {paymentErrors['alias'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
-                        El campo es requerido
-                      </FormHelperText>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='alias'
+                    control={paymentControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Alias'
+                        onChange={onChange}
+                        placeholder='Alias'
+                        error={Boolean(paymentErrors['alias'])}
+                        aria-describedby='stepper-linear-payment-alias'
+                      />
                     )}
-                  </FormControl>
-                </Grid>
-              )}
+                  />
+                  {paymentErrors['alias'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
