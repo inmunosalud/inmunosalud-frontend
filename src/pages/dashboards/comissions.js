@@ -143,8 +143,8 @@ const Comissions = () => {
   return (
     <React.Fragment>
       <Tabs value={tabValue} onChange={handleChangeTab} centered>
-        <Tab label={COMMISSION_STATUS_SP.pendingPayment} />
         <Tab label={COMMISSION_STATUS_SP.confirming} />
+        <Tab label={COMMISSION_STATUS_SP.pendingPayment} />
         <Tab label='Finalizadas' />
       </Tabs>
       <Box mt={5}>
@@ -152,7 +152,7 @@ const Comissions = () => {
           <CardHeader
             title='Comisiones'
             action={
-              tabValue === 0 ? (
+              tabValue === 1 ? (
                 <Box>
                   <Button
                     variant='contained'
@@ -170,11 +170,11 @@ const Comissions = () => {
             autoHeight
             loading={isLoading}
             rows={
-              tabValue === 0 ? pendingPaymentComissions : tabValue === 1 ? confirmingComissions : finishedComissions
+              tabValue === 0 ? confirmingComissions : tabValue === 1 ? pendingPaymentComissions : finishedComissions
             }
             columns={COLUMNS}
             pageSize={10}
-            checkboxSelection={tabValue === 0}
+            checkboxSelection={tabValue === 1}
             onSelectionModelChange={newSelection => {
               setRowSelectionModel(newSelection)
             }}

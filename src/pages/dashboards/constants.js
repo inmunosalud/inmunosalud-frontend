@@ -18,16 +18,19 @@ import {
 } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import Delete from 'mdi-material-ui/Delete'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { getConstants, setModalUpdate, setShowConfirmModal } from 'src/store/constants'
+import { closeSnackBar } from 'src/store/notifications'
 import { getProducts } from 'src/store/products'
 import DialogConstants from 'src/views/components/dialogs/DialogConstants'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 const Constants = () => {
   const { constants, loading, isLoading, showModal } = useSelector(state => state.constants)
   const { products } = useSelector(state => state.products)
+  const { message, severity, open } = useSelector(state => state.notifications)
   const [associateProductList, setAssociateProductList] = useState([])
   const [addProductDisabled, isAddProductDisabled] = useState(false)
   const [body, setBody] = useState({})
@@ -151,7 +154,7 @@ const Constants = () => {
   }
 
   return (
-    <>
+    <Fragment>
       <Card>
         <CardHeader title={'Editar constantes del sistema'} titleTypographyProps={{ variant: 'h6' }} />
         <Grid item xs={12}>
@@ -436,7 +439,8 @@ const Constants = () => {
         )}
       </Card>
       <DialogConstants open={showModal} body={body} />
-    </>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+    </Fragment>
   )
 }
 
