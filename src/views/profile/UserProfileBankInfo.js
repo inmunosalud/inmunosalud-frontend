@@ -79,18 +79,17 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   }, [])
 
   const onBankInfoSubmit = values => {
-    console.log(values)
-    // const body = {
-    //   ...values,
-    //   cardUse: 'Cobro'
-    // }
+    const body = {
+      ...values,
+      cardUse: 'Cobro'
+    }
 
-    // dispatch(
-    //   clabeIsEmpty
-    //     ? createMethod({ body, uuid: user.id })
-    //     : updateMethod({ body, uuid: user.id, idPaymentMethod: bankInfo.id })
-    // )
-    // dispatch(loadInfo(user.id))
+    dispatch(
+      clabeIsEmpty
+        ? createMethod({ body, uuid: user.id })
+        : updateMethod({ body, uuid: user.id, idPaymentMethod: bankInfo.id })
+    )
+    dispatch(loadInfo(user.id))
     handleEditCardClose()
   }
 
