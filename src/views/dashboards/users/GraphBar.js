@@ -19,6 +19,12 @@ const columnColors = {
   series2: '#d2b0ff'
 }
 
+// Format the price above to MXN using the locale, style, and currency.
+const Currency = new Intl.NumberFormat('es-MX', {
+  style: 'currency',
+  currency: 'MXN'
+})
+
 const GraphBar = ({ title = '', series = [], categories = [] }) => {
   const theme = useTheme()
 
@@ -54,12 +60,19 @@ const GraphBar = ({ title = '', series = [], categories = [] }) => {
     tooltip: {
       custom(data) {
         return `<div class='bar-chart'>
-              <span>${data.series[data.seriesIndex][data.dataPointIndex]}%</span>
+              <span>${Currency.format(data.series[data.seriesIndex][data.dataPointIndex])}</span>
             </div>`
       }
     },
     xaxis: {
       categories: categories
+    },
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return Currency.format(val)
+        }
+      }
     }
   }
 
