@@ -16,8 +16,8 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
 import { Carousel } from '@mui/material'
-
-
+import ChevronUpIcon from 'mdi-material-ui/ChevronUp'
+import ChevronDownIcon from 'mdi-material-ui/ChevronDown'
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
@@ -73,7 +73,6 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 
 // carousel product
 const CarouselProducts = ({ images, theme }) => {
-
   // const [url1, url2] = images ?? []
   if (images) {
     return (
@@ -129,6 +128,70 @@ export const ProductItem = props => {
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const { productId } = useSelector(state => state.products)
   const [authPassword, setAuthPassword] = React.useState('')
+
+  function DescriptionWithLinks({ description }) {
+    const [isExpanded, setIsExpanded] = React.useState(false)
+
+    console.log('descripcion', description)
+    return (
+      <>
+        {isExpanded || description.length <= 100 ? (
+          <>
+            <Typography
+              style={{
+                transition: 'color 0.3s'
+              }}
+              variant='body2'
+              component='div'
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+            <a
+              href='#'
+              onClick={e => {
+                e.preventDefault() // Evita la acción predeterminada del enlace (navegación)
+                setIsExpanded(!isExpanded)
+              }}
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.3s'
+              }}
+              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+            >
+              <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
+            </a>
+          </>
+        ) : (
+          <>
+            <Typography
+              variant='body2'
+              component='div'
+              dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
+            />
+            <a
+              href='#'
+              onClick={e => {
+                e.preventDefault()
+                setIsExpanded(!isExpanded)
+              }}
+              style={{
+                color: theme.palette.primary.main,
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.3s'
+              }}
+              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+            >
+              <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
+            </a>
+          </>
+        )}
+      </>
+    )
+  }
 
   const handleModalClose = () => {
     setShowModalDelete(false)
@@ -305,15 +368,15 @@ export const ProductItem = props => {
                   </BoxCustomizedInfo>
                 </Grid>
               </Grid>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px', whiteSpace: 'pre-line' }}>
                 <strong>DESCRIPCION: </strong>
-                {`${props.description}`}
+                <DescriptionWithLinks description={props.description} />
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
                 <strong>INSTRUCCIONES: </strong>
                 {`${props.instructions}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
                 <strong>INGREDIENTES: </strong>
                 {`${props.ingredients}`}
               </Typography>
