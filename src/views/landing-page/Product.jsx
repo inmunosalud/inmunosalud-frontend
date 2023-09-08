@@ -37,7 +37,6 @@ const Product = props => {
   const { plan, data } = props
   const router = useRouter()
   const theme = useTheme()
-  console.log(theme.palette.primary, 'theme.palette.primary.primary')
 
   const renderFeatures = () => {
     return data?.planBenefits.map((item, index) => (
@@ -82,10 +81,12 @@ const Product = props => {
         <Typography variant='h5'>{data?.product}</Typography>
       </Box>
       <Box sx={{ marginBottom: '20px' }}>
+        <Typography
+          variant='body2'
+          component='div'
+          dangerouslySetInnerHTML={{ __html: `${data?.description.substring(0, 100)}...` }}
+        />
         <Typography variant='body2'>
-          {data?.description.length > 100 // Define un límite de caracteres para la descripción
-            ? `${data?.description.substring(0, 100)}...` // Corta la descripción si es más larga
-            : data?.description}
           {data?.description.length > 100 && ( // Muestra el enlace "Ver más" solo si la descripción es larga
             <Link href='/ecommerce/products'>
               <a

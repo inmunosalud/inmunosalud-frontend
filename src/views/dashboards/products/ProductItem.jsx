@@ -32,7 +32,7 @@ import { setEdit, deleteProduct, setProductId } from 'src/store/products'
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/navigation'
-
+import ReactImageMagnify from 'react-image-magnify'
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
@@ -73,7 +73,6 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 
 // carousel product
 const CarouselProducts = ({ images, theme }) => {
-  // const [url1, url2] = images ?? []
   if (images) {
     return (
       <Swiper
@@ -91,22 +90,32 @@ const CarouselProducts = ({ images, theme }) => {
       >
         {images.map(image => (
           <SwiperSlide
+            key={image} // Agrega una clave única para cada diapositiva
             style={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              position: 'relative' // Establece posición relativa en el Slide
             }}
           >
-            <div style={{ width: '75%', height: 'auto' }}>
-              <div
-                style={{
-                  width: '100%',
-                  paddingBottom: '75%',
-                  position: 'relative'
+            <div style={{ zIndex: 9999 }}>
+              <ReactImageMagnify
+                largeImage={{
+                  src: image, // Utiliza la misma URL para la imagen grande
+                  width: 820, // Ancho de la imagen grande (ajusta según tu necesidad)
+                  height: 900 // Alto de la imagen grande (ajusta según tu necesidad)
                 }}
-              >
-                <Image layout='fill' objectFit='contain' alt='imagen' src={image} />
-              </div>
+                enlargedImageStyle={{ zIndex: 9999, top: 0 }}
+                enlargedImagePosition='over'
+                isHintEnabled='true'
+                hintTextMouse='Haz zoom con el mouse'
+                smallImage={{
+                  alt: 'Descripción de la imagen',
+                  src: image, // Utiliza la misma URL para la imagen pequeña
+                  width: 220,
+                  height: 300
+                }}
+              />
             </div>
           </SwiperSlide>
         ))}
@@ -337,11 +346,10 @@ export const ProductItem = props => {
               <MenuBasic {...listMenuProps} />
             </Grid>
           </Grid>
+          {/*A ver por aqui*/}
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-                <CarouselProducts images={props.urlImages} theme={theme} />
-              </Box>
+              <CarouselProducts images={props.urlImages} theme={theme} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
@@ -414,7 +422,14 @@ export const ProductItem = props => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleModalClose}>Cancelar</Button>
-          <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
+          <Button
+            onClick={() => {
+              dispatch(setShowConfirmModal(true))
+              handleModalClose()
+            }}
+          >
+            Eliminar
+          </Button>{' '}
         </DialogActions>
       </Dialog>
       <DialogForm
