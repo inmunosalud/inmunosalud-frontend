@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -16,6 +16,7 @@ import {
 import { DataGrid } from '@mui/x-data-grid'
 import XmlViewer from 'src/views/general/XmlViewer' // Importa pdfjs para la carga del PDF
 import PdfViewer from 'src/views/general/PdfViewer'
+import { getLocaleText } from 'src/configs/defaultLocaleText'
 
 const TableBilling = ({
   invoices,
@@ -38,6 +39,7 @@ const TableBilling = ({
   pdfError,
   xmlError
 }) => {
+  const [pageSize, setPageSize] = useState(5)
   const formatFileSize = bytes => {
     if (bytes === 0) return '0 bytes'
     const k = 1024
@@ -224,7 +226,15 @@ const TableBilling = ({
   return (
     <Card>
       <CardHeader title={title} />
-      <DataGrid rows={invoices} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10, 20]} autoHeight />
+      <DataGrid
+        rows={invoices}
+        columns={columns}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+        localeText={getLocaleText()}
+        autoHeight
+      />
       <Modal
         open={openModal}
         onClose={handleClose}

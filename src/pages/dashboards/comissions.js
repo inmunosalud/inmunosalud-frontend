@@ -20,6 +20,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import { getComissions, liquidationComisions, setOpenModal } from 'src/store/comissions'
 import SnackbarAlert from 'src/views/components/snackbar/SnackbarAlert'
 import { set } from 'nprogress'
+import { getLocaleText } from 'src/configs/defaultLocaleText'
 
 const COLUMNS = [
   {
@@ -99,6 +100,7 @@ const Comissions = () => {
   const [confirmingComissions, setConfirmingComissions] = React.useState([])
   const [finishedComissions, setFinishedComissions] = React.useState([])
   const [tabValue, setTabValue] = React.useState(0)
+  const [pageSize, setPageSize] = React.useState(5)
 
   React.useEffect(() => {
     dispatch(getComissions())
@@ -173,12 +175,14 @@ const Comissions = () => {
               tabValue === 0 ? confirmingComissions : tabValue === 1 ? pendingPaymentComissions : finishedComissions
             }
             columns={COLUMNS}
-            pageSize={10}
             checkboxSelection={tabValue === 1}
             onSelectionModelChange={newSelection => {
               setRowSelectionModel(newSelection)
             }}
             rowSelectionModel={rowSelectionModel}
+            rowsPerPageOptions={[5, 10, 25]}
+            pageSize={pageSize}
+            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
           />
         </Card>
       </Box>
