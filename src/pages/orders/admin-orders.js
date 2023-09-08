@@ -13,7 +13,6 @@ import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
 import { Button } from '@mui/material'
 
-
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
@@ -51,7 +50,7 @@ const columns = [
     minWidth: 100,
     field: 'totalProducts',
     headerName: 'Productos',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 140,
@@ -67,31 +66,32 @@ const columns = [
     minWidth: 180,
     field: 'deliveryStatus',
     headerName: 'Estatus de envio',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 180,
     headerName: 'Fecha de compra',
     field: 'purchaseDate',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 160,
     headerName: 'Fecha estimada de envio',
     field: 'deliveryEstimateDate',
-    renderCell: params => { }
+    renderCell: params => {}
   },
   {
     minWidth: 120,
     headerName: 'Fecha de entrega',
     field: 'deliveryDate',
-    renderCell: params => { }
+    renderCell: params => {}
   }
 ]
 
 const AdminOrders = () => {
   const router = useRouter()
   const dispatch = useDispatch()
+  const [pageSize, setPageSize] = React.useState(5)
 
   const { user } = useSelector(state => state.session)
   const { users } = useSelector(state => state.users)
@@ -127,7 +127,15 @@ const AdminOrders = () => {
     <>
       <Card>
         <CardHeader title='Pedidos' />
-        <DataGrid autoHeight pageSize={50} rows={ordersAll} columns={config} sx={{ width: '100%' }} />
+        <DataGrid
+          autoHeight
+          rows={ordersAll}
+          columns={config}
+          sx={{ width: '100%' }}
+          rowsPerPageOptions={[5, 10, 25]}
+          pageSize={pageSize}
+          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+        />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>

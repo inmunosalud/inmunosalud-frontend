@@ -128,6 +128,10 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
 const DeliveryInfo = ({ allOrderInfo }) => {
   const paymentMethod = allOrderInfo.paymentMethod
 
+  React.useEffect(() => {
+    console.log(paymentMethod)
+  })
+
   return (
     <Grid container style={DeliveryInfoStyles} xs={12} sm={9}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -271,17 +275,17 @@ const Product = ({ products }) => {
 }
 
 const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) => {
-  const currentDate = new Date();
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 1 día en milisegundos
+  const currentDate = new Date()
+  const oneDayInMilliseconds = 24 * 60 * 60 * 1000 // 1 día en milisegundos
 
   // Convierte la cadena de fecha en un objeto Date
-  const parsedDate = parseDate(purchaseDate);
+  const parsedDate = parseDate(purchaseDate)
 
   // Verifica si la fecha actual + 1 día es posterior a la fecha del pedido
-  const isCancelable = parsedDate.getTime() + oneDayInMilliseconds > currentDate.getTime();
+  const isCancelable = parsedDate.getTime() + oneDayInMilliseconds > currentDate.getTime()
 
   if (status === 'Está en camino' || status === 'Cancelado' || status === 'Entregado' || !isCancelable) {
-    return <div style={ButtonActionStyles} />;
+    return <div style={ButtonActionStyles} />
   }
 
   return (
@@ -290,8 +294,8 @@ const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) =
         Cancelar Pedido
       </Button>
     </Tooltip>
-  );
-};
+  )
+}
 
 const Cards = props => {
   const dispatch = useDispatch()
@@ -326,7 +330,11 @@ const Cards = props => {
             >
               <Address address={address} />
               <DeliveryInfo allOrderInfo={props} />
-              <Actions onHandleModal={handleOpenModal} status={props.deliveryStatus} purchaseDate={props.purchaseDate}/>
+              <Actions
+                onHandleModal={handleOpenModal}
+                status={props.deliveryStatus}
+                purchaseDate={props.purchaseDate}
+              />
             </Grid>
             <Divider />
             <RepeaterWrapper>

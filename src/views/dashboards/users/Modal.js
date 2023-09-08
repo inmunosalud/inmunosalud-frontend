@@ -38,7 +38,14 @@ const AvailableOptions = () => {
   ))
 }
 //New param showOnlyName to show only name and lastname at user name edition
-const Modal = ({ label = '', open = false, handleModal = () => {}, item = {}, showOnlyName = false }) => {
+const Modal = ({
+  label = '',
+  open = false,
+  handleModal = () => {},
+  item = {},
+  showOnlyName = false,
+  isAdministrator = false
+}) => {
   const dispatch = useDispatch()
   //Check showOnlyName, if true only define names, if false define entire user info
   const defaultValues = showOnlyName
@@ -69,7 +76,8 @@ const Modal = ({ label = '', open = false, handleModal = () => {}, item = {}, sh
     const form = {
       body: values,
       uuid: uuid,
-      loadUserData: true
+      loadUserData: true,
+      isAdministrator: isAdministrator
     }
     dispatch(updateUser(form))
   }

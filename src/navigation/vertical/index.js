@@ -62,6 +62,11 @@ const navigation = () => {
           permission: PERMISSIONS.ordersAdmin
         },
         {
+          title: 'Facturación',
+          path: '/ecommerce/billing',
+          permission: PERMISSIONS.ecommerceBilling
+        },
+        {
           title: 'Constantes',
           path: '/dashboards/constants',
           permission: PERMISSIONS.dashboardConstants
@@ -83,11 +88,6 @@ const navigation = () => {
           title: 'Pedidos',
           path: '/ecommerce/orders',
           permission: PERMISSIONS.ecommerceOrders
-        },
-        {
-          title: 'Facturación',
-          path: '/ecommerce/billing',
-          permission: PERMISSIONS.ecommerceBilling
         }
       ]
     }

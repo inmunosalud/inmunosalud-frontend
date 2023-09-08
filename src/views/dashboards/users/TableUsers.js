@@ -11,7 +11,6 @@ import { DataGrid } from '@mui/x-data-grid'
 import { getLocaleText } from '../../../configs/defaultLocaleText'
 import { Button } from '@mui/material'
 
-
 import { Pencil, Delete } from 'mdi-material-ui'
 
 import Modal from './Modal'
@@ -65,7 +64,9 @@ const TableUsers = () => {
               <Button onClick={() => saveItemModal(row)} color='warning' size='small'>
                 <Pencil />
               </Button>
-            ) : <Button disableRipple disabled />}
+            ) : (
+              <Button disableRipple disabled />
+            )}
             <Button onClick={() => setItemDeleteModal(row)} color='error' size='small'>
               <Delete />
             </Button>
@@ -98,7 +99,13 @@ const TableUsers = () => {
         content='Estas seguro de eliminar al usuario?'
         buttonText='Eliminar'
       />
-      <Modal label='Editar Administrador' open={showModal} handleModal={handleModal} item={modalRow} />
+      <Modal
+        label='Editar Administrador'
+        open={showModal}
+        handleModal={handleModal}
+        item={modalRow}
+        isAdministrator={true}
+      />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )

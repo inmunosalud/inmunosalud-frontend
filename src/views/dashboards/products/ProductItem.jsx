@@ -325,6 +325,11 @@ export const ProductItem = props => {
     dispatch(updateCart({ id: props.cartId, body }))
   }
 
+  const handleDeleteConfirm = () => {
+    handleModalClose()
+    dispatch(setShowConfirmModal(true))
+  }
+
   return (
     <>
       <Card>

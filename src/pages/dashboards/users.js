@@ -94,6 +94,7 @@ function getProductConsumptionSeries(userInfo) {
         } else data.push(0)
       }
       series.push({ data, name: key })
+      console.log(series)
     }
   } catch (error) {
     return console.error(error)
@@ -145,9 +146,7 @@ const Users = () => {
   }, [])
 
   React.useEffect(() => {
-    dispatch(getUserInfo(user?.id)).then(user => {
-      console.log(user)
-    })
+    dispatch(getUserInfo(user?.id))
     if (user.profile === 'Afiliado') {
       getMonthlyCountdown(data[0].stats)
     }

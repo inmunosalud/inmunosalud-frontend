@@ -38,6 +38,7 @@ export const updateMethod = createAsyncThunk(
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
       const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
+      console.log(response)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(loadInfo(uuid))
@@ -137,7 +138,7 @@ export const paymentMethodsSlice = createSlice({
       state.isOpenDelete = payload
     },
     setSelectedPaymentMethodInCart: (state, { payload }) => {
-      ; (state.selectedPaymentMethod = payload), (state.isSelectedPaymentMethod = true)
+      ;(state.selectedPaymentMethod = payload), (state.isSelectedPaymentMethod = true)
     },
     setBank: (state, { payload }) => {
       state.bank = payload
@@ -163,8 +164,8 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(loadInfo.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
-      state.clabe = payload.clabe ?? "" //creshea en el registro por no estar declarado
-      state.bank = payload?.clabe?.bank || ""
+      state.clabe = payload.clabe ?? '' //creshea en el registro por no estar declarado
+      state.bank = payload?.clabe?.bank || ''
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(loadInfo.rejected, (state, action) => {

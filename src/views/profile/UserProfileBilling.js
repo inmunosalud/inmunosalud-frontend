@@ -30,6 +30,7 @@ import 'react-credit-cards/es/styles-compiled.css'
 import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBilling from '../components/dialogs/DialogBilling'
+import FallbackSpinner from 'src/@core/components/spinner'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -66,8 +67,8 @@ const paymentSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[\d*]+$/, 'Solo dígitos o *')
-    .min(16, 'Deben ser 16 dígitos')
-    .max(16, 'Deben ser 16 dígitos'),
+    .min(15, 'Deben ser al menos 15 dígitos (solo American Express)')
+    .max(16, 'Deben ser maximo 16 dígitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
@@ -97,7 +98,7 @@ const UserProfileBilling = ({ methods = [] }) => {
   const [deleteID, setDeleteID] = useState(null)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete, paymentMethods } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, paymentMethods, isLoading } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -177,50 +178,55 @@ const UserProfileBilling = ({ methods = [] }) => {
           }
         />
         <CardContent>
-          {paymentMethods.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                p: 5,
-                display: 'flex',
-                borderRadius: 1,
-                flexDirection: ['column', 'row'],
-                justifyContent: ['space-between'],
-                alignItems: ['flex-start', 'center'],
-                mb: index !== methods.length - 1 ? 4 : undefined,
-                border: theme => `1px solid ${theme.palette.divider}`
-              }}
-            >
-              <div>
-                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
-                <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
-                </Box>
-                <Typography variant='body2'>{item.cardNumber}</Typography>
-              </div>
+          {isLoading ? (
+            <FallbackSpinner />
+          ) : (
+            paymentMethods.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  p: 5,
+                  display: 'flex',
+                  borderRadius: 1,
+                  flexDirection: ['column', 'row'],
+                  justifyContent: ['space-between'],
+                  alignItems: ['flex-start', 'center'],
+                  mb: index !== methods.length - 1 ? 4 : undefined,
+                  border: theme => `1px solid ${theme.palette.divider}`
+                }}
+              >
+                <div>
+                  <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
+                  <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                    <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
+                  </Box>
+                  <Typography variant='body2'>Titular: {item.nameOnCard}</Typography>
+                  <Typography variant='body2'>{item.cardNumber}</Typography>
+                </div>
 
-              <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-                <Tooltip title='Editar' placement='top'>
-                  <Button
-                    variant='outlined'
-                    sx={{ mr: 3 }}
-                    onClick={() => handleEditCardClickOpen(item)}
-                    color='warning'
-                  >
-                    <Pencil />
-                  </Button>
-                </Tooltip>
-                <Tooltip title='Eliminar' placement='top'>
-                  <Button variant='outlined' onClick={() => handleModalDelete(item)} color='error'>
-                    <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                  </Button>
-                </Tooltip>
-                <Typography variant='body2' sx={{ mt: 5 }}>
-                  Expira el {item.expDate}
-                </Typography>
+                <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
+                  <Tooltip title='Editar' placement='top'>
+                    <Button
+                      variant='outlined'
+                      sx={{ mr: 3 }}
+                      onClick={() => handleEditCardClickOpen(item)}
+                      color='warning'
+                    >
+                      <Pencil />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Eliminar' placement='top'>
+                    <Button variant='outlined' onClick={() => handleModalDelete(item)} color='error'>
+                      <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                    </Button>
+                  </Tooltip>
+                  <Typography variant='body2' sx={{ mt: 5 }}>
+                    Expira el {item.expDate}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))
+          )}
         </CardContent>
 
         <DialogBilling

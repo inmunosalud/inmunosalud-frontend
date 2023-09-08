@@ -177,7 +177,8 @@ const BillingPage = () => {
     'Factura mal formada': 'Factura mal formada',
     'Factura sin archivos': 'Factura sin archivos',
     'Factura sin pdf': 'Factura sin pdf',
-    'Factura sin xml': 'Factura sin xml'
+    'Factura sin xml': 'Factura sin xml',
+    'Factura validada': 'Factura validada'
   }
 
   const SAT_SCHEMES = [

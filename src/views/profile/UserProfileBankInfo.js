@@ -41,7 +41,8 @@ const CARD_LOGOS = {
 
 const defaultBankInfoValues = {
   beneficiary: '',
-  clabe: ''
+  clabe: '',
+  bank: ''
 }
 
 const bankInfoSchema = yup.object().shape({
@@ -51,7 +52,8 @@ const bankInfoSchema = yup.object().shape({
     .required()
     .matches(/^[\d*]+$/, 'Solo dígitos o *')
     .min(18, 'Deben ser 18 dígitos')
-    .max(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos'),
+  bank: yup.string().required()
 })
 
 const UserProfileBankInfo = ({ bankInfo = {} }) => {
@@ -72,13 +74,14 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
     resolver: yupResolver(bankInfoSchema)
   })
 
-  useEffect(() => setClabeIsEmpty(!bankInfo.clabe), [])
+  useEffect(() => {
+    setClabeIsEmpty(!bankInfo.clabe)
+  }, [])
 
   const onBankInfoSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro',
-      bank: bank
+      cardUse: 'Cobro'
     }
 
     dispatch(

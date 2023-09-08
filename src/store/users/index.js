@@ -71,26 +71,31 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   }
 })
 
-export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, loadUserData }, thunkApi) => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
-    thunkApi.dispatch(nextStep())
-    thunkApi.dispatch(setModal(false))
-    // If param loadUserData values is true, load the user info again
-    loadUserData && thunkApi.dispatch(getUserInfo(uuid))
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    //thunkApi.dispatch(usersList())
-    return response
-  } catch (error) {
-    const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(setModal(false))
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async ({ body, uuid, loadUserData, isAdministrator }, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+      const response = isAdministrator
+        ? await api_patch(`${PROYECT}/users/admin/${uuid}`, body, auth)
+        : await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
+      thunkApi.dispatch(nextStep())
+      thunkApi.dispatch(setModal(false))
+      // If param loadUserData values is true, load the user info again
+      loadUserData && thunkApi.dispatch(getUserInfo(uuid))
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      //thunkApi.dispatch(usersList())
+      return response
+    } catch (error) {
+      const errMessage = error?.response?.data?.message
+      thunkApi.dispatch(setModal(false))
+      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
 
-    return thunkApi.rejectWithValue('error')
+      return thunkApi.rejectWithValue('error')
+    }
   }
-})
+)
 
 export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')

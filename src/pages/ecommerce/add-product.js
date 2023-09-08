@@ -274,6 +274,12 @@ const AddProduct = () => {
     }
   }, [editItem])
 
+  const handleDeleteComponent = index => {
+    let newFields = [...fields]
+    newFields.splice(index, 1)
+    setFields(newFields)
+  }
+
   return (
     <>
       <Card sx={{ margin: '40px 20px' }}>
@@ -475,7 +481,7 @@ const AddProduct = () => {
                           onChange={e => handleFieldChange(index, 'property', e.target.value)}
                         />
                       </Grid>
-                      <Grid item xs={6} sx={{ marginTop: '10px' }}>
+                      <Grid item xs={5} sx={{ marginTop: '10px' }}>
                         <TextField
                           label='Valor'
                           variant='outlined'
@@ -495,6 +501,11 @@ const AddProduct = () => {
                           }}
                           onInput={handleInputFloat}
                         />
+                      </Grid>
+                      <Grid item xs={1} sx={{ marginTop: '17px' }}>
+                        <Button variant='text' color='error' onClick={() => handleDeleteComponent(index)}>
+                          Eliminar
+                        </Button>
                       </Grid>
                     </Grid>
                   )

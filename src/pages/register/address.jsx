@@ -172,8 +172,8 @@ const paymentSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[0-9]+$/, 'Solo dígitos')
-    .min(16, 'Deben ser 16 dígitos')
-    .max(16, 'Deben ser 16 dígitos'),
+    .min(15, 'Deben ser al menos 15 dígitos (solo American Express)')
+    .max(16, 'Deben ser maximo 16 dígitos'),
 
   nameOnCard: yup.string().required(),
   cvc: yup
@@ -250,8 +250,8 @@ const contractInfoSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[0-9]+$/, 'Solo dígitos')
-    .min(16, 'Deben ser 16 dígitos')
-    .max(16, 'Deben ser 16 dígitos'),
+    .min(15, 'Deben ser al menos 15 dígitos (solo American Express)')
+    .max(16, 'Deben ser maximo 16 dígitos'),
   bank: yup.string().required(),
   clabe: yup
     .string()
@@ -472,7 +472,7 @@ export default function Address() {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
-  const handleDownload = async (mergedPdfBytes) => {
+  const handleDownload = async mergedPdfBytes => {
     const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -1411,9 +1411,9 @@ export default function Address() {
                 ml: '20px'
               }}
             >
-                <Document file={contract} options={{ workerSrc: '/pdf.worker.js' }}>
-                  <Page pageNumber={1} scale={1.5} width={500}/>
-                </Document>
+              <Document file={contract} options={{ workerSrc: '/pdf.worker.js' }}>
+                <Page pageNumber={1} scale={1.5} width={500} />
+              </Document>
             </Box>
             <Grid container justifyContent='space-between' alignItems='center' sx={{ mt: '20px' }}>
               <Button variant='contained' color='info' sx={{ marginLeft: '20px' }} onClick={handleDownload(contract)}>

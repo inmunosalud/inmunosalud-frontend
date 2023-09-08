@@ -13,10 +13,14 @@ import CustomChip from 'src/@core/components/mui/chip'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { useTheme } from '@mui/material/styles'
 
-
-
 const LinearChart = ({ title = '', series = [], categories = [] }) => {
   const theme = useTheme()
+
+  // Format the price above to MXN using the locale, style, and currency.
+  const Currency = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  })
 
   const options = {
     chart: {
@@ -27,8 +31,18 @@ const LinearChart = ({ title = '', series = [], categories = [] }) => {
     markers: {
       strokeWidth: 7,
       strokeOpacity: 1,
-      colors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.error.main, theme.palette.info.main],
-      strokeColors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.error.main, theme.palette.info.main]
+      colors: [
+        theme.palette.primary.main,
+        theme.palette.success.main,
+        theme.palette.error.main,
+        theme.palette.info.main
+      ],
+      strokeColors: [
+        theme.palette.primary.main,
+        theme.palette.success.main,
+        theme.palette.error.main,
+        theme.palette.info.main
+      ]
     },
     dataLabels: {
       enabled: false
@@ -50,12 +64,19 @@ const LinearChart = ({ title = '', series = [], categories = [] }) => {
     tooltip: {
       custom(data) {
         return `<div class='bar-chart'>
-          <span>${data.series[data.seriesIndex][data.dataPointIndex]}%</span>
+          <span>${Currency.format(data.series[data.seriesIndex][data.dataPointIndex])}</span>
         </div>`
       }
     },
     xaxis: {
       categories: categories
+    },
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return Currency.format(val)
+        }
+      }
     }
   }
 
