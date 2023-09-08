@@ -141,7 +141,6 @@ export const ProductItem = props => {
   function DescriptionWithLinks({ description }) {
     const [isExpanded, setIsExpanded] = React.useState(false)
 
-    console.log('descripcion', description)
     return (
       <>
         {isExpanded || description.length <= 100 ? (

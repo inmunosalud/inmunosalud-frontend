@@ -212,7 +212,6 @@ const AddProduct = () => {
 
   const onSubmit = (data, event) => {
     event.preventDefault()
-    console.log('setIsDescriptionEmpty', isDescriptionEmpty)
     if (isDescriptionEmpty === true) {
       return
     }
