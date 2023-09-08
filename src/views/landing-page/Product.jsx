@@ -88,7 +88,7 @@ const Product = props => {
         />
         <Typography variant='body2'>
           {data?.description.length > 100 && ( // Muestra el enlace "Ver más" solo si la descripción es larga
-            <Link href='/ecommerce/products'>
+            <Link href={`/ecommerce/products/?product=${data?.id}`}>
               <a
                 rel='noopener noreferrer'
                 style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}

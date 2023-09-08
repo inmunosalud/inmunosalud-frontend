@@ -329,9 +329,21 @@ export const ProductItem = props => {
     dispatch(setShowConfirmModal(true))
   }
 
+  React.useEffect(() => {
+    const { productID } = router.query
+
+    if (productID) {
+      const productElement = document.getElementById(productID)
+
+      if (productElement) {
+        productElement.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [router.query])
+
   return (
     <>
-      <Card>
+      <Card id={props.id}>
         <CardContent>
           <Grid container spacing={2} sx={{ marginBottom: '30px' }}>
             <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -350,7 +362,6 @@ export const ProductItem = props => {
               <MenuBasic {...listMenuProps} />
             </Grid>
           </Grid>
-          {/*A ver por aqui*/}
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <CarouselProducts images={props.urlImages} theme={theme} />
