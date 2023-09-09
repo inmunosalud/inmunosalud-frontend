@@ -21,6 +21,7 @@ import travel_together from 'public/images/cards/undraw_travel_together_re_kjf2.
 import true_friends from 'public/images/cards/undraw_true_friends_c-94-g.svg'
 import workout from 'public/images/cards/undraw_workout_gcgu.svg'
 
+
 import banner2 from 'public/images/banners/banner-2.jpg'
 
 import { PROFILES_USER } from 'src/configs/profiles'
@@ -489,20 +490,20 @@ export default function AffiliationPage() {
                 <Box maxWidth='fit-content' sx={{ margin: '0 auto', mb: '400px' }}>
                   <Parallax speed={-5} translateY={[20, 20]}>
                     <Card variant='outlined'>
-                      <TableContainer style={{ width: '800px', margin: 'auto' }}>
-                        <Table size='large'>
+                      <TableContainer>
+                        <Table size='small'>
                           <TableHead>
                             <TableRow>
-                              <TableCell style={{ textAlign: 'center', fontSize: '18px' }}>Nivel</TableCell>
-                              <TableCell style={{ textAlign: 'center', fontSize: '18px' }}>Comisión</TableCell>
+                              <TableCell style={{ textAlign: 'center' }}>Nivel</TableCell>
+                              <TableCell style={{ textAlign: 'center' }}>Comisión</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {constants.commissionPercentajePerLevel &&
                               Object.entries(constants.commissionPercentajePerLevel).map(([nivel, comision]) => (
                                 <TableRow key={nivel}>
-                                  <TableCell style={{ textAlign: 'center', fontSize: '16px' }}>{nivel}</TableCell>
-                                  <TableCell style={{ textAlign: 'center', fontSize: '16px' }}>
+                                  <TableCell style={{ textAlign: 'center' }}>{nivel}</TableCell>
+                                  <TableCell style={{ textAlign: 'center' }}>
                                     <CountUp end={comision * 100} duration={3} suffix='%' />
                                   </TableCell>
                                 </TableRow>

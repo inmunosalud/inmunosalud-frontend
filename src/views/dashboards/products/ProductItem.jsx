@@ -16,8 +16,7 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
 import { Carousel } from '@mui/material'
-import ChevronUpIcon from 'mdi-material-ui/ChevronUp'
-import ChevronDownIcon from 'mdi-material-ui/ChevronDown'
+
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
@@ -32,7 +31,7 @@ import { setEdit, deleteProduct, setProductId } from 'src/store/products'
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/navigation'
-import ReactImageMagnify from 'react-image-magnify'
+
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
@@ -73,6 +72,7 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
 
 // carousel product
 const CarouselProducts = ({ images, theme }) => {
+  // const [url1, url2] = images ?? []
   if (images) {
     return (
       <Swiper
@@ -90,32 +90,22 @@ const CarouselProducts = ({ images, theme }) => {
       >
         {images.map(image => (
           <SwiperSlide
-            key={image} // Agrega una clave única para cada diapositiva
             style={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
-              position: 'relative' // Establece posición relativa en el Slide
+              alignItems: 'center'
             }}
           >
-            <div style={{ zIndex: 9999 }}>
-              <ReactImageMagnify
-                largeImage={{
-                  src: image, // Utiliza la misma URL para la imagen grande
-                  width: 820, // Ancho de la imagen grande (ajusta según tu necesidad)
-                  height: 900 // Alto de la imagen grande (ajusta según tu necesidad)
+            <div style={{ width: '75%', height: 'auto' }}>
+              <div
+                style={{
+                  width: '100%',
+                  paddingBottom: '75%',
+                  position: 'relative'
                 }}
-                enlargedImageStyle={{ zIndex: 9999, top: 0 }}
-                enlargedImagePosition='over'
-                isHintEnabled='true'
-                hintTextMouse='Haz zoom con el mouse'
-                smallImage={{
-                  alt: 'Descripción de la imagen',
-                  src: image, // Utiliza la misma URL para la imagen pequeña
-                  width: 220,
-                  height: 300
-                }}
-              />
+              >
+                <Image layout='fill' objectFit='contain' alt='imagen' src={image} />
+              </div>
             </div>
           </SwiperSlide>
         ))}
@@ -137,69 +127,6 @@ export const ProductItem = props => {
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const { productId } = useSelector(state => state.products)
   const [authPassword, setAuthPassword] = React.useState('')
-
-  function DescriptionWithLinks({ description }) {
-    const [isExpanded, setIsExpanded] = React.useState(false)
-
-    return (
-      <>
-        {isExpanded || description.length <= 100 ? (
-          <>
-            <Typography
-              style={{
-                transition: 'color 0.3s'
-              }}
-              variant='body2'
-              component='div'
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-            <a
-              href='#'
-              onClick={e => {
-                e.preventDefault() // Evita la acción predeterminada del enlace (navegación)
-                setIsExpanded(!isExpanded)
-              }}
-              style={{
-                color: theme.palette.primary.main,
-                textDecoration: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.3s'
-              }}
-              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-            >
-              <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
-            </a>
-          </>
-        ) : (
-          <>
-            <Typography
-              variant='body2'
-              component='div'
-              dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
-            />
-            <a
-              href='#'
-              onClick={e => {
-                e.preventDefault()
-                setIsExpanded(!isExpanded)
-              }}
-              style={{
-                color: theme.palette.primary.main,
-                textDecoration: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.3s'
-              }}
-              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-            >
-              <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
-            </a>
-          </>
-        )}
-      </>
-    )
-  }
 
   const handleModalClose = () => {
     setShowModalDelete(false)
@@ -329,21 +256,9 @@ export const ProductItem = props => {
     dispatch(setShowConfirmModal(true))
   }
 
-  React.useEffect(() => {
-    const { productID } = router.query
-
-    if (productID) {
-      const productElement = document.getElementById(productID)
-
-      if (productElement) {
-        productElement.scrollIntoView({ behavior: 'smooth' })
-      }
-    }
-  }, [router.query])
-
   return (
     <>
-      <Card id={props.id}>
+      <Card>
         <CardContent>
           <Grid container spacing={2} sx={{ marginBottom: '30px' }}>
             <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -364,7 +279,9 @@ export const ProductItem = props => {
           </Grid>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <CarouselProducts images={props.urlImages} theme={theme} />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+                <CarouselProducts images={props.urlImages} theme={theme} />
+              </Box>
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
@@ -391,15 +308,15 @@ export const ProductItem = props => {
                   </BoxCustomizedInfo>
                 </Grid>
               </Grid>
-              <Typography variant='body2' sx={{ marginBottom: '20px', whiteSpace: 'pre-line' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>DESCRIPCION: </strong>
-                <DescriptionWithLinks description={props.description} />
+                {`${props.description}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>INSTRUCCIONES: </strong>
                 {`${props.instructions}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
                 <strong>INGREDIENTES: </strong>
                 {`${props.ingredients}`}
               </Typography>
@@ -437,14 +354,7 @@ export const ProductItem = props => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleModalClose}>Cancelar</Button>
-          <Button
-            onClick={() => {
-              dispatch(setShowConfirmModal(true))
-              handleModalClose()
-            }}
-          >
-            Eliminar
-          </Button>{' '}
+          <Button onClick={handleDeleteConfirm}>Eliminar</Button>
         </DialogActions>
       </Dialog>
       <DialogForm
