@@ -75,30 +75,31 @@ const Product = props => {
         />
       ) : null}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        <Image src={`${data?.urlImages[0]}`} width={80} height={100} alt={`${data?.product.toLowerCase()}-plan-img`} />
+        <Image
+          src={`${data?.urlImages[0]}`}
+          alt={`${data?.product.toLowerCase()}-plan-img`}
+          width={1000} // Ancho máximo que se ajuste a tu diseño
+          height={1300} // Altura máxima que se ajuste a tu diseño
+          // style={{
+          //   transform: 'scale(1.5)'
+          // }}
+        />
       </Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant='h5'>{data?.product}</Typography>
       </Box>
       <Box sx={{ marginBottom: '20px' }}>
-        <Typography
-          variant='body2'
-          component='div'
-          dangerouslySetInnerHTML={{ __html: `${data?.description.substring(0, 100)}...` }}
-        />
         <Typography variant='body2'>
-          {data?.description.length > 100 && ( // Muestra el enlace "Ver más" solo si la descripción es larga
-            <Link href={`/ecommerce/products/?product=${data?.id}`}>
-              <a
-                rel='noopener noreferrer'
-                style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
-                onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-                onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-              >
-                Ver más
-              </a>
-            </Link>
-          )}
+          <Link href={`/ecommerce/products/?product=${data?.id}`}>
+            <a
+              rel='noopener noreferrer'
+              style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
+              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+            >
+              Ver más
+            </a>
+          </Link>
         </Typography>
       </Box>
       <Box sx={{ marginTop: 'auto' }}>
