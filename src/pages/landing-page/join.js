@@ -21,7 +21,6 @@ import travel_together from 'public/images/cards/undraw_travel_together_re_kjf2.
 import true_friends from 'public/images/cards/undraw_true_friends_c-94-g.svg'
 import workout from 'public/images/cards/undraw_workout_gcgu.svg'
 
-
 import banner2 from 'public/images/banners/banner-2.jpg'
 
 import { PROFILES_USER } from 'src/configs/profiles'
@@ -487,33 +486,101 @@ export default function AffiliationPage() {
                   </Parallax>
                 </Grid>
 
-                <Box maxWidth='fit-content' sx={{ margin: '0 auto', mb: '400px' }}>
-                  <Parallax speed={-5} translateY={[20, 20]}>
-                    <Card variant='outlined'>
-                      <TableContainer>
-                        <Table size='small'>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell style={{ textAlign: 'center' }}>Nivel</TableCell>
-                              <TableCell style={{ textAlign: 'center' }}>Comisión</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {constants.commissionPercentajePerLevel &&
-                              Object.entries(constants.commissionPercentajePerLevel).map(([nivel, comision]) => (
-                                <TableRow key={nivel}>
-                                  <TableCell style={{ textAlign: 'center' }}>{nivel}</TableCell>
-                                  <TableCell style={{ textAlign: 'center' }}>
-                                    <CountUp end={comision * 100} duration={3} suffix='%' />
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Card>
-                  </Parallax>
-                </Box>
+                <Grid container spacing={10} sx={{ mb: '600px' }}>
+                  <Grid item xs={12} sm={6}>
+                    <Parallax speed={5} translateY={[-20, 20]}>
+                      <Image src={workout} layout='responsive' alt='Diagrama' width={150} height={100} />
+                    </Parallax>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Grid container spacing={10} sx={{ mb: '40px' }}>
+                      <Grid item xs={12}>
+                        <Parallax speed={-5} translateY={[10, -20]}>
+                          <Box style={{ textAlign: 'center' }}>
+                            <Grid container spacing={4}>
+                              <Grid item xs={12} sm={6}>
+                                <Card>
+                                  <CardHeader title='Nivel 1:' sx={{ textAlign: 'left' }} />
+                                  <CardContent>
+                                    <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                      <strong>
+                                        <CountUp
+                                          end={constants.commissionPercentajePerLevel[1] * 100}
+                                          duration={3}
+                                          suffix='%'
+                                        />
+                                      </strong>
+                                    </Typography>
+                                    <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                      <strong>total de Compra</strong>
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <Card>
+                                  <CardHeader title={'Nivel 2:'} sx={{ whiteSpace: 'pre-line', textAlign: 'left' }} />
+                                  <CardContent>
+                                    <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                      <strong>
+                                        <CountUp
+                                          end={constants.commissionPercentajePerLevel[2] * 100}
+                                          duration={3}
+                                          suffix='%'
+                                        />
+                                      </strong>
+                                    </Typography>
+                                    <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                      <strong>total de Compra</strong>
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <Card>
+                                  <CardHeader title='Nivel 3:' sx={{ textAlign: 'left' }} />
+                                  <CardContent>
+                                    <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                      <strong>
+                                        <CountUp
+                                          end={constants.commissionPercentajePerLevel[3] * 100}
+                                          duration={3}
+                                          suffix='%'
+                                        />
+                                      </strong>
+                                    </Typography>
+                                    <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                      <strong>total de Compra</strong>
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              </Grid>
+                              <Grid item xs={12} sm={6}>
+                                <Card>
+                                  <CardHeader title='Nivel 4:' sx={{ textAlign: 'left' }} />
+                                  <CardContent>
+                                    <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                      <strong>
+                                        <CountUp
+                                          end={constants.commissionPercentajePerLevel[4] * 100}
+                                          duration={3}
+                                          suffix='%'
+                                        />
+                                      </strong>
+                                    </Typography>
+                                    <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                      <strong>total de Compra</strong>
+                                    </Typography>
+                                  </CardContent>
+                                </Card>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Parallax>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid container spacing={10} sx={{ mb: '600px' }}>
@@ -803,7 +870,6 @@ export default function AffiliationPage() {
                     </Box>
                   </Grid>
                 </Grid>
-
                 <Grid container spacing={10} sx={{ mb: '40px', paddingLeft: '40px' }}>
                   <Grid item xs={12} sm={6}>
                     <Box display='flex' flexDirection='column' justifyContent='center' height='100%'>
@@ -828,7 +894,6 @@ export default function AffiliationPage() {
                     </Box>
                   </Grid>
                 </Grid>
-
                 <Grid item spacing={10} sx={{ mb: '100px' }}>
                   <Typography>
                     <strong>NIVEL 2</strong>
@@ -884,7 +949,6 @@ export default function AffiliationPage() {
                     </Grid>
                   </Grid>
                 </Grid>
-
                 <Grid item spacing={10} sx={{ mb: '100px' }}>
                   <Typography>
                     <strong>NIVEL 3</strong>
@@ -914,7 +978,6 @@ export default function AffiliationPage() {
                     </Grid>
                   </Grid>
                 </Grid>
-
                 <Grid item spacing={10} sx={{ mb: '100px' }}>
                   <Typography>
                     <strong>NIVEL 4</strong>
@@ -943,35 +1006,97 @@ export default function AffiliationPage() {
                     En caso de que las personas de NIVEL 4 ingresen más personas al esquema ya no contarán para Juan.
                   </Typography>
                 </Grid>
-
-                <Box
-                  maxWidth='fit-content'
-                  sx={{ textAlign: 'center', margin: '0 auto', paddingLeft: '30px', mb: '100px' }}
-                >
-                  <Card variant='outlined'>
-                    <TableContainer>
-                      <Table size='small'>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell style={{ textAlign: 'center' }}>Nivel</TableCell>
-                            <TableCell style={{ textAlign: 'center' }}>Comisión</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {constants.commissionPercentajePerLevel &&
-                            Object.entries(constants.commissionPercentajePerLevel).map(([nivel, comision]) => (
-                              <TableRow key={nivel}>
-                                <TableCell style={{ textAlign: 'center' }}>{nivel}</TableCell>
-                                <TableCell style={{ textAlign: 'center' }}>
-                                  <CountUp end={comision * 100} duration={3} suffix='%' />
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Card>
-                </Box>
+                <Grid container spacing={10} sx={{ paddingLeft: '40px' }}>
+                  <Grid item xs={12} sm={6}>
+                    <Image src={workout} layout='responsive' alt='Diagrama' width={150} height={100} />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Grid container spacing={10} sx={{ mb: '40px' }}>
+                      <Grid item xs={12}>
+                        <Box style={{ textAlign: 'center' }}>
+                          <Grid container spacing={4}>
+                            <Grid item xs={12} sm={6}>
+                              <Card>
+                                <CardHeader title='Nivel 1:' sx={{ textAlign: 'left' }} />
+                                <CardContent>
+                                  <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                    <strong>
+                                      <CountUp
+                                        end={constants.commissionPercentajePerLevel[1] * 100}
+                                        duration={3}
+                                        suffix='%'
+                                      />
+                                    </strong>
+                                  </Typography>
+                                  <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                    <strong>total de Compra</strong>
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                              <Card>
+                                <CardHeader title={'Nivel 2:'} sx={{ whiteSpace: 'pre-line', textAlign: 'left' }} />
+                                <CardContent>
+                                  <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                    <strong>
+                                      <CountUp
+                                        end={constants.commissionPercentajePerLevel[2] * 100}
+                                        duration={3}
+                                        suffix='%'
+                                      />
+                                    </strong>
+                                  </Typography>
+                                  <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                    <strong>total de Compra</strong>
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                              <Card>
+                                <CardHeader title='Nivel 3:' sx={{ textAlign: 'left' }} />
+                                <CardContent>
+                                  <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                    <strong>
+                                      <CountUp
+                                        end={constants.commissionPercentajePerLevel[3] * 100}
+                                        duration={3}
+                                        suffix='%'
+                                      />
+                                    </strong>
+                                  </Typography>
+                                  <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                    <strong>total de Compra</strong>
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                              <Card>
+                                <CardHeader title='Nivel 4:' sx={{ textAlign: 'left' }} />
+                                <CardContent>
+                                  <Typography variant='h2' sx={{ fontSize: '3rem' }}>
+                                    <strong>
+                                      <CountUp
+                                        end={constants.commissionPercentajePerLevel[4] * 100}
+                                        duration={3}
+                                        suffix='%'
+                                      />
+                                    </strong>
+                                  </Typography>
+                                  <Typography variant='body1' sx={{ textAlign: 'right' }}>
+                                    <strong>total de Compra</strong>
+                                  </Typography>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid container spacing={10} sx={{ mb: '100px' }}>

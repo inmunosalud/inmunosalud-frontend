@@ -3,13 +3,15 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Image from 'next/image'
+import { useTheme } from '@mui/material/styles'
 
 // ** Icons Imports
 import CircleOutline from 'mdi-material-ui/CircleOutline'
 
 // ** Util Import
+import Link from 'next/link'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import Image from 'next/image'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -34,6 +36,7 @@ const Product = props => {
   // ** Props
   const { plan, data } = props
   const router = useRouter()
+  const theme = useTheme()
 
   const renderFeatures = () => {
     return data?.planBenefits.map((item, index) => (
@@ -72,13 +75,32 @@ const Product = props => {
         />
       ) : null}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        <Image src={`${data?.urlImages[0]}`} width={80} height={100} alt={`${data?.product.toLowerCase()}-plan-img`} />
+        <Image
+          src={`${data?.urlImages[0]}`}
+          alt={`${data?.product.toLowerCase()}-plan-img`}
+          width={1000} // Ancho máximo que se ajuste a tu diseño
+          height={1100} // Altura máxima que se ajuste a tu diseño
+          // style={{
+          //   transform: 'scale(1.5)'
+          // }}
+        />
       </Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant='h5'>{data?.product}</Typography>
       </Box>
-      <Box sx={{ textAlign: 'center', marginBottom: '20px' }}>
-        <Typography variant='body2'>{data?.description}</Typography>
+      <Box sx={{ marginBottom: '20px' }}>
+        <Typography variant='body2'>
+          <Link href={`/ecommerce/products/?product=${data?.id}`}>
+            <a
+              rel='noopener noreferrer'
+              style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
+              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+            >
+              Ver más
+            </a>
+          </Link>
+        </Typography>
       </Box>
       <Box sx={{ marginTop: 'auto' }}>
         <Button
