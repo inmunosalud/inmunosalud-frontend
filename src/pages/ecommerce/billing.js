@@ -1,23 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardMedia,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Modal,
-  Tab,
-  Tabs,
-  TextField
-} from '@mui/material'
+import { Box, Button, Card, CardActions, CardMedia, CircularProgress, Modal, Tab, Tabs } from '@mui/material'
 import { CloudUpload, Magnify, Pencil } from 'mdi-material-ui'
 import PdfViewer from 'src/views/general/PdfViewer'
 
@@ -46,8 +30,6 @@ const BillingPage = () => {
   const [pdfFile64, setPdfFile64] = useState(null)
   const [xmlFile64, setXmlFile64] = useState(null)
   const { loading } = useSelector(state => state.billing)
-  const [showMessageModal, setShowMessageModal] = useState(false)
-  const [emailMessage, setEmailMessage] = useState('')
 
   const handleSchemeChange = event => {
     setSelectedScheme(event.target.value)
@@ -130,22 +112,7 @@ const BillingPage = () => {
   }
 
   const handleUpdateStatus = () => {
-    if (selectedStatus == BILL_STATUS_SP['Factura mal formada']) {
-      setShowMessageModal(true)
-    } else {
-      dispatch(updateStatus({ status: selectedStatus, invoiceId: selectedInvoice.id }))
-        .then(() => {
-          dispatch(getInvoices())
-          handleClose()
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    }
-  }
-
-  const handleMalformedBill = () => {
-    dispatch(updateStatus({ status: selectedStatus, invoiceId: selectedInvoice.id, emailMessage: emailMessage }))
+    dispatch(updateStatus({ status: selectedStatus, invoiceId: selectedInvoice.id }))
       .then(() => {
         dispatch(getInvoices())
         handleClose()
@@ -557,32 +524,6 @@ const BillingPage = () => {
             }}
           />
         </Box>
-        <Dialog open={showMessageModal}>
-          <DialogTitle>Factura mal formada</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Por favor escriba la razón del rechazo de factura</DialogContentText>
-            <TextField
-              onChange={e => setEmailMessage(e.target.value)}
-              fullWidth
-              label='Razón de rechazo'
-              autoFocus={true}
-              type='text'
-              variant='standard'
-            ></TextField>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowMessageModal(false)}>Cancelar</Button>
-            <Button
-              onClick={() => {
-                setShowMessageModal(false)
-                handleClose()
-                handleMalformedBill()
-              }}
-            >
-              Continuar
-            </Button>
-          </DialogActions>
-        </Dialog>
         <SnackbarAlert message={message} isOpen={open} severity={severity} />
       </Fragment>
     )

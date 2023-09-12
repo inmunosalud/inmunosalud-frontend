@@ -12,7 +12,6 @@ import MuiAccordion from '@mui/material/Accordion'
 import MuiCardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
 
-
 // ** Icons Imports
 import ChevronDown from 'mdi-material-ui/ChevronDown'
 
@@ -37,7 +36,7 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   }
 }))
 
-const FAQs = (props) => {
+const FAQs = props => {
   // ** Props
   const { data } = props
 
@@ -45,13 +44,12 @@ const FAQs = (props) => {
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
 
-
-  const handleChange = (panel) => (event, isExpanded) => {
+  const handleChange = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
   }
 
   const renderAccordion = () => {
-    return data?.map((item) => {
+    return data?.map(item => {
       return (
         <Accordion key={item.id} elevation={0} expanded={expanded === item.id} onChange={handleChange(item.id)}>
           <AccordionSummary
@@ -62,13 +60,19 @@ const FAQs = (props) => {
             <Typography>{item.question}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+            <Typography variant='body2' sx={{ whiteSpace: 'pre-line' }}>
               {item.answer}
               {item.link && (
-                <Typography variant="body2" component="span">
+                <Typography variant='body2' component='span'>
                   {' '}
                   <Link href={item.link}>
-                    <a target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main }}>
+                    <a
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
+                      onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                      onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+                    >
                       {item.link}
                     </a>
                   </Link>

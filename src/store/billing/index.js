@@ -24,21 +24,18 @@ export const getInvoicesByUser = createAsyncThunk('billing/getInvoices', async (
   }
 })
 
-export const updateStatus = createAsyncThunk(
-  'billing/editStatus',
-  async ({ status, invoiceId, emailMessage = '' }, thunkApi) => {
-    const token = localStorage.getItem('im-user')
-    const auth = { headers: { Authorization: `Bearer ${token}` } }
-    try {
-      const response = await api_patch(`${INVOICES}/billing/status/${invoiceId}`, { status, emailMessage }, auth)
-      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-      thunkApi.dispatch(getInvoices())
-      return response
-    } catch (error) {
-      return thunkApi.rejectWithValue('error')
-    }
+export const updateStatus = createAsyncThunk('billing/editStatus', async ({ status, invoiceId }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_patch(`${INVOICES}/billing/status/${invoiceId}`, { status }, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(getInvoices())
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
   }
-)
+})
 
 export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files, thunkApi) => {
   const token = localStorage.getItem('im-user')
