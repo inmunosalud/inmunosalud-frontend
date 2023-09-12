@@ -1,33 +1,32 @@
-import {
-  Button,
-  Card,
-  InputLabel,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  Divider,
-  Grid,
-  InputAdornment,
-  TextField,
-  FormHelperText,
-  Typography
-} from '@mui/material'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { closeSnackBar, openSnackBar } from 'src/store/notifications'
-import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
-import { setShowConfirmModal } from 'src/store/users'
-import { getCustomStructure, getCustomStructureMainComponents, parseDataToEdit } from 'src/utils/functions'
-import DialogForm from 'src/views/components/dialogs/DialogForm'
-import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
+import { useRouter } from 'next/router'
+import { useForm, Controller } from 'react-hook-form'
+import {
+  CardContent,
+  Card,
+  CardHeader,
+  CardActions,
+  Grid,
+  TextField,
+  Divider,
+  Button,
+  Typography,
+  InputAdornment,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  FormHelperText
+} from '@mui/material'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import ListProperties from '../components/propertiesProduct'
+import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
+import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions'
+import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
+import { parseDataToEdit } from 'src/utils/functions'
+import { closeSnackBar, openSnackBar } from 'src/store/notifications'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
 import dynamic from 'next/dynamic'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
@@ -62,6 +61,7 @@ const AddProduct = () => {
   } = useForm({
     defaultValues: {
       product: '',
+      description: '',
       capsuleQuantity: '',
       capsuleConcentration: '',
       instructions: '',
@@ -94,15 +94,6 @@ const AddProduct = () => {
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
-  const [editorHtml, setEditorHtml] = React.useState('') // Estado para almacenar el contenido enriquecido
-  const [isDescriptionEmpty, setIsDescriptionEmpty] = React.useState(true)
-
-  // Maneja cambios en el editor de texto enriquecido
-  const handleEditorChange = (content, delta, source, editor) => {
-    const isEmpty = !content.trim() // Verifica si el contenido está vacío
-    setIsDescriptionEmpty(isEmpty)
-    setEditorHtml(content) // Actualiza el estado con el contenido enriquecido
-  }
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -213,9 +204,7 @@ const AddProduct = () => {
 
   const onSubmit = (data, event) => {
     event.preventDefault()
-    if (isDescriptionEmpty === true) {
-      return
-    }
+
     if (images.length === 0) {
       dispatch(
         openSnackBar({ open: true, message: 'Debes agregar al menos una imagen del producto', severity: 'error' })
@@ -226,7 +215,7 @@ const AddProduct = () => {
       const newProperties = getCustomStructure(values)
       const body = {
         product: data?.product,
-        description: editorHtml,
+        description: data?.description,
         capsuleQuantity: data?.capsuleQuantity,
         capsuleConcentration: data?.capsuleConcentration,
         mainComponents: fields,
@@ -256,6 +245,7 @@ const AddProduct = () => {
     if (editItem) {
       reset({
         product: editItem.product,
+        description: editItem.description,
         capsuleQuantity: editItem.capsuleQuantity,
         capsuleConcentration: editItem.capsuleConcentration,
         mainComponents: editItem.mainComponent,
@@ -264,7 +254,6 @@ const AddProduct = () => {
         ingredients: editItem.ingredients,
         quantity: 1
       })
-      setEditorHtml(editItem.description)
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
       setImages(editItem.urlImages)
@@ -303,32 +292,14 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name='price'
+                  name='description'
                   rules={{ required: true }}
-                  render={({ field, formState }) => {
-                    const { value } = field
-                    return (
-                      <TextField
-                        label='Precio'
-                        fullWidth
-                        error={!!errors.price}
-                        {...field}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <Typography variant='subtitle2' color='textSecondary'>
-                                $
-                              </Typography>
-                            </InputAdornment>
-                          )
-                        }}
-                        onInput={handleInputFloat}
-                      />
-                    )
-                  }}
+                  render={({ field, fieldState }) => (
+                    <TextField error={!!errors.description} label='Descripción' fullWidth {...field} />
+                  )}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
                   name='capsuleQuantity'
@@ -354,7 +325,7 @@ const AddProduct = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
                   name='capsuleConcentration'
@@ -375,32 +346,6 @@ const AddProduct = () => {
                         )
                       }}
                       onInput={handleInputFloat}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Controller
-                  control={control}
-                  name='quantity'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      error={!!errors.capsuleQuantity}
-                      label='Cantidad en almacén'
-                      fullWidth
-                      {...field}
-                      type='text'
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <Typography variant='subtitle2' color='textSecondary'>
-                              en almacén
-                            </Typography>
-                          </InputAdornment>
-                        )
-                      }}
-                      onKeyDown={handleKeyDownInt}
                     />
                   )}
                 />
@@ -426,27 +371,61 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Grid item xs={12} sm={6}>
-                  <div>
-                    <InputLabel id='signature-label' sx={{ mb: 2 }}>
-                      Descripcion del producto:
-                    </InputLabel>
-                    <ReactQuill
-                      value={editorHtml}
-                      onChange={handleEditorChange}
-                      modules={{
-                        toolbar: [['link']]
-                      }}
-                      style={{ height: '200px' }} // Establece una altura fija
-                    />
-                  </div>
-                  {isDescriptionEmpty && (
-                    <FormHelperText sx={{ color: 'error.main', mt: '50px' }} id='stepper-linear-description'>
-                      La descripción es requerida
-                    </FormHelperText>
-                  )}
+                <Grid item xs={12} sm={12}>
+                  <Controller
+                    control={control}
+                    name='price'
+                    rules={{ required: true }}
+                    render={({ field, formState }) => {
+                      const { value } = field
+                      return (
+                        <TextField
+                          label='Precio'
+                          fullWidth
+                          error={!!errors.price}
+                          {...field}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <Typography variant='subtitle2' color='textSecondary'>
+                                  $
+                                </Typography>
+                              </InputAdornment>
+                            )
+                          }}
+                          onInput={handleInputFloat}
+                        />
+                      )
+                    }}
+                  />
                 </Grid>
-                <Grid item xs={12} sx={{ marginTop: '50px' }}>
+                <Grid item xs={12} sm={6} sx={{ marginTop: '20px' }}>
+                  <Controller
+                    control={control}
+                    name='quantity'
+                    rules={{ required: true }}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        error={!!errors.capsuleQuantity}
+                        label='Cantidad en almacén'
+                        fullWidth
+                        {...field}
+                        type='text'
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <Typography variant='subtitle2' color='textSecondary'>
+                                en almacén
+                              </Typography>
+                            </InputAdornment>
+                          )
+                        }}
+                        onKeyDown={handleKeyDownInt}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sx={{ marginTop: '15px' }}>
                   {/* create here dropdown dynammic */}
                   <MultiSelectWithAddOption
                     //handle select
