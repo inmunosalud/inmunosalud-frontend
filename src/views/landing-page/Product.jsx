@@ -79,7 +79,7 @@ const Product = props => {
           src={`${data?.urlImages[0]}`}
           alt={`${data?.product.toLowerCase()}-plan-img`}
           width={1000} // Ancho máximo que se ajuste a tu diseño
-          height={1300} // Altura máxima que se ajuste a tu diseño
+          height={1100} // Altura máxima que se ajuste a tu diseño
           // style={{
           //   transform: 'scale(1.5)'
           // }}
