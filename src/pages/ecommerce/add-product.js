@@ -29,7 +29,8 @@ import DialogForm from 'src/views/components/dialogs/DialogForm'
 import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
-import ReactQuill from 'react-quill'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 import 'react-quill/dist/quill.snow.css'
 
 const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {}, isEditItem = false }) => {
