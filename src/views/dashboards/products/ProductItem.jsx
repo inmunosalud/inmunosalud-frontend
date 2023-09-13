@@ -102,8 +102,8 @@ const CarouselProducts = ({ images, theme }) => {
               <ReactImageMagnify
                 largeImage={{
                   src: image, // Utiliza la misma URL para la imagen grande
-                  width: 870, // Ancho de la imagen grande (ajusta según tu necesidad)
-                  height: 950 // Alto de la imagen grande (ajusta según tu necesidad)
+                  width: 800, // Ancho de la imagen grande (ajusta según tu necesidad)
+                  height: 800 // Alto de la imagen grande (ajusta según tu necesidad)
                 }}
                 enlargedImageStyle={{ zIndex: 9999, top: 0 }}
                 enlargedImagePosition='over'
@@ -112,9 +112,12 @@ const CarouselProducts = ({ images, theme }) => {
                 smallImage={{
                   alt: 'Descripción de la imagen',
                   src: image, // Utiliza la misma URL para la imagen pequeña
-                  width: 280,
-                  height: 320
+                  width: 370,
+                  height: 370
                 }}
+                //           style={{
+                //   transform: 'scale(1.5)'
+                // }}
               />
             </div>
           </SwiperSlide>
@@ -143,58 +146,71 @@ export const ProductItem = props => {
 
     return (
       <>
-        {isExpanded || description.length <= 100 ? (
-          <>
-            <Typography
-              style={{
-                transition: 'color 0.3s'
-              }}
-              variant='body2'
-              component='div'
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-            <a
-              href='#'
-              onClick={e => {
-                e.preventDefault() // Evita la acción predeterminada del enlace (navegación)
-                setIsExpanded(!isExpanded)
-              }}
-              style={{
-                color: theme.palette.primary.main,
-                textDecoration: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.3s'
-              }}
-              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-            >
-              <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
-            </a>
-          </>
+        {description.length <= 100 ? (
+          <Typography
+            style={{
+              transition: 'color 0.3s'
+            }}
+            variant='body2'
+            component='div'
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         ) : (
           <>
-            <Typography
-              variant='body2'
-              component='div'
-              dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
-            />
-            <a
-              href='#'
-              onClick={e => {
-                e.preventDefault()
-                setIsExpanded(!isExpanded)
-              }}
-              style={{
-                color: theme.palette.primary.main,
-                textDecoration: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.3s'
-              }}
-              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-            >
-              <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
-            </a>
+            {isExpanded ? (
+              <>
+                <Typography
+                  style={{
+                    transition: 'color 0.3s'
+                  }}
+                  variant='body2'
+                  component='div'
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+                <a
+                  href='#'
+                  onClick={e => {
+                    e.preventDefault()
+                    setIsExpanded(!isExpanded)
+                  }}
+                  style={{
+                    color: theme.palette.primary.main,
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                  onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+                >
+                  <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
+                </a>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant='body2'
+                  component='div'
+                  dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
+                />
+                <a
+                  href='#'
+                  onClick={e => {
+                    e.preventDefault()
+                    setIsExpanded(!isExpanded)
+                  }}
+                  style={{
+                    color: theme.palette.primary.main,
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                  onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+                >
+                  <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
+                </a>
+              </>
+            )}
           </>
         )}
       </>
