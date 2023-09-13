@@ -2,6 +2,7 @@
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import Card from '@mui/material/Card'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 
@@ -48,7 +49,7 @@ const Product = props => {
   }
 
   return (
-    <BoxWrapper
+    <Card
       sx={{
         border: theme => `1px solid ${theme.palette.divider}`,
         display: 'flex',
@@ -114,7 +115,7 @@ const Product = props => {
           {'Agregar a carrito'}
         </Button>
       </Box>
-    </BoxWrapper>
+    </Card>
   )
 }
 

@@ -102,8 +102,8 @@ const CarouselProducts = ({ images, theme }) => {
               <ReactImageMagnify
                 largeImage={{
                   src: image, // Utiliza la misma URL para la imagen grande
-                  width: 870, // Ancho de la imagen grande (ajusta según tu necesidad)
-                  height: 950 // Alto de la imagen grande (ajusta según tu necesidad)
+                  width: 800, // Ancho de la imagen grande (ajusta según tu necesidad)
+                  height: 800 // Alto de la imagen grande (ajusta según tu necesidad)
                 }}
                 enlargedImageStyle={{ zIndex: 9999, top: 0 }}
                 enlargedImagePosition='over'
@@ -112,9 +112,12 @@ const CarouselProducts = ({ images, theme }) => {
                 smallImage={{
                   alt: 'Descripción de la imagen',
                   src: image, // Utiliza la misma URL para la imagen pequeña
-                  width: 280,
-                  height: 320
+                  width: 370,
+                  height: 370
                 }}
+                //           style={{
+                //   transform: 'scale(1.5)'
+                // }}
               />
             </div>
           </SwiperSlide>
