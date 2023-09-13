@@ -219,8 +219,8 @@ const FormRegister = () => {
                     }
                     label={
                       <Typography variant='body2'>
-                        Acepto y doy consentimiento expreso para que inmunosalud obtenga mis datos sensibles de acuerdo
-                        al articulo que de la ley federal de protección de datos personales.
+                        Doy consentimiento a Inmunosalud para obtener mis datos de acuerdo a la Ley Federal de
+                        protección de datos personales.
                       </Typography>
                     }
                   />
