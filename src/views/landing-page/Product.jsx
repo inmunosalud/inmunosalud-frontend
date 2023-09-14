@@ -57,63 +57,70 @@ const Product = props => {
         height: '100%'
       }}
     >
-      {data?.popularPlan ? (
-        <CustomChip
-          skin='light'
-          label='Popular'
-          color='primary'
-          sx={{
-            top: 11,
-            right: 12,
-            height: 20,
-            position: 'absolute',
-            '& .MuiChip-label': {
-              px: 1.75,
-              fontWeight: 600,
-              fontSize: '0.75rem'
-            }
-          }}
-        />
-      ) : null}
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        <Image
-          src={`${data?.urlImages[0]}`}
-          alt={`${data?.product.toLowerCase()}-plan-img`}
-          width={1000} // Ancho máximo que se ajuste a tu diseño
-          height={1100} // Altura máxima que se ajuste a tu diseño
-          // style={{
-          //   transform: 'scale(1.5)'
-          // }}
-        />
-      </Box>
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant='h5'>{data?.product}</Typography>
-      </Box>
-      <Box sx={{ marginBottom: '20px' }}>
-        <Typography variant='body2'>
-          <Link href={`/ecommerce/products/?product=${data?.id}`}>
-            <a
-              rel='noopener noreferrer'
-              style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
-              onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-              onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-            >
-              Ver más
-            </a>
-          </Link>
-        </Typography>
-      </Box>
-      <Box sx={{ marginTop: 'auto' }}>
-        <Button
-          fullWidth
-          color='primary'
-          variant={'outlined'}
-          onClick={() => {
-            router.push('/ecommerce/products/')
-          }}
-        >
-          {'Agregar a carrito'}
-        </Button>
+      <Box
+        sx={{
+          height: '100%',
+          margin: '20px'
+        }}
+      >
+        {data?.popularPlan ? (
+          <CustomChip
+            skin='light'
+            label='Popular'
+            color='primary'
+            sx={{
+              top: 11,
+              right: 12,
+              height: 20,
+              position: 'absolute',
+              '& .MuiChip-label': {
+                px: 1.75,
+                fontWeight: 600,
+                fontSize: '0.75rem'
+              }
+            }}
+          />
+        ) : null}
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <Image
+            src={`${data?.urlImages[0]}`}
+            alt={`${data?.product.toLowerCase()}-plan-img`}
+            width={1000} // Ancho máximo que se ajuste a tu diseño
+            height={1100} // Altura máxima que se ajuste a tu diseño
+            // style={{
+            //   transform: 'scale(1.5)'
+            // }}
+          />
+        </Box>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant='h5'>{data?.product}</Typography>
+        </Box>
+        <Box sx={{ marginBottom: '20px' }}>
+          <Typography variant='body2'>
+            <Link href={`/ecommerce/products/?product=${data?.id}`}>
+              <a
+                rel='noopener noreferrer'
+                style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
+                onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+              >
+                Ver más
+              </a>
+            </Link>
+          </Typography>
+        </Box>
+        <Box sx={{ marginTop: 'auto' }}>
+          <Button
+            fullWidth
+            color='primary'
+            variant={'outlined'}
+            onClick={() => {
+              router.push('/ecommerce/products/')
+            }}
+          >
+            {'Agregar a carrito'}
+          </Button>
+        </Box>
       </Box>
     </Card>
   )

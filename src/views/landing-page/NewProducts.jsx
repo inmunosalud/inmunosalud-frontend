@@ -13,7 +13,7 @@ const NewProducts = props => {
     return data?.map((item, index) => {
       if (index < 3)
         return (
-          <Grid item xs={12} md={3} key={item.product.toLowerCase()}>
+          <Grid item xs={12} md={3.5} key={item.product.toLowerCase()}>
             <Product plan={plan} data={item} />
           </Grid>
         )
