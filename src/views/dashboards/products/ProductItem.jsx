@@ -153,6 +153,7 @@ export const ProductItem = props => {
             }}
             variant='body2'
             component='div'
+            sx={{ color: theme.palette.text.secundary }}
             dangerouslySetInnerHTML={{ __html: description }}
           />
         ) : (
@@ -165,6 +166,7 @@ export const ProductItem = props => {
                   }}
                   variant='body2'
                   component='div'
+                  sx={{ color: theme.palette.text.secundary }}
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
                 <a
