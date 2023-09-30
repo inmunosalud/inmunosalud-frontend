@@ -137,8 +137,15 @@ export const productsSlice = createSlice({
     builder.addCase(createProduct.rejected, (state, { payload }) => {
       state.isLoading = false
     })
+    builder.addCase(updateProduct.pending, (state, action) => {
+      state.isLoading = true
+    })
     builder.addCase(updateProduct.fulfilled, (state, { payload }) => {
       state.products = payload
+      state.isLoading = false
+    })
+    builder.addCase(updateProduct.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
       state.products = payload
