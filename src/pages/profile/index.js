@@ -22,9 +22,11 @@ const Profile = () => {
 
   useEffect(() => {
     if (user.id) {
-      dispatch(loadInfo(user.id))
+      dispatch(loadInfo(user.id)).then(result => {
+        console.log(result)
+      })
     }
-  }, [])
+  }, [user])
 
   return user.id ? (
     <Grid container spacing={6}>

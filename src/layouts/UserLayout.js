@@ -33,15 +33,18 @@ const UserLayout = ({ children }) => {
   const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
-    dispatch(loadSession())
-    dispatch(getUserInfo(user.id))
-  }, [])
+    if (!localStorage.getItem('im-user')) {
+      return
+    }
+    if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
+      dispatch(loadSession())
+    }
 
-  useEffect(() => {
-    if (user) {
+    if (Object.keys(user).length !== 0 && userInfo == null) {
+      dispatch(getUserInfo(user.id))
       dispatch(getCart(user.id))
     }
-  }, [user])
+  }, [userInfo, user.id])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.

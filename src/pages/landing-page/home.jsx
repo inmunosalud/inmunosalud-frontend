@@ -117,8 +117,10 @@ const Pricing = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getProducts())
-  }, [])
+    if (products.length === 0) {
+      dispatch(getProducts())
+    }
+  }, [products, dispatch])
 
   const handleChange = e => {
     if (e.target.checked) {

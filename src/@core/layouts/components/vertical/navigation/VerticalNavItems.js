@@ -38,12 +38,6 @@ const VerticalNavItems = props => {
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
   const { verticalNavItems } = props
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(loadSession())
-    dispatch(getUserInfo(user.id))
-  }, [])
 
   const filteredItems = useMemo(() => resolvePermissions(user, verticalNavItems), [user, verticalNavItems])
 

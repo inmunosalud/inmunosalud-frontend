@@ -58,10 +58,18 @@ const InvoicePreview = ({}) => {
   }
 
   useEffect(() => {
-    if (!user.id) dispatch(loadSession())
-    dispatch(loadInfo(user.id))
-    dispatch(getUserInfo(user.id))
-  }, [])
+    if (!user.id) {
+      dispatch(loadSession())
+    }
+
+    if (selectedPayment == null || selectedAddress == null) {
+      dispatch(loadInfo(user.id))
+    }
+
+    if (userInfo == null) {
+      dispatch(getUserInfo(user.id))
+    }
+  }, [user, userInfo])
 
   return (
     <>
