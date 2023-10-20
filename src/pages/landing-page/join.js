@@ -41,8 +41,6 @@ export default function AffiliationPage() {
       setIsMobile(window.innerWidth < 768) // Establece isMobile a true si el ancho de la ventana es menor a 768px
     }
 
-    handleResize() // Llamada inicial para establecer el estado inicial
-
     // Suscripción al evento de redimensionamiento de la ventana
     window.addEventListener('resize', handleResize)
 
@@ -53,8 +51,10 @@ export default function AffiliationPage() {
   }, [])
 
   useEffect(() => {
-    dispatch(getConstants())
-  }, [dispatch])
+    if (constants === null) {
+      dispatch(getConstants())
+    }
+  }, [constants, dispatch])
 
   const handleConvertProfile = () => {
     router.push({

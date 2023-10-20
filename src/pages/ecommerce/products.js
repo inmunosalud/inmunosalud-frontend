@@ -29,8 +29,10 @@ const Products = () => {
 
   //load products
   React.useEffect(() => {
-    dispatch(getProducts())
-  }, [dispatch])
+    if (products.length === 0) {
+      dispatch(getProducts())
+    }
+  }, [products, dispatch])
 
   if (isLoading) {
     return (

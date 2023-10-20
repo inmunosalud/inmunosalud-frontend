@@ -142,15 +142,10 @@ const Users = () => {
   const { user } = useSelector(state => state.dashboard.general)
 
   React.useEffect(() => {
-    dispatch(loadSession())
-  }, [])
-
-  React.useEffect(() => {
-    dispatch(getUserInfo(user?.id))
     if (user.profile === 'Afiliado') {
       getMonthlyCountdown(data[0].stats)
     }
-  }, [user])
+  }, [user, userInfo])
 
   React.useEffect(() => {
     if (userInfo?.cutoffDate) {
@@ -160,7 +155,7 @@ const Users = () => {
 
   React.useEffect(() => {
     if (userInfo != '') setIsLoaded(true)
-  })
+  }, [])
 
   const handlePaste = () => {
     const baseUrl =
@@ -214,9 +209,10 @@ const Users = () => {
       )
     }
   }
+
   return (
-    <>
-      {isLoaded && (
+    isLoaded ?? (
+      <>
         <ApexChartWrapper>
           <Grid container spacing={6}>
             {renderCharts()}
@@ -236,8 +232,8 @@ const Users = () => {
             </Grid>
           </Grid>
         </ApexChartWrapper>
-      )}
-    </>
+      </>
+    )
   )
 }
 
