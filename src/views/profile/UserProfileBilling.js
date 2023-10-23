@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Pencil } from 'mdi-material-ui'
+import { Cart, CartHeart, CartOutline, Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -27,10 +27,13 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod } from 'src/store/paymentMethods'
+import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod, setMonthlyPaymentMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBilling from '../components/dialogs/DialogBilling'
 import FallbackSpinner from 'src/@core/components/spinner'
+import { Favorite } from '@mui/icons-material'
+import { FavoriteOutlined } from '@mui/icons-material'
+import { FavoriteBorderOutlined } from '@mui/icons-material'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -90,7 +93,7 @@ const paymentSchemaEdit = yup.object().shape({
   nameOnCard: yup.string().required()
 })
 
-const UserProfileBilling = ({ methods = [] }) => {
+const UserProfileBilling = () => {
   const dispatch = useDispatch()
   // ** States
 
@@ -164,6 +167,10 @@ const UserProfileBilling = ({ methods = [] }) => {
     dispatch(setModalDelete(false))
   }
 
+  const handleSelectMonthlyPaymentMethod = addressItem => {
+    dispatch(setMonthlyPaymentMethod(addressItem.id))
+  }
+
   return (
     <Fragment>
       <Card sx={{ mb: 6 }}>
@@ -191,7 +198,7 @@ const UserProfileBilling = ({ methods = [] }) => {
                   flexDirection: ['column', 'row'],
                   justifyContent: ['space-between'],
                   alignItems: ['flex-start', 'center'],
-                  mb: index !== methods.length - 1 ? 4 : undefined,
+                  mb: index !== paymentMethods.length - 1 ? 4 : undefined,
                   border: theme => `1px solid ${theme.palette.divider}`
                 }}
               >
@@ -212,12 +219,26 @@ const UserProfileBilling = ({ methods = [] }) => {
                       onClick={() => handleEditCardClickOpen(item)}
                       color='warning'
                     >
-                      <Pencil />
+                      <Pencil sx={{ fontSize: '1.125rem' }} />
                     </Button>
                   </Tooltip>
                   <Tooltip title='Eliminar' placement='top'>
-                    <Button variant='outlined' onClick={() => handleModalDelete(item)} color='error'>
-                      <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
+                    <Button
+                      variant='outlined'
+                      sx={{ mr: 3, fontSize: '1.125rem' }}
+                      onClick={() => handleModalDelete(item)}
+                      color='error'
+                    >
+                      <Delete sx={{ fontSize: '1.125rem' }} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Predeterminado Pedido Mensual' placement='top'>
+                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentMethod(item)} color='error'>
+                      {item.shippingPayment ? (
+                        <Cart sx={{ fontSize: '1.125rem' }} />
+                      ) : (
+                        <CartOutline sx={{ fontSize: '1.125rem' }} />
+                      )}
                     </Button>
                   </Tooltip>
                   <Typography variant='body2' sx={{ mt: 5 }}>

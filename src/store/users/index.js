@@ -170,7 +170,6 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const response = await api_get(`${PROYECT}/users/${id}`, auth)
-  console.log('hello')
   return response
 })
 
