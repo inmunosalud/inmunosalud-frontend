@@ -68,7 +68,6 @@ export const cartSlice = createSlice({
       state.selectedPayment = payload
     },
     setAddress(state, { payload }) {
-      console.log(payload)
       state.selectedAddress = payload
     }
   },

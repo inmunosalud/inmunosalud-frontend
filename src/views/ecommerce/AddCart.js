@@ -108,7 +108,7 @@ const AddCard = props => {
       dispatch(setPayment(selectedPaymentMethod))
       dispatch(setAddress(selectedAddressInCart))
     }
-  }, [selectedPayment, selectedAddress])
+  }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
     if (products.filter(product => !product.canBeRemoved).length > 0) {
