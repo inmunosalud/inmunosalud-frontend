@@ -9,25 +9,16 @@ import Typography from '@mui/material/Typography'
 import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { addressList } from 'src/store/address'
-import { setAddress } from 'src/store/cart'
+import { setSelectedAddressInCart } from 'src/store/address'
 
 export const AddressList = () => {
   const dispatch = useDispatch()
 
-  const { user } = useSelector(state => state.session)
   const { address } = useSelector(state => state.address)
   const { selectedAddress } = useSelector(state => state.cart)
 
-  React.useEffect(() => {
-    if (user?.id) dispatch(addressList(user.id))
-  }, [dispatch])
-  React.useEffect(() => {
-    if (user?.id) dispatch(addressList(user.id))
-  }, [address])
-
   const handleSelectAddress = item => {
-    dispatch(setAddress(item))
+    dispatch(setSelectedAddressInCart(item))
   }
 
   return (

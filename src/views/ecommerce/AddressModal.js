@@ -105,11 +105,6 @@ const AddressModal = () => {
     }
   }, [isAddressesModalOpen])
 
-  useEffect(() => {
-    if (!user?.id) return
-    dispatch(addressList(user.id))
-  }, [dispatch])
-
   return (
     <div className='demo-space-x'>
       <Dialog

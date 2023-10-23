@@ -23,6 +23,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
+import { loadInfo } from 'src/store/paymentMethods'
+import { addressList } from 'src/store/address'
 
 const UserLayout = ({ children }) => {
   // ** Hooks
@@ -43,6 +45,8 @@ const UserLayout = ({ children }) => {
     if (Object.keys(user).length !== 0 && userInfo == null) {
       dispatch(getUserInfo(user.id))
       dispatch(getCart(user.id))
+      dispatch(loadInfo(user.id))
+      dispatch(addressList(user.id))
     }
   }, [userInfo, user.id])
 

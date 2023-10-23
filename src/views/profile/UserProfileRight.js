@@ -25,7 +25,7 @@ const Tab = styled(MuiTab)(({ theme }) => ({
   }
 }))
 
-const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {} }) => {
+const UserProfileRight = ({ bankInfo = {} }) => {
   // ** State
   const [value, setValue] = useState('address')
 
@@ -48,10 +48,10 @@ const UserProfileRight = ({ methods = [], addresses = [], bankInfo = {} }) => {
       </TabList>
       <Box sx={{ mt: 6 }}>
         <TabPanel sx={{ p: 0 }} value='address'>
-          <UserProfileAddress addresses={addresses} />
+          <UserProfileAddress />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='paymentMethods'>
-          <UserProfileBilling methods={methods} />
+          <UserProfileBilling />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='bankInfo'>
           <UserProfileBankInfo bankInfo={bankInfo} />

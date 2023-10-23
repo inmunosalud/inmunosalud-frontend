@@ -61,13 +61,6 @@ const CartActions = () => {
           </Button>
         </CardContent>
       </Card>
-      {/* <Select fullWidth defaultValue='Internet Banking' sx={{ mb: 4 }}>
-        <MenuItem value='Internet Banking'>Internet Banking</MenuItem>
-        <MenuItem value='Debit Card'>Debit Card</MenuItem>
-        <MenuItem value='Credit Card'>Credit Card</MenuItem>
-        <MenuItem value='Paypal'>Paypal</MenuItem>
-        <MenuItem value='UPI Transfer'>UPI Transfer</MenuItem>
-      </Select> */}
     </Box>
   )
 }
