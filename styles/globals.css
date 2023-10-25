@@ -26,6 +26,10 @@ code[class*='language-'] {
 a {
   color: orange;
 }
+/* Establece el color de los hipervínculos en azul */
+.ql-editor a {
+  color: orange !important;
+}
 
 input[type='file'] {
   color: rgba(0, 0, 0, 0)

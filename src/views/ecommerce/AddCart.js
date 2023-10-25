@@ -8,10 +8,7 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import Tooltip from '@mui/material/Tooltip'
-import TableRow from '@mui/material/TableRow'
 import Collapse from '@mui/material/Collapse'
-import TableBody from '@mui/material/TableBody'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -19,50 +16,24 @@ import InputLabel from '@mui/material/InputLabel'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled, alpha, useTheme } from '@mui/material/styles'
-import Table from '@mui/material/Table'
-
-import TableHead from '@mui/material/TableHead'
-import TableContainer from '@mui/material/TableContainer'
 import TableCell from '@mui/material/TableCell'
-
 import CardContent from '@mui/material/CardContent'
 
 // ** Icon Imports
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
 
-// ** Third Party Imports
-import DatePicker from 'react-datepicker'
-
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Custom Component Imports
-import Repeater from 'src/@core/components/repeater'
 
 // ** Styles
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
-import { React, StackExchange } from 'mdi-material-ui'
+import { React } from 'mdi-material-ui'
 import { setAddress, setPayment, updateCart } from 'src/store/cart'
-import { loadInfo } from 'src/store/paymentMethods'
-import { setSelectedAddressInCart } from 'src/store/address'
-import { loadSession } from 'src/store/dashboard/generalSlice'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 import { closeSnackBar, openSnackBar } from 'src/store/notifications'
 import { getMonthlyPurchase } from 'src/store/monthlypurchase'
-
-const CustomInput = forwardRef(({ ...props }, ref) => {
-  return <TextField size='small' inputRef={ref} sx={{ width: { sm: '250px', xs: '170px' } }} {...props} />
-})
-
-const MUITableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 0,
-  paddingLeft: '0 !important',
-  paddingRight: '0 !important',
-  paddingTop: `${theme.spacing(1)} !important`,
-  paddingBottom: `${theme.spacing(1)} !important`
-}))
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -108,7 +79,6 @@ const InvoiceAction = styled(Box)(({ theme }) => ({
 }))
 
 const now = new Date()
-const tomorrowDate = now.setDate(now.getDate() + 7)
 
 const AddCard = props => {
   // ** Hooks
@@ -118,7 +88,7 @@ const AddCard = props => {
   const monthlyPaymentProducts = useSelector(state => state.monthlyPurchase.products)
   const { total, products, id, selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
-  const { selectedAddressInCard } = useSelector(state => state.address)
+  const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.dashboard.general)
 
@@ -135,11 +105,10 @@ const AddCard = props => {
 
   useEffect(() => {
     if (selectedPayment == null || selectedAddress == null) {
-      dispatch(loadInfo(user.id))
       dispatch(setPayment(selectedPaymentMethod))
-      dispatch(setAddress(selectedAddressInCard))
+      dispatch(setAddress(selectedAddressInCart))
     }
-  }, [selectedPayment, selectedAddress])
+  }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
     if (products.filter(product => !product.canBeRemoved).length > 0) {

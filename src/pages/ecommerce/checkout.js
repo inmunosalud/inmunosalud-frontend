@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid'
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
 import { createOrder } from 'src/store/orders'
-import { loadInfo } from 'src/store/paymentMethods'
 import { getUserInfo } from 'src/store/users'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { updateCart } from 'src/store/cart'
@@ -56,12 +55,6 @@ const InvoicePreview = ({}) => {
     }
     dispatch(createOrder({ idUser: userInfo.id, body }))
   }
-
-  useEffect(() => {
-    if (!user.id) dispatch(loadSession())
-    dispatch(loadInfo(user.id))
-    dispatch(getUserInfo(user.id))
-  }, [])
 
   return (
     <>

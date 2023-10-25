@@ -25,13 +25,13 @@ import MenuBasic from 'src/views/components/menu/MenuBasic'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 // import required modules
-import { Navigation } from 'swiper'
 
 import { setEdit, deleteProduct, setProductId } from 'src/store/products'
 
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/navigation'
+import SwiperCore, { Navigation } from 'swiper'
 import ReactImageMagnify from 'react-image-magnify'
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
@@ -70,13 +70,25 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   border: '1px solid #D8DEDF',
   color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
 }))
+SwiperCore.use([Navigation])
 
 // carousel product
+
 const CarouselProducts = ({ images, theme }) => {
-  if (images) {
-    return (
+  const [fullscreenImage, setFullscreenImage] = React.useState(null)
+
+  const openFullscreen = image => {
+    setFullscreenImage(image)
+  }
+
+  const closeFullscreen = () => {
+    setFullscreenImage(null)
+  }
+
+  return (
+    <div>
       <Swiper
-        spaceBetween={2}
+        spaceBetween={50}
         slidesPerView={1}
         navigation={{
           nextEl: '.swiper-button-next',
@@ -84,40 +96,38 @@ const CarouselProducts = ({ images, theme }) => {
         }}
         modules={[Navigation]}
         style={{
-          width: '75%',
+          width: '100%',
           margin: '0 auto'
         }}
       >
         {images.map(image => (
           <SwiperSlide
-            key={image} // Agrega una clave única para cada diapositiva
+            key={image}
             style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'relative' // Establece posición relativa en el Slide
+              position: 'relative'
             }}
           >
-            <div style={{ zIndex: 9999 }}>
+            <div style={{ zIndex: 9999, cursor: 'pointer' }} onClick={() => openFullscreen(image)}>
               <ReactImageMagnify
+                style={{ marginBottom: '20px' }}
                 largeImage={{
-                  src: image, // Utiliza la misma URL para la imagen grande
-                  width: 800, // Ancho de la imagen grande (ajusta según tu necesidad)
-                  height: 800 // Alto de la imagen grande (ajusta según tu necesidad)
+                  src: image,
+                  width: 800,
+                  height: 800
                 }}
                 enlargedImageStyle={{ zIndex: 9999, top: 0 }}
                 enlargedImagePosition='over'
-                isHintEnabled='true'
+                isHintEnabled={true}
                 hintTextMouse='Haz zoom con el mouse'
                 smallImage={{
                   alt: 'Descripción de la imagen',
-                  src: image, // Utiliza la misma URL para la imagen pequeña
+                  src: image,
                   width: 370,
                   height: 370
                 }}
-                //           style={{
-                //   transform: 'scale(1.5)'
-                // }}
               />
             </div>
           </SwiperSlide>
@@ -125,9 +135,16 @@ const CarouselProducts = ({ images, theme }) => {
         <div className='swiper-button-next' style={{ color: theme.palette.primary.main }} />
         <div className='swiper-button-prev' style={{ color: theme.palette.primary.main }} />
       </Swiper>
-    )
-  }
-  return null
+      <Dialog open={!!fullscreenImage} onClose={closeFullscreen}>
+        <img
+          src={fullscreenImage}
+          alt='Imagen en pantalla completa'
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          onClick={closeFullscreen}
+        />
+      </Dialog>
+    </div>
+  )
 }
 
 export const ProductItem = props => {
@@ -153,6 +170,7 @@ export const ProductItem = props => {
             }}
             variant='body2'
             component='div'
+            sx={{ color: theme.palette.text.secundary }}
             dangerouslySetInnerHTML={{ __html: description }}
           />
         ) : (
@@ -165,6 +183,7 @@ export const ProductItem = props => {
                   }}
                   variant='body2'
                   component='div'
+                  sx={{ color: theme.palette.text.secundary }}
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
                 <a

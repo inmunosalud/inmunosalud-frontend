@@ -14,7 +14,9 @@ import {
   InputAdornment,
   TextField,
   FormHelperText,
-  Typography
+  Typography,
+  CircularProgress,
+  Box
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -50,7 +52,7 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = (
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { editItem, mainComponents } = useSelector(state => state.products)
+  const { editItem, mainComponents, isLoading } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { showConfirmModal } = useSelector(state => state.users)
   const [authPassword, setAuthPassword] = React.useState('')
@@ -91,6 +93,7 @@ const AddProduct = () => {
   const [fields, setFields] = React.useState([])
   const [formBody, setFormBody] = React.useState({})
   const [mainComponentValue, setMainComponentValue] = React.useState([])
+
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
@@ -194,7 +197,7 @@ const AddProduct = () => {
     const keyCode = event.keyCode || event.which
     const keyValue = String.fromCharCode(keyCode)
 
-    if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46) {
+    if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46 && keyCode !== 9) {
       event.preventDefault()
     }
   }
@@ -265,6 +268,7 @@ const AddProduct = () => {
         quantity: 1
       })
       setEditorHtml(editItem.description)
+      setIsDescriptionEmpty(false)
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
       setImages(editItem.urlImages)
@@ -274,13 +278,38 @@ const AddProduct = () => {
     }
   }, [editItem])
 
+  React.useEffect(() => {
+    if (!editItem) {
+      const existingOption = mainComponents.find(option => option.value === newOption)
+
+      if (existingOption) {
+        // If the new option already exists, set it as the selected option
+        setMainComponentValue([...mainComponentValue, existingOption])
+      } else {
+        // If the new option doesn't exist, add it to the options list and set it as the selected option
+        const newOptionObject = { value: newOption }
+        setMainComponentValue([...mainComponentValue, newOptionObject])
+      }
+
+      // Update the last input field's property with the new option
+      setFields(prevFields => [...prevFields, { property: newOption.trim(), value: '' }])
+
+      // Clear the new option text field
+      setNewOption('')
+    }
+  }, [])
+
   const handleDeleteComponent = index => {
     let newFields = [...fields]
     newFields.splice(index, 1)
     setFields(newFields)
   }
 
-  return (
+  return isLoading ? (
+    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '500px' }}>
+      <CircularProgress />
+    </Box>
+  ) : (
     <>
       <Card sx={{ margin: '40px 20px' }}>
         <CardHeader title={`${editItem ? 'Editar' : 'Agregar'} Producto`} titleTypographyProps={{ variant: 'h6' }} />
@@ -434,10 +463,14 @@ const AddProduct = () => {
                     <ReactQuill
                       value={editorHtml}
                       onChange={handleEditorChange}
+                      formats={['link', 'p', 'br']}
                       modules={{
-                        toolbar: [['link']]
+                        toolbar: [['link']],
+                        clipboard: {
+                          matchVisual: false // Evita la coincidencia visual para mantener las etiquetas HTML sin cambios
+                        }
                       }}
-                      style={{ height: '200px' }} // Establece una altura fija
+                      style={{ height: '200px' }}
                     />
                   </div>
                   {isDescriptionEmpty && (

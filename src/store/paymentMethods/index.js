@@ -122,10 +122,8 @@ export const updateMethod = createAsyncThunk(
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
       const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
-      console.log(response)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
-      thunkApi.dispatch(loadInfo(uuid))
       thunkApi.dispatch(nextStep())
 
       return response
@@ -147,7 +145,6 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, u
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_delete(`${PROJECT_PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
-    thunkApi.dispatch(loadInfo(uuid))
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
@@ -162,21 +159,12 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, u
 export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uuid, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  let paymentInfo = {}
 
   try {
-    const [responseMethods, responseAddress] = await Promise.all([
-      api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth),
-      api_get(`${PROJECT_ADDRESS}/addresses/user/${uuid}`, auth)
-    ])
-
-    thunkApi.dispatch(setAddresses(responseAddress.content))
-
-    paymentInfo.paymentMethods = responseMethods.content.filter(method => method.cardUse === 'Pago')
-    paymentInfo.clabe = responseMethods.content.find(method => method.cardUse === 'Cobro')
-    return paymentInfo
+    const response = await api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
+    return setPaymentMethods(response.content)
   } catch (error) {
-    return thunkApi.rejectWithValue('error')
+    return thunkApi.rejectWithValue(error)
   }
 })
 
@@ -190,6 +178,30 @@ export const methodsList = createAsyncThunk('user/list', async uuid => {
     return thunkApi.rejectWithValue('error')
   }
 })
+
+export const setMonthlyPaymentMethod = createAsyncThunk(
+  'payment-methods/setMonthlyPaymentMethod',
+  async (id, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+      const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/shippingPayment/${id}`, {}, auth)
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      return setPaymentMethods(response.content)
+    } catch (error) {
+      const errMessage = error?.response?.data?.message
+      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+      return thunkApi.rejectWithValue('error')
+    }
+  }
+)
+
+const setPaymentMethods = responsePaymentMethods => {
+  let paymentInfo = {}
+  paymentInfo.paymentMethods = responsePaymentMethods.filter(method => method.cardUse === 'Pago')
+  paymentInfo.clabe = responsePaymentMethods.find(method => method.cardUse === 'Cobro')
+  return paymentInfo
+}
 
 const initialState = {
   // register
@@ -225,7 +237,8 @@ export const paymentMethodsSlice = createSlice({
       state.isOpenDelete = payload
     },
     setSelectedPaymentMethodInCart: (state, { payload }) => {
-      ;(state.selectedPaymentMethod = payload), (state.isSelectedPaymentMethod = true)
+      state.selectedPaymentMethod = payload
+      state.isSelectedPaymentMethod = true
     },
     setBank: (state, { payload }) => {
       state.bank = payload
@@ -283,6 +296,16 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(deleteMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.paymentMethods = payload.content
+    })
+    builder.addCase(setMonthlyPaymentMethod.pending, state => {
+      state.isLoading = false
+    })
+    builder.addCase(setMonthlyPaymentMethod.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.paymentMethods = payload.paymentMethods
+      state.clabe = payload.clabe ?? '' //creshea en el registro por no estar declarado
+      state.bank = payload?.clabe?.bank || ''
+      state.selectedPaymentMethod = payload.paymentMethods[0]
     })
   }
 })
