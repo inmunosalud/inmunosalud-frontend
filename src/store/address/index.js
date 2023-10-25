@@ -96,6 +96,7 @@ const initialState = {
   selectedAddressInCard: null,
   isSelectedAddress: false,
 
+  addressId: '',
   showModal: false
 }
 
