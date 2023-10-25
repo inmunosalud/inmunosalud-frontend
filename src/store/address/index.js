@@ -109,6 +109,7 @@ const initialState = {
   selectedAddressInCart: null,
   isSelectedAddress: false,
 
+  addressId: '',
   showModal: false
 }
 

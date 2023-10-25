@@ -7,25 +7,15 @@ import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
 
-async function mergePDFs(pdfs) {
-  const mergedPdf = await PDFDocument.create()
-
-  for (const pdfUrl of pdfs) {
-    const pdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer())
-    const pdf = await PDFDocument.load(pdfBytes)
-    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices())
-    copiedPages.forEach(page => mergedPdf.addPage(page))
-  }
-
-  return await mergedPdf.save()
-}
-
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users`, body)
+    console.log('response', response, 'body', body)
     const newUser = {
       user: {
+        firstName: response.content.firstName,
+        lastName: response.content.lastName,
         profile: response.content.profile,
         recommenderId: response.content.recommenderId,
         email: response.content.email,
@@ -113,7 +103,7 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
   }
 })
 
-export const createContract = createAsyncThunk('contracts/newContract', async ({ body, uuid }, thunkApi) => {
+export const createContract = createAsyncThunk('contracts/createContract', async ({ body, uuid }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 
@@ -121,9 +111,6 @@ export const createContract = createAsyncThunk('contracts/newContract', async ({
     const response = await api_post(`${PROJECT_CONTRACT}/users/contract/${uuid}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(setModal(false))
-    thunkApi.dispatch(loadInfo(uuid))
-    thunkApi.dispatch(nextStep())
-
     return response
   } catch (error) {
     const data = error.response.data
@@ -233,7 +220,9 @@ const initialState = {
   modalRow: null,
 
   //user info
-  userInfo: null,
+  userInfo: {},
+  firstName: '',
+  lastName: '',
   //email
   email: '',
 
@@ -281,6 +270,7 @@ export const usersSlice = createSlice({
       state.token = payload.token
       state.user = payload.user
       state.email = payload.user.email
+      state.name = payload.user.name
       localStorage.setItem('im-user', payload.token)
     },
     setRecoveryCode: (state, { payload }) => {
@@ -294,12 +284,15 @@ export const usersSlice = createSlice({
     })
     builder.addCase(createUser.fulfilled, (state, { payload }) => {
       const { user, token } = payload
+      console.log('payload', payload, 'user', user)
       state.isLoadingRegister = false
       state.registerErrors = null
       state.isLoading = false
       state.token = token
       state.user = user
       state.email = user.email
+      state.firstName = user.firstName
+      state.lastName = user.lastName
       localStorage.setItem('im-user', token)
     })
     builder.addCase(createUser.rejected, (state, action) => {
@@ -337,12 +330,16 @@ export const usersSlice = createSlice({
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
       state.users = payload.content
     })
+    builder.addCase(createContract.pending, (state, { payload }) => {
+      state.isLoadingRegister = true
+    })
     builder.addCase(createContract.fulfilled, (state, { payload }) => {
-      // Llamar a la función mergePDFs para obtener el PDF combinado
-      const combinedPdf = mergePDFs(payload.content)
-
-      // Actualizar el estado con el PDF combinado
-      state.contract = combinedPdf // Agregar el PDF combinado al estado
+      console.log('contract payload', payload)
+      state.contract = payload
+      state.isLoadingRegister = false
+    })
+    builder.addCase(createContract.rejected, (state, { payload }) => {
+      state.isLoadingRegister = false
     })
     //get info user
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {

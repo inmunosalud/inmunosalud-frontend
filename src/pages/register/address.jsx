@@ -1,6 +1,7 @@
 // ** React Imports
 import React, { forwardRef, useState, useEffect, Fragment, useRef } from 'react'
 import { useRouter } from 'next/router'
+import Script from 'next/script'
 
 // ** MUI Components Imports
 import {
@@ -50,7 +51,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import SignatureCanvas from 'react-signature-canvas'
 import { Document, Page, pdfjs } from 'react-pdf'
-import { PDFDocument, StandardFonts } from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib'
 
 // ** Custom Components Imports
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -61,15 +62,16 @@ import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 // ** Store Imports
 import { sendNewUser, updateUser, createContract } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
-import { createAddress, getColonies, selectColony } from 'src/store/address'
+import { createAddress, getColonies, selectColony, updateAddress, addressList } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
-import { createMethod } from 'src/store/paymentMethods'
+import { createMethod, setOpenPay, setDeviceSessionId } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { BANKS } from 'src/configs/banks'
 
 const steps = [
@@ -100,8 +102,6 @@ const steps = [
 ]
 
 const defaultDataValues = {
-  firstName: '',
-  lastName: '',
   phone: ''
 }
 
@@ -140,8 +140,6 @@ const defaultTaxInfoValues = {
 }
 
 const dataSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
   phone: yup
     .string()
     .required()
@@ -215,7 +213,6 @@ const taxInfoSchema = yup.object().shape({
 })
 
 const contractInfoSchema = yup.object().shape({
-  fullName: yup.string().required(),
   email: yup.string().required('El campo es requerido').email('Correo electrónico inválido'),
   phone: yup
     .string()
@@ -269,15 +266,15 @@ export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { user } = useSelector(state => state.dashboard.general)
-  const { email } = useSelector(state => state.users)
-  const { contract } = useSelector(state => state.users)
+  const { email, firstName, lastName, contract, isLoadingRegister } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
-  const { colonies, selectedColony } = useSelector(state => state.address)
+  const { colonies, selectedColony, address } = useSelector(state => state.address)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [fullContract, setFullContract] = useState('')
   const [data, setData] = useState({
+    firstName: firstName,
+    lastName: lastName,
     email: email,
-    firstName: '',
-    lastName: '',
     rfc: '',
     phone: '',
     street: '',
@@ -294,9 +291,8 @@ export default function Address() {
     clabe: '',
     city: ''
   })
-
   const { activeStep } = useSelector(state => state.register)
-  //const activeStep = 4
+  //const activeStep = 5
 
   const { open, message, severity } = useSelector(state => state.notifications)
   const [showOtherIdentification, setShowOtherIdentification] = useState(false)
@@ -305,18 +301,15 @@ export default function Address() {
   const signatureRef2 = useRef(null)
   const [isSignature2Empty, setIsSignature2Empty] = useState(false)
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
-
-  const pdfs = [
-    'https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-caratulaContratro.pdf',
-    'https://users-contracts.s3.amazonaws.com/69596ad1-39a5-4cc7-af2f-837be118cafb-contrato.pdf'
-  ]
+  const [numPages, setNumPages] = React.useState(null)
 
   // Get the current year
   const currentYear = new Date().getFullYear()
 
   const defaultContractInfoValues = {
+    firstName: data.firstName,
+    lastName: data.lastName,
     email: data.email,
-    fullName: `${data.firstName} ${data.lastName}`,
     rfc: data.rfc,
     phone: data.phone,
     street: data.street,
@@ -339,18 +332,83 @@ export default function Address() {
     label: `${currentYear + i}`.slice(-2)
   }))
 
-  async function mergePDFs(pdfs) {
+  async function copyPages() {
+    const url1 = 'https://pdf-lib.js.org/assets/with_update_sections.pdf'
+    const url2 = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
+
+    const firstDonorPdfBytes = await fetch(url1).then(res => res.arrayBuffer())
+    const secondDonorPdfBytes = await fetch(url2).then(res => res.arrayBuffer())
+
+    const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
+    const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
+
+    const pdfDoc = await PDFDocument.create()
+
+    const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
+    const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
+
+    pdfDoc.addPage(firstDonorPage)
+    pdfDoc.insertPage(0, secondDonorPage)
+
+    const pdfBytes = await pdfDoc.save()
+  }
+
+  async function mergePDFs(pdfUrl1, pdfUrl2) {
+    const pdfBytes1 = await fetch(pdfUrl1).then(res => res.arrayBuffer())
+    const pdfBytes2 = await fetch(pdfUrl2).then(res => res.arrayBuffer())
+
+    const pdfDoc1 = await PDFDocument.load(pdfBytes1)
+    const pdfDoc2 = await PDFDocument.load(pdfBytes2)
+
     const mergedPdf = await PDFDocument.create()
 
-    for (const pdfUrl of pdfs) {
-      const pdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer())
-      const pdf = await PDFDocument.load(pdfBytes)
-      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices())
-      copiedPages.forEach(page => mergedPdf.addPage(page))
+    // Copiar todas las páginas del primer PDF
+    for (let i = 0; i < pdfDoc1.getPageCount(); i++) {
+      const [page] = await mergedPdf.copyPages(pdfDoc1, [i])
+      mergedPdf.addPage(page)
     }
 
-    return await mergedPdf.save()
+    // Copiar todas las páginas del segundo PDF
+    for (let i = 0; i < pdfDoc2.getPageCount(); i++) {
+      const [page] = await mergedPdf.copyPages(pdfDoc2, [i])
+      mergedPdf.addPage(page)
+    }
+
+    const mergedPdfBytes = await mergedPdf.save()
+    // Crear un objeto Blob
+    const pdfBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' })
+
+    // Crear una URL para el Blob
+    const pdfUrl = URL.createObjectURL(pdfBlob)
+    return pdfUrl
   }
+
+  const setOpenPayObject = openPay => {
+    dispatch(setOpenPay(openPay))
+  }
+
+  const setDeviceData = deviceSessionId => {
+    dispatch(setDeviceSessionId(deviceSessionId))
+  }
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages)
+  }
+
+  useEffect(() => {
+    if (contract.content && contract.content.contractURL && contract.content.contractCoverUrl) {
+      console.log('contract', contract)
+      async function mergeAndDisplayPDFs() {
+        const pdfUrl1 = contract.content.contractURL
+        const pdfUrl2 = contract.content.contractCoverUrl
+
+        const mergedPdfBytes = await mergePDFs(pdfUrl1, pdfUrl2)
+        setFullContract(mergedPdfBytes)
+      }
+
+      mergeAndDisplayPDFs()
+    }
+  }, [contract])
 
   useEffect(() => {
     dispatch(loadSession())
@@ -364,7 +422,9 @@ export default function Address() {
   useEffect(() => {
     // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
     const loadSignatureAfterDelay = () => {
-      setIsSignature2Empty(signatureRef2.current && signatureRef2.current.isEmpty())
+      if (signatureRef2.current && signatureRef2.current.isEmpty()) {
+        setIsSignature2Empty(false)
+      }
     }
 
     const delay = 250
@@ -375,12 +435,10 @@ export default function Address() {
 
   useEffect(() => {
     const signature = data.signature
-
     const loadSignatureAfterDelay = () => {
-      if (signatureRef2.current && signature) {
+      if (signature && signatureRef2.current && signatureRef2.current.fromDataURL) {
         const canvasWidth = signatureRef2.current._canvas.width
         const canvasHeight = signatureRef2.current._canvas.height
-
         const image = new Image()
 
         image.onload = () => {
@@ -394,7 +452,7 @@ export default function Address() {
       }
     }
 
-    const delay = 100
+    const delay = 1000
     const timer = setTimeout(loadSignatureAfterDelay, delay)
 
     if (isModalOpen === true) return () => clearTimeout(timer)
@@ -472,14 +530,12 @@ export default function Address() {
     router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
-  const handleDownload = async mergedPdfBytes => {
-    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'Contrato.pdf'
-    a.click()
-    URL.revokeObjectURL(url)
+  const handleDownload = fullContract => {
+    const link = document.createElement('a')
+    link.href = fullContract
+    link.download = 'Contrato.pdf'
+    link.rel = 'noopener noreferrer'
+    link.click()
   }
 
   const onDataSubmit = values => {
@@ -520,6 +576,7 @@ export default function Address() {
     const body = {
       ...values,
       cardUse: 'Pago',
+      shippingPayment: true,
       expDate: `${values.month}/${values.year}`
     }
 
@@ -527,7 +584,7 @@ export default function Address() {
       ...prevValues,
       ...body
     }))
-
+    dispatch(addressList({ id: user.id }))
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
@@ -565,20 +622,16 @@ export default function Address() {
   }
 
   const onContractInfoSubmit = values => {
-    // Validar el campo de firma manualmente
     const isCanvasEmpty = signatureRef2.current.isEmpty()
     if (isCanvasEmpty) {
-      // El canvas de firma está vacío
       console.log('La firma electrónica es requerida')
       return
     }
 
-    // El canvas de firma no está vacío
     const signatureData = signatureRef2.current.toDataURL()
-
     const body = {
       user: {
-        name: values.fullName,
+        name: `${values.firstName} ${values.lastName}`,
         email: values.email,
         phone: values.phone,
         rfc: values.rfc,
@@ -587,15 +640,15 @@ export default function Address() {
       address: {
         street: values.street,
         extNumber: values.extNumber,
-        intNumber: values.intNumber,
+        ...(values.intNumber ? { intNumber: values.intNumber } : {}),
         city: values.city,
         colony: values.colony,
         federalEntity: values.federalEntity,
         zipCode: values.zipCode
       },
       identification: {
-        type: values.identificationType,
-        otherIdentification: values.otherIdentification
+        id: values.identificationType,
+        ...(values.identificationType === 3 ? { otherIdentification: values.otherIdentification } : {})
       },
       paymentMethod: {
         cardNumber: values.cardNumber,
@@ -603,10 +656,25 @@ export default function Address() {
         clabe: values.clabe
       }
     }
-
+    const bodyUser = {
+      phone: values.phone
+    }
+    console.log('address', address)
+    const bodyAddress = {
+      street: values.street,
+      extNumber: values.extNumber,
+      intNumber: values.intNumber,
+      city: values.city,
+      colony: values.colony,
+      federalEntity: values.federalEntity,
+      zipCode: values.zipCode,
+      id: address[0].id
+    }
+    console.log('bodyAddress', bodyAddress)
+    dispatch(updateUser({ body: bodyUser, uuid: user.id, isRegister: true }))
+    dispatch(updateAddress({ body: bodyAddress }))
     dispatch(createContract({ body, uuid: user.id }))
 
-    //Cierra el modal después de confirmar
     setIsModalOpen(false)
   }
 
@@ -625,50 +693,6 @@ export default function Address() {
         return (
           <form key={0} onSubmit={handleDataSubmit(onDataSubmit)}>
             <Grid container spacing={5}>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='firstName'
-                    control={dataControl}
-                    rules={{ required: true, maxLength: 20 }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Nombre'
-                        onChange={onChange}
-                        placeholder='Nombre'
-                        error={Boolean(dataErrors.firstName)}
-                        aria-describedby='validation-basic-first-name'
-                      />
-                    )}
-                  />
-                  {dataErrors.name?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='lastName'
-                    control={dataControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='Apellido'
-                        onChange={onChange}
-                        placeholder='Apellido'
-                        aria-describedby='validation-basic-last-name'
-                      />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
@@ -722,9 +746,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
-                  Atras
-                </Button>
+                <Box />
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -967,9 +989,7 @@ export default function Address() {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
-                  Atras
-                </Button>
+                <Box />
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -980,6 +1000,20 @@ export default function Address() {
       case 2:
         return (
           <form key={2} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
+            <Script
+              src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+              onLoad={() => {
+                setOpenPayObject(OpenPay)
+              }}
+            />
+            <Script
+              src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+              onLoad={() => {
+                OpenPay.setSandboxMode(true)
+                const deviceSessionId = OpenPay.deviceData.setup()
+                setDeviceData(deviceSessionId)
+              }}
+            />
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -1095,6 +1129,7 @@ export default function Address() {
                         placeholder='XXXX-XXXX-XXXX-XXXX'
                         error={Boolean(paymentErrors['cardNumber'])}
                         aria-describedby='stepper-linear-payment-cardNumber'
+                        inputProps={{ maxLength: 16 }} // Limitar a 4 caracteres
                       />
                     )}
                   />
@@ -1119,6 +1154,7 @@ export default function Address() {
                         placeholder='000'
                         error={Boolean(paymentErrors['cvc'])}
                         aria-describedby='stepper-linear-payment-cvc'
+                        inputProps={{ maxLength: 4 }} // Limitar a 4 caracteres
                       />
                     )}
                   />
@@ -1155,9 +1191,7 @@ export default function Address() {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
-                  Atras
-                </Button>
+                <Box />
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -1237,9 +1271,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleBack}>
-                  Atras
-                </Button>
+                <Box />
                 <Button size='large' type='submit' variant='contained'>
                   Siguiente
                 </Button>
@@ -1402,7 +1434,18 @@ export default function Address() {
           </form>
         )
       case 5:
-        return (
+        return isLoadingRegister === true ? (
+          <Box
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <FormHelperText id='loading-contract'>Se está generando su contrato, por favor espere.</FormHelperText>
+            <CircularProgress size={24} />
+          </Box>
+        ) : (
           <Grid container spacing={5} alignItems='center' justifyContent='center'>
             <Box
               sx={{
@@ -1411,21 +1454,45 @@ export default function Address() {
                 ml: '20px'
               }}
             >
-              <Document file={contract} options={{ workerSrc: '/pdf.worker.js' }}>
-                <Page pageNumber={1} scale={1.5} width={500} />
+              {console.log('fullContract', fullContract)}
+              <Document
+                file={fullContract}
+                onLoadSuccess={onDocumentLoadSuccess}
+                loading={
+                  <Box
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '200px',
+                      width: '700px'
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                }
+              >
+                {Array.from(new Array(numPages), (el, index) => {
+                  return <Page key={index + 1} pageNumber={index + 1} scale={1.5} />
+                })}
               </Document>
             </Box>
             <Grid container justifyContent='space-between' alignItems='center' sx={{ mt: '20px' }}>
-              <Button variant='contained' color='info' sx={{ marginLeft: '20px' }} onClick={handleDownload(contract)}>
+              <Button
+                variant='contained'
+                color='info'
+                sx={{ marginLeft: '20px' }}
+                onClick={() => handleDownload(fullContract)}
+              >
                 Descargar
               </Button>
-              <Button type='submit' variant='contained' color='primary'>
+
+              <Button onClick={() => dispatch(nextStep())} variant='contained' color='primary'>
                 Confirmar
               </Button>
             </Grid>
           </Grid>
         )
-
       default:
         return null
     }
@@ -1451,6 +1518,7 @@ export default function Address() {
   useEffect(() => {
     isLoading === 'resolved' && resetValues()
   }, [isLoading])
+
   return (
     <>
       <Box
@@ -1523,24 +1591,49 @@ export default function Address() {
           <DialogContent>
             <Grid container spacing={5}>
               <Grid item xs={12}>
-                <FormControl fullWidth sx={{ mt: '10px' }}>
+                <FormControl fullWidth>
                   <Controller
-                    name='fullName'
+                    name='firstName'
                     control={contractInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Nombre completo'
+                        disabled
+                        label='Nombre/s'
                         onChange={onChange}
-                        error={Boolean(contractInfoErrors['fullName'])}
-                        placeholder='Nombre completo'
-                        aria-describedby='validation-basic-string'
+                        error={Boolean(contractInfoErrors.firstName)}
+                        placeholder='Nombre'
                       />
                     )}
                   />
-                  {contractInfoErrors.fullName && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-string'>
+                  {contractInfoErrors.firstName && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-firstname'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='lastName'
+                    control={contractInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Apellido'
+                        disabled
+                        onChange={onChange}
+                        error={Boolean(contractInfoErrors.lastName)}
+                        placeholder='Apellido'
+                        aria-describedby='validation-apellido'
+                      />
+                    )}
+                  />
+                  {contractInfoErrors.lastName && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-apellido'>
                       El campo es requerido
                     </FormHelperText>
                   )}
@@ -1580,6 +1673,7 @@ export default function Address() {
                       <TextField
                         value={value}
                         label='Correo electronico'
+                        disabled
                         onChange={onChange}
                         error={Boolean(contractInfoErrors['email'])}
                         placeholder='Correo Electronico'
@@ -1772,6 +1866,7 @@ export default function Address() {
                       <TextField
                         value={value}
                         label='Numero de tarjeta'
+                        disabled
                         onChange={onChange}
                         error={Boolean(contractInfoErrors['cardNumber'])}
                         placeholder='Numero de tarjeta'
@@ -1795,7 +1890,14 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <>
                         <InputLabel id='product-label'>Banco</InputLabel>
-                        <Select labelId='product-label' label='Bank' value={value} required={true} onChange={onChange}>
+                        <Select
+                          labelId='product-label'
+                          label='Bank'
+                          value={value}
+                          disabled
+                          required={true}
+                          onChange={onChange}
+                        >
                           {BANKS.map(item => (
                             <MenuItem value={item}>{item}</MenuItem>
                           ))}
@@ -1819,6 +1921,7 @@ export default function Address() {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
+                        disabled
                         label='Clabe interbancaria'
                         onChange={onChange}
                         error={Boolean(contractInfoErrors['clabe'])}
@@ -1933,11 +2036,18 @@ export default function Address() {
                       setIsSignature2Empty(false)
                     }}
                   />
-                  <Button variant='contained' color='secondary' onClick={() => signatureRef2.current.clear()}>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => {
+                      signatureRef2.current.clear()
+                      setIsSignature2Empty(true)
+                    }}
+                  >
                     Limpiar
                   </Button>
                 </FormControl>
-                {isSignature2Empty && (
+                {isSignature2Empty === true && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-signature2'>
                     La firma electrónica es requerida
                   </FormHelperText>

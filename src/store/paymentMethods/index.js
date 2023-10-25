@@ -1,6 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 //api
-import { api_post, api_get, api_patch, api_delete, PROJECT_PAYMENT_METHODS, PROJECT_ADDRESS } from '../../services/api'
+import {
+  api_post,
+  api_get,
+  api_patch,
+  api_delete,
+  PROJECT_PAYMENT_METHODS,
+  PROJECT_ADDRESS,
+  OPENPAY_ID,
+  OPENPAY_KEY
+} from '../../services/api'
+import { setAddresses } from '../address'
 
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
@@ -8,25 +18,100 @@ import { nextStep } from '../register'
 //actions
 
 export const createMethod = createAsyncThunk('paymentMethods/newMethod', async ({ body, uuid }, thunkApi) => {
+  console.log('payment methods body', body)
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, body, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(setModal(false))
-    thunkApi.dispatch(loadInfo(uuid))
-    thunkApi.dispatch(nextStep())
+  const user = thunkApi.getState().users.user
 
-    return response
-  } catch (error) {
-    const data = error.response.data
+  if (body.cardUse === 'Pago') {
+    const openPay = thunkApi.getState().paymentMethods.openPay
+    const deviceSessionId = thunkApi.getState().paymentMethods.deviceSessionId
+    const openpayUserId = user.openpay.openpayUserId
 
-    if (data.message) {
-      thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
-      thunkApi.dispatch(setModal(false))
+    openPay.setId(OPENPAY_ID)
+    openPay.setApiKey(OPENPAY_KEY)
+    openPay.setSandboxMode(true)
+    openPay.getSandboxMode()
+    const tokenBody = {
+      card_number: body.cardNumber,
+      holder_name: body.nameOnCard,
+      expiration_year: body.year.slice(2),
+      expiration_month: body.month,
+      cvv2: body.cvc
     }
 
-    return thunkApi.rejectWithValue('error')
+    var openpayTokenId
+    const tokenPromise = new Promise((resolve, reject) => {
+      openPay.token.create(
+        tokenBody,
+        response => {
+          openpayTokenId = response.data.id
+          resolve(openpayTokenId)
+        },
+        onError => {
+          console.log('error', onError)
+          reject(onError)
+        }
+      )
+    })
+
+    try {
+      await tokenPromise
+      const paymentBody = {
+        alias: body.alias,
+        cardUse: body.cardUse,
+        nameOnCard: body.nameOnCard,
+        beneficiary: 'prueba',
+        tokenId: openpayTokenId,
+        deviceSessionId: deviceSessionId,
+        openpayUserId: openpayUserId,
+        bank: body.bank ? body.bank : '',
+        shippingPayment: body.shippingPayment
+      }
+
+      const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      thunkApi.dispatch(setModal(false))
+      thunkApi.dispatch(loadInfo(uuid))
+      thunkApi.dispatch(nextStep())
+      console.log('response payment methods Pago', response)
+      return response
+    } catch (error) {
+      const data = error.response.data
+      console.log('error', error)
+      if (data.message) {
+        thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+        thunkApi.dispatch(setModal(false))
+      }
+
+      return thunkApi.rejectWithValue('error')
+    }
+  } else if (body.cardUse === 'Cobro') {
+    try {
+      const paymentBody = {
+        cardUse: body.cardUse,
+        beneficiary: body.beneficiary,
+        bank: body.bank,
+        clabe: body.clabe
+      }
+
+      const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      thunkApi.dispatch(setModal(false))
+      thunkApi.dispatch(loadInfo(uuid))
+      thunkApi.dispatch(nextStep())
+      console.log('response payment methods Cobro', response)
+      return response
+    } catch (error) {
+      const data = error.response.data
+      console.log('error', error)
+      if (data.message) {
+        thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+        thunkApi.dispatch(setModal(false))
+      }
+
+      return thunkApi.rejectWithValue('error')
+    }
   }
 })
 
@@ -132,7 +217,10 @@ const initialState = {
 
   /* method selected */
   selectedPaymentMethod: null,
-  isSelectedPaymentMethod: false
+  isSelectedPaymentMethod: false,
+
+  openPay: {},
+  deviceSessionId: ''
 }
 
 export const paymentMethodsSlice = createSlice({
@@ -154,6 +242,14 @@ export const paymentMethodsSlice = createSlice({
     },
     setBank: (state, { payload }) => {
       state.bank = payload
+    },
+    setOpenPay: (state, { payload }) => {
+      state.openPay = payload
+      console.log('openpay 1', payload)
+    },
+    setDeviceSessionId: (state, { payload }) => {
+      state.deviceSessionId = payload
+      console.log('openpay 1', payload)
     }
   },
   extraReducers: builder => {
@@ -216,5 +312,12 @@ export const paymentMethodsSlice = createSlice({
 
 export default paymentMethodsSlice.reducer
 
-export const { setErrors, setModal, setModalDelete, setSelectedPaymentMethodInCart, setBank } =
-  paymentMethodsSlice.actions
+export const {
+  setErrors,
+  setModal,
+  setModalDelete,
+  setSelectedPaymentMethodInCart,
+  setBank,
+  setOpenPay,
+  setDeviceSessionId
+} = paymentMethodsSlice.actions

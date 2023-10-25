@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 import { ORDERS, api_post, api_get, api_patch, api_delete } from '../../services/api'
+import { getState } from 'redux'
 
 import { openSnackBar } from '../notifications'
 import { getCart } from '../cart'
@@ -60,7 +61,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
 export const cancelOrder = createAsyncThunk('order/cancel', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const body = { deliveryStatus: "Cancelado" }
+  const body = { deliveryStatus: 'Cancelado' }
   try {
     const response = await api_patch(`${ORDERS}/orders/cancel/${id}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
@@ -114,7 +115,7 @@ export const ordersSlice = createSlice({
     builder.addCase(getOrdersByUser.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.messageValid = payload.message
-      const sortedOrders = payload.content.sort(compareByPurchaseDate);
+      const sortedOrders = payload.content.sort(compareByPurchaseDate)
       state.orders = sortedOrders
     })
     builder.addCase(getOrdersByUser.rejected, (state, { payload }) => {
@@ -172,7 +173,7 @@ export const ordersSlice = createSlice({
       state.orders = payload
     })
     builder.addCase(cancelOrder.fulfilled, (state, { payload }) => {
-      const sortedOrders = payload.content.sort(compareByPurchaseDate);
+      const sortedOrders = payload.content.sort(compareByPurchaseDate)
       state.orders = sortedOrders
     })
   }
