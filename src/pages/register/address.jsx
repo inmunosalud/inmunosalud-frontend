@@ -35,7 +35,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
+  Checkbox,
+  Link
 } from '@mui/material'
 
 // ** Icons Imports
@@ -133,8 +135,9 @@ const defaultBankInfoValues = {
 }
 
 const defaultTaxInfoValues = {
+  acceptContract: false,
   rfc: '',
-  identificationType: '',
+  identificationType: 0,
   otherIdentification: '',
   signature: ''
 }
@@ -194,6 +197,7 @@ const bankInfoSchema = yup.object().shape({
 })
 
 const taxInfoSchema = yup.object().shape({
+  acceptContract: yup.boolean().oneOf([true], 'Acepte para continuar'),
   rfc: yup
     .string()
     .required('El campo es requerido')
@@ -204,7 +208,10 @@ const taxInfoSchema = yup.object().shape({
     .test('exact-length', 'El RFC debe tener exactamente 13 caracteres', value => {
       return value?.length === 13
     }),
-  identificationType: yup.number().required('El campo es requerido'),
+  identificationType: yup
+    .number()
+    .test('not-zero', 'El campo es requerido', value => typeof value === 'number' && value !== 0)
+    .required('El campo es requerido'),
   otherIdentification: yup.string().when('identificationType', {
     is: 3,
     then: yup.string().required('El campo es requerido'),
@@ -268,7 +275,8 @@ export default function Address() {
   const { user } = useSelector(state => state.dashboard.general)
   const { email, firstName, lastName, contract, isLoadingRegister } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
-  const { colonies, selectedColony, address } = useSelector(state => state.address)
+  const { isLoading: paymenthMethodIsLoading } = useSelector(state => state.paymentMethods)
+  const { colonies, selectedColony, address, isLoading: addressIsLoading } = useSelector(state => state.address)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullContract, setFullContract] = useState('')
   const [data, setData] = useState({
@@ -292,7 +300,7 @@ export default function Address() {
     city: ''
   })
   const { activeStep } = useSelector(state => state.register)
-  //const activeStep = 5
+  //const activeStep = 4
 
   const { open, message, severity } = useSelector(state => state.notifications)
   const [showOtherIdentification, setShowOtherIdentification] = useState(false)
@@ -744,9 +752,13 @@ export default function Address() {
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {isLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -987,9 +999,13 @@ export default function Address() {
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {addressIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1151,7 +1167,7 @@ export default function Address() {
                         placeholder='000'
                         error={Boolean(paymentErrors['cvc'])}
                         aria-describedby='stepper-linear-payment-cvc'
-                        inputProps={{ maxLength: 4 }} // Limitar a 4 caracteres
+                        inputProps={{ maxLength: 4 }}
                       />
                     )}
                   />
@@ -1189,9 +1205,13 @@ export default function Address() {
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {paymenthMethodIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1237,6 +1257,7 @@ export default function Address() {
                         onChange={onChange}
                         placeholder='XXXXXXXXXXXXXXXXXX'
                         error={Boolean(bankInfoErrors['clabe'])}
+                        inputProps={{ maxLength: 18 }}
                         aria-describedby='stepper-linear-bankinfo-clabe'
                       />
                     )}
@@ -1269,9 +1290,13 @@ export default function Address() {
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {paymenthMethodIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1280,41 +1305,37 @@ export default function Address() {
         return (
           <form key={3} onSubmit={handleTaxInfoSubmit(onTaxInfoSubmit)}>
             <Grid container spacing={5}>
-              <Grid item xs={12} md={4}>
-                <FormControl fullWidth>
+              <Grid item xs={6}>
+                <InputLabel>Revise el contrato de afiliación y acepte los términos para continuar</InputLabel>
+                <FormControl>
+                  <Box sx={{ mb: 5 }}>
+                    <Link
+                      href='https://contratos-template.s3.amazonaws.com/CONTRATO_DE_AFILIACI%C3%93N.pdf'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <FormHelperText sx={{ color: 'orange' }}>(Clic aquí para ver)</FormHelperText>
+                    </Link>
+                  </Box>
                   <Controller
-                    name='rfc'
+                    name='acceptContract'
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={value}
-                        label='RFC'
-                        sx={{ mt: '30px' }}
-                        onInput={e => {
-                          // Convertir el valor a mayúsculas antes de actualizar el estado
-                          e.target.value = e.target.value.toUpperCase()
-                          onChange(e)
-                          setData(prevData => ({
-                            ...prevData,
-                            rfc: e.target.value
-                          }))
-                        }}
-                        placeholder='RFC'
-                        style={{ textTransform: 'uppercase' }}
-                        error={Boolean(taxInfoErrors['rfc'])}
-                      />
+                      <Box display='flex' alignItems='center'>
+                        <Checkbox checked={value} onChange={onChange} />
+                        <Typography variant='body2'>He leído y acepto el contrato de afiliación</Typography>
+                      </Box>
                     )}
                   />
-                  <FormHelperText id='helper-linear-taxInfo-rfc'>Ingrese el RFC sin guiones o espacios</FormHelperText>
-                  {taxInfoErrors['rfc'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc'>
-                      {taxInfoErrors['rfc'] ? taxInfoErrors['rfc'].message : 'El campo es requerido'}
+                  {taxInfoErrors['acceptContract'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-acceptContract'>
+                      {taxInfoErrors['acceptContract'].message ?? 'Debes aceptar el contrato para continuar'}
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
+              <Grid item xs={12} md={3} sx={{ textAlign: 'center' }}>
                 <InputLabel id='identificationType-label'>Tipo de Identificación Oficial</InputLabel>
                 <FormControl component='fieldset'>
                   <Controller
@@ -1368,7 +1389,7 @@ export default function Address() {
                 </FormControl>
               </Grid>
               {showOtherIdentification && (
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <FormControl fullWidth>
                     <Controller
                       name='otherIdentification'
@@ -1400,7 +1421,41 @@ export default function Address() {
                   </FormControl>
                 </Grid>
               )}
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='rfc'
+                    control={taxInfoControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='RFC'
+                        sx={{ mt: '30px' }}
+                        onInput={e => {
+                          // Convertir el valor a mayúsculas antes de actualizar el estado
+                          e.target.value = e.target.value.toUpperCase()
+                          onChange(e)
+                          setData(prevData => ({
+                            ...prevData,
+                            rfc: e.target.value
+                          }))
+                        }}
+                        placeholder='RFC'
+                        style={{ textTransform: 'uppercase' }}
+                        error={Boolean(taxInfoErrors['rfc'])}
+                      />
+                    )}
+                  />
+                  <FormHelperText id='helper-linear-taxInfo-rfc'>Ingrese el RFC sin guiones o espacios</FormHelperText>
+                  {taxInfoErrors['rfc'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc'>
+                      {taxInfoErrors['rfc'] ? taxInfoErrors['rfc'].message : 'El campo es requerido'}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
                 <InputLabel id='signature-label' sx={{ mb: 2 }}>
                   Firma
                 </InputLabel>
@@ -1422,10 +1477,15 @@ export default function Address() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box />
+                {isModalOpen ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1440,7 +1500,10 @@ export default function Address() {
             }}
           >
             <FormHelperText id='loading-contract'>Se está generando su contrato, por favor espere.</FormHelperText>
-            <CircularProgress size={24} />
+            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box />
+              <CircularProgress size={20} />
+            </Grid>
           </Box>
         ) : (
           <Grid container spacing={5} alignItems='center' justifyContent='center'>

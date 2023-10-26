@@ -146,6 +146,12 @@ export const addressSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    builder.addCase(createAddress.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(createAddress.fulfilled, (state, action) => {
+      state.isLoading = false
+    })
     //get users tables
     builder.addCase(addressList.pending, (state, action) => {
       state.isLoading = true
