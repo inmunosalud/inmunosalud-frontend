@@ -100,11 +100,9 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(loadInfo(uuid))
       thunkApi.dispatch(nextStep())
-      console.log('response payment methods Cobro', response)
       return response
     } catch (error) {
       const data = error.response.data
-      console.log('error', error)
       if (data.message) {
         thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
         thunkApi.dispatch(setModal(false))
@@ -245,11 +243,9 @@ export const paymentMethodsSlice = createSlice({
     },
     setOpenPay: (state, { payload }) => {
       state.openPay = payload
-      console.log('openpay 1', payload)
     },
     setDeviceSessionId: (state, { payload }) => {
       state.deviceSessionId = payload
-      console.log('openpay 1', payload)
     }
   },
   extraReducers: builder => {

@@ -104,6 +104,7 @@ const AddCard = props => {
   }
 
   useEffect(() => {
+    console.log('carrito', selectedPayment, selectedAddress)
     if (selectedPayment == null || selectedAddress == null) {
       dispatch(setPayment(selectedPaymentMethod))
       dispatch(setAddress(selectedAddressInCart))
