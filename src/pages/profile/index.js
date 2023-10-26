@@ -17,6 +17,7 @@ import address from 'src/store/address'
 import { setOpenPay } from 'src/store/paymentMethods'
 
 const Profile = () => {
+  const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
 
   const setOpenPayObject = openPay => {

@@ -18,7 +18,7 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
@@ -29,6 +29,7 @@ import { addressList } from 'src/store/address'
 const UserLayout = ({ children }) => {
   // ** Hooks
   const dispatch = useDispatch()
+  const [dataLoaded, isDataLoaded] = useState(false)
   const { settings, saveSettings } = useSettings()
 
   const { user } = useSelector(state => state.dashboard.general)
@@ -42,11 +43,12 @@ const UserLayout = ({ children }) => {
       dispatch(loadSession())
     }
 
-    if (Object.keys(user).length !== 0 && userInfo == null) {
+    if (user.id != null && !dataLoaded) {
       dispatch(getUserInfo(user.id))
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
       dispatch(addressList(user.id))
+      isDataLoaded(true)
     }
   }, [userInfo, user.id])
 
