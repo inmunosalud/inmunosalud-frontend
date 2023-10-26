@@ -11,7 +11,6 @@ import { nextStep, setActiveStep } from '../register'
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users`, body)
-    console.log('response', response, 'body', body)
     const newUser = {
       user: {
         firstName: response.content.firstName,
@@ -220,7 +219,7 @@ const initialState = {
   modalRow: null,
 
   //user info
-  userInfo: {},
+  userInfo: null,
   firstName: '',
   lastName: '',
   //email
@@ -284,7 +283,6 @@ export const usersSlice = createSlice({
     })
     builder.addCase(createUser.fulfilled, (state, { payload }) => {
       const { user, token } = payload
-      console.log('payload', payload, 'user', user)
       state.isLoadingRegister = false
       state.registerErrors = null
       state.isLoading = false
@@ -334,7 +332,6 @@ export const usersSlice = createSlice({
       state.isLoadingRegister = true
     })
     builder.addCase(createContract.fulfilled, (state, { payload }) => {
-      console.log('contract payload', payload)
       state.contract = payload
       state.isLoadingRegister = false
     })

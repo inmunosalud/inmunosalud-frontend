@@ -397,7 +397,6 @@ export default function Address() {
 
   useEffect(() => {
     if (contract.content && contract.content.contractURL && contract.content.contractCoverUrl) {
-      console.log('contract', contract)
       async function mergeAndDisplayPDFs() {
         const pdfUrl1 = contract.content.contractURL
         const pdfUrl2 = contract.content.contractCoverUrl
@@ -659,7 +658,6 @@ export default function Address() {
     const bodyUser = {
       phone: values.phone
     }
-    console.log('address', address)
     const bodyAddress = {
       street: values.street,
       extNumber: values.extNumber,
@@ -670,7 +668,6 @@ export default function Address() {
       zipCode: values.zipCode,
       id: address[0].id
     }
-    console.log('bodyAddress', bodyAddress)
     dispatch(updateUser({ body: bodyUser, uuid: user.id, isRegister: true }))
     dispatch(updateAddress({ body: bodyAddress }))
     dispatch(createContract({ body, uuid: user.id }))
@@ -1454,7 +1451,6 @@ export default function Address() {
                 ml: '20px'
               }}
             >
-              {console.log('fullContract', fullContract)}
               <Document
                 file={fullContract}
                 onLoadSuccess={onDocumentLoadSuccess}
