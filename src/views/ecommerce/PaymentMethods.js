@@ -1,7 +1,6 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadInfo } from 'src/store/paymentMethods'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -17,13 +16,8 @@ import { setPayment } from 'src/store/cart'
 export const PaymentMethods = () => {
   const dispatch = useDispatch()
 
-  const { user } = useSelector(state => state.dashboard.general)
   const { paymentMethods } = useSelector(state => state.paymentMethods)
   const { selectedPayment } = useSelector(state => state.cart)
-
-  useEffect(() => {
-    if (user.id) dispatch(loadInfo(user.id))
-  }, [dispatch])
 
   const handleSelectPaymentMethod = item => {
     dispatch(setPayment(item))

@@ -10,18 +10,16 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import IconButton from '@mui/material/IconButton';
-
+import IconButton from '@mui/material/IconButton'
 
 // ** Icons Imports
 import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
 import { Cart } from 'mdi-material-ui'
 import { FileUpload } from 'mdi-material-ui'
-import { Pencil } from 'mdi-material-ui';
-import Tooltip from '@mui/material/Tooltip';
+import { Pencil } from 'mdi-material-ui'
+import Tooltip from '@mui/material/Tooltip'
 import { Account } from 'mdi-material-ui'
-
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -38,7 +36,6 @@ import { React } from 'mdi-material-ui'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({
@@ -73,11 +70,6 @@ const UserProfileLeft = ({ data }) => {
     dispatch(setModal(false))
   }
 
-  useEffect(() => {
-    dispatch(loadSession())
-    dispatch(getUserInfo(data?.id))
-  }, [])
-
   const renderUserAvatar = () => {
     if (data) {
       return (
@@ -87,7 +79,7 @@ const UserProfileLeft = ({ data }) => {
           color={data.avatarColor}
           sx={{ width: 120, height: 120, fontWeight: 600, mb: 4, fontSize: '3rem' }}
         >
-          <Account sx={{ fontSize: '11rem' }}/>
+          <Account sx={{ fontSize: '11rem' }} />
         </CustomAvatar>
       )
     } else {
@@ -97,21 +89,25 @@ const UserProfileLeft = ({ data }) => {
 
   if (data) {
     const isActive = 'Usuario Activo'
-    const isInactive = "Usuario Inactivo"
+    const isInactive = 'Usuario Inactivo'
     return (
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>
             <CardContent sx={{ pt: 15, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
               {renderUserAvatar()}
-                <Tooltip title="Editar" placement="top">
-              <Typography variant='h6' sx={{ mb: 2, mr: 0.5, cursor: 'pointer' }} onClick={() => dispatch(setModal(true))} >
-                {userInfo?.firstName} {userInfo?.lastName}
-                <IconButton color="warning" size='small'>
-                    <Pencil color="warning"/>
-                </IconButton>
-              </Typography>
-                </Tooltip>
+              <Tooltip title='Editar' placement='top'>
+                <Typography
+                  variant='h6'
+                  sx={{ mb: 2, mr: 0.5, cursor: 'pointer' }}
+                  onClick={() => dispatch(setModal(true))}
+                >
+                  {userInfo?.firstName} {userInfo?.lastName}
+                  <IconButton color='warning' size='small'>
+                    <Pencil color='warning' />
+                  </IconButton>
+                </Typography>
+              </Tooltip>
               <Typography variant='h6' sx={{ mb: 2 }}>
                 {data.email}
               </Typography>
@@ -181,28 +177,32 @@ const UserProfileLeft = ({ data }) => {
         <Grid item xs={12}>
           <Card sx={{ pt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Link href='/ecommerce/billing' passHref>
-              <Button variant='outlined' sx={{ mb: 3, mr: 0.5 }} startIcon={<FileUpload />}
-              >
+              <Button variant='outlined' sx={{ mb: 3, mr: 0.5 }} startIcon={<FileUpload />}>
                 Carga tu factura
               </Button>
             </Link>
-            <Button variant='outlined' sx={{ mb: 3, ml: 0.5 }} onClick={() => router.push('/ecommerce/monthly-purchase/')} startIcon={<Cart />}>
+            <Button
+              variant='outlined'
+              sx={{ mb: 3, ml: 0.5 }}
+              onClick={() => router.push('/ecommerce/monthly-purchase/')}
+              startIcon={<Cart />}
+            >
               Pedido Mensual
             </Button>
           </Card>
         </Grid>
-        {userInfo?.balance > 0 && <Grid item xs={12}>
-          <Card>
-            <CardContent >
-              <Box sx={{ display: "flex", flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Typography variant='h6'>Saldo a favor</Typography>
-                <Typography variant='h6'>
-                  ${userInfo?.balance}
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>}
+        {userInfo?.balance > 0 && (
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Typography variant='h6'>Saldo a favor</Typography>
+                  <Typography variant='h6'>${userInfo?.balance}</Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
         {/* New Param showOnlyName to only show name and last name inputs*/}
         <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={userInfo} showOnlyName={true} />
       </Grid>
