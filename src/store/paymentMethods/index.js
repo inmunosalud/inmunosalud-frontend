@@ -18,15 +18,15 @@ import { nextStep } from '../register'
 //actions
 
 export const createMethod = createAsyncThunk('paymentMethods/newMethod', async ({ body, uuid }, thunkApi) => {
-  console.log('payment methods body', body)
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const user = thunkApi.getState().users.user
+  const userInfo = thunkApi.getState().users.userInfo
 
   if (body.cardUse === 'Pago') {
     const openPay = thunkApi.getState().paymentMethods.openPay
     const deviceSessionId = thunkApi.getState().paymentMethods.deviceSessionId
-    const openpayUserId = user.openpay.openpayUserId
+    const openpayUserId = user.openpay.openpayUserId ?? userInfo.openpay.openpayUserId
 
     openPay.setId(OPENPAY_ID)
     openPay.setApiKey(OPENPAY_KEY)
