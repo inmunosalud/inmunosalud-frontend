@@ -15,7 +15,7 @@ import LinearChart from 'src/views/dashboards/users/LinearChart'
 
 //actions
 import { getUserInfo } from 'src/store/users'
-import { Card, CardContent, Button } from '@mui/material'
+import { Card, CardContent, Button, CircularProgress, Box } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
 import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
@@ -94,7 +94,6 @@ function getProductConsumptionSeries(userInfo) {
         } else data.push(0)
       }
       series.push({ data, name: key })
-      console.log(series)
     }
   } catch (error) {
     return console.error(error)
@@ -136,8 +135,7 @@ function getNextMonth(date) {
 
 const Users = () => {
   const dispatch = useDispatch()
-  const { userInfo } = useSelector(state => state.users)
-  const [isLoaded, setIsLoaded] = React.useState(false)
+  const { userInfo, isLoading } = useSelector(state => state.users)
   const [cutoffDate, setCutoffDate] = React.useState('')
   const { user } = useSelector(state => state.dashboard.general)
 
@@ -154,7 +152,7 @@ const Users = () => {
   }, [userInfo])
 
   React.useEffect(() => {
-    if (userInfo != '') setIsLoaded(true)
+    dispatch(getUserInfo(user.id))
   }, [])
 
   const handlePaste = () => {
@@ -171,6 +169,8 @@ const Users = () => {
   }
 
   const renderCharts = () => {
+    console.log('userInfo a', userInfo.profile)
+
     if (userInfo.profile !== 'Consumidor') {
       return (
         <>
@@ -210,30 +210,38 @@ const Users = () => {
     }
   }
 
-  return (
-    isLoaded ?? (
-      <>
-        <ApexChartWrapper>
-          <Grid container spacing={6}>
-            {renderCharts()}
-            <Grid item xs={12} sm={6}>
-              <GraphBar
-                title='Consumo general'
-                series={getOverAllConsumptionSeries(userInfo)}
-                categories={getOverAllConsumptionCategories(userInfo)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <LinearChart
-                title='Consumo por producto'
-                series={getProductConsumptionSeries(userInfo)}
-                categories={getProductConsumptionCategories(userInfo)}
-              />
-            </Grid>
+  return isLoading === false ? (
+    <>
+      <ApexChartWrapper>
+        <Grid container spacing={6}>
+          {renderCharts()}
+          <Grid item xs={12} sm={6}>
+            <GraphBar
+              title='Consumo general'
+              series={getOverAllConsumptionSeries(userInfo)}
+              categories={getOverAllConsumptionCategories(userInfo)}
+            />
           </Grid>
-        </ApexChartWrapper>
-      </>
-    )
+          <Grid item xs={12} sm={6}>
+            <LinearChart
+              title='Consumo por producto'
+              series={getProductConsumptionSeries(userInfo)}
+              categories={getProductConsumptionCategories(userInfo)}
+            />
+          </Grid>
+        </Grid>
+      </ApexChartWrapper>
+    </>
+  ) : (
+    <Box
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <CircularProgress />
+    </Box>
   )
 }
 

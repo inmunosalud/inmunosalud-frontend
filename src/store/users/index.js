@@ -343,8 +343,12 @@ export const usersSlice = createSlice({
       state.isLoadingRegister = false
     })
     //get info user
+    builder.addCase(getUserInfo.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       const { content } = payload
+      state.isLoading = false
       state.userInfo = content
     })
     //get stripe link
