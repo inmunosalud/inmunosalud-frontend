@@ -169,8 +169,6 @@ const Users = () => {
   }
 
   const renderCharts = () => {
-    console.log('userInfo a', userInfo.profile)
-
     if (userInfo.profile !== 'Consumidor') {
       return (
         <>
