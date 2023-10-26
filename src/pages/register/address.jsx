@@ -275,7 +275,8 @@ export default function Address() {
   const { user } = useSelector(state => state.dashboard.general)
   const { email, firstName, lastName, contract, isLoadingRegister } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
-  const { colonies, selectedColony, address } = useSelector(state => state.address)
+  const { isLoading: paymenthMethodIsLoading } = useSelector(state => state.paymentMethods)
+  const { colonies, selectedColony, address, isLoading: addressIsLoading } = useSelector(state => state.address)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullContract, setFullContract] = useState('')
   const [data, setData] = useState({
@@ -751,9 +752,13 @@ export default function Address() {
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {isLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -994,9 +999,13 @@ export default function Address() {
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {addressIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1158,7 +1167,7 @@ export default function Address() {
                         placeholder='000'
                         error={Boolean(paymentErrors['cvc'])}
                         aria-describedby='stepper-linear-payment-cvc'
-                        inputProps={{ maxLength: 4 }} // Limitar a 4 caracteres
+                        inputProps={{ maxLength: 4 }}
                       />
                     )}
                   />
@@ -1196,9 +1205,13 @@ export default function Address() {
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {paymenthMethodIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1244,6 +1257,7 @@ export default function Address() {
                         onChange={onChange}
                         placeholder='XXXXXXXXXXXXXXXXXX'
                         error={Boolean(bankInfoErrors['clabe'])}
+                        inputProps={{ maxLength: 18 }}
                         aria-describedby='stepper-linear-bankinfo-clabe'
                       />
                     )}
@@ -1276,9 +1290,13 @@ export default function Address() {
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+                {paymenthMethodIsLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1459,10 +1477,15 @@ export default function Address() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button size='large' type='submit' variant='contained'>
-                  Siguiente
-                </Button>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box />
+                {isModalOpen ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <Button size='large' type='submit' variant='contained'>
+                    Siguiente
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </form>
@@ -1477,7 +1500,10 @@ export default function Address() {
             }}
           >
             <FormHelperText id='loading-contract'>Se está generando su contrato, por favor espere.</FormHelperText>
-            <CircularProgress size={24} />
+            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box />
+              <CircularProgress size={20} />
+            </Grid>
           </Box>
         ) : (
           <Grid container spacing={5} alignItems='center' justifyContent='center'>

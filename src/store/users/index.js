@@ -321,7 +321,11 @@ export const usersSlice = createSlice({
       state.isLoading = 'rejected'
     })
     //update user
+    builder.addCase(updateUser.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
+      state.isLoading = false
       const updatedUser = payload?.content
       state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
     })
