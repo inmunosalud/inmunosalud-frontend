@@ -47,8 +47,15 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
 export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser, body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const deviceSessionId = thunkApi.getState().paymentMethods.deviceSessionId
+
+  const bodyOrder = {
+    deviceSessionId: deviceSessionId,
+    ...body
+  }
+
   try {
-    const response = await api_post(`${ORDERS}/orders/${idUser}`, body, auth)
+    const response = await api_post(`${ORDERS}/orders/${idUser}`, bodyOrder, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(getCart(idUser))
     Router.push('/ecommerce/orders')
