@@ -10,6 +10,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 import { setSelectedAddressInCart } from 'src/store/address'
+import { setAddress } from 'src/store/cart'
 
 export const AddressList = () => {
   const dispatch = useDispatch()
@@ -18,7 +19,7 @@ export const AddressList = () => {
   const { selectedAddress } = useSelector(state => state.cart)
 
   const handleSelectAddress = item => {
-    dispatch(setSelectedAddressInCart(item))
+    dispatch(setAddress(item))
   }
 
   return (

@@ -11,8 +11,6 @@ import Grid from '@mui/material/Grid'
 // ** Demo Components Imports
 import UserProfileRight from 'src/views/profile/UserProfileRight'
 import UserProfileLeft from 'src/views/profile/UserProfileLeft'
-import { loadInfo } from 'src/store/paymentMethods'
-import address from 'src/store/address'
 
 const Profile = () => {
   const { user } = useSelector(state => state.dashboard.general)
