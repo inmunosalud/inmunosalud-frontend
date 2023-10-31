@@ -11,13 +11,24 @@ const FooterContent = () => {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Typography>Inmunosalud</Typography>
-      <Box display='flex'>
-        <Whatsapp color='primary' />
-        <Typography>
-          <strong>+52 3334173934</strong>
+      <Box display='flex' flexDirection='column'>
+        <Box display='flex' alignItems='center'>
+          <Whatsapp color='primary' />
+          <Typography fontSize={'12px'}>
+            <strong>+52 3334173934</strong>
+          </Typography>
+        </Box>
+        <Typography fontSize={'12px'}>
+          <strong>Dirección:</strong> Iztaccihuatl 1915, Tlajomulco, Jalisco.
+        </Typography>
+        <Typography fontSize={'12px'}>
+          <strong>Correo:</strong>{' '}
+          <a style={{ textDecoration: 'none', fontSize: '12px' }} href='mailto:atencion@inmunosalud.mx'>
+            atencion@inmunosalud.mx
+          </a>
         </Typography>
       </Box>
+      <Typography>Inmunosalud</Typography>
 
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
