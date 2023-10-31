@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
+import Script from 'next/script'
 import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -13,6 +14,7 @@ import { getCart } from 'src/store/cart'
 import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
+import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 
 const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
@@ -45,6 +47,13 @@ const InvoicePreview = ({}) => {
     userInfo
   }
 
+  const setOpenPayObject = openPay => {
+    dispatch(setOpenPay(openPay))
+  }
+
+  const setDeviceData = deviceSessionId => {
+    dispatch(setDeviceSessionId(deviceSessionId))
+  }
   const handleConfirmOrder = () => {
     const body = {
       idAddress: selectedAddress.id,
@@ -58,6 +67,20 @@ const InvoicePreview = ({}) => {
 
   return (
     <>
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+        onLoad={() => {
+          setOpenPayObject(OpenPay)
+        }}
+      />
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+        onLoad={() => {
+          OpenPay.setSandboxMode(true)
+          const deviceSessionId = OpenPay.deviceData.setup()
+          setDeviceData(deviceSessionId)
+        }}
+      />
       <Grid container spacing={6}>
         <Grid item xl={9} md={8} xs={12}>
           <CheckoutCard data={data} />
