@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Controller } from 'react-hook-form'
 import {
   Card,
@@ -14,6 +15,9 @@ import {
   MenuItem,
   InputLabel
 } from '@mui/material'
+const CircularProgress = dynamic(() => import('@mui/material/CircularProgress'), {
+  ssr: false
+})
 import { useDispatch, useSelector } from 'react-redux'
 import { getColonies, selectColony } from 'src/store/address'
 
@@ -26,7 +30,7 @@ const DialogAddress = ({
   addressControl = {},
   addressErrors = {}
 }) => {
-  const { colonies, selectedColony } = useSelector(state => state.address)
+  const { colonies, selectedColony, isLoadingColonies } = useSelector(state => state.address)
   const dispatch = useDispatch()
 
   return (
@@ -155,11 +159,14 @@ const DialogAddress = ({
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <>
-                        <InputLabel id='colony-label'>Colonia</InputLabel>
+                        <InputLabel id='colony-label'>
+                          {isLoadingColonies ? <CircularProgress size={20} sx={{ ml: '10px' }} /> : 'Colonia'}
+                        </InputLabel>
                         <Select
                           labelId='colony-label'
                           label='Colonia'
                           value={selectedColony}
+                          disabled={colonies.length === 0}
                           onChange={event => {
                             const newValue = event.target.value
                             onChange(newValue)

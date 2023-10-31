@@ -276,7 +276,13 @@ export default function Address() {
   const { email, firstName, lastName, contract, isLoadingRegister } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
   const { isLoading: paymenthMethodIsLoading } = useSelector(state => state.paymentMethods)
-  const { colonies, selectedColony, address, isLoading: addressIsLoading } = useSelector(state => state.address)
+  const {
+    colonies,
+    selectedColony,
+    address,
+    isLoading: addressIsLoading,
+    isLoadingColonies
+  } = useSelector(state => state.address)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullContract, setFullContract] = useState('')
   const [data, setData] = useState({
@@ -872,10 +878,13 @@ export default function Address() {
 
               <Grid item xs={12} sm={9}>
                 <FormControl fullWidth>
-                  <InputLabel id='colony-label'>Colonia</InputLabel>
+                  <InputLabel id='colony-label'>
+                    {isLoadingColonies ? <CircularProgress size={20} sx={{ ml: '10px' }} /> : 'Colonia'}
+                  </InputLabel>{' '}
                   <Select
                     labelId='colony-label'
                     label='Colonia'
+                    disabled={colonies.length === 0}
                     value={selectedColony}
                     required
                     onChange={event => {
