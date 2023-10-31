@@ -152,7 +152,7 @@ const Users = () => {
   }, [userInfo])
 
   React.useEffect(() => {
-    dispatch(getUserInfo(user.id))
+    if (userInfo === null && user.id != null) dispatch(getUserInfo(user.id))
   }, [])
 
   const handlePaste = () => {
