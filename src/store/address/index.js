@@ -101,6 +101,7 @@ export const setMonthlyPaymentAddress = createAsyncThunk('address/setMonthlyPaym
 const initialState = {
   // register
   isLoading: false,
+  isLoadingColonies: false,
   formErrors: null,
   /* users table */
   address: [],
@@ -173,14 +174,14 @@ export const addressSlice = createSlice({
       state.address = payload.content
     })
     builder.addCase(getColonies.pending, state => {
-      state.isLoading = true
+      state.isLoadingColonies = true
     })
     builder.addCase(getColonies.fulfilled, (state, { payload }) => {
       state.colonies = payload
-      state.isLoading = false
+      state.isLoadingColonies = false
     })
     builder.addCase(getColonies.rejected, state => {
-      state.isLoading = false
+      state.isLoadingColonies = false
     })
     builder.addCase(setMonthlyPaymentAddress.pending, state => {
       state.isLoading = true
