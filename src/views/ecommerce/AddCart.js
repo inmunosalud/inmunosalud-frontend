@@ -232,6 +232,9 @@ const AddCard = props => {
                       Carrito
                     </Typography>
                   </Box>
+                  <Typography variant='body2'>
+                    Los pagos son procesados de manera segura por medio de Openpay
+                  </Typography>
                 </Box>
               </DatePickerWrapper>
             </Grid>
