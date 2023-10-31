@@ -61,7 +61,6 @@ const BillingPage = () => {
 
   const handleXmlFileChange = event => {
     const selectedFile = event.target.files[0]
-    console.log('selectedFile.type', selectedFile.type)
     if (selectedFile && selectedFile.type === 'text/xml') {
       // Archivo Xml válido
       setXmlError(false)
@@ -420,13 +419,13 @@ const BillingPage = () => {
   }, [selectedInvoice])
 
   React.useEffect(() => {
-    if (user.profile === 'Administrador General') {
+    if (user.profile === 'Administrador General' && invoicesAll.length === 0) {
       dispatch(getInvoices())
     }
-    if (user.profile === 'Afiliado') {
+    if (user.profile === 'Afiliado' && invoices.length === 0) {
       dispatch(getInvoicesByUser(user.id))
     }
-  }, [dispatch, user])
+  }, [])
 
   if (user.profile === 'Afiliado') {
     return loading ? (
