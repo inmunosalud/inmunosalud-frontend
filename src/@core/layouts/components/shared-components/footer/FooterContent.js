@@ -22,7 +22,7 @@ const FooterContent = () => {
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
           <a
-            style={{ textDecoration: 'none', fontSize: '12px', color: 'grey' }}
+            style={{ textDecoration: 'none', fontSize: '12px' }}
             target='_blank'
             rel='noreferrer'
             href='/docs/Privacy.pdf'
@@ -32,12 +32,7 @@ const FooterContent = () => {
           <Typography color={'grey'} fontSize={'12px'}>
             |
           </Typography>
-          <a
-            style={{ textDecoration: 'none', fontSize: '12px', color: 'grey' }}
-            target='_blank'
-            rel='noreferrer'
-            href='/docs/TyC.pdf'
-          >
+          <a style={{ textDecoration: 'none', fontSize: '12px' }} target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
             Términos y condiciones
           </a>
         </Box>
