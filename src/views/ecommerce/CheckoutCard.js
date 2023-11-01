@@ -27,7 +27,6 @@ import moment from 'moment'
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 import { useSelector } from 'react-redux'
-import Image from 'next/image'
 
 const MUITableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: 0,

@@ -61,6 +61,10 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     Router.push('/ecommerce/orders')
     return response
   } catch (error) {
+    const data = error.response.data
+    if (data.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+    }
     return thunkApi.rejectWithValue('error')
   }
 })

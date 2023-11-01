@@ -78,7 +78,6 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
       return response
     } catch (error) {
       const data = error.response.data
-      console.log('error', error)
       if (data.message) {
         thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
         thunkApi.dispatch(setModal(false))
