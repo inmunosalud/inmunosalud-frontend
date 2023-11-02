@@ -34,9 +34,9 @@ import { loadInfo } from 'src/store/paymentMethods'
 import { Divider } from '@mui/material'
 
 const CARD_LOGOS = {
-  VISA: '/images/logos/visa.png',
-  AMEX: '/images/logos/american-express.png',
-  MASTERCARD: '/images/logos/mastercard.png'
+  visa: '/images/logos/visa.png',
+  amex: '/images/logos/american-express.png',
+  mastercard: '/images/logos/mastercard.png'
 }
 
 const defaultBankInfoValues = {
