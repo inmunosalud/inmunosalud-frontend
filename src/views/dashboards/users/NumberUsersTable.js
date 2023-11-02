@@ -48,7 +48,6 @@ const NumberUsersTable = ({ title = '', user = {} }) => {
           {network != undefined
             ? Object.keys(network).map((level, index) => {
                 if (index < Object.keys(network).length - 1) {
-                  console.log(level)
                   return (
                     <Grid item container flexDirection={'row'} justifyContent={'space-around'}>
                       <Grid item xs={3}>

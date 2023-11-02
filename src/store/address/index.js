@@ -5,7 +5,6 @@ import { PROJECT_ADDRESS, api_post, api_get, api_put, api_delete, api_patch } fr
 
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
-import { loadInfo } from '../paymentMethods'
 
 //actions
 
@@ -15,7 +14,7 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
   try {
     const response = await api_post(`${PROJECT_ADDRESS}/addresses/${uuid}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(loadInfo(uuid))
+    thunkApi.dispatch(addressList(uuid))
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(nextStep())
     return response
@@ -85,17 +84,33 @@ export const getColonies = createAsyncThunk('address/getColonies', async (zipCod
   }
 })
 
+export const setMonthlyPaymentAddress = createAsyncThunk('address/setMonthlyPaymentAddress', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_patch(`${PROJECT_ADDRESS}/addresses/shippingAddress/${id}`, {}, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   // register
   isLoading: false,
+  isLoadingColonies: false,
   formErrors: null,
   /* users table */
   address: [],
   colonies: [],
   selectedColony: {},
-  selectedAddressInCard: null,
+  selectedAddressInCart: null,
   isSelectedAddress: false,
 
+  addressId: '',
   showModal: false
 }
 
@@ -117,10 +132,11 @@ export const addressSlice = createSlice({
     },
     setAddresses: (state, { payload }) => {
       state.address = payload
-      state.selectedAddressInCard = payload[0]
+      state.selectedAddressInCart = payload[0]
     },
     setSelectedAddressInCart: (state, { payload }) => {
-      ;(state.selectedAddressInCard = payload), (state.isSelectedAddress = true)
+      state.selectedAddressInCart = payload
+      state.isSelectedAddress = true
     },
     selectColony: (state, { payload }) => {
       state.selectedColony = payload
@@ -131,6 +147,12 @@ export const addressSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    builder.addCase(createAddress.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(createAddress.fulfilled, (state, action) => {
+      state.isLoading = false
+    })
     //get users tables
     builder.addCase(addressList.pending, (state, action) => {
       state.isLoading = true
@@ -140,7 +162,8 @@ export const addressSlice = createSlice({
         payload: { content }
       } = action
       state.isLoading = false
-      state.address = [...content]
+      state.address = content
+      state.selectedAddressInCart = content[0] ?? null
     })
 
     builder.addCase(updateAddress.fulfilled, (state, { payload }) => {
@@ -151,13 +174,24 @@ export const addressSlice = createSlice({
       state.address = payload.content
     })
     builder.addCase(getColonies.pending, state => {
-      state.isLoading = true
+      state.isLoadingColonies = true
     })
     builder.addCase(getColonies.fulfilled, (state, { payload }) => {
       state.colonies = payload
-      state.isLoading = false
+      state.isLoadingColonies = false
     })
     builder.addCase(getColonies.rejected, state => {
+      state.isLoadingColonies = false
+    })
+    builder.addCase(setMonthlyPaymentAddress.pending, state => {
+      state.isLoading = true
+    })
+    builder.addCase(setMonthlyPaymentAddress.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      const updatedAddress = payload?.content
+      state.address = updatedAddress
+    })
+    builder.addCase(setMonthlyPaymentAddress.rejected, state => {
       state.isLoading = false
     })
   }

@@ -41,7 +41,8 @@ const CARD_LOGOS = {
 
 const defaultBankInfoValues = {
   beneficiary: '',
-  clabe: ''
+  clabe: '',
+  bank: ''
 }
 
 const bankInfoSchema = yup.object().shape({
@@ -51,7 +52,8 @@ const bankInfoSchema = yup.object().shape({
     .required()
     .matches(/^[\d*]+$/, 'Solo dígitos o *')
     .min(18, 'Deben ser 18 dígitos')
-    .max(18, 'Deben ser 18 dígitos')
+    .max(18, 'Deben ser 18 dígitos'),
+  bank: yup.string().required()
 })
 
 const UserProfileBankInfo = ({ bankInfo = {} }) => {
@@ -60,7 +62,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete, bank } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, bank, clabe } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -72,13 +74,14 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
     resolver: yupResolver(bankInfoSchema)
   })
 
-  useEffect(() => setClabeIsEmpty(!bankInfo.clabe), [])
+  useEffect(() => {
+    setClabeIsEmpty(!clabe)
+  }, [])
 
   const onBankInfoSubmit = values => {
     const body = {
       ...values,
-      cardUse: 'Cobro',
-      bank: bank
+      cardUse: 'Cobro'
     }
 
     dispatch(
@@ -127,12 +130,12 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>Beneficiario: </Typography>
               </Box>
-              <Typography variant='body1'>{bankInfo.beneficiary}</Typography>
+              <Typography variant='body1'>{clabe.beneficiary}</Typography>
               <Divider />
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>CLABE Interbancaria:</Typography>
               </Box>
-              <Typography variant='body2'>{bankInfo.clabe}</Typography>
+              <Typography variant='body2'>{clabe.clabe}</Typography>
               <Divider />
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>Banco:</Typography>

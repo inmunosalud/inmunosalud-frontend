@@ -1,6 +1,7 @@
 // ** React Imports
 import { Fragment, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import Script from 'next/script'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -18,7 +19,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Pencil } from 'mdi-material-ui'
+import { Cart, CartHeart, CartOutline, Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
 import { useForm, Controller } from 'react-hook-form'
@@ -27,9 +28,22 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { createMethod, setModal, updateMethod, setModalDelete, deleteMethod } from 'src/store/paymentMethods'
+import {
+  createMethod,
+  setModal,
+  updateMethod,
+  setModalDelete,
+  deleteMethod,
+  setMonthlyPaymentMethod,
+  setDeviceSessionId,
+  setOpenPay
+} from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBilling from '../components/dialogs/DialogBilling'
+import FallbackSpinner from 'src/@core/components/spinner'
+import { Favorite } from '@mui/icons-material'
+import { FavoriteOutlined } from '@mui/icons-material'
+import { FavoriteBorderOutlined } from '@mui/icons-material'
 
 const CARD_LOGOS = {
   VISA: '/images/logos/visa.png',
@@ -66,8 +80,8 @@ const paymentSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[\d*]+$/, 'Solo dígitos o *')
-    .min(16, 'Deben ser 16 dígitos')
-    .max(16, 'Deben ser 16 dígitos'),
+    .min(15, 'Deben ser al menos 15 dígitos (solo American Express)')
+    .max(16, 'Deben ser maximo 16 dígitos'),
   nameOnCard: yup.string().required(),
   cvc: yup
     .string()
@@ -89,7 +103,7 @@ const paymentSchemaEdit = yup.object().shape({
   nameOnCard: yup.string().required()
 })
 
-const UserProfileBilling = ({ methods = [] }) => {
+const UserProfileBilling = () => {
   const dispatch = useDispatch()
   // ** States
 
@@ -97,7 +111,7 @@ const UserProfileBilling = ({ methods = [] }) => {
   const [deleteID, setDeleteID] = useState(null)
 
   const { user } = useSelector(state => state.dashboard.general)
-  const { isOpen, isOpenDelete, paymentMethods } = useSelector(state => state.paymentMethods)
+  const { isOpen, isOpenDelete, paymentMethods, isLoading } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {
     reset,
@@ -163,8 +177,34 @@ const UserProfileBilling = ({ methods = [] }) => {
     dispatch(setModalDelete(false))
   }
 
+  const handleSelectMonthlyPaymentMethod = addressItem => {
+    dispatch(setMonthlyPaymentMethod(addressItem.id))
+  }
+
+  const setOpenPayObject = openPay => {
+    dispatch(setOpenPay(openPay))
+  }
+
+  const setDeviceData = deviceSessionId => {
+    dispatch(setDeviceSessionId(deviceSessionId))
+  }
+
   return (
     <Fragment>
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+        onLoad={() => {
+          setOpenPayObject(OpenPay)
+        }}
+      />
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+        onLoad={() => {
+          OpenPay.setSandboxMode(true)
+          const deviceSessionId = OpenPay.deviceData.setup()
+          setDeviceData(deviceSessionId)
+        }}
+      />
       <Card sx={{ mb: 6 }}>
         <CardHeader
           title='Métodos de Pago'
@@ -177,50 +217,69 @@ const UserProfileBilling = ({ methods = [] }) => {
           }
         />
         <CardContent>
-          {paymentMethods.map(item => (
-            <Box
-              key={index}
-              sx={{
-                p: 5,
-                display: 'flex',
-                borderRadius: 1,
-                flexDirection: ['column', 'row'],
-                justifyContent: ['space-between'],
-                alignItems: ['flex-start', 'center'],
-                mb: index !== methods.length - 1 ? 4 : undefined,
-                border: theme => `1px solid ${theme.palette.divider}`
-              }}
-            >
-              <div>
-                <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
-                <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
-                </Box>
-                <Typography variant='body2'>{item.cardNumber}</Typography>
-              </div>
+          {isLoading ? (
+            <FallbackSpinner />
+          ) : (
+            paymentMethods.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  p: 5,
+                  display: 'flex',
+                  borderRadius: 1,
+                  flexDirection: ['column', 'row'],
+                  justifyContent: ['space-between'],
+                  alignItems: ['flex-start', 'center'],
+                  mb: index !== paymentMethods.length - 1 ? 4 : undefined,
+                  border: theme => `1px solid ${theme.palette.divider}`
+                }}
+              >
+                <div>
+                  <img height='25' alt={item.imgAlt} src={CARD_LOGOS[item.cardType]} />
+                  <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                    <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
+                  </Box>
+                  <Typography variant='body2'>Titular: {item.nameOnCard}</Typography>
+                  <Typography variant='body2'>{item.cardNumber}</Typography>
+                </div>
 
-              <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-                <Tooltip title='Editar' placement='top'>
-                  <Button
-                    variant='outlined'
-                    sx={{ mr: 3 }}
-                    onClick={() => handleEditCardClickOpen(item)}
-                    color='warning'
-                  >
-                    <Pencil />
-                  </Button>
-                </Tooltip>
-                <Tooltip title='Eliminar' placement='top'>
-                  <Button variant='outlined' onClick={() => handleModalDelete(item)} color='error'>
-                    <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
-                  </Button>
-                </Tooltip>
-                <Typography variant='body2' sx={{ mt: 5 }}>
-                  Expira el {item.expDate}
-                </Typography>
+                <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
+                  <Tooltip title='Editar' placement='top'>
+                    <Button
+                      variant='outlined'
+                      sx={{ mr: 3 }}
+                      onClick={() => handleEditCardClickOpen(item)}
+                      color='warning'
+                    >
+                      <Pencil sx={{ fontSize: '1.125rem' }} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Eliminar' placement='top'>
+                    <Button
+                      variant='outlined'
+                      sx={{ mr: 3, fontSize: '1.125rem' }}
+                      onClick={() => handleModalDelete(item)}
+                      color='error'
+                    >
+                      <Delete sx={{ fontSize: '1.125rem' }} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Predeterminado Pedido Mensual' placement='top'>
+                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentMethod(item)} color='error'>
+                      {item.shippingPayment ? (
+                        <Cart sx={{ fontSize: '1.125rem' }} />
+                      ) : (
+                        <CartOutline sx={{ fontSize: '1.125rem' }} />
+                      )}
+                    </Button>
+                  </Tooltip>
+                  <Typography variant='body2' sx={{ mt: 5 }}>
+                    Expira el {item.expDate}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))
+          )}
         </CardContent>
 
         <DialogBilling

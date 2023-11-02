@@ -18,30 +18,39 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
+import { loadInfo } from 'src/store/paymentMethods'
+import { addressList } from 'src/store/address'
 
 const UserLayout = ({ children }) => {
   // ** Hooks
   const dispatch = useDispatch()
+  const [dataLoaded, isDataLoaded] = useState(false)
   const { settings, saveSettings } = useSettings()
 
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
-    dispatch(loadSession())
-    dispatch(getUserInfo(user.id))
-  }, [])
-
-  useEffect(() => {
-    if (user) {
-      dispatch(getCart(user.id))
+    if (!localStorage.getItem('im-user')) {
+      return
     }
-  }, [user])
+    if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
+      dispatch(loadSession())
+    }
+
+    if (user.id != null && !dataLoaded) {
+      dispatch(getUserInfo(user.id))
+      dispatch(getCart(user.id))
+      dispatch(loadInfo(user.id))
+      dispatch(addressList(user.id))
+      isDataLoaded(true)
+    }
+  }, [userInfo, user.id])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.

@@ -1,12 +1,12 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
+import Script from 'next/script'
 import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
 import { createOrder } from 'src/store/orders'
-import { loadInfo } from 'src/store/paymentMethods'
 import { getUserInfo } from 'src/store/users'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { updateCart } from 'src/store/cart'
@@ -14,8 +14,9 @@ import { getCart } from 'src/store/cart'
 import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
+import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 
-const InvoicePreview = ({ }) => {
+const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
   // ** State
   const [error, setError] = useState(false)
@@ -28,29 +29,35 @@ const InvoicePreview = ({ }) => {
   const { total, products, id } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
-  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
-  const { selectedAddressInCard } = useSelector(state => state.address)
+  const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { isLoading } = useSelector(state => state.orders)
 
   const data = {
     products,
     total,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
-    selectedPaymentMethod,
-    selectedAddressInCard,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
+    selectedPayment,
+    selectedAddress,
     userInfo
   }
 
+  const setOpenPayObject = openPay => {
+    dispatch(setOpenPay(openPay))
+  }
+
+  const setDeviceData = deviceSessionId => {
+    dispatch(setDeviceSessionId(deviceSessionId))
+  }
   const handleConfirmOrder = () => {
     const body = {
-      idAddress: selectedAddressInCard.id,
-      idPaymentMethod: selectedPaymentMethod.id,
+      idAddress: selectedAddress.id,
+      idPaymentMethod: selectedPayment.id,
       products: products.map(product => {
         return { id: product.id, quantity: product.quantity }
       })
@@ -58,14 +65,22 @@ const InvoicePreview = ({ }) => {
     dispatch(createOrder({ idUser: userInfo.id, body }))
   }
 
-  useEffect(() => {
-    if (!user.id) dispatch(loadSession())
-    dispatch(loadInfo(user.id))
-    dispatch(getUserInfo(user.id))
-  }, [])
-
   return (
     <>
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+        onLoad={() => {
+          setOpenPayObject(OpenPay)
+        }}
+      />
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+        onLoad={() => {
+          OpenPay.setSandboxMode(true)
+          const deviceSessionId = OpenPay.deviceData.setup()
+          setDeviceData(deviceSessionId)
+        }}
+      />
       <Grid container spacing={6}>
         <Grid item xl={9} md={8} xs={12}>
           <CheckoutCard data={data} />
@@ -79,8 +94,8 @@ const InvoicePreview = ({ }) => {
           /> */}
         </Grid>
       </Grid>
-      
-      <BackDropLoader isLoading={isLoading}/>
+
+      <BackDropLoader isLoading={isLoading} />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )

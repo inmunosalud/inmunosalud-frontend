@@ -19,6 +19,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { IconButton } from '@mui/material'
 import { Close } from 'mdi-material-ui'
+import { setOpenAddressesModal } from 'src/store/cart'
 
 const defaultAddressValues = {
   street: '',
@@ -33,7 +34,6 @@ const defaultAddressValues = {
 }
 
 const addressSchema = yup.object().shape({
-  colony: yup.string().required(),
   zipCode: yup
     .string()
     .length(5)
@@ -41,17 +41,15 @@ const addressSchema = yup.object().shape({
     .required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
-  federalEntity: yup.string().required(),
-  city: yup.string().required(),
   street: yup.string().required(),
-  country: yup.string().required(),
   refer: yup.string().required()
 })
 
-const AddressModal = ({ open = false, onClose = () => {} }) => {
+const AddressModal = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
-  const { showModal } = useSelector(state => state.address)
+  const { showModal, selectedColony } = useSelector(state => state.address)
+  const { isAddressesModalOpen } = useSelector(state => state.cart)
 
   const {
     reset,
@@ -67,8 +65,21 @@ const AddressModal = ({ open = false, onClose = () => {} }) => {
   const descriptionElementRef = useRef(null)
 
   const onSubmit = data => {
-    dispatch(createAddress({ body: data, uuid: user.id }))
-    handleAddressClose(false)
+    if (selectedColony.colony != null) {
+      let body = {
+        street: data.street,
+        extNumber: data.extNumber,
+        intNumber: data?.intNumber,
+        zipCode: data.zipCode,
+        colony: data.colony.colony,
+        city: data.colony.city,
+        federalEntity: data.colony.federalEntity,
+        country: 'Mexico',
+        refer: data.refer
+      }
+      dispatch(createAddress({ body: body, uuid: user.id }))
+      handleAddressClose(false)
+    }
   }
 
   const handleAddressClose = () => {
@@ -76,31 +87,35 @@ const AddressModal = ({ open = false, onClose = () => {} }) => {
     reset(defaultAddressValues)
   }
 
+  const handleCloseModal = () => {
+    dispatch(setOpenAddressesModal(false))
+  }
+
+  const handleAddAddress = () => {
+    reset({})
+    dispatch(setModal(true))
+  }
+
   useEffect(() => {
-    if (open) {
+    if (isAddressesModalOpen) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
         descriptionElement.focus()
       }
     }
-  }, [open])
-
-  useEffect(() => {
-    if (!user?.id) return
-    dispatch(addressList(user.id))
-  }, [dispatch])
+  }, [isAddressesModalOpen])
 
   return (
     <div className='demo-space-x'>
       <Dialog
-        open={open}
+        open={isAddressesModalOpen}
         scroll='paper'
         maxWidth='md'
-        onClose={onClose}
+        onClose={handleCloseModal}
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
       >
-        <IconButton size='small' onClick={onClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
+        <IconButton size='small' onClick={handleCloseModal} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
           <Close />
         </IconButton>
         <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
@@ -109,11 +124,11 @@ const AddressModal = ({ open = false, onClose = () => {} }) => {
           <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={() => dispatch(setModal(true))}>
+          <Button onClick={handleAddAddress}>
             <Plus />
             Nueva
           </Button>
-          <Button onClick={onClose}>Confirmar</Button>
+          <Button onClick={handleCloseModal}>Confirmar</Button>
         </DialogActions>
       </Dialog>
       <DialogAddress

@@ -37,6 +37,18 @@ import { PROFILES_USER } from 'src/configs/profiles'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 const BASIC_ERRORS = {
+  firstName: {
+    value: '',
+    msg: 'El nombre es requerido',
+    param: 'firstName',
+    location: 'body'
+  },
+  lastName: {
+    value: '',
+    msg: 'El apellido es requerido',
+    param: 'lastName',
+    location: 'body'
+  },
   email: {
     value: '',
     msg: 'El correo electrónico ingresado es una dirección invalida.',
@@ -62,6 +74,8 @@ const FormRegister = () => {
 
   // ** States
   const [values, setValues] = React.useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     recommenderId: '',
@@ -90,7 +104,7 @@ const FormRegister = () => {
   }
 
   const submitRegister = async () => {
-    const { email, password, recommenderId } = values
+    const { firstName, lastName, email, password, recommenderId } = values
     const errors = []
 
     if (!email) {
@@ -98,6 +112,12 @@ const FormRegister = () => {
     }
     if (!password) {
       errors.push(BASIC_ERRORS.password)
+    }
+    if (!firstName) {
+      errors.push(BASIC_ERRORS.firstName)
+    }
+    if (!lastName) {
+      errors.push(BASIC_ERRORS.lastName)
     }
 
     // Validar que todos los checkboxes obligatorios estén marcados
@@ -108,19 +128,12 @@ const FormRegister = () => {
       })
     }
 
-    if (values.affiliateChecked && !values.affiliateContractChecked) {
-      errors.push({
-        value: '',
-        msg: 'Debes aceptar el contrato de adhesión si deseas ser afiliado.'
-      })
-    }
-
     if (errors.length > 0) {
       dispatch(setErrors(errors))
       return
     }
 
-    const body = { email, password, recommenderId }
+    const body = { firstName, lastName, email, password, recommenderId }
 
     if (values.affiliateChecked) {
       body.profile = PROFILES_USER.affiliatedUser
@@ -145,6 +158,25 @@ const FormRegister = () => {
         <CardContent>
           <form onSubmit={e => e.preventDefault()}>
             <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  value={values.firstName}
+                  onChange={handleChange('firstName')}
+                  type='text'
+                  label='Nombre/s'
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  value={values.lastName}
+                  onChange={handleChange('lastName')}
+                  type='text'
+                  label='Apellidos'
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -226,22 +258,11 @@ const FormRegister = () => {
                     }
                     label={
                       <Typography variant='body2'>
-                        Acepto y doy consentimiento expreso para que inmunosalud obtenga mis datos sensibles de acuerdo
-                        al articulo que de la ley federal de protección de datos personales.
+                        Doy consentimiento a Inmunosalud para obtener mis datos de acuerdo a la Ley Federal de
+                        protección de datos personales.
                       </Typography>
                     }
                   />
-                  {values.affiliateChecked && (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={values.affiliateContractChecked}
-                          onChange={handleChangeCheckbox('affiliateContractChecked')}
-                        />
-                      }
-                      label={<Typography variant='body2'>He leído y acepto el contrato de adhesión.</Typography>}
-                    />
-                  )}
                 </FormGroup>
                 {errors ? (
                   <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>

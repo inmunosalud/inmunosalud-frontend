@@ -35,6 +35,7 @@ const Welcome = () => {
       email,
       code: verificationCode
     }
+
     dispatch(validateNewUser(body))
   }
 

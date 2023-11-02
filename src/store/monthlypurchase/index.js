@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 import { PROYECT, api_post, HOST_MONTHLY_PURCHASE, api_get, api_patch } from '../../services/api'
+import { openSnackBar } from '../notifications'
 
 export const getMonthlyPurchase = createAsyncThunk('monthlyPurchase/getMonthlyPurchase', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
@@ -24,7 +25,17 @@ export const updateMonthlyPurchase = createAsyncThunk(
 
       return response
     } catch (error) {
-      return thunkApi.rejectWithValue('error')
+      console.log(error.response)
+      if (error.response.status == 500) {
+        thunkApi.dispatch(
+          openSnackBar({
+            open: true,
+            message: 'El total del pedido no puede ser menor a la compra mensual requerida',
+            severity: 'error'
+          })
+        )
+      }
+      return thunkApi.rejectWithValue('El total del pedido no puede ser menor a la compra mensual requerida')
     }
   }
 )

@@ -1,5 +1,6 @@
 // ** MUI Theme Provider
 import { deepmerge } from '@mui/utils'
+import { esES } from '@mui/material/locale'
 
 // ** User Theme Options
 import UserThemeOptions from 'src/layouts/UserThemeOptions'
@@ -56,6 +57,7 @@ const themeOptions = settings => {
         }
       }
     },
+    esES,
     userThemeConfig
   )
 

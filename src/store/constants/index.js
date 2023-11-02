@@ -31,7 +31,7 @@ export const updateConstants = createAsyncThunk('constants/updateConstants', asy
   }
 })
 const initialState = {
-  constants: {},
+  constants: null,
   isLoading: false,
   loading: 'idle',
   error: false,

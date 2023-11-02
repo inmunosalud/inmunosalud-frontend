@@ -1,9 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 import { ORDERS, api_post, api_get, api_patch, api_delete } from '../../services/api'
+import { getState } from 'redux'
 
 import { openSnackBar } from '../notifications'
 import { getCart } from '../cart'
+
+import { compareByPurchaseDate } from '../../utils/functions'
 
 export const getOrders = createAsyncThunk('order/getAllOrders', async thunkApi => {
   const token = localStorage.getItem('im-user')
@@ -44,11 +47,35 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
 export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser, body }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const deviceSessionId = thunkApi.getState().paymentMethods.deviceSessionId
+
+  const bodyOrder = {
+    deviceSessionId: deviceSessionId,
+    ...body
+  }
+
   try {
-    const response = await api_post(`${ORDERS}/orders/${idUser}`, body, auth)
+    const response = await api_post(`${ORDERS}/orders/${idUser}`, bodyOrder, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(getCart(idUser))
     Router.push('/ecommerce/orders')
+    return response
+  } catch (error) {
+    const data = error.response.data
+    if (data.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+    }
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const cancelOrder = createAsyncThunk('order/cancel', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const body = { deliveryStatus: 'Cancelado' }
+  try {
+    const response = await api_patch(`${ORDERS}/orders/cancel/${id}`, body, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -99,7 +126,8 @@ export const ordersSlice = createSlice({
     builder.addCase(getOrdersByUser.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.messageValid = payload.message
-      state.orders = payload.content
+      const sortedOrders = payload.content.sort(compareByPurchaseDate)
+      state.orders = sortedOrders
     })
     builder.addCase(getOrdersByUser.rejected, (state, { payload }) => {
       state.isLoading = false
@@ -154,6 +182,10 @@ export const ordersSlice = createSlice({
     })
     builder.addCase(deleteOrder.fulfilled, (state, { payload }) => {
       state.orders = payload
+    })
+    builder.addCase(cancelOrder.fulfilled, (state, { payload }) => {
+      const sortedOrders = payload.content.sort(compareByPurchaseDate)
+      state.orders = sortedOrders
     })
   }
 })

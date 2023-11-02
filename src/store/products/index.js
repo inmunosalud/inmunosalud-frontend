@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { PROYECT_PRODUCTS, api_post, api_get, api_patch, api_delete } from '../../services/api'
+import { PROYECT_PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
@@ -73,18 +73,17 @@ export const uploadProductImages = createAsyncThunk('product/uploadProductImages
           `${PROYECT_PRODUCTS}/products/s3Upload/${body.productName}`,
           presignedUrlHeaders
         )
-        const presignedUrl = presignedUrlResponse?.content?.presignedUrl
+        const presignedUrl = presignedUrlResponse?.content?.url
 
         if (presignedUrl) {
           const buffer = Buffer.from(image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
           const headers = { 'Content-Type': `image/${filetype}`, 'Content-Encoding': 'base64' }
 
-          await api_patch(presignedUrl, buffer, headers)
+          await api_put(presignedUrl, buffer, headers)
           urlImages.push(presignedUrl.split('?')[0])
         }
       }
     }
-
     return urlImages
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -99,7 +98,8 @@ const initialState = {
   products: [],
   productImages: [],
   editItem: null,
-  mainComponents: []
+  mainComponents: [],
+  productId: ''
 }
 
 export const productsSlice = createSlice({
@@ -111,6 +111,9 @@ export const productsSlice = createSlice({
     },
     setRemoveEdit(state, { payload }) {
       state.editItem = null
+    },
+    setProductId: (state, { payload }) => {
+      state.productId = payload
     }
   },
   extraReducers: builder => {
@@ -134,8 +137,15 @@ export const productsSlice = createSlice({
     builder.addCase(createProduct.rejected, (state, { payload }) => {
       state.isLoading = false
     })
+    builder.addCase(updateProduct.pending, (state, action) => {
+      state.isLoading = true
+    })
     builder.addCase(updateProduct.fulfilled, (state, { payload }) => {
       state.products = payload
+      state.isLoading = false
+    })
+    builder.addCase(updateProduct.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
       state.products = payload
@@ -153,5 +163,5 @@ export const productsSlice = createSlice({
   }
 })
 
-export const { setEdit, setRemoveEdit } = productsSlice.actions
+export const { setEdit, setRemoveEdit, setProductId } = productsSlice.actions
 export default productsSlice.reducer

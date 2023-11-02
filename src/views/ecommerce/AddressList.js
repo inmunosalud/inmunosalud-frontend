@@ -9,26 +9,17 @@ import Typography from '@mui/material/Typography'
 import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
-import { addressList, setSelectedAddressInCart } from 'src/store/address'
+import { setSelectedAddressInCart } from 'src/store/address'
+import { setAddress } from 'src/store/cart'
 
 export const AddressList = () => {
   const dispatch = useDispatch()
 
-  const [selectedAddress, setSelectedAddress] = React.useState(null)
-
-  const { user } = useSelector(state => state.session)
   const { address } = useSelector(state => state.address)
-
-  React.useEffect(() => {
-    if (user?.id) dispatch(addressList(user.id))
-  }, [dispatch])
-  React.useEffect(() => {
-    if (user?.id) dispatch(addressList(user.id))
-  }, [address])
+  const { selectedAddress } = useSelector(state => state.cart)
 
   const handleSelectAddress = item => {
-    setSelectedAddress(item.id)
-    dispatch(setSelectedAddressInCart(item))
+    dispatch(setAddress(item))
   }
 
   return (
@@ -44,7 +35,7 @@ export const AddressList = () => {
             justifyContent: ['space-between'],
             alignItems: ['flex-start', 'center'],
             mb: index === address.length - 1 ? undefined : 4,
-            border: theme => (selectedAddress === item.id ? `1px solid white` : `1px solid ${theme.palette.divider}`),
+            border: theme => (selectedAddress === item ? `1px solid white` : `1px solid ${theme.palette.divider}`),
             '&:hover': {
               border: '1px solid #D9D4D3',
               color: 'gray'
@@ -73,7 +64,7 @@ export const AddressList = () => {
 
           <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
             <Button variant='outlined' sx={{ ml: 3 }} onClick={() => handleSelectAddress(item)}>
-              {selectedAddress === item.id ? 'Seleccionado' : 'Seleccionar'}
+              {selectedAddress === item ? 'Seleccionado' : 'Seleccionar'}
             </Button>
             <Typography variant='body2' sx={{ mt: 5 }}>
               {item.country}

@@ -16,8 +16,8 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import { DotsVertical } from 'mdi-material-ui'
 import { Carousel } from '@mui/material'
-
-
+import ChevronUpIcon from 'mdi-material-ui/ChevronUp'
+import ChevronDownIcon from 'mdi-material-ui/ChevronDown'
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import { Box, Typography } from '@mui/material'
@@ -25,14 +25,14 @@ import MenuBasic from 'src/views/components/menu/MenuBasic'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 // import required modules
-import { Navigation } from 'swiper'
 
-import { setEdit, deleteProduct } from 'src/store/products'
+import { setEdit, deleteProduct, setProductId } from 'src/store/products'
 
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/navigation'
-
+import SwiperCore, { Navigation } from 'swiper'
+import ReactImageMagnify from 'react-image-magnify'
 import { InfoProduct } from './styles'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
@@ -70,15 +70,25 @@ const BoxCustomizedInfo = styled(Box)(({ theme }) => ({
   border: '1px solid #D8DEDF',
   color: theme.palette.mode === 'light' ? '#000000' : '#F0F8FF'
 }))
+SwiperCore.use([Navigation])
 
 // carousel product
-const CarouselProducts = ({ images, theme }) => {
 
-  // const [url1, url2] = images ?? []
-  if (images) {
-    return (
+const CarouselProducts = ({ images, theme }) => {
+  const [fullscreenImage, setFullscreenImage] = React.useState(null)
+
+  const openFullscreen = image => {
+    setFullscreenImage(image)
+  }
+
+  const closeFullscreen = () => {
+    setFullscreenImage(null)
+  }
+
+  return (
+    <div>
       <Swiper
-        spaceBetween={2}
+        spaceBetween={50}
         slidesPerView={1}
         navigation={{
           nextEl: '.swiper-button-next',
@@ -86,37 +96,55 @@ const CarouselProducts = ({ images, theme }) => {
         }}
         modules={[Navigation]}
         style={{
-          width: '75%',
+          width: '100%',
           margin: '0 auto'
         }}
       >
         {images.map(image => (
           <SwiperSlide
+            key={image}
             style={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              position: 'relative'
             }}
           >
-            <div style={{ width: '75%', height: 'auto' }}>
-              <div
-                style={{
-                  width: '100%',
-                  paddingBottom: '75%',
-                  position: 'relative'
+            <div style={{ zIndex: 9999, cursor: 'pointer' }} onClick={() => openFullscreen(image)}>
+              <ReactImageMagnify
+                style={{ marginBottom: '20px' }}
+                largeImage={{
+                  src: image,
+                  width: 800,
+                  height: 800
                 }}
-              >
-                <Image layout='fill' objectFit='contain' alt='imagen' src={image} />
-              </div>
+                enlargedImageStyle={{ zIndex: 9999, top: 0 }}
+                enlargedImagePosition='over'
+                isHintEnabled={true}
+                hintTextMouse='Haz zoom con el mouse'
+                smallImage={{
+                  alt: 'Descripción de la imagen',
+                  src: image,
+                  width: 370,
+                  height: 370
+                }}
+              />
             </div>
           </SwiperSlide>
         ))}
         <div className='swiper-button-next' style={{ color: theme.palette.primary.main }} />
         <div className='swiper-button-prev' style={{ color: theme.palette.primary.main }} />
       </Swiper>
-    )
-  }
-  return null
+      <Dialog open={!!fullscreenImage} onClose={closeFullscreen}>
+        <img
+          src={fullscreenImage}
+          alt='Imagen en pantalla completa'
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          onClick={closeFullscreen}
+        />
+      </Dialog>
+    </div>
+  )
 }
 
 export const ProductItem = props => {
@@ -127,10 +155,88 @@ export const ProductItem = props => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
+  const { productId } = useSelector(state => state.products)
   const [authPassword, setAuthPassword] = React.useState('')
 
+  function DescriptionWithLinks({ description }) {
+    const [isExpanded, setIsExpanded] = React.useState(false)
+
+    return (
+      <>
+        {description.length <= 100 ? (
+          <Typography
+            style={{
+              transition: 'color 0.3s'
+            }}
+            variant='body2'
+            component='div'
+            sx={{ color: theme.palette.text.secundary }}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        ) : (
+          <>
+            {isExpanded ? (
+              <>
+                <Typography
+                  style={{
+                    transition: 'color 0.3s'
+                  }}
+                  variant='body2'
+                  component='div'
+                  sx={{ color: theme.palette.text.secundary }}
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+                <a
+                  href='#'
+                  onClick={e => {
+                    e.preventDefault()
+                    setIsExpanded(!isExpanded)
+                  }}
+                  style={{
+                    color: theme.palette.primary.main,
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                  onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+                >
+                  <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
+                </a>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant='body2'
+                  component='div'
+                  dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
+                />
+                <a
+                  href='#'
+                  onClick={e => {
+                    e.preventDefault()
+                    setIsExpanded(!isExpanded)
+                  }}
+                  style={{
+                    color: theme.palette.primary.main,
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
+                  onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
+                >
+                  <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
+                </a>
+              </>
+            )}
+          </>
+        )}
+      </>
+    )
+  }
+
   const handleModalClose = () => {
-    showModalDelete
     setShowModalDelete(false)
   }
 
@@ -144,6 +250,7 @@ export const ProductItem = props => {
   }
 
   const handleDelete = () => {
+    dispatch(setProductId(props.id))
     setShowModalDelete(true)
   }
 
@@ -153,7 +260,7 @@ export const ProductItem = props => {
   }
 
   const submitDelete = () => {
-    dispatch(deleteProduct({ id: props.id, headers: { password: authPassword } }))
+    dispatch(deleteProduct({ id: productId, headers: { password: authPassword } }))
     handleCloseConfirmModal()
     setAnchorEl(null)
   }
@@ -252,9 +359,26 @@ export const ProductItem = props => {
     dispatch(updateCart({ id: props.cartId, body }))
   }
 
+  const handleDeleteConfirm = () => {
+    handleModalClose()
+    dispatch(setShowConfirmModal(true))
+  }
+
+  React.useEffect(() => {
+    const { productID } = router.query
+
+    if (productID) {
+      const productElement = document.getElementById(productID)
+
+      if (productElement) {
+        productElement.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [router.query])
+
   return (
     <>
-      <Card>
+      <Card id={props.id}>
         <CardContent>
           <Grid container spacing={2} sx={{ marginBottom: '30px' }}>
             <Grid container xs={6} sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -275,9 +399,7 @@ export const ProductItem = props => {
           </Grid>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-                <CarouselProducts images={props.urlImages} theme={theme} />
-              </Box>
+              <CarouselProducts images={props.urlImages} theme={theme} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2} sx={{ marginBottom: '20px' }}>
@@ -304,15 +426,15 @@ export const ProductItem = props => {
                   </BoxCustomizedInfo>
                 </Grid>
               </Grid>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px', whiteSpace: 'pre-line' }}>
                 <strong>DESCRIPCION: </strong>
-                {`${props.description}`}
+                <DescriptionWithLinks description={props.description} />
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
                 <strong>INSTRUCCIONES: </strong>
                 {`${props.instructions}`}
               </Typography>
-              <Typography variant='body2' sx={{ marginBottom: '20px' }} style={{ textAlign: 'justify' }}>
+              <Typography variant='body2' sx={{ marginBottom: '20px' }}>
                 <strong>INGREDIENTES: </strong>
                 {`${props.ingredients}`}
               </Typography>
@@ -350,7 +472,14 @@ export const ProductItem = props => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={handleModalClose}>Cancelar</Button>
-          <Button onClick={() => dispatch(setShowConfirmModal(true))}>Eliminar</Button>
+          <Button
+            onClick={() => {
+              dispatch(setShowConfirmModal(true))
+              handleModalClose()
+            }}
+          >
+            Eliminar
+          </Button>{' '}
         </DialogActions>
       </Dialog>
       <DialogForm

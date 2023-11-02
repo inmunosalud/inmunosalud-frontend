@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogActions, DialogContentText, Link } from '@mui/material'
-import { deleteOrder, getOrdersByUser } from 'src/store/orders'
-import TrashCanOutline from 'mdi-material-ui/TrashCanOutline'
+import { cancelOrder, getOrdersByUser } from 'src/store/orders'
+import { parseDate } from '../../utils/functions'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
@@ -114,7 +115,7 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
   return (
     <Dialog open={open}>
       <DialogContent>
-        <DialogContentText>Estas seguro de cancelar tu pedido?</DialogContentText>
+        <DialogContentText>¿Estas seguro de cancelar tu pedido?</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onHandleOpenModal}>Regresar</Button>
@@ -126,9 +127,10 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
 
 const DeliveryInfo = ({ allOrderInfo }) => {
   const paymentMethod = allOrderInfo.paymentMethod
+
   React.useEffect(() => {
-    console.log(allOrderInfo)
-  }, [])
+    console.log(paymentMethod)
+  })
 
   return (
     <Grid container style={DeliveryInfoStyles} xs={12} sm={9}>
@@ -272,13 +274,24 @@ const Product = ({ products }) => {
   )
 }
 
-const Actions = ({ onHandleModal = () => {}, status = '' }) => {
-  if (status == 'Está en camino' || status == 'Cancelado' || status == 'Entregado')
+const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) => {
+  const currentDate = new Date()
+  const oneDayInMilliseconds = 24 * 60 * 60 * 1000 // 1 día en milisegundos
+
+  // Convierte la cadena de fecha en un objeto Date
+  const parsedDate = parseDate(purchaseDate)
+
+  // Verifica si la fecha actual + 1 día es posterior a la fecha del pedido
+  const isCancelable = parsedDate.getTime() + oneDayInMilliseconds > currentDate.getTime()
+
+  if (status === 'Está en camino' || status === 'Cancelado' || status === 'Entregado' || !isCancelable) {
     return <div style={ButtonActionStyles} />
+  }
+
   return (
     <Tooltip title='Cancelar pedido' arrow>
-      <Button style={ButtonActionStyles} onClick={onHandleModal}>
-        <TrashCanOutline />
+      <Button variant='contained' onClick={onHandleModal}>
+        Cancelar Pedido
       </Button>
     </Tooltip>
   )
@@ -293,7 +306,8 @@ const Cards = props => {
   }
 
   const submitDelete = () => {
-    dispatch(deleteOrder(props?.id))
+    dispatch(cancelOrder(props?.id))
+    setOpenModal(false)
   }
 
   const products = props.products
@@ -316,7 +330,11 @@ const Cards = props => {
             >
               <Address address={address} />
               <DeliveryInfo allOrderInfo={props} />
-              <Actions onHandleModal={handleOpenModal} status={props.deliveryStatus} />
+              <Actions
+                onHandleModal={handleOpenModal}
+                status={props.deliveryStatus}
+                purchaseDate={props.purchaseDate}
+              />
             </Grid>
             <Divider />
             <RepeaterWrapper>

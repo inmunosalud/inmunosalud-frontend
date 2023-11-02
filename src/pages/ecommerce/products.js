@@ -29,8 +29,10 @@ const Products = () => {
 
   //load products
   React.useEffect(() => {
-    dispatch(getProducts())
-  }, [dispatch])
+    if (products.length === 0) {
+      dispatch(getProducts())
+    }
+  }, [products, dispatch])
 
   if (isLoading) {
     return (
@@ -56,7 +58,12 @@ const Products = () => {
       <React.Fragment>
         {content?.map((product, i) => (
           <div key={i} style={{ marginTop: '25px' }}>
-            <ProductItem isEdit={isProductAdmin || isAdmin ? true : false} {...product} cartId={user.id} />
+            <ProductItem
+              isEdit={isProductAdmin || isAdmin ? true : false}
+              {...product}
+              cartId={user.id}
+              id={product.id}
+            />
           </div>
         ))}
       </React.Fragment>
@@ -71,13 +78,15 @@ const Products = () => {
           <Grid container xs={12}>
             <Grid container xs={12}>
               <Typography variant='body2' style={{ textAlign: 'justify' }}>
-                Nuestras formulaciones son derivadas de investigaciones científicas con el objetivo de buscar la mejor combinación de ingredientes.
-                Nuestros productos tienen como objetivo proporcionar un alto nivel de energía y bienestar para mejorar el rendimiento en tú día a día, por eso es importante seguir las dosis sugeridas en las etiquetas de cada suplemento y utilizarlos en conjunto para obtener los mejores resultados.
+                Nuestras formulaciones son derivadas de investigaciones científicas con el objetivo de buscar la mejor
+                combinación de ingredientes. Nuestros productos tienen como objetivo proporcionar un alto nivel de
+                energía y bienestar para mejorar el rendimiento en tú día a día, por eso es importante seguir las dosis
+                sugeridas en las etiquetas de cada suplemento y utilizarlos en conjunto para obtener los
+                mejores resultados.
               </Typography>
             </Grid>
           </Grid>
-          <Grid>
-          </Grid>
+          <Grid></Grid>
         </Grid>
         <Grid item xs={12} container justifyContent='flex-end'>
           {showAddProductButton()}

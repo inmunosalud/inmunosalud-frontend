@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post, api_get, api_delete, api_patch } from '../../services/api'
+import { PROJECT_CONTRACT, PROYECT, api_delete, api_get, api_patch, api_post } from '../../services/api'
 
-import { openSnackBar } from '../notifications'
 import { PROFILES_USER } from 'src/configs/profiles'
+import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
 
 //actions
@@ -13,6 +13,8 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
     const response = await api_post(`${PROYECT}/users`, body)
     const newUser = {
       user: {
+        firstName: response.content.firstName,
+        lastName: response.content.lastName,
         profile: response.content.profile,
         recommenderId: response.content.recommenderId,
         email: response.content.email,
@@ -58,26 +60,31 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   }
 })
 
-export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, loadUserData }, thunkApi) => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
-    thunkApi.dispatch(nextStep())
-    thunkApi.dispatch(setModal(false))
-    // If param loadUserData values is true, load the user info again
-    loadUserData && thunkApi.dispatch(getUserInfo(uuid))
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    //thunkApi.dispatch(usersList())
-    return response
-  } catch (error) {
-    const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(setModal(false))
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+export const updateUser = createAsyncThunk(
+  'user/updateUser',
+  async ({ body, uuid, loadUserData, isAdministrator }, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+      const response = isAdministrator
+        ? await api_patch(`${PROYECT}/users/admin/${uuid}`, body, auth)
+        : await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
+      thunkApi.dispatch(nextStep())
+      thunkApi.dispatch(setModal(false))
+      // If param loadUserData values is true, load the user info again
+      loadUserData && thunkApi.dispatch(getUserInfo(uuid))
+      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+      //thunkApi.dispatch(usersList())
+      return response
+    } catch (error) {
+      const errMessage = error?.response?.data?.message
+      thunkApi.dispatch(setModal(false))
+      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
 
-    return thunkApi.rejectWithValue('error')
+      return thunkApi.rejectWithValue('error')
+    }
   }
-})
+)
 
 export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
@@ -91,6 +98,27 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
     const errMessage = error?.response?.data?.message
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const createContract = createAsyncThunk('contracts/createContract', async ({ body, uuid }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+
+  try {
+    const response = await api_post(`${PROJECT_CONTRACT}/users/contract/${uuid}`, body, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    thunkApi.dispatch(setModal(false))
+    return response
+  } catch (error) {
+    const data = error.response.data
+
+    if (data.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+      thunkApi.dispatch(setModal(false))
+    }
+
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -184,12 +212,16 @@ const initialState = {
   // new user
   isLoading: 'idle',
   user: {},
+  //user contract
+  contract: {},
   //edit user
   showModal: false,
   modalRow: null,
 
   //user info
-  userInfo: {},
+  userInfo: null,
+  firstName: '',
+  lastName: '',
   //email
   email: '',
 
@@ -237,6 +269,7 @@ export const usersSlice = createSlice({
       state.token = payload.token
       state.user = payload.user
       state.email = payload.user.email
+      state.name = payload.user.name
       localStorage.setItem('im-user', payload.token)
     },
     setRecoveryCode: (state, { payload }) => {
@@ -256,6 +289,8 @@ export const usersSlice = createSlice({
       state.token = token
       state.user = user
       state.email = user.email
+      state.firstName = user.firstName
+      state.lastName = user.lastName
       localStorage.setItem('im-user', token)
     })
     builder.addCase(createUser.rejected, (state, action) => {
@@ -286,16 +321,34 @@ export const usersSlice = createSlice({
       state.isLoading = 'rejected'
     })
     //update user
+    builder.addCase(updateUser.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(updateUser.fulfilled, (state, { payload }) => {
+      state.isLoading = false
       const updatedUser = payload?.content
       state.users = state.users.filter(usr => usr.id !== updatedUser.id).concat(updatedUser)
     })
     builder.addCase(deleteUser.fulfilled, (state, { payload }) => {
       state.users = payload.content
     })
+    builder.addCase(createContract.pending, (state, { payload }) => {
+      state.isLoadingRegister = true
+    })
+    builder.addCase(createContract.fulfilled, (state, { payload }) => {
+      state.contract = payload
+      state.isLoadingRegister = false
+    })
+    builder.addCase(createContract.rejected, (state, { payload }) => {
+      state.isLoadingRegister = false
+    })
     //get info user
+    builder.addCase(getUserInfo.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(getUserInfo.fulfilled, (state, { payload }) => {
       const { content } = payload
+      state.isLoading = false
       state.userInfo = content
     })
     //get stripe link

@@ -39,7 +39,14 @@ const DialogConstants = ({ open = false, body = {} }) => {
         </DialogContent>
         <DialogActions className='dialog-actions-dense'>
           <Button onClick={() => handleClose()}>Cancelar</Button>
-          <Button onClick={() => dispatch(setShowConfirmModal(true))}>{'Confirmar'}</Button>
+          <Button
+            onClick={() => {
+              handleClose()
+              dispatch(setShowConfirmModal(true))
+            }}
+          >
+            {'Confirmar'}
+          </Button>
         </DialogActions>
       </Dialog>
       <DialogForm

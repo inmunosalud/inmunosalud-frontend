@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Box, Button, CardMedia, Card, CardActions, Tab, Tabs, Modal } from '@mui/material'
-import { Pencil, Delete, Magnify, CloudUpload } from 'mdi-material-ui'
-import { CircularProgress } from '@mui/material'
+import { Box, Button, Card, CardActions, CardMedia, CircularProgress, Modal, Tab, Tabs } from '@mui/material'
+import { CloudUpload, Magnify, Pencil } from 'mdi-material-ui'
 import PdfViewer from 'src/views/general/PdfViewer'
 
-import TableBilling from 'src/views/table/data-grid/TableBilling'
 import SnackbarAlert from 'src/views/components/snackbar/SnackbarAlert'
-import { closeSnackBar } from 'src/store/notifications'
+import TableBilling from 'src/views/table/data-grid/TableBilling'
 
 import { getInvoices, getInvoicesByUser, updateStatus, uploadFiles } from 'src/store/billing'
 
@@ -25,6 +23,9 @@ const BillingPage = () => {
   const [selectedStatus, setSelectedStatus] = useState('')
   const [selectedScheme, setSelectedScheme] = useState('')
   const [pdfFile, setPdfFile] = useState(null)
+  const [pdfError, setPdfError] = useState(false)
+  const [xmlError, setXmlError] = useState(false)
+
   const [xmlFile, setXmlFile] = useState(null)
   const [pdfFile64, setPdfFile64] = useState(null)
   const [xmlFile64, setXmlFile64] = useState(null)
@@ -35,33 +36,57 @@ const BillingPage = () => {
   }
 
   const handlePdfFileChange = event => {
-    setPdfFile(event.target.files[0])
-    const file = event.target.files[0]
-    const reader = new FileReader()
+    const selectedFile = event.target.files[0]
+    if (selectedFile && selectedFile.type === 'application/pdf') {
+      // Archivo PDF válido
+      setPdfError(false)
+      setXmlError(false)
 
-    reader.onloadend = () => {
-      const base64Data = reader.result
-      setPdfFile64(base64Data)
+      // Aquí puedes hacer lo que necesites con el archivo PDF
+      setPdfFile(event.target.files[0])
+      const file = event.target.files[0]
+      const reader = new FileReader()
+
+      reader.onloadend = () => {
+        const base64Data = reader.result
+        setPdfFile64(base64Data)
+      }
+
+      reader.readAsDataURL(file)
+    } else {
+      // Archivo no es PDF
+      setPdfError(true)
     }
-
-    reader.readAsDataURL(file)
   }
 
   const handleXmlFileChange = event => {
-    setXmlFile(event.target.files[0])
-    const file = event.target.files[0]
-    const reader = new FileReader()
+    const selectedFile = event.target.files[0]
+    if (selectedFile && selectedFile.type === 'text/xml') {
+      // Archivo Xml válido
+      setXmlError(false)
 
-    reader.onloadend = () => {
-      const base64Data = reader.result
-      setXmlFile64(base64Data)
+      // Aquí puedes hacer lo que necesites con el archivo PDF
+      setXmlFile(event.target.files[0])
+      const file = event.target.files[0]
+      const reader = new FileReader()
+
+      reader.onloadend = () => {
+        const base64Data = reader.result
+        setXmlFile64(base64Data)
+      }
+
+      reader.readAsDataURL(file)
+    } else {
+      // Archivo no es XML
+      setXmlError(true)
     }
-
-    reader.readAsDataURL(file)
   }
 
   const handleSubmit = event => {
     event.preventDefault()
+    if (pdfError || xmlError) {
+      return
+    }
 
     const formData = {
       pdf: pdfFile64,
@@ -109,8 +134,14 @@ const BillingPage = () => {
   }
 
   const handleOpenEdit = invoice => {
-    if (user.profile === 'Administrador General') setModalType('updateStatus')
-    if (user.profile === 'Afiliado') setModalType('uploadFiles')
+    if (user.profile === 'Administrador General') {
+      setModalType('updateStatus')
+    }
+    if (user.profile === 'Afiliado') {
+      setPdfError(false)
+      setXmlError(false)
+      setModalType('uploadFiles')
+    }
     setSelectedInvoice(invoice)
     setOpenModal(true)
   }
@@ -140,16 +171,13 @@ const BillingPage = () => {
     setOpenModal(true)
   }
 
-  const handleDelete = invoiceId => {
-    onDelete(invoiceId)
-  }
-
   const BILL_STATUS_SP = {
     'Confirmando factura': 'Confirmando factura',
     'Factura mal formada': 'Factura mal formada',
     'Factura sin archivos': 'Factura sin archivos',
     'Factura sin pdf': 'Factura sin pdf',
-    'Factura sin xml': 'Factura sin xml'
+    'Factura sin xml': 'Factura sin xml',
+    'Factura validada': 'Factura validada'
   }
 
   const SAT_SCHEMES = [
@@ -168,6 +196,12 @@ const BillingPage = () => {
     {
       id: 2,
       scheme: 'Régimen de Incorporación Física',
+      iva: 0.1067,
+      isr: 0
+    },
+    {
+      id: 3,
+      scheme: 'Régimen Para Persona Moral',
       iva: 0.1067,
       isr: 0
     }
@@ -373,9 +407,6 @@ const BillingPage = () => {
               <Button onClick={() => handleOpenEdit(params.row)} color='warning' sx={{ width: '100%' }}>
                 <Pencil />
               </Button>
-              <Button onClick={() => handleOpenDelete(params.row)} color='error' sx={{ width: '100%' }}>
-                <Delete />
-              </Button>
             </>
           )
         }
@@ -388,13 +419,13 @@ const BillingPage = () => {
   }, [selectedInvoice])
 
   React.useEffect(() => {
-    if (user.profile === 'Administrador General') {
+    if (user.profile === 'Administrador General' && invoicesAll.length === 0) {
       dispatch(getInvoices())
     }
-    if (user.profile === 'Afiliado') {
+    if (user.profile === 'Afiliado' && invoices.length === 0) {
       dispatch(getInvoicesByUser(user.id))
     }
-  }, [dispatch, user])
+  }, [])
 
   if (user.profile === 'Afiliado') {
     return loading ? (
@@ -425,7 +456,9 @@ const BillingPage = () => {
                   handleXmlFileChange,
                   handleSubmit,
                   xmlFile,
-                  pdfFile
+                  pdfFile,
+                  pdfError,
+                  xmlError
                 }}
               />
             </Box>
@@ -442,7 +475,7 @@ const BillingPage = () => {
                 />
                 <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end', mt: 2 }}>
                   <Button variant='contained' onClick={handleOpen}>
-                    Ver PDF
+                    MANUAL PARA GENERAR Y CARGAR TU FACTURA AL SISTEMA
                   </Button>
                 </CardActions>
               </Card>
@@ -456,8 +489,9 @@ const BillingPage = () => {
                 }}
               >
                 <PdfViewer
-                  PDF='https://bills-9fe5.s3.amazonaws.com/Manual+SAT+-+INMUNOSALUD.pdf'
+                  PDF='/docs/ManualSAT.pdf'
                   onClose={handleClose}
+                  title='Manual para generar y cargar tu factura al sistema'
                 />
               </Modal>
             </>
@@ -472,7 +506,7 @@ const BillingPage = () => {
         <CircularProgress />
       </Box>
     ) : (
-      <>
+      <Fragment>
         <Box>
           <TableBilling
             {...{
@@ -490,7 +524,7 @@ const BillingPage = () => {
           />
         </Box>
         <SnackbarAlert message={message} isOpen={open} severity={severity} />
-      </>
+      </Fragment>
     )
   }
 }

@@ -4,12 +4,16 @@ export const HOST_CART = 'https://xucsfbspv3.execute-api.us-east-1.amazonaws.com
 export const HOST_MONTHLY_PURCHASE = 'https://708jt9fxue.execute-api.us-east-1.amazonaws.com'
 export const PROJECT_ADDRESS = 'https://4sbvck2dv1.execute-api.us-east-1.amazonaws.com'
 export const PROJECT_PAYMENT_METHODS = 'https://647fpdfpo1.execute-api.us-east-1.amazonaws.com'
+export const PROJECT_CONTRACT = 'https://7wcx345m58.execute-api.us-east-1.amazonaws.com/'
 export const PROYECT_PRODUCTS = 'https://nj1fowivba.execute-api.us-east-1.amazonaws.com'
 export const COMISSIONS = 'https://ngn5zgk4a1.execute-api.us-east-1.amazonaws.com'
 export const ORDERS = 'https://a57zeomz3a.execute-api.us-east-1.amazonaws.com'
 export const INVOICES = 'https://h0d2ixtch4.execute-api.us-east-1.amazonaws.com'
 export const CONSTANTS = 'https://0168sg0a8i.execute-api.us-east-1.amazonaws.com'
 export const STRIPE = 'https://7wcx345m58.execute-api.us-east-1.amazonaws.com'
+export const OPENPAY_ID = 'maa7v96xww9vj0ftkvuo'
+export const OPENPAY_KEY = 'pk_a88142ad4f154712a9a7c0cf73e00af3'
+
 const axiosInstance = axios.create({
   baseURL: ''
 })

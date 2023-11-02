@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Card, CardActions, CardContent, CardHeader, CircularProgress, useTheme } from '@mui/material'
+import { useEffect, useState } from 'react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { nnfx } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-import { nnfxDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-import { useTheme, Box, Typography, Button, Card, CardContent, CardActions } from '@mui/material'
+import { nnfx, nnfxDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import xmlFormat from 'xml-formatter'
 
 const customNnfx = {
   ...nnfx,
@@ -12,20 +12,25 @@ const customNnfx = {
   }
 }
 
-const XmlViewer = ({ XML, onClose }) => {
+const XmlViewer = ({ XML, onClose, title }) => {
   const theme = useTheme()
   const codeStyle = theme.palette.mode === 'dark' ? nnfxDark : customNnfx
   const customStyle =
     theme.palette.mode === 'light'
       ? { whiteSpace: 'pre-wrap', color: '#000000', backgroundColor: '#f4f5fa' }
       : { whiteSpace: 'pre-wrap' }
-  const [xml, setXml] = useState('')
+  const [formattedXml, setFormattedXml] = useState('')
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     fetch(XML)
       .then(response => response.text())
       .then(xml => {
-        setXml(xml)
+        const formattedXmlText = xmlFormat(xml, {
+          whiteSpaceAtEndOfSelfclosingTag: true
+        })
+        setFormattedXml(formattedXmlText)
+        setLoaded(true)
       })
       .catch(error => {
         console.error('Error al cargar el XML:', error)
@@ -42,17 +47,34 @@ const XmlViewer = ({ XML, onClose }) => {
   }
 
   return (
-    <Card>
+    <Card sx={{ width: '700px' }}>
+      <CardHeader title={title} />
       <CardContent>
-        <Typography variant='subtitle1'>Ver archivo XML</Typography>
-        <SyntaxHighlighter language='xml' style={codeStyle} customStyle={customStyle}>
-          {xml}
-        </SyntaxHighlighter>
+        {loaded ? (
+          <div style={{ width: '100%', maxHeight: '400px', overflowY: 'auto' }}>
+            <SyntaxHighlighter language='xml' style={{ ...codeStyle, width: '100%' }} customStyle={customStyle}>
+              {formattedXml}
+            </SyntaxHighlighter>
+          </div>
+        ) : (
+          <Box
+            sx={{
+              mt: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
       </CardContent>
-      <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end', mt: 4 }}>
-        <Button variant='contained' color='primary' onClick={handleDownload}>
-          Descargar
-        </Button>
+      <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        {loaded && (
+          <Button variant='contained' color='primary' onClick={handleDownload}>
+            Descargar
+          </Button>
+        )}
         <Button variant='contained' color='secondary' onClick={onClose}>
           Cerrar
         </Button>

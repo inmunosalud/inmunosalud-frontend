@@ -17,6 +17,7 @@ import SendOutline from 'mdi-material-ui/SendOutline'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { openSnackBar } from 'src/store/notifications'
+import { setOpenAddressesModal, setOpenPaymentsModal } from 'src/store/cart'
 
 const OptionsWrapper = styled(Box)(() => ({
   display: 'flex',
@@ -24,16 +25,23 @@ const OptionsWrapper = styled(Box)(() => ({
   justifyContent: 'space-between'
 }))
 
-const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) => {
+const CartActions = () => {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
-  const { selectedAddressInCard } = useSelector(state => state.address)
+  const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
 
   const handleCheckout = () => {
-    if (selectedPaymentMethod && selectedAddressInCard) router.push('/ecommerce/checkout')
+    if (selectedPayment && selectedAddress) router.push('/ecommerce/checkout')
     else dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
+  }
+
+  const handleSelectPaymentMethod = () => {
+    dispatch(setOpenPaymentsModal(true))
+  }
+
+  const handleSelectAddressMethod = () => {
+    dispatch(setOpenAddressesModal(true))
   }
 
   return (
@@ -44,22 +52,15 @@ const CartActions = ({ onMethodClick = () => {}, onAddressClick = () => {} }) =>
             Checkout
           </Button>
 
-          <Button fullWidth sx={{ mb: 3.5 }} variant='outlined' onClick={onMethodClick}>
+          <Button fullWidth sx={{ mb: 3.5 }} variant='outlined' onClick={handleSelectPaymentMethod}>
             Seleccionar método de pago
           </Button>
 
-          <Button fullWidth variant='outlined' sx={{ mb: 3.5 }} onClick={onAddressClick}>
+          <Button fullWidth variant='outlined' sx={{ mb: 3.5 }} onClick={handleSelectAddressMethod}>
             Seleccionar dirección
           </Button>
         </CardContent>
       </Card>
-      {/* <Select fullWidth defaultValue='Internet Banking' sx={{ mb: 4 }}>
-        <MenuItem value='Internet Banking'>Internet Banking</MenuItem>
-        <MenuItem value='Debit Card'>Debit Card</MenuItem>
-        <MenuItem value='Credit Card'>Credit Card</MenuItem>
-        <MenuItem value='Paypal'>Paypal</MenuItem>
-        <MenuItem value='UPI Transfer'>UPI Transfer</MenuItem>
-      </Select> */}
     </Box>
   )
 }

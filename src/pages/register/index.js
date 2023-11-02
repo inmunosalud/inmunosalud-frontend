@@ -8,13 +8,18 @@ import FormRegister from 'src/views/forms/forms-login-register/FormRegister'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import GoBackButton from 'src/views/components/goback/GoBack'
 import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux'
+import FallbackSpinner from 'src/@core/components/spinner'
 
 const Register = () => {
   const router = useRouter()
+  const { isLoading } = useSelector(state => state.session)
 
   // ** State
 
-  return (
+  return isLoading ? (
+    <FallbackSpinner />
+  ) : (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', margin: '170px 60px' }}>
         <Grid container spacing={6}>

@@ -34,6 +34,8 @@ export default function DialogBilling({
     label: `${currentYear + i}`.slice(-2)
   }))
 
+  const [isAmex, setIsAmex] = React.useState(false)
+
   return (
     <Card>
       <Dialog
@@ -49,32 +51,30 @@ export default function DialogBilling({
         <DialogContent style={{ paddingTop: '5px' }}>
           <form onSubmit={handleSubmit(onPaymentSubmit)}>
             <Grid container spacing={5}>
-              {isFormEditing ? null : (
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name='alias'
-                      control={paymentControl}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <TextField
-                          value={value}
-                          label='Alias'
-                          onChange={onChange}
-                          placeholder='Alias'
-                          error={Boolean(paymentErrors['alias'])}
-                          aria-describedby='stepper-linear-payment-alias'
-                        />
-                      )}
-                    />
-                    {paymentErrors['alias'] && (
-                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
-                        El campo es requerido
-                      </FormHelperText>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='alias'
+                    control={paymentControl}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Alias'
+                        onChange={onChange}
+                        placeholder='Alias'
+                        error={Boolean(paymentErrors['alias'])}
+                        aria-describedby='stepper-linear-payment-alias'
+                      />
                     )}
-                  </FormControl>
-                </Grid>
-              )}
+                  />
+                  {paymentErrors['alias'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -143,7 +143,11 @@ export default function DialogBilling({
                         aria-describedby='stepper-linear-payment-year'
                       >
                         {options.map((year, _) => {
-                          return <MenuItem value={year.value}>{year.label}</MenuItem>
+                          return (
+                            <MenuItem key={year} value={year.value}>
+                              {year.label}
+                            </MenuItem>
+                          )
                         })}
                       </Select>
                     )}
@@ -162,15 +166,22 @@ export default function DialogBilling({
                     <Controller
                       name='cardNumber'
                       control={paymentControl}
-                      rules={{ required: true }}
+                      rules={{ required: true, min: isAmex ? 15 : 16 }}
                       render={({ field: { value, onChange } }) => (
                         <TextField
                           value={value}
                           label='Numero de la tarjeta'
-                          onChange={onChange}
+                          onChange={e => {
+                            setIsAmex(e.target.value[0] == '3')
+                            onChange(e)
+                          }}
                           placeholder='XXXX-XXXX-XXXX-XXXX'
                           error={Boolean(paymentErrors['cardNumber'])}
                           aria-describedby='stepper-linear-payment-cardNumber'
+                          inputProps={{
+                            maxLength: isAmex ? 15 : 16,
+                            pattern: '[0-9]*'
+                          }}
                         />
                       )}
                     />
@@ -189,15 +200,18 @@ export default function DialogBilling({
                     <Controller
                       name='cvc'
                       control={paymentControl}
-                      rules={{ required: true, min: 3, max: 4 }}
+                      rules={{ required: true, min: isAmex ? 4 : 3 }}
                       render={({ field: { value, onChange } }) => (
                         <TextField
                           value={value}
                           label='CVV'
                           onChange={onChange}
-                          placeholder='000'
+                          placeholder={isAmex ? '0000' : '000'}
                           error={Boolean(paymentErrors['cvc'])}
                           aria-describedby='stepper-linear-payment-cvc'
+                          inputProps={{
+                            maxLength: isAmex ? 4 : 3
+                          }}
                         />
                       )}
                     />

@@ -1,35 +1,39 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
-import { useForm, Controller } from 'react-hook-form'
 import {
-  CardContent,
-  Card,
-  CardHeader,
-  CardActions,
-  Grid,
-  TextField,
-  Divider,
   Button,
-  Typography,
-  InputAdornment,
+  Card,
+  InputLabel,
+  CardActions,
+  CardContent,
+  CardHeader,
   Dialog,
-  DialogContent,
   DialogActions,
+  DialogContent,
   DialogContentText,
-  FormHelperText
+  Divider,
+  Grid,
+  InputAdornment,
+  TextField,
+  FormHelperText,
+  Typography,
+  CircularProgress,
+  Box
 } from '@mui/material'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import { useRouter } from 'next/router'
+import React from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import ListProperties from '../components/propertiesProduct'
-import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
-import { getCustomStructure, getCustomStructureMainComponents } from 'src/utils/functions'
-import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
-import { parseDataToEdit } from 'src/utils/functions'
 import { closeSnackBar, openSnackBar } from 'src/store/notifications'
-import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
-import DialogForm from 'src/views/components/dialogs/DialogForm'
+import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
 import { setShowConfirmModal } from 'src/store/users'
+import { getCustomStructure, getCustomStructureMainComponents, parseDataToEdit } from 'src/utils/functions'
+import DialogForm from 'src/views/components/dialogs/DialogForm'
+import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
+import dynamic from 'next/dynamic'
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import 'react-quill/dist/quill.snow.css'
 
 const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {}, isEditItem = false }) => {
   return (
@@ -48,7 +52,7 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = (
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { editItem, mainComponents } = useSelector(state => state.products)
+  const { editItem, mainComponents, isLoading } = useSelector(state => state.products)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { showConfirmModal } = useSelector(state => state.users)
   const [authPassword, setAuthPassword] = React.useState('')
@@ -60,7 +64,6 @@ const AddProduct = () => {
   } = useForm({
     defaultValues: {
       product: '',
-      description: '',
       capsuleQuantity: '',
       capsuleConcentration: '',
       instructions: '',
@@ -90,9 +93,19 @@ const AddProduct = () => {
   const [fields, setFields] = React.useState([])
   const [formBody, setFormBody] = React.useState({})
   const [mainComponentValue, setMainComponentValue] = React.useState([])
+
   /* the new option for select */
   const [newOption, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
+  const [editorHtml, setEditorHtml] = React.useState('') // Estado para almacenar el contenido enriquecido
+  const [isDescriptionEmpty, setIsDescriptionEmpty] = React.useState(true)
+
+  // Maneja cambios en el editor de texto enriquecido
+  const handleEditorChange = (content, delta, source, editor) => {
+    const isEmpty = !content.trim() // Verifica si el contenido está vacío
+    setIsDescriptionEmpty(isEmpty)
+    setEditorHtml(content) // Actualiza el estado con el contenido enriquecido
+  }
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -184,7 +197,7 @@ const AddProduct = () => {
     const keyCode = event.keyCode || event.which
     const keyValue = String.fromCharCode(keyCode)
 
-    if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46) {
+    if (!/^[0-9]+$/.test(keyValue) && keyCode !== 8 && keyCode !== 46 && keyCode !== 9) {
       event.preventDefault()
     }
   }
@@ -203,7 +216,9 @@ const AddProduct = () => {
 
   const onSubmit = (data, event) => {
     event.preventDefault()
-
+    if (isDescriptionEmpty === true) {
+      return
+    }
     if (images.length === 0) {
       dispatch(
         openSnackBar({ open: true, message: 'Debes agregar al menos una imagen del producto', severity: 'error' })
@@ -214,7 +229,7 @@ const AddProduct = () => {
       const newProperties = getCustomStructure(values)
       const body = {
         product: data?.product,
-        description: data?.description,
+        description: editorHtml,
         capsuleQuantity: data?.capsuleQuantity,
         capsuleConcentration: data?.capsuleConcentration,
         mainComponents: fields,
@@ -244,7 +259,6 @@ const AddProduct = () => {
     if (editItem) {
       reset({
         product: editItem.product,
-        description: editItem.description,
         capsuleQuantity: editItem.capsuleQuantity,
         capsuleConcentration: editItem.capsuleConcentration,
         mainComponents: editItem.mainComponent,
@@ -253,6 +267,8 @@ const AddProduct = () => {
         ingredients: editItem.ingredients,
         quantity: 1
       })
+      setEditorHtml(editItem.description)
+      setIsDescriptionEmpty(false)
       const defaultProperties = parseDataToEdit(editItem.properties)
       setValues(defaultProperties)
       setImages(editItem.urlImages)
@@ -262,7 +278,38 @@ const AddProduct = () => {
     }
   }, [editItem])
 
-  return (
+  React.useEffect(() => {
+    if (!editItem) {
+      const existingOption = mainComponents.find(option => option.value === newOption)
+
+      if (existingOption) {
+        // If the new option already exists, set it as the selected option
+        setMainComponentValue([...mainComponentValue, existingOption])
+      } else {
+        // If the new option doesn't exist, add it to the options list and set it as the selected option
+        const newOptionObject = { value: newOption }
+        setMainComponentValue([...mainComponentValue, newOptionObject])
+      }
+
+      // Update the last input field's property with the new option
+      setFields(prevFields => [...prevFields, { property: newOption.trim(), value: '' }])
+
+      // Clear the new option text field
+      setNewOption('')
+    }
+  }, [])
+
+  const handleDeleteComponent = index => {
+    let newFields = [...fields]
+    newFields.splice(index, 1)
+    setFields(newFields)
+  }
+
+  return isLoading ? (
+    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '500px' }}>
+      <CircularProgress />
+    </Box>
+  ) : (
     <>
       <Card sx={{ margin: '40px 20px' }}>
         <CardHeader title={`${editItem ? 'Editar' : 'Agregar'} Producto`} titleTypographyProps={{ variant: 'h6' }} />
@@ -285,14 +332,32 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <Controller
                   control={control}
-                  name='description'
+                  name='price'
                   rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField error={!!errors.description} label='Descripción' fullWidth {...field} />
-                  )}
+                  render={({ field, formState }) => {
+                    const { value } = field
+                    return (
+                      <TextField
+                        label='Precio'
+                        fullWidth
+                        error={!!errors.price}
+                        {...field}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <Typography variant='subtitle2' color='textSecondary'>
+                                $
+                              </Typography>
+                            </InputAdornment>
+                          )
+                        }}
+                        onInput={handleInputFloat}
+                      />
+                    )
+                  }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Controller
                   control={control}
                   name='capsuleQuantity'
@@ -318,7 +383,7 @@ const AddProduct = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Controller
                   control={control}
                   name='capsuleConcentration'
@@ -339,6 +404,32 @@ const AddProduct = () => {
                         )
                       }}
                       onInput={handleInputFloat}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Controller
+                  control={control}
+                  name='quantity'
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      error={!!errors.capsuleQuantity}
+                      label='Cantidad en almacén'
+                      fullWidth
+                      {...field}
+                      type='text'
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <Typography variant='subtitle2' color='textSecondary'>
+                              en almacén
+                            </Typography>
+                          </InputAdornment>
+                        )
+                      }}
+                      onKeyDown={handleKeyDownInt}
                     />
                   )}
                 />
@@ -364,61 +455,31 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Grid item xs={12} sm={12}>
-                  <Controller
-                    control={control}
-                    name='price'
-                    rules={{ required: true }}
-                    render={({ field, formState }) => {
-                      const { value } = field
-                      return (
-                        <TextField
-                          label='Precio'
-                          fullWidth
-                          error={!!errors.price}
-                          {...field}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <Typography variant='subtitle2' color='textSecondary'>
-                                  $
-                                </Typography>
-                              </InputAdornment>
-                            )
-                          }}
-                          onInput={handleInputFloat}
-                        />
-                      )
-                    }}
-                  />
+                <Grid item xs={12} sm={6}>
+                  <div>
+                    <InputLabel id='signature-label' sx={{ mb: 2 }}>
+                      Descripcion del producto:
+                    </InputLabel>
+                    <ReactQuill
+                      value={editorHtml}
+                      onChange={handleEditorChange}
+                      formats={['link', 'p', 'br']}
+                      modules={{
+                        toolbar: [['link']],
+                        clipboard: {
+                          matchVisual: false // Evita la coincidencia visual para mantener las etiquetas HTML sin cambios
+                        }
+                      }}
+                      style={{ height: '200px' }}
+                    />
+                  </div>
+                  {isDescriptionEmpty && (
+                    <FormHelperText sx={{ color: 'error.main', mt: '50px' }} id='stepper-linear-description'>
+                      La descripción es requerida
+                    </FormHelperText>
+                  )}
                 </Grid>
-                <Grid item xs={12} sm={6} sx={{ marginTop: '20px' }}>
-                  <Controller
-                    control={control}
-                    name='quantity'
-                    rules={{ required: true }}
-                    render={({ field, fieldState }) => (
-                      <TextField
-                        error={!!errors.capsuleQuantity}
-                        label='Cantidad en almacén'
-                        fullWidth
-                        {...field}
-                        type='text'
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <Typography variant='subtitle2' color='textSecondary'>
-                                en almacén
-                              </Typography>
-                            </InputAdornment>
-                          )
-                        }}
-                        onKeyDown={handleKeyDownInt}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} sx={{ marginTop: '15px' }}>
+                <Grid item xs={12} sx={{ marginTop: '50px' }}>
                   {/* create here dropdown dynammic */}
                   <MultiSelectWithAddOption
                     //handle select
@@ -453,7 +514,7 @@ const AddProduct = () => {
                           onChange={e => handleFieldChange(index, 'property', e.target.value)}
                         />
                       </Grid>
-                      <Grid item xs={6} sx={{ marginTop: '10px' }}>
+                      <Grid item xs={5} sx={{ marginTop: '10px' }}>
                         <TextField
                           label='Valor'
                           variant='outlined'
@@ -473,6 +534,11 @@ const AddProduct = () => {
                           }}
                           onInput={handleInputFloat}
                         />
+                      </Grid>
+                      <Grid item xs={1} sx={{ marginTop: '17px' }}>
+                        <Button variant='text' color='error' onClick={() => handleDeleteComponent(index)}>
+                          Eliminar
+                        </Button>
                       </Grid>
                     </Grid>
                   )
