@@ -19,10 +19,10 @@ import Tooltip from '@mui/material/Tooltip'
 import Plus from 'mdi-material-ui/Plus'
 import Delete from 'mdi-material-ui/Delete'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { Cart, CartHeart, CartOutline, Pencil } from 'mdi-material-ui'
+import { Cart, CartOutline, Pencil } from 'mdi-material-ui'
 
 // ** Third Party Imports
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -41,14 +41,11 @@ import {
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBilling from '../components/dialogs/DialogBilling'
 import FallbackSpinner from 'src/@core/components/spinner'
-import { Favorite } from '@mui/icons-material'
-import { FavoriteOutlined } from '@mui/icons-material'
-import { FavoriteBorderOutlined } from '@mui/icons-material'
 
 const CARD_LOGOS = {
-  VISA: '/images/logos/visa.png',
-  AMEX: '/images/logos/american-express.png',
-  MASTERCARD: '/images/logos/mastercard.png'
+  visa: '/images/logos/visa.png',
+  amex: '/images/logos/american-express.png',
+  mastercard: '/images/logos/mastercard.png'
 }
 
 const defaultPaymentValues = {

@@ -6,22 +6,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import Tooltip from '@mui/material/Tooltip'
 
-// ** Icons Imports
-import Plus from 'mdi-material-ui/Plus'
-import Delete from 'mdi-material-ui/Delete'
-import CustomSnackbar from '../components/snackbar/CustomSnackbar'
-import { CheckboxBlankCircleOutline, Pencil } from 'mdi-material-ui'
-
 // ** Third Party Imports
-import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -32,12 +22,6 @@ import { closeSnackBar } from 'src/store/notifications'
 import DialogBankInfo from '../components/dialogs/DialogBankInfo'
 import { loadInfo } from 'src/store/paymentMethods'
 import { Divider } from '@mui/material'
-
-const CARD_LOGOS = {
-  visa: '/images/logos/visa.png',
-  amex: '/images/logos/american-express.png',
-  mastercard: '/images/logos/mastercard.png'
-}
 
 const defaultBankInfoValues = {
   beneficiary: '',
