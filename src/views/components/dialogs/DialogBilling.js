@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Controller } from 'react-hook-form'
+import Image from 'next/image'
 import {
   Dialog,
   DialogContent,
@@ -46,7 +47,16 @@ export default function DialogBilling({
         aria-describedby='user-view-billing-edit-card-description'
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
-          {editItem && Object.keys(editItem).length ? 'Editar Método de Pago' : 'Nuevo Método de Pago'}
+          {editItem && Object.keys(editItem).length ? 'Editar Método de Pago' : 'Nuevo Método de Pago'}{' '}
+          <Image src='/images/logos/mastercard.png' alt='mastercard Logo' layout='fixed' width={37.5} height={22.5} />{' '}
+          <Image src='/images/logos/visa.png' alt='visa Logo' layout='fixed' width={65} height={22.5} />{' '}
+          <Image
+            src='/images/logos/american-express.png'
+            alt='american express Logo'
+            layout='fixed'
+            width={75}
+            height={22.5}
+          />
         </DialogTitle>
         <DialogContent style={{ paddingTop: '5px' }}>
           <form onSubmit={handleSubmit(onPaymentSubmit)}>

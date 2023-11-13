@@ -2,6 +2,7 @@
 import React, { forwardRef, useState, useEffect, Fragment, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
+import Image from 'next/image'
 
 // ** MUI Components Imports
 import {
@@ -1213,7 +1214,23 @@ export default function Address() {
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Box />
+                <Box>
+                  <Image
+                    src='/images/logos/mastercard.png'
+                    alt='mastercard Logo'
+                    layout='fixed'
+                    width={37.5}
+                    height={22.5}
+                  />{' '}
+                  <Image src='/images/logos/visa.png' alt='visa Logo' layout='fixed' width={65} height={22.5} />{' '}
+                  <Image
+                    src='/images/logos/american-express.png'
+                    alt='american express Logo'
+                    layout='fixed'
+                    width={75}
+                    height={22.5}
+                  />
+                </Box>
                 {paymenthMethodIsLoading ? (
                   <CircularProgress size={20} />
                 ) : (
