@@ -218,7 +218,7 @@ const AddCard = props => {
                       {themeConfig.templateName}
                     </Typography>
                   </Box>
-                  <Image src='/images/logos/openpay.png' alt='OpenPay Logo' layout='fixed' width={130} height={50} />
+                  <Image src='/images/logos/openpay.png' alt='OpenPay Logo' layout='fixed' width={75} height={25} />
                 </Grid>
               </Box>
             </Grid>
