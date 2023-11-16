@@ -148,7 +148,7 @@ const AddCard = props => {
       <Card>
         <CardContent>
           <Grid container>
-            <Grid item xl={6} xs={12} sx={{ mb: { xl: 0, xs: 4 } }}>
+            <Grid item xl={12} xs={12} sx={{ mb: { xl: 0, xs: 4 } }}>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box sx={{ mb: 6, display: 'flex', alignItems: 'center' }}>
@@ -222,12 +222,10 @@ const AddCard = props => {
                 </Grid>
               </Box>
             </Grid>
-            <Grid item xl={6} xs={12}>
+            <Grid item xl={12} xs={12}>
               <DatePickerWrapper sx={{ '& .react-datepicker-wrapper': { width: 'auto' } }}>
-                <Box
-                  sx={{ display: 'flex', flexDirection: 'column', alignItems: { xl: 'flex-end', xs: 'flex-start' } }}
-                >
-                  <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
+                <Box>
+                  <Box sx={{ mb: 4 }}>
                     <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
                       Carrito
                     </Typography>
