@@ -31,7 +31,7 @@ const InvoicePreview = ({}) => {
   const { userInfo } = useSelector(state => state.users)
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { isLoading } = useSelector(state => state.orders)
+  const { isLoading, cvv } = useSelector(state => state.orders)
 
   const data = {
     products,
@@ -62,7 +62,7 @@ const InvoicePreview = ({}) => {
         return { id: product.id, quantity: product.quantity }
       })
     }
-    dispatch(createOrder({ idUser: userInfo.id, body }))
+    dispatch(createOrder({ idUser: userInfo.id, body, cvv }))
   }
 
   return (

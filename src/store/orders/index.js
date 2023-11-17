@@ -44,16 +44,16 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
   }
 })
 
-export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser, body }, thunkApi) => {
+export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser, body, cvv }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const deviceSessionId = thunkApi.getState().paymentMethods.deviceSessionId
 
   const bodyOrder = {
     deviceSessionId: deviceSessionId,
+    cvv: cvv,
     ...body
   }
-
   try {
     const response = await api_post(`${ORDERS}/orders/${idUser}`, bodyOrder, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
@@ -65,6 +65,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     if (data.message) {
       thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
     }
+    Router.push('/ecommerce/cart')
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -100,7 +101,7 @@ const initialState = {
   messageValid: '',
   orders: [],
   ordersAll: [],
-
+  cvv: '',
   itemUpdated: null,
   isUpdate: false,
 
@@ -117,6 +118,9 @@ export const ordersSlice = createSlice({
     },
     setModal(state, { payload }) {
       state.openModalEdit = payload
+    },
+    setCvv: (state, { payload }) => {
+      state.cvv = payload
     }
   },
   extraReducers: builder => {
@@ -189,5 +193,5 @@ export const ordersSlice = createSlice({
     })
   }
 })
-export const { setUpdatedOrder, setModal } = ordersSlice.actions
+export const { setUpdatedOrder, setModal, setCvv } = ordersSlice.actions
 export default ordersSlice.reducer
