@@ -28,12 +28,17 @@ const OptionsWrapper = styled(Box)(() => ({
 const CartActions = () => {
   const router = useRouter()
   const dispatch = useDispatch()
+  const { cvv } = useSelector(state => state.orders)
 
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
 
   const handleCheckout = () => {
-    if (selectedPayment && selectedAddress) router.push('/ecommerce/checkout')
-    else dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
+    if (selectedPayment && selectedAddress) {
+      if (cvv != '') {
+        router.push('/ecommerce/checkout')
+      } else dispatch(openSnackBar({ open: true, message: 'Ingrese el CVV de la tarjeta', severity: 'error' }))
+    } else
+      dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
   }
 
   const handleSelectPaymentMethod = () => {

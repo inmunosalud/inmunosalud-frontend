@@ -31,7 +31,7 @@ const InvoicePreview = ({}) => {
   const { userInfo } = useSelector(state => state.users)
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { isLoading } = useSelector(state => state.orders)
+  const { isLoading, cvv } = useSelector(state => state.orders)
 
   const data = {
     products,
@@ -62,7 +62,7 @@ const InvoicePreview = ({}) => {
         return { id: product.id, quantity: product.quantity }
       })
     }
-    dispatch(createOrder({ idUser: userInfo.id, body }))
+    dispatch(createOrder({ idUser: userInfo.id, body, cvv }))
   }
 
   return (
@@ -77,6 +77,8 @@ const InvoicePreview = ({}) => {
         src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
         onLoad={() => {
           OpenPay.setSandboxMode(true)
+          OpenPay.setId('maa7v96xww9vj0ftkvuo')
+          OpenPay.setApiKey('pk_a88142ad4f154712a9a7c0cf73e00af3')
           const deviceSessionId = OpenPay.deviceData.setup()
           setDeviceData(deviceSessionId)
         }}

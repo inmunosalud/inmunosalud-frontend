@@ -1033,6 +1033,8 @@ export default function Address() {
               src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
               onLoad={() => {
                 OpenPay.setSandboxMode(true)
+                OpenPay.setId("maa7v96xww9vj0ftkvuo")
+                OpenPay.setApiKey("pk_a88142ad4f154712a9a7c0cf73e00af3")
                 const deviceSessionId = OpenPay.deviceData.setup()
                 setDeviceData(deviceSessionId)
               }}
