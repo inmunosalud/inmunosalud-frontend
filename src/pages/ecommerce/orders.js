@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogActions, DialogContentText, Link } from '@mui/material'
 import { cancelOrder, getOrdersByUser } from 'src/store/orders'
+import { loadSession } from 'src/store/dashboard/generalSlice'
 import { parseDate } from '../../utils/functions'
 
 // ** MUI Imports
@@ -350,15 +351,23 @@ const Cards = props => {
 
 const Orders = () => {
   const dispatch = useDispatch()
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user, isLoadingSession } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { orders, isLoading } = useSelector(state => state.orders)
 
-  React.useEffect(() => {
-    dispatch(getOrdersByUser(user?.id))
+  useEffect(() => {
+    if (!user) {
+      dispatch(loadSession())
+    }
   }, [])
 
-  if (isLoading) {
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getOrdersByUser(user.id))
+    }
+  }, [user])
+
+  if (isLoading || isLoadingSession) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>{`Cargando tus pedidos...`}</Typography>
