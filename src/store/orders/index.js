@@ -58,7 +58,18 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     const response = await api_post(`${ORDERS}/orders/${idUser}`, bodyOrder, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(getCart(idUser))
-    Router.push('/ecommerce/orders')
+    if (Array.isArray(response.content)) {
+      Router.push('/ecommerce/orders')
+    } else if (
+      response.content &&
+      response.content.openpay &&
+      response.content.openpay.paymentMethod &&
+      response.content.openpay.paymentMethod.url
+    ) {
+      Router.push(response.content.openpay.paymentMethod.url)
+    } else {
+      console.error('Respuesta inesperada:', response)
+    }
     return response
   } catch (error) {
     const data = error.response.data
