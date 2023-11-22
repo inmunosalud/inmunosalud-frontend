@@ -363,7 +363,7 @@ const Orders = () => {
     }
   }, [user])
 
-  if (isLoading) {
+  if (isLoading || isLoadingSession) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>{`Cargando tus pedidos...`}</Typography>
