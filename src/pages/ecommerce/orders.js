@@ -129,10 +129,6 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
 const DeliveryInfo = ({ allOrderInfo }) => {
   const paymentMethod = allOrderInfo.paymentMethod
 
-  React.useEffect(() => {
-    console.log(paymentMethod)
-  })
-
   return (
     <Grid container style={DeliveryInfoStyles} xs={12} sm={9}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -355,13 +351,13 @@ const Orders = () => {
   const { open, message, severity } = useSelector(state => state.notifications)
   const { orders, isLoading } = useSelector(state => state.orders)
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user) {
       dispatch(loadSession())
     }
   }, [])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (user?.id) {
       dispatch(getOrdersByUser(user.id))
     }
