@@ -141,7 +141,7 @@ const UserProfileBilling = () => {
     reset({
       alias: item.alias,
       month: item.expDate.split('/')[0],
-      year: item.expDate.split('/')[1],
+      year: `20${item.expDate.slice(-2)}`,
       nameOnCard: item.nameOnCard
     })
 
@@ -219,7 +219,7 @@ const UserProfileBilling = () => {
           {isLoading ? (
             <FallbackSpinner />
           ) : (
-            paymentMethods.map((item, index) => (
+            paymentMethods?.map((item, index) => (
               <Box
                 key={index}
                 sx={{
