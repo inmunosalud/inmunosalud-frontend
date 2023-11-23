@@ -73,10 +73,8 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
       const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
-      thunkApi.dispatch(loadInfo(uuid))
       thunkApi.dispatch(nextStep())
-      console.log('response payment methods Pago', response)
-      return response
+      return setPaymentMethods(response.content)
     } catch (error) {
       const data = error.response.data
       if (data.message) {
@@ -99,9 +97,8 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
       const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
-      thunkApi.dispatch(loadInfo(uuid))
       thunkApi.dispatch(nextStep())
-      return response
+      return setPaymentMethods(response.content)
     } catch (error) {
       const data = error.response.data
       if (data.message) {
@@ -124,8 +121,7 @@ export const updateMethod = createAsyncThunk(
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(nextStep())
-
-      return response
+      return setPaymentMethods(response.content)
     } catch (error) {
       const data = error.response.data
 
@@ -146,7 +142,7 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, u
     const response = await api_delete(`${PROJECT_PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    return response
+    return setPaymentMethods(response.content)
   } catch (error) {
     const errMessage = error?.response?.data?.message
     thunkApi.dispatch(setModalDelete(false))
@@ -267,9 +263,10 @@ export const paymentMethodsSlice = createSlice({
       state.errors = null
     })
     builder.addCase(loadInfo.fulfilled, (state, { payload }) => {
+      console.log('payload loadinfo', payload)
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
-      state.clabe = payload.clabe ?? '' //creshea en el registro por no estar declarado
+      state.clabe = payload.clabe ?? ''
       state.bank = payload?.clabe?.bank || ''
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
@@ -281,18 +278,30 @@ export const paymentMethodsSlice = createSlice({
     })
     builder.addCase(createMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.paymentMethods = payload.content
+      state.paymentMethods = payload.paymentMethods
+      state.clabe = payload.clabe ?? ''
+      state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(createMethod.rejected, (state, action) => {
       state.isLoading = false
     })
+    builder.addCase(updateMethod.pending, (state, action) => {
+      state.isLoading = true
+    })
     builder.addCase(updateMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.paymentMethods = payload.content
+      state.paymentMethods = payload.paymentMethods
+      state.clabe = payload.clabe ?? ''
+      state.selectedPaymentMethod = payload.paymentMethods[0]
+    })
+    builder.addCase(updateMethod.rejected, (state, action) => {
+      state.isLoading = false
     })
     builder.addCase(deleteMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.paymentMethods = payload.content
+      state.paymentMethods = payload.paymentMethods
+      state.clabe = payload.clabe ?? ''
+      state.selectedPaymentMethod = payload.paymentMethods[0]
     })
     builder.addCase(setMonthlyPaymentMethod.pending, state => {
       state.isLoading = false
@@ -300,7 +309,7 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(setMonthlyPaymentMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
-      state.clabe = payload.clabe ?? '' //creshea en el registro por no estar declarado
+      state.clabe = payload.clabe ?? ''
       state.bank = payload?.clabe?.bank || ''
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
