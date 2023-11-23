@@ -70,13 +70,11 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
       ...values,
       cardUse: 'Cobro'
     }
-
     dispatch(
       clabeIsEmpty
         ? createMethod({ body, uuid: user.id })
-        : updateMethod({ body, uuid: user.id, idPaymentMethod: bankInfo.id })
+        : updateMethod({ body, uuid: user.id, idPaymentMethod: clabe.id })
     )
-    dispatch(loadInfo(user.id))
     handleEditCardClose()
   }
 
@@ -84,7 +82,8 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   const handleEditCardClickOpen = item => {
     reset({
       clabe: item.clabe,
-      beneficiary: item.beneficiary
+      beneficiary: item.beneficiary,
+      bank: item.bank
     })
 
     dispatch(setModal(true))
@@ -135,7 +134,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
                 <Button
                   variant='outlined'
                   sx={{ mr: 3 }}
-                  onClick={() => handleEditCardClickOpen(bankInfo)}
+                  onClick={() => handleEditCardClickOpen(clabe)}
                   color='warning'
                 >
                   <Pencil />
