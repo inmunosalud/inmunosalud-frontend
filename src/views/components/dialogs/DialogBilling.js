@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { Controller } from 'react-hook-form'
+import Script from 'next/script'
+import { useSelector, useDispatch } from 'react-redux'
 import Image from 'next/image'
 import {
   Dialog,
@@ -15,6 +17,8 @@ import {
   Card,
   Button
 } from '@mui/material'
+
+import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 
 export default function DialogBilling({
   isOpen = false,
@@ -35,10 +39,36 @@ export default function DialogBilling({
     label: `${currentYear + i}`.slice(-2)
   }))
 
+  const dispatch = useDispatch()
+
   const [isAmex, setIsAmex] = React.useState(false)
+
+  const setOpenPayObject = openPay => {
+    dispatch(setOpenPay(openPay))
+  }
+
+  const setDeviceData = deviceSessionId => {
+    dispatch(setDeviceSessionId(deviceSessionId))
+  }
 
   return (
     <Card>
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+        onLoad={() => {
+          setOpenPayObject(OpenPay)
+        }}
+      />
+      <Script
+        src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+        onLoad={() => {
+          OpenPay.setSandboxMode(true)
+          OpenPay.setId('maa7v96xww9vj0ftkvuo')
+          OpenPay.setApiKey('pk_a88142ad4f154712a9a7c0cf73e00af3')
+          const deviceSessionId = OpenPay.deviceData.setup()
+          setDeviceData(deviceSessionId)
+        }}
+      />
       <Dialog
         open={isOpen}
         onClose={onHandleEditCardClose}
