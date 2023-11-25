@@ -315,6 +315,7 @@ export default function Address() {
   const [isSignature1Empty, setIsSignature1Empty] = useState(true)
   const signatureRef2 = useRef(null)
   const [isSignature2Empty, setIsSignature2Empty] = useState(false)
+  const [signatureValue, setSignatureValue] = useState('')
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
   const [numPages, setNumPages] = React.useState(null)
 
@@ -448,29 +449,21 @@ export default function Address() {
   }, [signatureRef2.current])
 
   useEffect(() => {
-    const signature = data.signature
-    const loadSignatureAfterDelay = () => {
-      if (signature && signatureRef2.current && signatureRef2.current.fromDataURL) {
-        const canvasWidth = signatureRef2.current._canvas.width
-        const canvasHeight = signatureRef2.current._canvas.height
-        const image = new Image()
-
-        image.onload = () => {
-          signatureRef2.current.fromDataURL(signature, {
-            width: canvasWidth,
-            height: canvasHeight
-          })
-        }
-
-        image.src = signature
-      }
+    if (isModalOpen && signatureRef2.current) {
+      const canvasWidth = signatureRef1.current._canvas.width
+      const canvasHeight = signatureRef1.current._canvas.height
+      signatureRef2.current.fromDataURL(signatureValue, {
+        width: canvasWidth,
+        height: canvasHeight
+      })
     }
+  }, [isModalOpen, signatureValue, signatureRef2.current])
 
-    const delay = 1000
-    const timer = setTimeout(loadSignatureAfterDelay, delay)
-
-    if (isModalOpen === true) return () => clearTimeout(timer)
-  }, [isModalOpen])
+  const handleSignatureEnd = () => {
+    if (signatureRef1.current) {
+      setSignatureValue(signatureRef1.current.toDataURL())
+    }
+  }
 
   // ** Hooks
   const {
@@ -1033,8 +1026,8 @@ export default function Address() {
               src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
               onLoad={() => {
                 OpenPay.setSandboxMode(true)
-                OpenPay.setId("maa7v96xww9vj0ftkvuo")
-                OpenPay.setApiKey("pk_a88142ad4f154712a9a7c0cf73e00af3")
+                OpenPay.setId('maa7v96xww9vj0ftkvuo')
+                OpenPay.setApiKey('pk_a88142ad4f154712a9a7c0cf73e00af3')
                 const deviceSessionId = OpenPay.deviceData.setup()
                 setDeviceData(deviceSessionId)
               }}
@@ -1493,6 +1486,7 @@ export default function Address() {
                     canvasProps={{ width: 500, height: 200 }}
                     onEnd={() => {
                       setIsSignature1Empty(false)
+                      handleSignatureEnd()
                     }}
                   />
                   <Button variant='contained' color='secondary' onClick={() => signatureRef1.current.clear()}>
