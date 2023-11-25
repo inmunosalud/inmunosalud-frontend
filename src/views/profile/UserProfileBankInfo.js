@@ -126,7 +126,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
               <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 500 }}>Banco:</Typography>
               </Box>
-              <Typography variant='body2'>{bank}</Typography>
+              <Typography variant='body2'>{clabe.bank}</Typography>
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
