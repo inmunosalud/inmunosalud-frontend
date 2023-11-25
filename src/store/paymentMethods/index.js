@@ -263,7 +263,6 @@ export const paymentMethodsSlice = createSlice({
       state.errors = null
     })
     builder.addCase(loadInfo.fulfilled, (state, { payload }) => {
-      console.log('payload loadinfo', payload)
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
       state.clabe = payload.clabe ?? ''
