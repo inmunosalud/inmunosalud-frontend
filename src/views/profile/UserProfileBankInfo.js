@@ -23,7 +23,6 @@ import 'react-credit-cards/es/styles-compiled.css'
 import { createMethod, setModal, updateMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBankInfo from '../components/dialogs/DialogBankInfo'
-import { loadInfo } from 'src/store/paymentMethods'
 import { Divider } from '@mui/material'
 
 const defaultBankInfoValues = {
