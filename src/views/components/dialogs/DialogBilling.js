@@ -15,7 +15,8 @@ import {
   Select,
   MenuItem,
   Card,
-  Button
+  Button,
+  Box
 } from '@mui/material'
 
 import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
@@ -78,15 +79,6 @@ export default function DialogBilling({
       >
         <DialogTitle id='user-view-billing-edit-card' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
           {editItem && Object.keys(editItem).length ? 'Editar Método de Pago' : 'Nuevo Método de Pago'}{' '}
-          <Image src='/images/logos/mastercard.png' alt='mastercard Logo' layout='fixed' width={37.5} height={22.5} />{' '}
-          <Image src='/images/logos/visa.png' alt='visa Logo' layout='fixed' width={65} height={22.5} />{' '}
-          <Image
-            src='/images/logos/american-express.png'
-            alt='american express Logo'
-            layout='fixed'
-            width={75}
-            height={22.5}
-          />
         </DialogTitle>
         <DialogContent style={{ paddingTop: '5px' }}>
           <form onSubmit={handleSubmit(onPaymentSubmit)}>
@@ -289,13 +281,33 @@ export default function DialogBilling({
                 </FormControl>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-              <Button variant='contained' sx={{ mr: 1 }} type='submit'>
-                Agregar
-              </Button>
-              <Button variant='outlined' color='secondary' onClick={onHandleEditCardClose}>
-                Cancelar
-              </Button>
+            <Grid item xs={12} sx={{ display: 'flex', marginTop: '20px', justifyContent: 'space-between' }}>
+              <Box>
+                <Image
+                  src='/images/logos/mastercard.png'
+                  alt='mastercard Logo'
+                  layout='fixed'
+                  width={37.5}
+                  height={22.5}
+                />{' '}
+                <Image src='/images/logos/visa.png' alt='visa Logo' layout='fixed' width={65} height={22.5} />{' '}
+                <Image
+                  src='/images/logos/american-express.png'
+                  alt='american express Logo'
+                  layout='fixed'
+                  width={75}
+                  height={22.5}
+                />
+                <FormHelperText>Tarjetas permitidas</FormHelperText>
+              </Box>
+              <Box>
+                <Button variant='contained' sx={{ mr: 1 }} type='submit'>
+                  Agregar
+                </Button>
+                <Button variant='outlined' color='secondary' onClick={onHandleEditCardClose}>
+                  Cancelar
+                </Button>
+              </Box>
             </Grid>
           </form>
         </DialogContent>

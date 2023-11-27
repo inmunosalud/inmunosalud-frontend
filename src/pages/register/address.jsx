@@ -1225,6 +1225,7 @@ export default function Address() {
                     width={75}
                     height={22.5}
                   />
+                  <FormHelperText>Tarjetas permitidas</FormHelperText>
                 </Box>
                 {paymenthMethodIsLoading ? (
                   <CircularProgress size={20} />
