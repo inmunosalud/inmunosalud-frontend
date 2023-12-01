@@ -146,9 +146,12 @@ const AddCard = props => {
   }, [])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
+    const parsedQuantity = parseInt(quantity, 10)
+    const updatedQuantity = canBeRemoved ? parsedQuantity : Math.max(1, parsedQuantity)
+
     const body = {
       id: idProduct,
-      quantity
+      quantity: updatedQuantity
     }
 
     dispatch(updateCart({ id, body }))
@@ -160,6 +163,19 @@ const AddCard = props => {
       return monthlyProduct.quantity
     } else {
       return 0
+    }
+  }
+
+  const handleKeyDown = event => {
+    // Evitar la entrada directa de texto
+    event.preventDefault()
+  }
+
+  const handleKeyPress = event => {
+    // Permitir solo teclas de flecha
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault()
     }
   }
 
@@ -375,7 +391,11 @@ const AddCard = props => {
                           type='number'
                           placeholder='1'
                           defaultValue={product.quantity}
-                          InputProps={{ inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) } }}
+                          InputProps={{
+                            inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) },
+                            onKeyDown: handleKeyDown,
+                            onKeyPress: handleKeyPress
+                          }}
                           onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
                         />
                       </Grid>
