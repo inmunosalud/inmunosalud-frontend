@@ -93,7 +93,6 @@ const AddCard = props => {
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.dashboard.general)
-  const { cvv } = useSelector(state => state.orders)
 
   // ** Hook
   const theme = useTheme()
@@ -104,21 +103,6 @@ const AddCard = props => {
 
     // @ts-ignore
     e.target.closest('.repeater-wrapper').remove()
-  }
-
-  const [cvvInput, setCvvInput] = useState('')
-  const [cvvError, setCvvError] = useState(false)
-
-  const handleCvvChange = event => {
-    const inputValue = event.target.value
-    setCvvInput(inputValue)
-    if (/^\d{3,4}$/.test(inputValue)) {
-      dispatch(setCvv(inputValue))
-      setCvvError(false)
-    } else {
-      dispatch(setCvv(''))
-      setCvvError(true)
-    }
   }
 
   useEffect(() => {
@@ -293,17 +277,6 @@ const AddCard = props => {
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Fecha: {selectedPayment?.expDate}
               </Typography>
-              <TextField
-                size='small'
-                value={cvvInput}
-                label='CVV'
-                onChange={handleCvvChange}
-                placeholder='000'
-                error={cvvError || cvv === ''}
-                helperText={(cvvError && 'Requerido') || ''}
-                aria-describedby='payment-cvc'
-                inputProps={{ maxLength: 4, inputMode: 'numeric' }}
-              />
             </Grid>
             <Grid item xs={12} sm={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
               <div>
