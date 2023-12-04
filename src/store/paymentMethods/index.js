@@ -76,12 +76,20 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
       thunkApi.dispatch(nextStep())
       return setPaymentMethods(response.content)
     } catch (error) {
-      const data = error.response.data
-      if (data.message) {
-        thunkApi.dispatch(openSnackBar({ open: true, message: data.message, severity: 'error' }))
+      if (error?.response?.data) {
+        thunkApi.dispatch(openSnackBar({ open: true, message: error?.response?.data?.message, severity: 'error' }))
         thunkApi.dispatch(setModal(false))
       }
-
+      if (error?.data?.description === 'The expiration date has expired') {
+        thunkApi.dispatch(setModal(true))
+        thunkApi.dispatch(
+          openSnackBar({
+            open: true,
+            message: 'La fecha de vencimiento de la tarjeta ha expirado',
+            severity: 'error'
+          })
+        )
+      }
       return thunkApi.rejectWithValue('error')
     }
   } else if (body.cardUse === 'Cobro') {
