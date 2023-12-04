@@ -14,6 +14,8 @@ import Button from '@mui/material/Button'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
 import { PaymentMethods } from './PaymentMethods'
@@ -72,7 +74,7 @@ const CardsModal = () => {
   // ** Ref
   const descriptionElementRef = useRef(null)
 
-  const { isOpen } = useSelector(state => state.paymentMethods)
+  const { isOpen, isLoading } = useSelector(state => state.paymentMethods)
   const { isPaymentsModalOpen } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.dashboard.general)
 
@@ -127,15 +129,33 @@ const CardsModal = () => {
           <Close />
         </IconButton>
         <DialogContent dividers='paper'>
-          <PaymentMethods onClose={handleCloseModal} />
-          <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
+          {isLoading ? (
+            <Box
+              maxWidth='md'
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '200px',
+                width: '400px'
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <PaymentMethods onClose={handleCloseModal} />
+              <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
+            </>
+          )}
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={handleNewPayment}>
-            <Plus />
-            Nuevo Método
-          </Button>
-          <Button onClick={handleCloseModal}>Confirmar</Button>
+        <DialogActions sx={{ display: 'flex' }}>
+          {!isLoading && (
+            <Button onClick={handleNewPayment} sx={{ mt: 5 }}>
+              <Plus />
+              Nuevo Método
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
       <DialogBilling

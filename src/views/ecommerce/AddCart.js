@@ -129,6 +129,10 @@ const AddCard = props => {
   }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
+    dispatch(setPayment(selectedPaymentMethod))
+  }, [selectedPaymentMethod])
+
+  useEffect(() => {
     if (products.filter(product => !product.canBeRemoved).length > 0) {
       dispatch(getMonthlyPurchase(user.id))
       dispatch(
