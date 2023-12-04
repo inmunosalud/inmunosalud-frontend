@@ -152,6 +152,13 @@ export const addressSlice = createSlice({
     })
     builder.addCase(createAddress.fulfilled, (state, action) => {
       state.isLoading = false
+      const {
+        payload: { content }
+      } = action
+      state.selectedAddressInCart = content[0] ?? null
+    })
+    builder.addCase(createAddress.rejected, (state, action) => {
+      state.isLoading = false
     })
     //get users tables
     builder.addCase(addressList.pending, (state, action) => {
@@ -165,13 +172,28 @@ export const addressSlice = createSlice({
       state.address = content
       state.selectedAddressInCart = content[0] ?? null
     })
-
+    builder.addCase(updateAddress.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateAddress.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
     builder.addCase(updateAddress.fulfilled, (state, { payload }) => {
+      state.isLoading = false
       const updatedAddress = payload?.content
       state.address = updatedAddress
+      state.selectedAddressInCart = payload.content[0] ?? null
+    })
+    builder.addCase(deleteAddress.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteAddress.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(deleteAddress.fulfilled, (state, { payload }) => {
+      state.isLoading = false
       state.address = payload.content
+      state.selectedAddressInCart = payload.content[0] ?? null
     })
     builder.addCase(getColonies.pending, state => {
       state.isLoadingColonies = true

@@ -122,15 +122,9 @@ const AddCard = props => {
   }
 
   useEffect(() => {
-    if (selectedPayment == null || selectedAddress == null) {
-      dispatch(setPayment(selectedPaymentMethod))
-      dispatch(setAddress(selectedAddressInCart))
-    }
-  }, [selectedPaymentMethod, selectedAddressInCart])
-
-  useEffect(() => {
     dispatch(setPayment(selectedPaymentMethod))
-  }, [selectedPaymentMethod])
+    dispatch(setAddress(selectedAddressInCart))
+  }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
     if (products.filter(product => !product.canBeRemoved).length > 0) {
