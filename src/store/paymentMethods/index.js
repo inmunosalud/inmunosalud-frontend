@@ -30,8 +30,6 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
 
     openPay.setId(OPENPAY_ID)
     openPay.setApiKey(OPENPAY_KEY)
-    openPay.setSandboxMode(true)
-    openPay.getSandboxMode()
 
     const tokenBody = {
       card_number: body.cardNumber,

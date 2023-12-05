@@ -15,6 +15,7 @@ import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
 import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
+import { OPENPAY_ID, OPENPAY_KEY } from 'src/services/api'
 
 const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
@@ -76,9 +77,8 @@ const InvoicePreview = ({}) => {
       <Script
         src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
         onLoad={() => {
-          OpenPay.setSandboxMode(true)
-          OpenPay.setId('maa7v96xww9vj0ftkvuo')
-          OpenPay.setApiKey('pk_a88142ad4f154712a9a7c0cf73e00af3')
+          OpenPay.setId(OPENPAY_ID)
+          OpenPay.setApiKey(OPENPAY_KEY)
           const deviceSessionId = OpenPay.deviceData.setup()
           setDeviceData(deviceSessionId)
         }}
