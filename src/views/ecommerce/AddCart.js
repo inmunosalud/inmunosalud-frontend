@@ -93,7 +93,6 @@ const AddCard = props => {
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.dashboard.general)
-  const { cvv } = useSelector(state => state.orders)
 
   // ** Hook
   const theme = useTheme()
@@ -106,26 +105,9 @@ const AddCard = props => {
     e.target.closest('.repeater-wrapper').remove()
   }
 
-  const [cvvInput, setCvvInput] = useState('')
-  const [cvvError, setCvvError] = useState(false)
-
-  const handleCvvChange = event => {
-    const inputValue = event.target.value
-    setCvvInput(inputValue)
-    if (/^\d{3,4}$/.test(inputValue)) {
-      dispatch(setCvv(inputValue))
-      setCvvError(false)
-    } else {
-      dispatch(setCvv(''))
-      setCvvError(true)
-    }
-  }
-
   useEffect(() => {
-    if (selectedPayment == null || selectedAddress == null) {
-      dispatch(setPayment(selectedPaymentMethod))
-      dispatch(setAddress(selectedAddressInCart))
-    }
+    dispatch(setPayment(selectedPaymentMethod))
+    dispatch(setAddress(selectedAddressInCart))
   }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
@@ -146,9 +128,12 @@ const AddCard = props => {
   }, [])
 
   const handleUpdate = (idProduct, quantity, canBeRemoved) => {
+    const parsedQuantity = parseInt(quantity, 10)
+    const updatedQuantity = canBeRemoved ? parsedQuantity : Math.max(1, parsedQuantity)
+
     const body = {
       id: idProduct,
-      quantity
+      quantity: updatedQuantity
     }
 
     dispatch(updateCart({ id, body }))
@@ -160,6 +145,19 @@ const AddCard = props => {
       return monthlyProduct.quantity
     } else {
       return 0
+    }
+  }
+
+  const handleKeyDown = event => {
+    // Evitar la entrada directa de texto
+    event.preventDefault()
+  }
+
+  const handleKeyPress = event => {
+    // Permitir solo teclas de flecha
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault()
     }
   }
 
@@ -279,17 +277,6 @@ const AddCard = props => {
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Fecha: {selectedPayment?.expDate}
               </Typography>
-              <TextField
-                size='small'
-                value={cvvInput}
-                label='CVV'
-                onChange={handleCvvChange}
-                placeholder='000'
-                error={cvvError || cvv === ''}
-                helperText={(cvvError && 'Requerido') || ''}
-                aria-describedby='payment-cvc'
-                inputProps={{ maxLength: 4, inputMode: 'numeric' }}
-              />
             </Grid>
             <Grid item xs={12} sm={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
               <div>
@@ -375,7 +362,11 @@ const AddCard = props => {
                           type='number'
                           placeholder='1'
                           defaultValue={product.quantity}
-                          InputProps={{ inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) } }}
+                          InputProps={{
+                            inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) },
+                            onKeyDown: handleKeyDown,
+                            onKeyPress: handleKeyPress
+                          }}
                           onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
                         />
                       </Grid>

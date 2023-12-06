@@ -8,6 +8,8 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Dialog from '@mui/material/Dialog'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import DialogContentText from '@mui/material/DialogContentText'
 import { AddressList } from './AddressList'
 import { addressList, createAddress, setModal } from 'src/store/address'
@@ -48,7 +50,7 @@ const addressSchema = yup.object().shape({
 const AddressModal = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.dashboard.general)
-  const { showModal, selectedColony } = useSelector(state => state.address)
+  const { showModal, selectedColony, isLoading } = useSelector(state => state.address)
   const { isAddressesModalOpen } = useSelector(state => state.cart)
 
   const {
@@ -120,15 +122,33 @@ const AddressModal = () => {
         </IconButton>
         <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
         <DialogContent dividers={'paper'}>
-          <AddressList />
-          <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
+          {isLoading ? (
+            <Box
+              maxWidth='md'
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '200px',
+                width: '400px'
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <AddressList />
+              <DialogContentText id='scroll-dialog-description' ref={descriptionElementRef} tabIndex={-1} />
+            </>
+          )}
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={handleAddAddress}>
-            <Plus />
-            Nueva
-          </Button>
-          <Button onClick={handleCloseModal}>Confirmar</Button>
+        <DialogActions sx={{ display: 'flex' }}>
+          {!isLoading && (
+            <Button onClick={handleAddAddress}>
+              <Plus />
+              Nueva Dirección
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
       <DialogAddress

@@ -11,6 +11,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import 'react-credit-cards/es/styles-compiled.css'
 import { setSelectedAddressInCart } from 'src/store/address'
 import { setAddress } from 'src/store/cart'
+import { setOpenAddressesModal } from 'src/store/cart'
 
 export const AddressList = () => {
   const dispatch = useDispatch()
@@ -20,6 +21,7 @@ export const AddressList = () => {
 
   const handleSelectAddress = item => {
     dispatch(setAddress(item))
+    dispatch(setOpenAddressesModal(false))
   }
 
   return (
@@ -37,7 +39,7 @@ export const AddressList = () => {
             mb: index === address.length - 1 ? undefined : 4,
             border: theme => (selectedAddress === item ? `1px solid white` : `1px solid ${theme.palette.divider}`),
             '&:hover': {
-              border: '1px solid #D9D4D3',
+              border: '1px solid orange',
               color: 'gray'
             }
           }}

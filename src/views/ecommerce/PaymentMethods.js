@@ -13,7 +13,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import 'react-credit-cards/es/styles-compiled.css'
 import { setPayment } from 'src/store/cart'
 
-export const PaymentMethods = () => {
+export const PaymentMethods = ({ onClose }) => {
   const dispatch = useDispatch()
 
   const { paymentMethods } = useSelector(state => state.paymentMethods)
@@ -21,6 +21,7 @@ export const PaymentMethods = () => {
 
   const handleSelectPaymentMethod = item => {
     dispatch(setPayment(item))
+    onClose()
   }
 
   return (
@@ -38,7 +39,7 @@ export const PaymentMethods = () => {
             mb: item.id === paymentMethods.length - 1 ? undefined : 4,
             border: theme => (selectedPayment === item ? `1px solid white` : `1px solid ${theme.palette.divider}`),
             '&:hover': {
-              border: '1px solid #D9D4D3',
+              border: '1px solid orange',
               color: 'gray'
             }
           }}

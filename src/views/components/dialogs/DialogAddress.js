@@ -19,7 +19,7 @@ const CircularProgress = dynamic(() => import('@mui/material/CircularProgress'),
   ssr: false
 })
 import { useDispatch, useSelector } from 'react-redux'
-import { getColonies, selectColony } from 'src/store/address'
+import { getColonies, selectColony, cleanColonies } from 'src/store/address'
 
 const DialogAddress = ({
   openAddressCard = false,
@@ -33,11 +33,17 @@ const DialogAddress = ({
   const { colonies, selectedColony, isLoadingColonies } = useSelector(state => state.address)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(cleanColonies())
+  }, [])
+
   return (
     <Card>
       <Dialog
         open={openAddressCard}
-        onClose={handleAddressClose}
+        onClose={() => {
+          handleAddressClose()
+        }}
         aria-labelledby='user-view-billing-edit-card'
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
         aria-describedby='user-view-billing-edit-card-description'
