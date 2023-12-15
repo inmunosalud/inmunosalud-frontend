@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
+import Chart from 'react-apexcharts'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 import Link from 'next/link'
@@ -9,13 +10,28 @@ import { ContentCopy } from 'mdi-material-ui'
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import CardNumber from 'src/views/general/CardNumber'
 import NextComision from 'src/views/dashboards/users/NextComision'
 import LinearChart from 'src/views/dashboards/users/LinearChart'
+import { useTheme } from '@mui/material/styles'
 
 //actions
 import { getUserInfo } from 'src/store/users'
-import { Card, CardContent, Button, CircularProgress, Box } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  Button,
+  CircularProgress,
+  Box,
+  Typography,
+  TextField,
+  InputAdornment,
+  IconButton
+} from '@mui/material'
+import CardActions from '@mui/material/CardActions'
+import CardHeader from '@mui/material/CardHeader'
+import { InputBase } from '@mui/material'
 import CustomizedTooltip from '../components/tooltip/Tooltip'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
 import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
@@ -137,7 +153,86 @@ const Users = () => {
   const dispatch = useDispatch()
   const { userInfo, isLoading } = useSelector(state => state.users)
   const [cutoffDate, setCutoffDate] = React.useState('')
+  const [compartir, setCompartir] = React.useState('')
   const { user } = useSelector(state => state.dashboard.general)
+  // Estados para usuarios activos e inactivos
+  const [totalUsuariosActivos, setTotalUsuariosActivos] = React.useState(0)
+  const [totalUsuariosInactivos, setTotalUsuariosInactivos] = React.useState(0)
+
+  // Estado para almacenar el conteo por nivel
+  const [conteoPorNivel, setConteoPorNivel] = React.useState({
+    1: { valid: 0, invalid: 0 },
+    2: { valid: 0, invalid: 0 },
+    3: { valid: 0, invalid: 0 },
+    4: { valid: 0, invalid: 0 }
+  })
+
+  const theme = useTheme()
+
+  const optionsUsers = {
+    labels: ['Usuarios Activos', 'Usuarios Inactivos'],
+    chart: {
+      offsetX: -10,
+      stacked: true,
+      parentHeightOffset: 0,
+      toolbar: {
+        show: false
+      }
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'center',
+      show: false
+    },
+    colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.background.default],
+    stroke: {
+      show: true,
+      colors: ['transparent']
+    }
+  }
+  const seriesUsers = [totalUsuariosActivos, totalUsuariosInactivos]
+
+  const optionsCommissions = {
+    labels: ['Recompensa por usuarios inactivos', 'Recompensa por usuarios activos'],
+    colors: [theme.palette.secondary.main, '#008000'],
+    chart: {
+      offsetX: -10,
+      stacked: true,
+      parentHeightOffset: 0,
+      toolbar: {
+        show: false
+      }
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'center',
+      show: false
+    },
+    stroke: {
+      show: true,
+      colors: ['transparent']
+    }
+  }
+  const seriesCommissions = [userInfo.commission.nextLost, userInfo.commission.nextReal]
+
+  React.useEffect(() => {
+    // Contar usuarios activos e inactivos en cada nivel
+    for (let nivel in userInfo.network) {
+      contarUsuariosPorNivel(nivel)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    console.log(`Información activos totales:`, totalUsuariosActivos)
+  }, [totalUsuariosActivos])
+
+  React.useEffect(() => {
+    console.log(`Información inactivos totales:`, totalUsuariosInactivos)
+  }, [totalUsuariosInactivos])
+
+  React.useEffect(() => {
+    console.log(`conteo por nivel:`, conteoPorNivel)
+  }, [conteoPorNivel])
 
   React.useEffect(() => {
     if (user.profile === 'Afiliado') {
@@ -152,6 +247,8 @@ const Users = () => {
   }, [userInfo])
 
   React.useEffect(() => {
+    console.log('userINfo', userInfo)
+    if (!user) router.push('/landing-page/home/')
     if (userInfo === null && user.id != null) dispatch(getUserInfo(user.id))
   }, [])
 
@@ -159,7 +256,6 @@ const Users = () => {
     const baseUrl =
       window.location.origin === 'http://localhost:3000' ? 'https://inmunosalud.vercel.app' : window.location.origin
     const url = `${baseUrl}/register?id=${user?.id}`
-
     navigator.clipboard.writeText(url)
   }
 
@@ -168,52 +264,211 @@ const Users = () => {
     data[0].stats = `${date} - Faltan ${diffDays} para el siguiente corte`
   }
 
-  const renderCharts = () => {
-    if (userInfo.profile !== 'Consumidor') {
-      return (
-        <>
-          <Grid item xs={12} md={3}>
-            <NumberUsersTable title='Número de Usuarios en tu Red' user={userInfo} />
-          </Grid>
-          <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
-            <CardNumber data={{ title: 'Proximo Corte', stats: cutoffDate }} userInfo={userInfo} />
-            <NextComision />
-          </Grid>
-          <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}>
-            <Card>
-              <CardContent sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <Link href='/ecommerce/billing' passHref>
-                  <Button variant='contained' startIcon={<FileUpload />}>
-                    Carga tu factura
-                  </Button>
-                </Link>
-                <CustomizedTooltip title='Copy to clipboard'>
-                  <Button
-                    fullWidth
-                    startIcon={<ContentCopy />}
-                    variant='contained'
-                    onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
-                  >
-                    Copiar código de recomendado
-                  </Button>
-                </CustomizedTooltip>
-                <Button startIcon={<ContentCopy />} variant='contained' onClick={handlePaste}>
-                  Copiar liga para registro de un recomendado
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </>
-      )
+  // Función para contar usuarios activos e inactivos en un nivel específico
+  const contarUsuariosPorNivel = nivel => {
+    const nivelInfo = userInfo.network[nivel]
+
+    if (nivelInfo && nivelInfo.users && nivelInfo.users.length > 0) {
+      // Contar usuarios activos e inactivos en el nivel actual
+      const usuariosActivos = nivelInfo.valid || 0
+      const usuariosInactivos = nivelInfo.invalid || 0
+
+      setTotalUsuariosActivos(prevTotal => prevTotal + usuariosActivos)
+      setTotalUsuariosInactivos(prevTotal => prevTotal + usuariosInactivos)
+
+      setConteoPorNivel(prevConteo => ({
+        ...prevConteo,
+        [nivel]: { valid: usuariosActivos, invalid: usuariosInactivos }
+      }))
     }
   }
 
-  return isLoading === false ? (
+  return !isLoading ? (
     <>
-      <ApexChartWrapper>
-        <Grid container spacing={6}>
-          {renderCharts()}
-          <Grid item xs={12} sm={6}>
+      <Grid xs={12} spacing={2} justifyContent='center'>
+        <ApexChartWrapper>
+          <Grid container spacing={2}>
+            {/* Columna 1 */}
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Card sx={{ height: '600px' }}>
+                <CardContent>
+                  <Grid container spacing={2} sx={{ height: '200px' }}>
+                    <Grid item xs={12} md={8}>
+                      <CardHeader
+                        title='INVITA A TUS AMIGOS Y GANA DINERO'
+                        subheader='Comparte el enlace de registro o copia tu código para compartirlo a tus amigos'
+                      />
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={12}
+                      md={4}
+                      sx={{ mt: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '30%' }}
+                    >
+                      <Button
+                        startIcon={<ContentCopy />}
+                        variant='contained'
+                        size='small'
+                        onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
+                      >
+                        Copiar tu codigo
+                      </Button>
+                      <Button
+                        startIcon={<ContentCopy />}
+                        variant='contained'
+                        sx={{ mt: '10px' }}
+                        size='small'
+                        onClick={handlePaste}
+                      >
+                        Copiar tu enlace
+                      </Button>
+                    </Grid>
+                  </Grid>
+                  <Grid container>
+                    <Grid item xs={12} md={5}>
+                      <CardContent sx={{ mt: '-50px' }}>
+                        <Typography variant='h6' color='textPrimary'>
+                          Usuarios en tu red: {userInfo?.network?.totalUsers ?? 0}
+                        </Typography>
+                        <Typography variant='h6' color='textPrimary' sx={{ mt: '20px' }}>
+                          Nivel 1: {conteoPorNivel[1].invalid + conteoPorNivel[1].valid}
+                        </Typography>
+                        <Typography variant='h6' color='textPrimary' sx={{ mt: '5px' }}>
+                          Nivel 2: {conteoPorNivel[2].invalid + conteoPorNivel[2].valid}
+                        </Typography>
+                        <Typography variant='h6' color='textPrimary' sx={{ mt: '5px' }}>
+                          Nivel 3: {conteoPorNivel[3].invalid + conteoPorNivel[3].valid}
+                        </Typography>
+                        <Typography variant='h6' color='textPrimary' sx={{ mt: '5px' }}>
+                          Nivel 4: {conteoPorNivel[4].invalid + conteoPorNivel[4].valid}
+                        </Typography>
+                      </CardContent>
+                    </Grid>
+                    <Grid item xs={12} md={7}>
+                      <CardContent>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                          <ReactApexcharts options={optionsUsers} series={seriesUsers} type='donut' width='300' />
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                          <Typography variant='h5' color='primary' sx={{ mr: '20px' }}>
+                            Activos: {totalUsuariosActivos}
+                          </Typography>
+                          <Typography variant='h5' color='secondary'>
+                            Inactivos: {totalUsuariosInactivos}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Columna 2 */}
+
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Card sx={{ height: '600px' }}>
+                <CardContent>
+                  <Grid container spacing={2} sx={{ height: '200px' }}>
+                    <Grid item xs={12} md={7}>
+                      <Box sx={{ mt: '5px', display: 'flex', width: '100%' }}>
+                        <CardHeader title={'Próximo corte: ' + cutoffDate} />
+                      </Box>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      md={5}
+                      sx={{ mt: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                    >
+                      <Box>
+                        <Link href='/ecommerce/billing' passHref>
+                          <Button size='small' variant='contained' startIcon={<FileUpload />}>
+                            Carga tu factura
+                          </Button>
+                        </Link>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                      <CardHeader title={'Tu siguiente comisión'} />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <ReactApexcharts
+                          options={optionsCommissions}
+                          series={seriesCommissions}
+                          type='donut'
+                          width='300'
+                        />
+                      </Box>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <Box>
+                        <Typography sx={{ mt: '20px' }} variant='h6' color='primary'>
+                          Recompensa proyectada:
+                        </Typography>
+                        <Typography sx={{ mb: '20px' }} variant='h5' color='primary'>
+                          ${userInfo.commission.nextTotal}
+                        </Typography>
+                        <Typography sx={{ mt: '100px' }} variant='caption'>
+                          La comisión proyectada es el monto pagadero si todos tus usuarios se encuentran activos
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <CardContent>
+                        <Box sx={{ alignItems: 'center' }}>
+                          <Typography variant='h7' sx={{ mt: '20px' }} color='#008000'>
+                            Comisión a pagar por usuarios activos:
+                          </Typography>
+                          <Typography variant='h5' color='#008000'>
+                            ${userInfo.commission.nextReal}
+                          </Typography>
+                          <Box sx={{ mt: '20px' }}>
+                            <Typography color='secondary' variant='h7'>
+                              Comisión no pagadera por usuarios inactivos:
+                            </Typography>
+                            <Typography variant='h5' color='secondary'>
+                              ${userInfo.commission.nextLost}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CardContent>
+                        <Box sx={{ justifyContent: 'flex-end' }}>
+                          <Typography variant='h7' color='textPrimary'>
+                            Recuérdele a sus referidos inactivos que hagan su compra para recibir la comisión
+                            proyectada.
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} sx={{ mt: '40px' }}>
+            {/* Columna 1 */}
+
+            {/* Columna 2 */}
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <CardContent sx={{ textAlign: 'center' }}></CardContent>
+            </Grid>
+          </Grid>
+
+          {/* 
+            <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} md={9}>
+              <CardNumber data={{ title: 'Proximo Corte', stats: cutoffDate }} userInfo={userInfo} />
+              <NextComision />
+            </Grid>
+            <Grid item xs={12} md={12} sx={{ margin: '10px auto' }}></Grid>
+            <Grid item xs={12} sm={6}>
             <GraphBar
               title='Consumo general'
               series={getOverAllConsumptionSeries(userInfo)}
@@ -226,9 +481,9 @@ const Users = () => {
               series={getProductConsumptionSeries(userInfo)}
               categories={getProductConsumptionCategories(userInfo)}
             />
-          </Grid>
-        </Grid>
-      </ApexChartWrapper>
+          </Grid> */}
+        </ApexChartWrapper>
+      </Grid>
     </>
   ) : (
     <Box
