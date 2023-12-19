@@ -27,7 +27,12 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  IconButton
+  IconButton,
+  Tab,
+  Tabs,
+  List,
+  ListItem,
+  ListItemText
 } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import CardHeader from '@mui/material/CardHeader'
@@ -51,6 +56,31 @@ const data = [
     title: 'Rendimiento promedio por cartera'
   }
 ]
+
+const dataList = {
+  nivel1: [
+    { nombre: 'Juan Ignacio', referencia: 'Alberto Ruiz' },
+    { nombre: 'Carlos Villalobos', referencia: 'Pedro Rodriguez' }
+  ],
+  nivel2: [
+    { nombre: 'Nivel 2A', referencia: 'Nivel 1A' },
+    { nombre: 'Nivel 2B', referencia: 'Nivel 1A' },
+    { nombre: 'Nivel 2C', referencia: 'Nivel 1B' }
+  ],
+  nivel3: [
+    { nombre: 'Nivel 3A', referencia: 'Nivel 2A' },
+    { nombre: 'Nivel 3B', referencia: 'Nivel 2A' },
+    { nombre: 'Nivel 3C', referencia: 'Nivel 2B' },
+    { nombre: 'Nivel 3D', referencia: 'Nivel 2C' }
+  ],
+  nivel4: [
+    { nombre: 'Nivel 4A', referencia: 'Nivel 3A' },
+    { nombre: 'Nivel 4B', referencia: 'Nivel 3A' },
+    { nombre: 'Nivel 4C', referencia: 'Nivel 3B' },
+    { nombre: 'Nivel 4D', referencia: 'Nivel 3C' },
+    { nombre: 'Nivel 4E', referencia: 'Nivel 3D' }
+  ]
+}
 
 function getOverAllConsumptionCategories({ overallConsumption = {} }) {
   if (!overallConsumption || Object.keys(overallConsumption).length === 0) return []
@@ -167,7 +197,67 @@ const Users = () => {
     4: { valid: 0, invalid: 0 }
   })
 
+  const dataChartSeriesCommissions = [
+    { month: 'Enero', amount: 500 },
+    { month: 'Febrero', amount: 700 },
+    { month: 'Marzo', amount: 600 },
+    { month: 'Abril', amount: 800 },
+    { month: 'Mayo', amount: 1200 },
+    { month: 'Junio', amount: 900 },
+    { month: 'Julio', amount: 1500 },
+    { month: 'Agosto', amount: 1100 },
+    { month: 'Septiembre', amount: 950 },
+    { month: 'Octubre', amount: 1300 },
+    { month: 'Noviembre', amount: 1000 },
+    { month: 'Diciembre', amount: 1800 }
+  ]
+
+  const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear())
+
   const theme = useTheme()
+
+  const chartOptionsCommissions = {
+    chart: {
+      id: 'commissions-chart',
+      toolbar: {
+        show: false
+      }
+    },
+    colors: [theme.palette.primary.main],
+    xaxis: {
+      categories: dataChartSeriesCommissions.map(item => item.month)
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '55%',
+        endingShape: 'rounded'
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent']
+    },
+    yaxis: {
+      title: {
+        text: 'Monto de Comisiones'
+      }
+    },
+    fill: {
+      opacity: 1
+    }
+  }
+
+  const chartSeriesCommissions = [
+    {
+      name: `Comisiones en ${selectedYear}`,
+      data: dataChartSeriesCommissions.map(item => item.amount)
+    }
+  ]
 
   const optionsUsers = {
     labels: ['Usuarios Activos', 'Usuarios Inactivos'],
@@ -215,6 +305,23 @@ const Users = () => {
   }
   const seriesCommissions = [userInfo.commission.nextLost, userInfo.commission.nextReal]
 
+  const renderList = nivel => {
+    if (!userInfo || !userInfo.network || !userInfo.network[nivel]) {
+      return null // Retorna null o algún indicador de que la información no está disponible
+    }
+    return (
+      <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+        <List sx={{ minHeight: '180px' }}>
+          {userInfo.network[nivel]?.users?.map(user => (
+            <ListItem key={user.name}>
+              <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    )
+  }
+
   React.useEffect(() => {
     // Contar usuarios activos e inactivos en cada nivel
     for (let nivel in userInfo.network) {
@@ -257,6 +364,10 @@ const Users = () => {
       window.location.origin === 'http://localhost:3000' ? 'https://inmunosalud.vercel.app' : window.location.origin
     const url = `${baseUrl}/register?id=${user?.id}`
     navigator.clipboard.writeText(url)
+  }
+
+  const handleYearChange = event => {
+    setSelectedYear(event.target.value)
   }
 
   const getMonthlyCountdown = date => {
@@ -453,12 +564,65 @@ const Users = () => {
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} sx={{ mt: '40px' }}>
+          <Grid container spacing={2} sx={{ mt: '2px' }}>
             {/* Columna 1 */}
-
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Card sx={{ height: '700px' }}>
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <CardHeader title='Usuarios inactivos en tu red' />
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <h2>{'Nivel 1'}</h2>
+                      {renderList(1)}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <h2>{'Nivel 2'}</h2>
+                      {renderList('2')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <h2>{'Nivel 3'}</h2>
+                      {renderList('3')}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <h2>{'Nivel 4'}</h2>
+                      {renderList('4')}
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
             {/* Columna 2 */}
             <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <CardContent sx={{ textAlign: 'center' }}></CardContent>
+              <Card sx={{ height: '700px' }}>
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <CardHeader title='Historial de comisiones' />
+                  <Box>
+                    <Box>
+                      <Tabs
+                        value={selectedYear}
+                        onChange={handleYearChange}
+                        indicatorColor='primary'
+                        textColor='primary'
+                        centered
+                        sx={{ mt: '10px' }}
+                      >
+                        {/* Aquí puedes llenar los años disponibles según el historial del usuario */}
+                        <Tab label='2022' value={2022} />
+                        <Tab label='2023' value={2023} />
+                        {/* Agrega más años según sea necesario */}
+                      </Tabs>
+                    </Box>
+                    <Box sx={{ mt: '70px' }}>
+                      <ReactApexcharts
+                        options={chartOptionsCommissions}
+                        series={chartSeriesCommissions}
+                        type='bar'
+                        height={350}
+                      />
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
 
