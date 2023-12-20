@@ -44,9 +44,6 @@ const VerticalNavItems = props => {
   // ** Props
 
   const RenderMenuItems = filteredItems.map((item, index) => {
-    if (item.title === 'Usuarios' && userInfo?.profile === 'Afiliado' && userInfo?.numberOfPurchases === 0) {
-      return null
-    }
     const TagName = resolveNavItemComponent(item)
 
     return <TagName {...props} key={index} item={item} />

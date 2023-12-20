@@ -36,8 +36,8 @@ export default function DialogBilling({
   // Get the current year
   const currentYear = new Date().getFullYear()
 
-  // Generate an array of options for the next 6 years
-  const options = Array.from({ length: 6 }, (_, i) => ({
+  // Generate an array of options for the next 10 years
+  const options = Array.from({ length: 10 }, (_, i) => ({
     value: currentYear + i,
     label: `${currentYear + i}`.slice(-2)
   }))

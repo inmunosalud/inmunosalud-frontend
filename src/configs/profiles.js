@@ -47,6 +47,7 @@ export const PROFILES = {
   'Afiliado sin compras': [
     PERMISSIONS.home,
     PERMISSIONS.join,
+    PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,

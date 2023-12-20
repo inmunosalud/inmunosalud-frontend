@@ -48,5 +48,7 @@ export const BANKS = [
   'Mizuho Bank',
   'MUFG Bank Mexico',
   'Nu',
-  'Scotiabank'
+  'Fondeadora',
+  'Scotiabank',
+  'Otro'
 ]

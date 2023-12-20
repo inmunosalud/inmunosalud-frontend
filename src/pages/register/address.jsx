@@ -345,31 +345,10 @@ export default function Address() {
   }
 
   // Generate an array of options for the next 6 years
-  const options = Array.from({ length: 6 }, (_, i) => ({
+  const options = Array.from({ length: 10 }, (_, i) => ({
     value: currentYear + i,
     label: `${currentYear + i}`.slice(-2)
   }))
-
-  async function copyPages() {
-    const url1 = 'https://pdf-lib.js.org/assets/with_update_sections.pdf'
-    const url2 = 'https://pdf-lib.js.org/assets/with_large_page_count.pdf'
-
-    const firstDonorPdfBytes = await fetch(url1).then(res => res.arrayBuffer())
-    const secondDonorPdfBytes = await fetch(url2).then(res => res.arrayBuffer())
-
-    const firstDonorPdfDoc = await PDFDocument.load(firstDonorPdfBytes)
-    const secondDonorPdfDoc = await PDFDocument.load(secondDonorPdfBytes)
-
-    const pdfDoc = await PDFDocument.create()
-
-    const [firstDonorPage] = await pdfDoc.copyPages(firstDonorPdfDoc, [0])
-    const [secondDonorPage] = await pdfDoc.copyPages(secondDonorPdfDoc, [742])
-
-    pdfDoc.addPage(firstDonorPage)
-    pdfDoc.insertPage(0, secondDonorPage)
-
-    const pdfBytes = await pdfDoc.save()
-  }
 
   async function mergePDFs(pdfUrl1, pdfUrl2) {
     const pdfBytes1 = await fetch(pdfUrl1).then(res => res.arrayBuffer())
@@ -1148,7 +1127,7 @@ export default function Address() {
                         placeholder='XXXX-XXXX-XXXX-XXXX'
                         error={Boolean(paymentErrors['cardNumber'])}
                         aria-describedby='stepper-linear-payment-cardNumber'
-                        inputProps={{ maxLength: 16 }} // Limitar a 4 caracteres
+                        inputProps={{ maxLength: 16 }}
                       />
                     )}
                   />
@@ -1503,7 +1482,7 @@ export default function Address() {
               </Grid>
               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box />
-                {isModalOpen ? (
+                {isModalOpen || isLoadingRegister ? (
                   <CircularProgress size={20} />
                 ) : (
                   <Button size='large' type='submit' variant='contained'>
