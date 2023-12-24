@@ -15,6 +15,17 @@ export const getComissions = createAsyncThunk('comissions/getComissions', async 
   }
 })
 
+export const getComissionsByUser = createAsyncThunk('comissions/getComissionsByUser', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${COMISSIONS}/commissions/${id}`, auth)
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 export const liquidationComisions = createAsyncThunk('comissions/liquidationProduct', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: body.password } }
@@ -35,6 +46,7 @@ export const liquidationComisions = createAsyncThunk('comissions/liquidationProd
 const initialState = {
   isLoading: false,
   comissions: [],
+  comissionsHistory: {},
 
   openModal: false
 }
@@ -56,6 +68,16 @@ export const comissionsSlice = createSlice({
       state.comissions = payload.content
     })
     builder.addCase(getComissions.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(getComissionsByUser.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(getComissionsByUser.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.comissionsHistory = payload.content
+    })
+    builder.addCase(getComissionsByUser.rejected, (state, { payload }) => {
       state.isLoading = false
     })
     builder.addCase(liquidationComisions.pending, (state, { payload }) => {

@@ -41,6 +41,7 @@ import CustomizedTooltip from '../components/tooltip/Tooltip'
 import GraphBar from 'src/views/dashboards/users/GraphBar'
 import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { getComissionsByUser } from 'src/store/comissions'
 
 const data = [
   {
@@ -121,31 +122,31 @@ function getProductConsumptionCategories({ productsConsumption = {} }) {
   return Array.from(new Set(categories.flat()))
 }
 
-function getProductConsumptionSeries(userInfo) {
-  const categories = getProductConsumptionCategories(userInfo)
+// function getProductConsumptionSeries(userInfo) {
+//   const categories = getProductConsumptionCategories(userInfo)
 
-  if (!categories) return []
+//   if (!categories) return []
 
-  const series = []
+//   const series = []
 
-  try {
-    for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
-      let data = []
-      const months = Object.keys(values)
-      for (let i = 0; i < categories.length; i++) {
-        const match = months.find(month => month === categories[i])
+//   try {
+//     for (const [key, values] of Object.entries(userInfo.productsConsumption)) {
+//       let data = []
+//       const months = Object.keys(values)
+//       for (let i = 0; i < categories.length; i++) {
+//         const match = months.find(month => month === categories[i])
 
-        if (match) {
-          data.push(values[match])
-        } else data.push(0)
-      }
-      series.push({ data, name: key })
-    }
-  } catch (error) {
-    return console.error(error)
-  }
-  return series
-}
+//         if (match) {
+//           data.push(values[match])
+//         } else data.push(0)
+//       }
+//       series.push({ data, name: key })
+//     }
+//   } catch (error) {
+//     return console.error(error)
+//   }
+//   return series
+// }
 
 function getNextMonth(date) {
   const spanishMonths = [
@@ -182,8 +183,16 @@ function getNextMonth(date) {
 const Users = () => {
   const dispatch = useDispatch()
   const { userInfo, isLoading } = useSelector(state => state.users)
+  const { comissionsHistory, isLoading: isLoadingComisions } = useSelector(state => state.comissions)
   const [cutoffDate, setCutoffDate] = React.useState('')
-  const [compartir, setCompartir] = React.useState('')
+  const [chartSeriesCommissionsHistory, setChartSeriesCommissionsHistory] = React.useState([])
+  const [dataSeriesCommissionsHistory, setDataSeriesCommissionsHistory] = React.useState([
+    {
+      name: new Date().getFullYear(),
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ])
+  const [availableYears, setAvailableYears] = React.useState([])
   const { user } = useSelector(state => state.dashboard.general)
   // Estados para usuarios activos e inactivos
   const [totalUsuariosActivos, setTotalUsuariosActivos] = React.useState(0)
@@ -197,26 +206,11 @@ const Users = () => {
     4: { valid: 0, invalid: 0 }
   })
 
-  const dataChartSeriesCommissions = [
-    { month: 'Enero', amount: 500 },
-    { month: 'Febrero', amount: 700 },
-    { month: 'Marzo', amount: 600 },
-    { month: 'Abril', amount: 800 },
-    { month: 'Mayo', amount: 1200 },
-    { month: 'Junio', amount: 900 },
-    { month: 'Julio', amount: 1500 },
-    { month: 'Agosto', amount: 1100 },
-    { month: 'Septiembre', amount: 950 },
-    { month: 'Octubre', amount: 1300 },
-    { month: 'Noviembre', amount: 1000 },
-    { month: 'Diciembre', amount: 1800 }
-  ]
-
   const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear())
 
   const theme = useTheme()
 
-  const chartOptionsCommissions = {
+  const chartOptionsCommissionsHistory = {
     chart: {
       id: 'commissions-chart',
       toolbar: {
@@ -225,7 +219,20 @@ const Users = () => {
     },
     colors: [theme.palette.primary.main],
     xaxis: {
-      categories: dataChartSeriesCommissions.map(item => item.month)
+      categories: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+      ]
     },
     plotOptions: {
       bar: {
@@ -235,7 +242,11 @@ const Users = () => {
       }
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
+      formatter: function (val) {
+        return `$${val.toFixed(2)}`
+      },
+      position: 'bottom'
     },
     stroke: {
       show: true,
@@ -245,19 +256,17 @@ const Users = () => {
     yaxis: {
       title: {
         text: 'Monto de Comisiones'
+      },
+      labels: {
+        formatter: function (value) {
+          return `$${value.toFixed(2)}`
+        }
       }
     },
     fill: {
       opacity: 1
     }
   }
-
-  const chartSeriesCommissions = [
-    {
-      name: `Comisiones en ${selectedYear}`,
-      data: dataChartSeriesCommissions.map(item => item.amount)
-    }
-  ]
 
   const optionsUsers = {
     labels: ['Usuarios Activos', 'Usuarios Inactivos'],
@@ -303,20 +312,23 @@ const Users = () => {
       colors: ['transparent']
     }
   }
-  const seriesCommissions = [userInfo.commission.nextLost, userInfo.commission.nextReal]
+  const seriesCommissions = [userInfo?.commission?.nextLost ?? 0, userInfo?.commission?.nextReal ?? 0]
 
   const renderList = nivel => {
     if (!userInfo || !userInfo.network || !userInfo.network[nivel]) {
-      return null // Retorna null o algún indicador de que la información no está disponible
+      return null
     }
     return (
       <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
         <List sx={{ minHeight: '180px' }}>
-          {userInfo.network[nivel]?.users?.map(user => (
-            <ListItem key={user.name}>
-              <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
-            </ListItem>
-          ))}
+          {userInfo.network[nivel]?.users?.map(
+            user =>
+              !user.valid && (
+                <ListItem key={user.name}>
+                  <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
+                </ListItem>
+              )
+          )}
         </List>
       </Box>
     )
@@ -324,22 +336,93 @@ const Users = () => {
 
   React.useEffect(() => {
     // Contar usuarios activos e inactivos en cada nivel
-    for (let nivel in userInfo.network) {
-      contarUsuariosPorNivel(nivel)
+    if (userInfo) {
+      for (let nivel in userInfo.network) {
+        contarUsuariosPorNivel(nivel)
+      }
     }
+  }, [userInfo])
+
+  React.useEffect(() => {
+    if (Object.keys(comissionsHistory).length === 0) dispatch(getComissionsByUser(user.id))
   }, [])
 
-  React.useEffect(() => {
-    console.log(`Información activos totales:`, totalUsuariosActivos)
-  }, [totalUsuariosActivos])
+  // React.useEffect(() => {
+  //   console.log(
+  //     comissionsHistory,
+  //     chartSeriesCommissionsHistory,
+  //     chartSeriesCommissionsHistory[selectedYear],
+  //     availableYears,
+  //     selectedYear
+  //   )
+  // }, [comissionsHistory])
 
   React.useEffect(() => {
-    console.log(`Información inactivos totales:`, totalUsuariosInactivos)
-  }, [totalUsuariosInactivos])
+    if (!comissionsHistory || Object.keys(comissionsHistory).length === 0) {
+      return
+    }
+
+    const initialData = [
+      { month: '01', amount: 0 },
+      { month: '02', amount: 0 },
+      { month: '03', amount: 0 },
+      { month: '04', amount: 0 },
+      { month: '05', amount: 0 },
+      { month: '06', amount: 0 },
+      { month: '07', amount: 0 },
+      { month: '08', amount: 0 },
+      { month: '09', amount: 0 },
+      { month: '10', amount: 0 },
+      { month: '11', amount: 0 },
+      { month: '12', amount: 0 }
+    ]
+
+    const commissionDataByMonth = {}
+    const years = []
+
+    for (const yearMonth in comissionsHistory) {
+      const [year, month] = yearMonth.split('-')
+
+      if (!years.includes(year)) {
+        years.push(year)
+        commissionDataByMonth[year] = initialData.map(item => ({ ...item }))
+      }
+
+      const liquidatedCommissions =
+        comissionsHistory[yearMonth]?.filter(commission => commission.status === 'Comisión liquidada') || []
+
+      const totalCommissionAmount = liquidatedCommissions.reduce(
+        (total, commission) => total + commission.commission,
+        0
+      )
+
+      // Actualizar el valor del mes correspondiente
+      const monthData = commissionDataByMonth[year].find(data => data.month === month)
+      if (monthData) {
+        monthData.amount = totalCommissionAmount
+      }
+    }
+
+    setChartSeriesCommissionsHistory(commissionDataByMonth)
+    setAvailableYears(years)
+    setSelectedYear(years[0])
+    const firstData = [
+      {
+        name: years[0],
+        data: commissionDataByMonth[years[0]].map(item => item.amount)
+      }
+    ]
+    setDataSeriesCommissionsHistory(firstData)
+  }, [isLoading])
 
   React.useEffect(() => {
-    console.log(`conteo por nivel:`, conteoPorNivel)
-  }, [conteoPorNivel])
+    if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
+      dispatch(loadSession())
+    }
+    if (userInfo === null && user.id != null) {
+      dispatch(getUserInfo(user.id))
+    }
+  }, [])
 
   React.useEffect(() => {
     if (user.profile === 'Afiliado') {
@@ -353,21 +436,23 @@ const Users = () => {
     }
   }, [userInfo])
 
-  React.useEffect(() => {
-    console.log('userINfo', userInfo)
-    if (!user) router.push('/landing-page/home/')
-    if (userInfo === null && user.id != null) dispatch(getUserInfo(user.id))
-  }, [])
-
   const handlePaste = () => {
-    const baseUrl =
-      window.location.origin === 'http://localhost:3000' ? 'https://inmunosalud.vercel.app' : window.location.origin
-    const url = `${baseUrl}/register?id=${user?.id}`
-    navigator.clipboard.writeText(url)
+    navigator.clipboard.writeText(`https://www.inmunosalud.mx/register?id=${user?.id}`)
   }
 
-  const handleYearChange = event => {
-    setSelectedYear(event.target.value)
+  const handleYearChange = (event, newValue) => {
+    if (chartSeriesCommissionsHistory && newValue) {
+      setSelectedYear(newValue)
+
+      const data = [
+        {
+          name: newValue,
+          data: chartSeriesCommissionsHistory[newValue].map(item => item.amount)
+        }
+      ]
+
+      setDataSeriesCommissionsHistory(data)
+    }
   }
 
   const getMonthlyCountdown = date => {
@@ -394,9 +479,9 @@ const Users = () => {
     }
   }
 
-  return !isLoading ? (
+  return !isLoading || !isLoadingComisions ? (
     <>
-      <Grid xs={12} spacing={2} justifyContent='center'>
+      <Grid xs={12} justifyContent='center'>
         <ApexChartWrapper>
           <Grid container spacing={2}>
             {/* Columna 1 */}
@@ -521,7 +606,7 @@ const Users = () => {
                           Recompensa proyectada:
                         </Typography>
                         <Typography sx={{ mb: '20px' }} variant='h5' color='primary'>
-                          ${userInfo.commission.nextTotal}
+                          ${userInfo?.commission?.nextTotal}
                         </Typography>
                         <Typography sx={{ mt: '100px' }} variant='caption'>
                           La comisión proyectada es el monto pagadero si todos tus usuarios se encuentran activos
@@ -535,14 +620,14 @@ const Users = () => {
                             Comisión a pagar por usuarios activos:
                           </Typography>
                           <Typography variant='h5' color='#008000'>
-                            ${userInfo.commission.nextReal}
+                            ${userInfo?.commission?.nextReal}
                           </Typography>
                           <Box sx={{ mt: '20px' }}>
                             <Typography color='secondary' variant='h7'>
                               Comisión no pagadera por usuarios inactivos:
                             </Typography>
                             <Typography variant='h5' color='secondary'>
-                              ${userInfo.commission.nextLost}
+                              ${userInfo?.commission?.nextLost}
                             </Typography>
                           </Box>
                         </Box>
@@ -577,15 +662,15 @@ const Users = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <h2>{'Nivel 2'}</h2>
-                      {renderList('2')}
+                      {renderList(2)}
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <h2>{'Nivel 3'}</h2>
-                      {renderList('3')}
+                      {renderList(3)}
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <h2>{'Nivel 4'}</h2>
-                      {renderList('4')}
+                      {renderList(4)}
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -606,16 +691,15 @@ const Users = () => {
                         centered
                         sx={{ mt: '10px' }}
                       >
-                        {/* Aquí puedes llenar los años disponibles según el historial del usuario */}
-                        <Tab label='2022' value={2022} />
-                        <Tab label='2023' value={2023} />
-                        {/* Agrega más años según sea necesario */}
+                        {availableYears.map(year => (
+                          <Tab id={year} key={year} label={year} value={year} />
+                        ))}
                       </Tabs>
                     </Box>
                     <Box sx={{ mt: '70px' }}>
                       <ReactApexcharts
-                        options={chartOptionsCommissions}
-                        series={chartSeriesCommissions}
+                        options={chartOptionsCommissionsHistory}
+                        series={dataSeriesCommissionsHistory}
                         type='bar'
                         height={350}
                       />
