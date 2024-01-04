@@ -98,11 +98,13 @@ const AddCard = props => {
   const theme = useTheme()
   const router = useRouter()
   // ** Deletes form
-  const deleteForm = e => {
-    e.preventDefault()
+  const deleteForm = idProduct => {
+    const body = {
+      id: idProduct,
+      quantity: 0
+    }
 
-    // @ts-ignore
-    e.target.closest('.repeater-wrapper').remove()
+    dispatch(updateCart({ id, body }))
   }
 
   useEffect(() => {
@@ -383,7 +385,7 @@ const AddCard = props => {
                     </Grid>
                     <InvoiceAction>
                       {product.canBeRemoved ? (
-                        <IconButton size='small' onClick={deleteForm}>
+                        <IconButton size='small' onClick={e => deleteForm(product.id)}>
                           <Close fontSize='small' />
                         </IconButton>
                       ) : null}
