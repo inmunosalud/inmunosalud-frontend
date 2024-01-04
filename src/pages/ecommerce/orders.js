@@ -34,6 +34,7 @@ import { Flag } from 'mdi-material-ui'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 
 import { setModal } from 'src/store/contactus'
+import { getUserInfo } from 'src/store/users'
 
 const CardContentStyles = {
   margin: '10px 20px'
@@ -297,6 +298,7 @@ const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) =
 const Cards = props => {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = React.useState(false)
+  const { user } = useSelector(state => state.dashboard.general)
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -304,6 +306,7 @@ const Cards = props => {
 
   const submitDelete = () => {
     dispatch(cancelOrder(props?.id))
+    dispatch(getUserInfo(user?.id))
     setOpenModal(false)
   }
 
