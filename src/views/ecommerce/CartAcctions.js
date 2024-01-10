@@ -41,14 +41,29 @@ const CartActions = () => {
   const [cvvInput, setCvvInput] = useState('')
   const [cvvError, setCvvError] = useState(false)
   const [open, setOpen] = useState(false)
+  const { constants } = useSelector(state => state.constants)
 
-  const { selectedPayment, selectedAddress, products } = useSelector(state => state.cart)
+  const { selectedPayment, selectedAddress, products, total } = useSelector(state => state.cart)
 
   const handleCheckout = () => {
     if (products.length === 0) {
       dispatch(openSnackBar({ open: true, message: 'Agregue productos al carrito', severity: 'error' }))
       return
     }
+    if (products[0].canBeRemoved === false) {
+      const cartPrice = total.shippingCost - total.total
+      if (cartPrice < constants.minimalAmountOfPurchase) {
+        dispatch(
+          openSnackBar({
+            open: true,
+            message: `Debes de superar el minimo de compra de $${cartPrice}`,
+            severity: 'error'
+          })
+        )
+        return
+      }
+    }
+
     if (!selectedPayment) {
       dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
       return
