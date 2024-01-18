@@ -277,7 +277,7 @@ const CheckoutCard = ({ data }) => {
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <img width={30} height={40} alt='Apple iPhone 11 Pro' src={product.urlImage} />
+                      <img width={30} height={40} alt='img' src={product.urlImage} />
                     </TableCell>
                     <TableCell>{product.product}</TableCell>
                     <TableCell>{product.quantity}</TableCell>

@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
+import Image from 'next/image'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -28,7 +29,13 @@ import themeConfig from 'src/configs/themeConfig'
 // ** Styles
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMonthlyPurchase, setModal, updateMonthlyPurchase } from 'src/store/monthlypurchase'
+import {
+  getMonthlyPurchase,
+  setModal,
+  updateMonthlyPurchase,
+  setUpdatedProducts,
+  setChanges
+} from 'src/store/monthlypurchase'
 import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 import { closeSnackBar } from 'src/store/notifications'
 
@@ -80,7 +87,7 @@ const AddMonthlyPurchase = () => {
   const dispatch = useDispatch()
 
   // ** Selectors
-  const { total, products, id, isLoading } = useSelector(state => state.monthlyPurchase)
+  const { total, products, id, isLoading, updatedProducts, changes } = useSelector(state => state.monthlyPurchase)
   const { user } = useSelector(state => state.dashboard.general)
   const { open, message, severity } = useSelector(state => state.notifications)
 
@@ -88,8 +95,6 @@ const AddMonthlyPurchase = () => {
   const theme = useTheme()
 
   const [totalUpdate, setTotalUpdate] = useState(total)
-  const [productsUpdate, setProductsUpdate] = useState(products)
-  const [changes, setChanges] = useState(false)
 
   useEffect(() => {
     if (user.id != null && products.length === 0) {
@@ -98,12 +103,13 @@ const AddMonthlyPurchase = () => {
   }, [])
 
   useEffect(() => {
-    setProductsUpdate(products)
+    dispatch(setUpdatedProducts(products))
+    setTotalUpdate(total)
   }, [isLoading])
 
   useEffect(() => {
     if (changes) {
-      const totalPriceProducts = productsUpdate.reduce((acc, product) => acc + product.price * product.quantity, 0)
+      const totalPriceProducts = updatedProducts.reduce((acc, product) => acc + product.price * product.quantity, 0)
       const subtotal = +(totalPriceProducts / (1 + total.ivaValue)).toFixed(2)
       const iva = +(subtotal * total.ivaValue).toFixed(2)
       const totalPrice = +(totalPriceProducts + total.shippingCost).toFixed(2)
@@ -113,36 +119,48 @@ const AddMonthlyPurchase = () => {
         iva,
         total: totalPrice
       })
+      dispatch(setUpdatedProducts(updatedProducts))
     }
-  }, [productsUpdate])
+  }, [updatedProducts])
 
   const handleUpdate = (id, newQuantity) => {
-    const newProducts = productsUpdate.map((product, index) => {
-      if (product.id === id) {
-        return {
-          ...product,
-          quantity: newQuantity
+    // Si la nueva cantidad es 0, eliminar el objeto del array
+    if (newQuantity === 0) {
+      const updatedProductsCopy = updatedProducts.filter(product => product.id !== id)
+      dispatch(setUpdatedProducts(updatedProductsCopy))
+    } else {
+      // Si no es 0, actualizar la cantidad del objeto existente o agregar un nuevo objeto
+      const newProducts = updatedProducts.map(product => {
+        if (product.id === id) {
+          return {
+            ...product,
+            quantity: newQuantity
+          }
         }
-      }
-      return product
-    })
-
-    setProductsUpdate(newProducts)
-    const allQuantitiesEqual = newProducts.every(
-      (product, index) => parseInt(product.quantity, 10) === parseInt(products[index].quantity, 10)
-    )
-    if (allQuantitiesEqual === true) {
-      setTotalUpdate({
-        subtotal: total.subtotal,
-        iva: total.iva,
-        total: total.total
+        return product
       })
+
+      dispatch(setUpdatedProducts(newProducts))
+
+      // Verificar si todas las cantidades son iguales a las cantidades originales
+      const allQuantitiesEqual = newProducts.every(
+        (product, index) => parseInt(product.quantity, 10) === parseInt(products[index].quantity, 10)
+      )
+
+      // Actualizar el estado de cambios y totalUpdate
+      dispatch(setChanges(!allQuantitiesEqual))
+      if (allQuantitiesEqual) {
+        setTotalUpdate({
+          subtotal: total.subtotal,
+          iva: total.iva,
+          total: total.total
+        })
+      }
     }
-    setChanges(!allQuantitiesEqual)
   }
 
   const handleSave = () => {
-    setChanges(false)
+    dispatch(setChanges(false))
   }
 
   return (
@@ -257,9 +275,8 @@ const AddMonthlyPurchase = () => {
               <Divider />
 
               <RepeaterWrapper>
-                {products.map((product, index) => {
+                {updatedProducts.map((product, index) => {
                   const Tag = index === 0 ? Box : Collapse
-
                   return (
                     <Tag key={product.id} className='repeater-wrapper' {...(index !== 0 ? { in: true } : {})}>
                       <Grid container>
@@ -274,8 +291,8 @@ const AddMonthlyPurchase = () => {
                                 Articulo
                               </Typography>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
-                                <Typography sx={{ ml: 3 }}>{product.product}</Typography>
+                                <Image width={40} height={50} alt='img' src={product.urlImage} />
+                                <Typography sx={{ ml: 3, mt: 0.5 }}>{product.product}</Typography>
                               </Box>
                             </Grid>
                             <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
@@ -287,7 +304,7 @@ const AddMonthlyPurchase = () => {
                                 Precio
                               </Typography>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography sx={{ ml: 3 }}>${product.price}</Typography>
+                                <Typography sx={{ ml: 3, mt: 3.5 }}>${product.price}</Typography>
                               </Box>
                             </Grid>
                             <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
@@ -303,8 +320,9 @@ const AddMonthlyPurchase = () => {
                                 size='small'
                                 type='number'
                                 placeholder='1'
+                                sx={{ mt: 1.5 }}
                                 defaultValue={product.quantity}
-                                value={productsUpdate[index]?.quantity}
+                                value={updatedProducts[index]?.quantity}
                                 InputProps={{ inputProps: { min: 0 } }}
                                 onChange={ev =>
                                   handleUpdate(product.id, ev.target.value, product.canBeRemoved, product.quantity)
@@ -319,18 +337,24 @@ const AddMonthlyPurchase = () => {
                               >
                                 Total
                               </Typography>
-                              <Typography>
+                              <Typography sx={{ ml: 3, mt: 3.5 }}>
                                 $
                                 {changes
-                                  ? parseFloat(
-                                      (productsUpdate[index]?.price * productsUpdate[index]?.quantity).toFixed(2)
-                                    )
+                                  ? parseFloat((product?.price * product?.quantity).toFixed(2))
                                   : parseFloat(product.total.toFixed(2))}
                               </Typography>
                             </Grid>
                           </Grid>
                           <InvoiceAction>
-                            <IconButton size='small' onClick={ev => handleUpdate(product.id, 0, product.canBeRemoved)}>
+                            <IconButton
+                              sx={{ mt: 4.5 }}
+                              size='small'
+                              color='error'
+                              onClick={ev => {
+                                handleUpdate(product.id, 0, product.canBeRemoved)
+                                dispatch(setChanges(true))
+                              }}
+                            >
                               <Close fontSize='small' />
                             </IconButton>
                           </InvoiceAction>

@@ -54,12 +54,19 @@ export const monthlyPurchaseSlice = createSlice({
       ivaValue: 0,
       total: 0
     },
-
-    showModal: false
+    updatedProducts: [],
+    showModal: false,
+    changes: false
   },
   reducers: {
     setModal: (state, { payload }) => {
       state.showModal = payload
+    },
+    setChanges: (state, { payload }) => {
+      state.changes = payload
+    },
+    setUpdatedProducts: (state, { payload }) => {
+      state.updatedProducts = payload
     }
   },
   extraReducers: builder => {
@@ -102,4 +109,4 @@ export const monthlyPurchaseSlice = createSlice({
 
 export default monthlyPurchaseSlice.reducer
 
-export const { setModal } = monthlyPurchaseSlice.actions
+export const { setModal, setUpdatedProducts, setChanges } = monthlyPurchaseSlice.actions

@@ -341,7 +341,7 @@ const AddCard = props => {
                           Artículo
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
+                          <img width={40} height={50} alt='img' src={product.urlImage} />
                           <Typography sx={{ ml: 3 }}>{product.product}</Typography>
                         </Box>
                       </Grid>
