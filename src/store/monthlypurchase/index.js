@@ -50,6 +50,8 @@ export const monthlyPurchaseSlice = createSlice({
     total: {
       subtotal: 0,
       iva: 0,
+      shippingCost: 0,
+      ivaValue: 0,
       total: 0
     },
 
@@ -72,6 +74,8 @@ export const monthlyPurchaseSlice = createSlice({
       state.total.total = payload.content.total
       state.total.iva = payload.content.iva
       state.total.subtotal = payload.content.subtotal
+      state.total.ivaValue = payload.content.ivaPorcentaje
+      state.total.shippingCost = payload.content.shippingCost
     })
     builder.addCase(getMonthlyPurchase.rejected, (state, action) => {
       state.isLoading = false
