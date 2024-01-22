@@ -100,6 +100,9 @@ const AddMonthlyPurchase = () => {
     if (user.id != null && products.length === 0) {
       dispatch(getMonthlyPurchase(user.id))
     }
+    return () => {
+      dispatch(setUpdatedProducts(products))
+    }
   }, [])
 
   useEffect(() => {
@@ -124,12 +127,10 @@ const AddMonthlyPurchase = () => {
   }, [updatedProducts])
 
   const handleUpdate = (id, newQuantity) => {
-    // Si la nueva cantidad es 0, eliminar el objeto del array
-    if (newQuantity === 0) {
+    if (+newQuantity === 0) {
       const updatedProductsCopy = updatedProducts.filter(product => product.id !== id)
       dispatch(setUpdatedProducts(updatedProductsCopy))
     } else {
-      // Si no es 0, actualizar la cantidad del objeto existente o agregar un nuevo objeto
       const newProducts = updatedProducts.map(product => {
         if (product.id === id) {
           return {

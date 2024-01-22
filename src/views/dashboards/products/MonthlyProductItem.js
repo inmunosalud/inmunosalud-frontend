@@ -13,9 +13,9 @@ import 'swiper/css/navigation'
 
 import TextField from '@mui/material/TextField'
 import { styled } from '@mui/material/styles'
-import { updateMonthlyPurchase, setUpdatedProducts, setChanges } from 'src/store/monthlypurchase'
+import { setAddProducts } from 'src/store/monthlypurchase'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const RepeatingContent = styled(Grid)(({ theme }) => ({
   paddingRight: 0,
@@ -38,28 +38,48 @@ const RepeatingContent = styled(Grid)(({ theme }) => ({
 export const MonthlyProductItem = props => {
   const dispatch = useDispatch()
   const { products, id, updatedProducts } = useSelector(state => state.monthlyPurchase)
-  const [isButtonDisabled, setButtonDisabled] = useState(false)
 
   const [localQuantity, setLocalQuantity] = useState(0)
 
-  const handleUpdate = (idProduct, canBeRemoved) => {
-    if (!isButtonDisabled && localQuantity > 0) {
-      const updatedProductIndex = products.findIndex(product => product.id === idProduct)
+  const handleUpdate = idProduct => {
+    const updatedProductIndex = updatedProducts.findIndex(product => product.id === idProduct)
 
-      if (updatedProductIndex !== -1) {
-        const updatedProduct = products[updatedProductIndex]
+    if (updatedProductIndex !== -1) {
+      const updatedProductsCopy = updatedProducts.map((product, index) => {
+        if (index === updatedProductIndex) {
+          return {
+            ...product,
+            quantity: parseInt(product.quantity, 10) + parseInt(localQuantity, 10)
+          }
+        }
+        return { ...product }
+      })
+
+      // Filtra los productos con quantity > 0
+      const filteredProducts = updatedProductsCopy.filter(product => product.quantity > 0)
+
+      dispatch(setAddProducts(filteredProducts))
+    } else {
+      const updatedProduct = products.find(product => product.id === idProduct)
+      if (updatedProduct) {
         const body = {
           ...updatedProduct,
-          quantity: localQuantity
+          quantity: parseInt(localQuantity, 10)
         }
 
-        dispatch(setChanges(true))
-        dispatch(setUpdatedProducts([...updatedProducts, body]))
+        // Filtra los productos con quantity > 0
+        const filteredProducts = [...updatedProducts, body].filter(product => product.quantity > 0)
+
+        dispatch(setAddProducts(filteredProducts))
       }
-      setButtonDisabled(true)
-      setLocalQuantity(0)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      setLocalQuantity(0)
+    }
+  }, [])
 
   return (
     <Grid container>
@@ -89,25 +109,19 @@ export const MonthlyProductItem = props => {
             <TextField
               size='small'
               type='number'
-              placeholder='1'
+              placeholder='0'
               sx={{ mt: 1.5 }}
-              disabled={updatedProducts.some(item => item.id === props.id)}
-              defaultValue={localQuantity}
+              defaultValue={0}
+              value={localQuantity}
               InputProps={{ inputProps: { min: 0 } }}
-              onChange={ev => setLocalQuantity(ev.target.value)}
+              onChange={ev => {
+                console.log('event', ev.target.value)
+                setLocalQuantity(ev.target.value)
+                handleUpdate(props.id)
+              }}
             />
           </Grid>
-          <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-            <Button
-              size='small'
-              sx={{ mt: 2.5 }}
-              variant='contained'
-              disabled={localQuantity <= 0 || isButtonDisabled}
-              onClick={() => handleUpdate(props.id, props.canBeRemoved)}
-            >
-              Agregar
-            </Button>
-          </Grid>
+          <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}></Grid>
           {/* <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
                         <Typography
                             variant='body2'
