@@ -162,6 +162,7 @@ const AddMonthlyPurchase = () => {
 
   const handleSave = () => {
     dispatch(setChanges(false))
+    dispatch(updateMonthlyPurchase({ id: user.id, body: updatedProducts }))
   }
 
   return (

@@ -25,7 +25,15 @@ export const updateMonthlyPurchase = createAsyncThunk(
 
       return response
     } catch (error) {
-      console.log(error.response)
+      if (error.response && error.response.data && error.response.data.message) {
+        thunkApi.dispatch(
+          openSnackBar({
+            open: true,
+            message: error.response.data.message,
+            severity: 'error'
+          })
+        )
+      }
       if (error.response.status == 500) {
         thunkApi.dispatch(
           openSnackBar({
