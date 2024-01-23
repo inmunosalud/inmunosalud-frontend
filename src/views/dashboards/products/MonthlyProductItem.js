@@ -37,41 +37,33 @@ const RepeatingContent = styled(Grid)(({ theme }) => ({
 
 export const MonthlyProductItem = props => {
   const dispatch = useDispatch()
-  const { products, id, updatedProducts } = useSelector(state => state.monthlyPurchase)
+  const { id, updatedProducts, addProducts } = useSelector(state => state.monthlyPurchase)
+  const { products } = useSelector(state => state.products)
 
   const [localQuantity, setLocalQuantity] = useState(0)
 
-  const handleUpdate = idProduct => {
-    const updatedProductIndex = updatedProducts.findIndex(product => product.id === idProduct)
+  const handleUpdate = (idProduct, ev) => {
+    const existingProductIndex = addProducts.findIndex(product => product.id === idProduct)
 
-    if (updatedProductIndex !== -1) {
-      const updatedProductsCopy = updatedProducts.map((product, index) => {
-        if (index === updatedProductIndex) {
+    if (existingProductIndex !== -1) {
+      const updatedProducts = addProducts.map((product, index) => {
+        if (index === existingProductIndex) {
           return {
             ...product,
-            quantity: parseInt(product.quantity, 10) + parseInt(localQuantity, 10)
+            quantity: parseInt(ev.target.value, 10)
           }
         }
         return { ...product }
       })
 
-      // Filtra los productos con quantity > 0
-      const filteredProducts = updatedProductsCopy.filter(product => product.quantity > 0)
-
-      dispatch(setAddProducts(filteredProducts))
+      dispatch(setAddProducts(updatedProducts))
     } else {
-      const updatedProduct = products.find(product => product.id === idProduct)
-      if (updatedProduct) {
-        const body = {
-          ...updatedProduct,
-          quantity: parseInt(localQuantity, 10)
-        }
-
-        // Filtra los productos con quantity > 0
-        const filteredProducts = [...updatedProducts, body].filter(product => product.quantity > 0)
-
-        dispatch(setAddProducts(filteredProducts))
+      const newProduct = {
+        id: idProduct,
+        quantity: parseInt(ev.target.value, 10)
       }
+
+      dispatch(setAddProducts([...addProducts, newProduct]))
     }
   }
 
@@ -115,9 +107,8 @@ export const MonthlyProductItem = props => {
               value={localQuantity}
               InputProps={{ inputProps: { min: 0 } }}
               onChange={ev => {
-                console.log('event', ev.target.value)
                 setLocalQuantity(ev.target.value)
-                handleUpdate(props.id)
+                handleUpdate(props.id, ev)
               }}
             />
           </Grid>

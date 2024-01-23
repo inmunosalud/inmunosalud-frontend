@@ -11,6 +11,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
 import { getProducts } from 'src/store/products'
@@ -38,42 +39,40 @@ const AddMonthlyPurchaseModal = ({ open = false, onClose = () => {} }) => {
   }
 
   const handleUpdate = () => {
-    // Comparar productos por id
     const updatedProductsCopy = updatedProducts.map(product => {
       const matchingAddProduct = addProducts.find(addProduct => addProduct.id === product.id)
-      console.log('matchingaddProduct', matchingAddProduct, addProducts)
-      // Si hay un producto coincidente, actualizar la cantidad
+
       if (matchingAddProduct) {
-        console.log(
-          product.product,
-          'quantities',
-          +product.quantity + +matchingAddProduct.quantity,
-          'suma',
-          +product.quantity,
-          'actual',
-          +matchingAddProduct.quantity,
-          'nueva'
-        )
         return {
           ...product,
           quantity: +product.quantity + +matchingAddProduct.quantity
         }
       }
+
       return product
     })
 
-    // Agregar nuevos productos que no estén en updatedProducts
     addProducts.forEach(addProduct => {
       const productExists = updatedProductsCopy.some(product => product.id === addProduct.id)
 
       if (!productExists) {
-        updatedProductsCopy.push(addProduct)
+        const matchingProductFromContent = products.content.find(product => product.id === addProduct.id)
+
+        if (matchingProductFromContent) {
+          const urlImage =
+            Array.isArray(matchingProductFromContent.urlImages) && matchingProductFromContent.urlImages.length > 0
+              ? matchingProductFromContent.urlImages[0]
+              : null
+
+          updatedProductsCopy.push({
+            ...matchingProductFromContent,
+            quantity: +addProduct.quantity,
+            urlImage: urlImage
+          })
+        }
       }
     })
 
-    // Actualizar el estado con el nuevo arreglo
-    console.log('updatedProductscopy', updatedProductsCopy)
-    console.log('addProducts', addProducts)
     dispatch(setChanges(true))
     dispatch(setModal(false))
     dispatch(setUpdatedProducts(updatedProductsCopy))
@@ -117,21 +116,31 @@ const AddMonthlyPurchaseModal = ({ open = false, onClose = () => {} }) => {
         aria-describedby='scroll-dialog-description'
       >
         <DialogTitle id='scroll-dialog-title'>Productos</DialogTitle>
-        <TextField
-          label='Buscar productos'
-          fullWidth
-          value={searchQuery}
-          onChange={handleSearchChange}
-          sx={{ marginBottom: 2 }}
-        />
+        <Grid container>
+          <Grid xl={4} xs={12} item>
+            <TextField
+              label='Buscar'
+              size='small'
+              fullWidth
+              value={searchQuery}
+              onChange={handleSearchChange}
+              sx={{ mb: '20px', ml: '20px' }}
+            />
+          </Grid>
+        </Grid>
         <IconButton size='small' onClick={onClose} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
           <Close />
         </IconButton>
         <DialogContent dividers='paper'>{displayMapProducts()}</DialogContent>
         <DialogActions>
-          <Button size='small' sx={{ mt: 2.5 }} variant='contained' onClick={() => handleUpdate()}>
-            Agregar
-          </Button>
+          <Grid container>
+            <Grid item xl={10} xs={0}></Grid>
+            <Grid item xl={1} xs={12}>
+              <Button sx={{ mt: '20px' }} variant='contained' onClick={() => handleUpdate()}>
+                Agregar
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </Dialog>
     </div>
