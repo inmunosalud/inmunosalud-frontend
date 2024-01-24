@@ -47,7 +47,7 @@ const navigation = () => {
           permission: PERMISSIONS.dashboardUsers
         },
         {
-          title: 'Pedido del mes',
+          title: 'Compra mensual',
           path: '/ecommerce/monthly-purchase/',
           permission: PERMISSIONS.ecommerceMonthlyPurchase
         },

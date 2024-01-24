@@ -36,6 +36,7 @@ import CustomSnackbar from '../components/snackbar/CustomSnackbar'
 import { closeSnackBar, openSnackBar } from 'src/store/notifications'
 import { getMonthlyPurchase } from 'src/store/monthlypurchase'
 import { setCvv } from 'src/store/orders'
+import { getConstants } from 'src/store/constants'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -93,16 +94,19 @@ const AddCard = props => {
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.dashboard.general)
+  const { constants } = useSelector(state => state.constants)
 
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
   // ** Deletes form
-  const deleteForm = e => {
-    e.preventDefault()
+  const deleteForm = idProduct => {
+    const body = {
+      id: idProduct,
+      quantity: 0
+    }
 
-    // @ts-ignore
-    e.target.closest('.repeater-wrapper').remove()
+    dispatch(updateCart({ id, body }))
   }
 
   useEffect(() => {
@@ -111,17 +115,21 @@ const AddCard = props => {
   }, [selectedPaymentMethod, selectedAddressInCart])
 
   useEffect(() => {
-    if (products.filter(product => !product.canBeRemoved).length > 0) {
-      dispatch(getMonthlyPurchase(user.id))
-      dispatch(
-        openSnackBar({
-          open: true,
-          message: 'No es posible eliminar algunos productos porque forman parte de tu compra mínima inicial.',
-          severity: 'info'
-        })
-      )
-    }
-  }, [dispatch])
+    dispatch(getConstants())
+  }, [])
+
+  // useEffect(() => {
+  //   if (products.filter(product => !product.canBeRemoved).length > 0) {
+  //     dispatch(getMonthlyPurchase(user.id))
+  //     dispatch(
+  //       openSnackBar({
+  //         open: true,
+  //         message: 'No es posible eliminar algunos productos porque forman parte de tu compra mínima inicial.',
+  //         severity: 'info'
+  //       })
+  //     )
+  //   }
+  // }, [dispatch])
 
   useEffect(() => {
     dispatch(setCvv(''))
@@ -139,14 +147,14 @@ const AddCard = props => {
     dispatch(updateCart({ id, body }))
   }
 
-  const getMinQuantity = (idProduct, canBeRemoved) => {
-    const monthlyProduct = monthlyPaymentProducts.find(product => product.id === idProduct)
-    if (!canBeRemoved && monthlyProduct != null) {
-      return monthlyProduct.quantity
-    } else {
-      return 0
-    }
-  }
+  // const getMinQuantity = (idProduct, canBeRemoved) => {
+  //   const monthlyProduct = monthlyPaymentProducts.find(product => product.id === idProduct)
+  //   if (!canBeRemoved && monthlyProduct != null) {
+  //     return monthlyProduct.quantity
+  //   } else {
+  //     return 0
+  //   }
+  // }
 
   const handleKeyDown = event => {
     // Evitar la entrada directa de texto
@@ -333,7 +341,7 @@ const AddCard = props => {
                           Artículo
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <img width={40} height={50} alt='Apple iPhone 11 Pro' src={product.urlImage} />
+                          <img width={40} height={50} alt='img' src={product.urlImage} />
                           <Typography sx={{ ml: 3 }}>{product.product}</Typography>
                         </Box>
                       </Grid>
@@ -363,7 +371,7 @@ const AddCard = props => {
                           placeholder='1'
                           defaultValue={product.quantity}
                           InputProps={{
-                            inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) },
+                            // inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) },
                             onKeyDown: handleKeyDown,
                             onKeyPress: handleKeyPress
                           }}
@@ -383,7 +391,7 @@ const AddCard = props => {
                     </Grid>
                     <InvoiceAction>
                       {product.canBeRemoved ? (
-                        <IconButton size='small' onClick={deleteForm}>
+                        <IconButton size='small' onClick={e => deleteForm(product.id)}>
                           <Close fontSize='small' />
                         </IconButton>
                       ) : null}

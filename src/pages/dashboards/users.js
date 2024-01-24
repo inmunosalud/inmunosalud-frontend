@@ -237,34 +237,54 @@ const Users = () => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
+        columnWidth: '90%',
         endingShape: 'rounded'
       }
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
       formatter: function (val) {
-        return `$${val.toFixed(2)}`
+        return `$${val}`
       },
-      position: 'bottom'
+      background: {
+        enabled: true,
+        foreColor: theme.palette.mode === 'light' ? '#fff' : '#000',
+        padding: 4,
+        borderRadius: 2,
+        borderWidth: 1,
+        borderColor: theme.palette.mode === 'light' ? '#fff' : '#000',
+        opacity: 0.9,
+        dropShadow: {
+          enabled: true,
+          top: 1,
+          left: 1,
+          blur: 1,
+          color: '#000',
+          opacity: 0.45
+        }
+      },
+      dropShadow: {
+        enabled: true,
+        top: 1,
+        left: 1,
+        blur: 1,
+        color: '#000',
+        opacity: 0.45
+      },
+      style: {
+        fontSize: '14px',
+        fontFamily: 'Helvetica, Arial, sans-serif',
+        fontWeight: 'bold',
+        colors: theme.palette.mode === 'light' ? ['#eee'] : ['#222']
+      }
     },
     stroke: {
       show: true,
-      width: 2,
+      width: 0,
       colors: ['transparent']
     },
     yaxis: {
-      title: {
-        text: 'Monto de Comisiones'
-      },
-      labels: {
-        formatter: function (value) {
-          return `$${value.toFixed(2)}`
-        }
-      }
-    },
-    fill: {
-      opacity: 1
+      show: false
     }
   }
 
@@ -293,7 +313,7 @@ const Users = () => {
 
   const optionsCommissions = {
     labels: ['Recompensa por usuarios inactivos', 'Recompensa por usuarios activos'],
-    colors: [theme.palette.secondary.main, '#008000'],
+    colors: [theme.palette.secondary.main, theme.palette.success.dark],
     chart: {
       offsetX: -10,
       stacked: true,
@@ -602,10 +622,10 @@ const Users = () => {
 
                     <Grid item xs={12} md={6}>
                       <Box>
-                        <Typography sx={{ mt: '20px' }} variant='h6' color='primary'>
+                        <Typography sx={{ mt: '20px' }} variant='h6' fontWeight='bold' color='primary'>
                           Recompensa proyectada:
                         </Typography>
-                        <Typography sx={{ mb: '20px' }} variant='h5' color='primary'>
+                        <Typography sx={{ mb: '20px' }} variant='h5' fontWeight='bold' color='primary'>
                           ${userInfo?.commission?.nextTotal}
                         </Typography>
                         <Typography sx={{ mt: '100px' }} variant='caption'>
@@ -616,10 +636,10 @@ const Users = () => {
                     <Grid item xs={12} md={8}>
                       <CardContent>
                         <Box sx={{ alignItems: 'center' }}>
-                          <Typography variant='h7' sx={{ mt: '20px' }} color='#008000'>
+                          <Typography variant='h7' sx={{ mt: '20px' }} color={theme.palette.success.main}>
                             Comisión a pagar por usuarios activos:
                           </Typography>
-                          <Typography variant='h5' color='#008000'>
+                          <Typography variant='h5' color={theme.palette.success.main}>
                             ${userInfo?.commission?.nextReal}
                           </Typography>
                           <Box sx={{ mt: '20px' }}>

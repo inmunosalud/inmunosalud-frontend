@@ -25,6 +25,8 @@ import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
 import { loginCall, setErrors } from 'src/store/session'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import { closeSnackBar } from 'src/store/notifications'
 
 //store
 import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
@@ -50,6 +52,8 @@ const Form = props => {
   const dispatch = useDispatch()
   const router = useRouter()
   const { isLoading, errors } = useSelector(state => state.session)
+  const { open, message, severity } = useSelector(state => state.notifications)
+
   // ** States
   const [values, setValues] = React.useState({
     email: '',
@@ -187,6 +191,8 @@ const Form = props => {
           </form>
         </CardContent>
       </Card>
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+
       {showConfirmModal && <VerifyCodeModal open={showConfirmModal} handleClose={handleCloseModal} userData={values} />}
     </>
   )

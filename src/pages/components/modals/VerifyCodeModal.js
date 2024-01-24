@@ -22,7 +22,13 @@ import Alert from '@mui/material/Alert'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-import { recoverPassword, setShowConfirmModal, setRecoveryCode, updatePassword } from 'src/store/users'
+import {
+  recoverPassword,
+  setShowConfirmModal,
+  setRecoveryCode,
+  updatePassword,
+  validateVerificationCode
+} from 'src/store/users'
 import { CircularProgress } from '@mui/material'
 
 const modalContentStyle = {
@@ -76,10 +82,11 @@ const buttonStyle = {
 }
 
 const VerifyCodeModal = ({ open, handleClose, userData }) => {
-  const code = new Array(5).fill(0)
+  const array = new Array(6).fill('')
   const dispatch = useDispatch()
 
   const { recoveryCode } = useSelector(state => state.users)
+  const [code, setCode] = useState(array)
   const [showInputs, setShowInputs] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [passwords, setPasswords] = useState({
@@ -87,28 +94,55 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
     reWritedPassword: ''
   })
   const [error, setError] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [inputValues, setInputValues] = useState(['', '', '', '', '', ''])
 
   useEffect(() => {
     const body = {
       email: userData.email
     }
 
+    setShowInputs(true)
     dispatch(recoverPassword(body)).then(response => {
       if (response.payload === 'error') dispatch(setShowConfirmModal(false))
-
-      setShowInputs(true)
     })
   }, [])
 
+  useEffect(() => {
+    const currentInput = document.getElementById(`input-${currentIndex}`)
+    if (currentInput) {
+      currentInput.focus()
+    }
+  }, [currentIndex])
+
   const handleVerifyCode = () => {
     dispatch(setRecoveryCode(Number(code.join(''))))
+    const body = {
+      email: userData.email,
+      code: Number(code.join(''))
+    }
 
-    setShowInputs(false)
     setShowForm(true)
+    setShowInputs(true)
+    // dispatch(validateVerificationCode(body)).then(response => {
+    //   if (response.payload === 'error') return
+
+    // })
   }
 
-  const handleForm = e => {
-    code[e.target.dataset.index] = e.target.value
+  const handleForm = (event, index) => {
+    const { value } = event.target
+    setCode(prevCode => {
+      const newCode = [...prevCode]
+      newCode[index] = value
+      return newCode
+    })
+    if (/^\d$/.test(value)) {
+      const nextIndex = index + 1
+      if (nextIndex < code.length) {
+        setCurrentIndex(nextIndex)
+      }
+    }
   }
 
   const verifyPasswords = () => {
@@ -129,7 +163,6 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
   const handleUpdatePassword = () => {
     if (!verifyPasswords()) return
 
-    debugger
     const body = {
       email: userData.email,
       code: recoveryCode,
@@ -193,61 +226,20 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
         <h2 class='heading-secondary margin-bottom-m'>Ingresar Codigo</h2>
         <p class='margin-bottom-s'>Ingresa el codigo que se envio a su correo para recuperar tu contraseña </p>
         <form class='form--verifiy-code' style={formStyle}>
-          <input
-            autoFocus={true}
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={0}
-          />
-          <input
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={1}
-          />
-          <input
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={2}
-          />
-          <input
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={3}
-          />
-          <input
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={4}
-          />
-          <input
-            class='input input--single-char'
-            placeholder='0'
-            size='1'
-            maxlength='1'
-            style={inputStyle}
-            onChange={handleForm}
-            data-index={5}
-          />
+          {inputValues.map((value, index) => (
+            <input
+              autoFocus={index === 0}
+              key={index}
+              id={`input-${index}`}
+              className='input input--single-char'
+              placeholder='0'
+              size='1'
+              maxLength='1'
+              style={inputStyle}
+              value={code[index]}
+              onChange={event => handleForm(event, index)}
+            />
+          ))}
           <Button style={buttonStyle} onClick={handleVerifyCode}>
             &rarr;
           </Button>

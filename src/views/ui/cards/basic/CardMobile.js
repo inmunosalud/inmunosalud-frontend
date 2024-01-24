@@ -53,7 +53,7 @@ const CardMobile = () => {
       <Grid container spacing={6}>
         <StyledGrid item md={5} xs={12}>
           <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img width={137} height={176} alt='Apple iPhone 11 Pro' src='/images/cards/iPhone-11-pro.png' />
+            <img width={137} height={176} alt='img' src='/images/cards/iPhone-11-pro.png' />
           </CardContent>
         </StyledGrid>
         <Grid
@@ -67,10 +67,10 @@ const CardMobile = () => {
         >
           <CardContent>
             <Typography variant='h6' sx={{ mb: 2 }}>
-              Apple iPhone 11 Pro
+              img
             </Typography>
             <Typography variant='body2' sx={{ mb: 3.5 }}>
-              Apple iPhone 11 Pro smartphone. Announced Sep 2019. Features 5.8″ display Apple A13 Bionic
+              img smartphone. Announced Sep 2019. Features 5.8″ display Apple A13 Bionic
             </Typography>
             <Typography sx={{ fontWeight: 500, mb: 3 }}>
               Price:{' '}

@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
+import Image from 'next/image'
 
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
@@ -12,8 +13,9 @@ import 'swiper/css/navigation'
 
 import TextField from '@mui/material/TextField'
 import { styled } from '@mui/material/styles'
-import { updateMonthlyPurchase } from 'src/store/monthlypurchase'
-import { useState } from 'react'
+import { setAddProducts } from 'src/store/monthlypurchase'
+
+import { useState, useEffect } from 'react'
 
 const RepeatingContent = styled(Grid)(({ theme }) => ({
   paddingRight: 0,
@@ -35,18 +37,41 @@ const RepeatingContent = styled(Grid)(({ theme }) => ({
 
 export const MonthlyProductItem = props => {
   const dispatch = useDispatch()
-  const { products, id } = useSelector(state => state.monthlyPurchase)
+  const { id, updatedProducts, addProducts } = useSelector(state => state.monthlyPurchase)
+  const { products } = useSelector(state => state.products)
 
-  const [localQuantity, setLocalQuantity] = useState(1)
+  const [localQuantity, setLocalQuantity] = useState(0)
 
-  const handleUpdate = (idProduct, canBeRemoved) => {
-    const body = {
-      id: idProduct,
-      quantity: localQuantity
+  const handleUpdate = (idProduct, ev) => {
+    const existingProductIndex = addProducts.findIndex(product => product.id === idProduct)
+
+    if (existingProductIndex !== -1) {
+      const updatedProducts = addProducts.map((product, index) => {
+        if (index === existingProductIndex) {
+          return {
+            ...product,
+            quantity: parseInt(ev.target.value, 10)
+          }
+        }
+        return { ...product }
+      })
+
+      dispatch(setAddProducts(updatedProducts))
+    } else {
+      const newProduct = {
+        id: idProduct,
+        quantity: parseInt(ev.target.value, 10)
+      }
+
+      dispatch(setAddProducts([...addProducts, newProduct]))
     }
-
-    dispatch(updateMonthlyPurchase({ id, body }))
   }
+
+  useEffect(() => {
+    return () => {
+      setLocalQuantity(0)
+    }
+  }, [])
 
   return (
     <Grid container>
@@ -57,8 +82,8 @@ export const MonthlyProductItem = props => {
               Articulo
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <img width={40} height={50} alt='Apple iPhone 11 Pro' src={props.urlImages[0]} />
-              <Typography sx={{ ml: 3 }}>{props.product}</Typography>
+              <Image width={40} height={50} alt='img' src={props.urlImages[0]} />
+              <Typography sx={{ ml: 3, mt: 0.5 }}>{props.product}</Typography>
             </Box>
           </Grid>
           <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
@@ -66,7 +91,7 @@ export const MonthlyProductItem = props => {
               Precio
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography sx={{ ml: 3 }}>${props.price}</Typography>
+              <Typography sx={{ ml: 3, mt: 3.5 }}>${props.price}</Typography>
             </Box>
           </Grid>
           <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
@@ -76,22 +101,18 @@ export const MonthlyProductItem = props => {
             <TextField
               size='small'
               type='number'
-              placeholder='1'
-              defaultValue={localQuantity}
+              placeholder='0'
+              sx={{ mt: 1.5 }}
+              defaultValue={0}
+              value={localQuantity}
               InputProps={{ inputProps: { min: 0 } }}
-              onChange={ev => setLocalQuantity(ev.target.value)}
+              onChange={ev => {
+                setLocalQuantity(ev.target.value)
+                handleUpdate(props.id, ev)
+              }}
             />
           </Grid>
-          <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-            <Button
-              size='small'
-              variant='contained'
-              disabled={products.some(item => item.id === props.id)}
-              onClick={() => handleUpdate(props.id, props.canBeRemoved)}
-            >
-              Agregar
-            </Button>
-          </Grid>
+          <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}></Grid>
           {/* <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
                         <Typography
                             variant='body2'

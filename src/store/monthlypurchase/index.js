@@ -25,7 +25,15 @@ export const updateMonthlyPurchase = createAsyncThunk(
 
       return response
     } catch (error) {
-      console.log(error.response)
+      if (error.response && error.response.data && error.response.data.message) {
+        thunkApi.dispatch(
+          openSnackBar({
+            open: true,
+            message: error.response.data.message,
+            severity: 'error'
+          })
+        )
+      }
       if (error.response.status == 500) {
         thunkApi.dispatch(
           openSnackBar({
@@ -50,14 +58,28 @@ export const monthlyPurchaseSlice = createSlice({
     total: {
       subtotal: 0,
       iva: 0,
+      shippingCost: 0,
+      ivaValue: 0,
       total: 0
     },
-
-    showModal: false
+    updatedProducts: [],
+    addProducts: [],
+    showModal: false,
+    changes: false
   },
   reducers: {
     setModal: (state, { payload }) => {
       state.showModal = payload
+      state.addProducts = []
+    },
+    setChanges: (state, { payload }) => {
+      state.changes = payload
+    },
+    setUpdatedProducts: (state, { payload }) => {
+      state.updatedProducts = payload
+    },
+    setAddProducts: (state, { payload }) => {
+      state.addProducts = payload
     }
   },
   extraReducers: builder => {
@@ -72,6 +94,8 @@ export const monthlyPurchaseSlice = createSlice({
       state.total.total = payload.content.total
       state.total.iva = payload.content.iva
       state.total.subtotal = payload.content.subtotal
+      state.total.ivaValue = payload.content.ivaPorcentaje
+      state.total.shippingCost = payload.content.shippingCost
     })
     builder.addCase(getMonthlyPurchase.rejected, (state, action) => {
       state.isLoading = false
@@ -98,4 +122,4 @@ export const monthlyPurchaseSlice = createSlice({
 
 export default monthlyPurchaseSlice.reducer
 
-export const { setModal } = monthlyPurchaseSlice.actions
+export const { setModal, setUpdatedProducts, setChanges, setAddProducts } = monthlyPurchaseSlice.actions
