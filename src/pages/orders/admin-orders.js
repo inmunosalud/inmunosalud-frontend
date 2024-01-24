@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridToolbar, GridToolbarExport, GridToolbarContainer } from '@mui/x-data-grid'
 import { Pencil } from 'mdi-material-ui'
 import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
@@ -96,7 +96,7 @@ const AdminOrders = () => {
   const { user } = useSelector(state => state.session)
   const { users } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { ordersAll } = useSelector(state => state.orders)
+  const { ordersAll, isLoading } = useSelector(state => state.orders)
   React.useEffect(() => {
     dispatch(getOrders())
   }, [dispatch])
@@ -129,12 +129,17 @@ const AdminOrders = () => {
         <CardHeader title='Pedidos' />
         <DataGrid
           autoHeight
+          loading={isLoading}
           rows={ordersAll}
+          disableColumnMenu={true}
           columns={config}
           sx={{ width: '100%' }}
           rowsPerPageOptions={[5, 10, 25]}
           pageSize={pageSize}
           onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+          components={{
+            Toolbar: GridToolbar
+          }}
         />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
