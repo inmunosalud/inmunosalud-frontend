@@ -70,7 +70,7 @@ const FormRegister = () => {
   const newAssociate = query.newAssociate === 'true'
 
   const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
-  const { open, message, positioned, severity } = useSelector(state => state.notifications)
+  const { open, message, severity } = useSelector(state => state.notifications)
 
   // ** States
   const [values, setValues] = React.useState({
@@ -241,7 +241,13 @@ const FormRegister = () => {
                         onChange={handleChangeCheckbox('privacyPolicyChecked')}
                       />
                     }
-                    label={<Typography variant='body2'>Aviso de privacidad.</Typography>}
+                    label={
+                      <Typography variant='body2'>
+                        <a target='_blank' rel='noreferrer' href='/docs/Privacy.pdf'>
+                          Aviso de privacidad.
+                        </a>
+                      </Typography>
+                    }
                   />
                   <FormControlLabel
                     control={
@@ -250,7 +256,13 @@ const FormRegister = () => {
                         onChange={handleChangeCheckbox('termsAndConditionsChecked')}
                       />
                     }
-                    label={<Typography variant='body2'>Términos y condiciones.</Typography>}
+                    label={
+                      <Typography variant='body2'>
+                        <a target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
+                          Términos y condiciones.
+                        </a>
+                      </Typography>
+                    }
                   />
                   <FormControlLabel
                     control={
@@ -294,13 +306,7 @@ const FormRegister = () => {
           </form>
         </CardContent>
       </Card>
-      <CustomSnackbar
-        open={open}
-        message={message}
-        severity={severity}
-        positioned={positioned}
-        handleClose={() => dispatch(closeSnackBar())}
-      />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
 }

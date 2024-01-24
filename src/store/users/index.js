@@ -26,7 +26,9 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
     return newUser
   } catch (error) {
     const data = error.response.data
-
+    if (data.content && data.content.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.content.message, severity: 'error' }))
+    }
     if (data.content.errors) {
       thunkApi.dispatch(setErrors(data.content.errors.body))
     } else {
@@ -125,15 +127,14 @@ export const createContract = createAsyncThunk('contracts/createContract', async
 
 //update Password
 export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
-  debugger
   try {
     const response = await api_patch(`${PROYECT}/users/password`, body)
-    debugger
+
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    debugger
+
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
     return thunkApi.rejectWithValue('error')
   }
@@ -143,6 +144,17 @@ export const updatePassword = createAsyncThunk('users/password', async (body, th
 export const recoverPassword = createAsyncThunk('users/passwordRecoveryCode', async (body, thunkApi) => {
   try {
     const response = await api_post(`${PROYECT}/users/passwordRecoveryCode`, body)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+//validate Verification Code
+export const validateVerificationCode = createAsyncThunk('users/validateVerificationCode', async (body, thunkApi) => {
+  try {
+    const response = await api_post(`${PROYECT}/users/validateVerificationCode`, body)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -161,7 +173,6 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
 
 //get link to register user in stripe
 export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
-  debugger
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const response = await api_get(`${STRIPE}/users/stripeAccountLink/${id}`, auth)
@@ -354,16 +365,30 @@ export const usersSlice = createSlice({
     //get stripe link
     builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {
       const { content } = payload
-      debugger
+
       state.stripeLink = content.url
 
       window.open(content.url, '_blank')
     })
     //Recover password
+    builder.addCase(recoverPassword.pending, state => {
+      state.isLoading = true
+    })
     builder.addCase(recoverPassword.fulfilled, state => {
-      state.patchPassword = true
+      state.isLoading = false
     })
     builder.addCase(recoverPassword.rejected, state => {
+      state.isLoading = false
+    })
+    builder.addCase(validateVerificationCode.pending, state => {
+      state.isLoading = true
+    })
+    builder.addCase(validateVerificationCode.fulfilled, state => {
+      state.isLoading = false
+      state.patchPassword = true
+    })
+    builder.addCase(validateVerificationCode.rejected, state => {
+      state.isLoading = false
       state.patchPassword = false
     })
     //Validate new user

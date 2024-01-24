@@ -5,6 +5,7 @@ import Router from 'next/router'
 import { PROYECT, api_post } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
+import { openSnackBar } from '../notifications'
 
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
@@ -21,6 +22,9 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
     }
   } catch (error) {
     const data = error.response.data
+    if (data.content && data.content.message) {
+      thunkApi.dispatch(openSnackBar({ open: true, message: data.content.message, severity: 'error' }))
+    }
 
     if (data.content.errors) {
       thunkApi.dispatch(setErrors(data.content.errors.body))
