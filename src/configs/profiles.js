@@ -3,6 +3,7 @@ export const PERMISSIONS = {
   join: 'join',
   dashboardUsers: 'dashboard/users',
   dashboardComissions: 'dashboard/comissions',
+  dashboardLogistics: 'dashboard/logistics',
   dashboardProfile: 'profile',
   dashboardGeneral: 'dashboard/general',
   dashboardConstants: 'dashboard/constants',
@@ -66,6 +67,12 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceAddProduct
   ],
+  'Administrador de Logística': [
+    PERMISSIONS.home,
+    PERMISSIONS.join,
+    PERMISSIONS.dashboardLogistics,
+    PERMISSIONS.ecommerceProducts
+  ],
   'Administrador General': [
     PERMISSIONS.home,
     PERMISSIONS.join,
@@ -83,6 +90,7 @@ export const PROFILES = {
     PERMISSIONS.ordersAdmin,
     PERMISSIONS.ecommerceMonthlyPurchase,
     PERMISSIONS.dashboardConstants,
+    PERMISSIONS.dashboardLogistics,
     PERMISSIONS.ecommerceBilling
   ],
   default: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts]
@@ -94,6 +102,7 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/general']: PERMISSIONS.dashboardGeneral,
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/dashboards/comissions']: PERMISSIONS.dashboardComissions,
+  ['/dashboards/logistics']: PERMISSIONS.dashboardLogistics,
   ['/dashboards/constants']: PERMISSIONS.dashboardConstants,
   ['/profile']: PERMISSIONS.dashboardProfile,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
@@ -112,5 +121,6 @@ export const PROFILES_USER = {
   admin: 'Administrador General',
   productsAdmin: 'Administrador de Productos',
   consumerUser: 'Consumidor',
-  affiliatedUser: 'Afiliado'
+  affiliatedUser: 'Afiliado',
+  logisticsAdmin: 'Administrador de Logística'
 }

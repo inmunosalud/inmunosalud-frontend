@@ -62,6 +62,11 @@ const navigation = () => {
           permission: PERMISSIONS.ordersAdmin
         },
         {
+          title: 'Logística',
+          path: '/dashboards/logistics',
+          permission: PERMISSIONS.dashboardLogistics
+        },
+        {
           title: 'Facturación',
           path: '/ecommerce/billing',
           permission: PERMISSIONS.ecommerceBilling

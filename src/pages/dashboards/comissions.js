@@ -110,20 +110,25 @@ const Comissions = () => {
     setPendingPaymentComissions([])
     setConfirmingComissions([])
     setFinishedComissions([])
-    comissions.forEach(comission => {
-      switch (comission.status) {
-        case COMMISSION_STATUS_SP.pendingPayment:
-          setPendingPaymentComissions(prevState => [...prevState, comission])
-          break
-        default:
-          if (comission.status.includes(COMMISSION_STATUS_SP.confirming)) {
-            setConfirmingComissions(prevState => [...prevState, comission])
-          } else {
-            setFinishedComissions(prevState => [...prevState, comission])
+
+    if (typeof comissions === 'object' && comissions !== null) {
+      Object.values(comissions).forEach(comissionArray => {
+        comissionArray.forEach(comission => {
+          switch (comission.status) {
+            case COMMISSION_STATUS_SP.pendingPayment:
+              setPendingPaymentComissions(prevState => [...prevState, comission])
+              break
+            default:
+              if (comission.status.includes(COMMISSION_STATUS_SP.confirming)) {
+                setConfirmingComissions(prevState => [...prevState, comission])
+              } else {
+                setFinishedComissions(prevState => [...prevState, comission])
+              }
+              break
           }
-          break
-      }
-    })
+        })
+      })
+    }
   }, [comissions])
 
   const handleAction = () => {

@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-import { DataGrid, GridToolbar, GridToolbarExport, GridToolbarContainer } from '@mui/x-data-grid'
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
 import { Pencil } from 'mdi-material-ui'
 import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
@@ -17,9 +17,9 @@ import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
   {
-    minWidth: 180,
-    field: 'c',
-    headerName: 'Usuario',
+    minWidth: 80,
+    field: 'date',
+    headerName: 'Fecha',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.userEmail}
@@ -27,22 +27,12 @@ const columns = [
     )
   },
   {
-    minWidth: 110,
-    field: 'paymentMethodMapped',
-    headerName: 'Método de Pago',
+    minWidth: 140,
+    field: 'contact',
+    headerName: 'Contacto',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.paymentMethodMapped}
-      </Typography>
-    )
-  },
-  {
-    minWidth: 110,
-    field: 'shipmentMapped',
-    headerName: 'Numero de Guía',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.shipmentMapped}
+        {params.row.userEmail}
       </Typography>
     )
   },
@@ -52,20 +42,31 @@ const columns = [
     headerName: 'Dirección',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.paymentMethodMapped}
+      </Typography>
+    )
+  },
+  {
+    minWidth: 110,
+    field: 'colony',
+    headerName: 'Colonia',
+    renderCell: params => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.shipmentMapped}
       </Typography>
     )
   },
   {
     minWidth: 100,
-    field: 'totalProducts',
-    headerName: 'Productos',
+    field: 'city',
+    headerName: 'Ciudad',
     renderCell: params => {}
   },
   {
-    minWidth: 140,
-    field: 'total',
-    headerName: 'Total del pedido',
+    minWidth: 20,
+    maxWidth: 60,
+    field: 'pc',
+    headerName: 'CP',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         ${params.row.total}
@@ -73,32 +74,32 @@ const columns = [
     )
   },
   {
-    minWidth: 180,
-    field: 'deliveryStatus',
-    headerName: 'Estatus de envio',
-    renderCell: params => {}
-  },
-  {
-    minWidth: 180,
-    headerName: 'Fecha de compra',
-    field: 'purchaseDate',
-    renderCell: params => {}
-  },
-  {
-    minWidth: 160,
-    headerName: 'Fecha estimada de envio',
-    field: 'deliveryEstimateDate',
+    minWidth: 120,
+    field: 'state',
+    headerName: 'Estado',
     renderCell: params => {}
   },
   {
     minWidth: 120,
-    headerName: 'Fecha de entrega',
-    field: 'deliveryDate',
+    field: 'phone',
+    headerName: 'Teléfono',
+    renderCell: params => {}
+  },
+  {
+    minWidth: 160,
+    field: 'reference',
+    headerName: 'Referencia',
+    renderCell: params => {}
+  },
+  {
+    minWidth: 190,
+    field: 'email',
+    headerName: 'Correo Electrónico',
     renderCell: params => {}
   }
 ]
 
-const AdminOrders = () => {
+const AdminLogistics = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [pageSize, setPageSize] = React.useState(5)
@@ -116,22 +117,17 @@ const AdminOrders = () => {
     router.push('/ecommerce/edit-order')
   }
 
-  const config = [
-    ...columns,
-    {
-      minWidth: 20,
-      field: 'actions',
-      headerName: 'Acciones',
-      renderCell: params => {
-        const row = params?.row
-        return (
-          <Button onClick={() => handleOpenModalEdit(row)} color='warning' size='small'>
-            <Pencil />
-          </Button>
-        )
-      }
-    }
-  ]
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport
+          csvOptions={{
+            utf8WithBom: true
+          }}
+        />
+      </GridToolbarContainer>
+    )
+  }
 
   return (
     <>
@@ -142,13 +138,13 @@ const AdminOrders = () => {
           loading={isLoading}
           rows={ordersAll}
           disableColumnMenu={true}
-          columns={config}
+          columns={columns}
           sx={{ width: '100%' }}
           rowsPerPageOptions={[5, 10, 25]}
           pageSize={pageSize}
           onPageSizeChange={newPageSize => setPageSize(newPageSize)}
           components={{
-            Toolbar: GridToolbar
+            Toolbar: CustomToolbar
           }}
         />
       </Card>
@@ -157,4 +153,4 @@ const AdminOrders = () => {
   )
 }
 
-export default AdminOrders
+export default AdminLogistics
