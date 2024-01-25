@@ -39,7 +39,17 @@ const columns = [
   {
     minWidth: 110,
     field: 'shipmentMapped',
-    headerName: 'Envio',
+    headerName: 'Numero de Guía',
+    renderCell: params => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.shipmentMapped}
+      </Typography>
+    )
+  },
+  {
+    minWidth: 110,
+    field: 'address',
+    headerName: 'Dirección',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.shipmentMapped}
