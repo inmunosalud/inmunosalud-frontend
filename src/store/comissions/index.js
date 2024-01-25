@@ -45,7 +45,7 @@ export const liquidationComisions = createAsyncThunk('comissions/liquidationProd
 
 const initialState = {
   isLoading: false,
-  comissions: [],
+  comissions: {},
   comissionsHistory: {},
 
   openModal: false
