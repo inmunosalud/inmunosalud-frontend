@@ -1,5 +1,6 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -112,6 +113,7 @@ const defaultValues = {
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
 
   // ** Hooks
   const auth = useAuth()
@@ -122,6 +124,10 @@ const LoginPage = () => {
 
   // ** Vars
   const { skin } = settings
+
+  useEffect(() => {
+    router.push('/register')
+  }, [])
 
   const {
     control,
