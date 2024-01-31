@@ -1,4 +1,5 @@
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useRouter } from 'next/router'
 
 // ** Layout Imports
 // !Do not remove this Layout import
@@ -25,12 +26,14 @@ import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
 import { loadInfo } from 'src/store/paymentMethods'
 import { addressList } from 'src/store/address'
+import { setActiveStep } from 'src/store/register'
 
 const UserLayout = ({ children }) => {
   // ** Hooks
   const dispatch = useDispatch()
   const [dataLoaded, isDataLoaded] = useState(false)
   const { settings, saveSettings } = useSettings()
+  const router = useRouter()
 
   const { user } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
@@ -42,13 +45,32 @@ const UserLayout = ({ children }) => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
     }
-
-    if (user.id != null && !dataLoaded) {
+    if (user.id && !dataLoaded) {
       dispatch(getUserInfo(user.id))
-      dispatch(getCart(user.id))
-      dispatch(loadInfo(user.id))
-      dispatch(addressList(user.id))
-      isDataLoaded(true)
+      if (userInfo) {
+        if (userInfo.flowStep >= 6) {
+          dispatch(getCart(user.id))
+          dispatch(loadInfo(user.id))
+          dispatch(addressList(user.id))
+          isDataLoaded(true)
+        }
+      }
+    }
+    if (userInfo) {
+      if (userInfo.flowStep === 6 && dataLoaded) {
+        router.push('/ecommerce/cart/')
+      }
+    }
+    if (userInfo && !dataLoaded) {
+      if (!userInfo.registrationCompleted) {
+        if (userInfo.flowStep === 0) {
+          router.push('/register/welcome/')
+        }
+        if (userInfo.flowStep > 0 && userInfo.flowStep < 6) {
+          dispatch(setActiveStep(userInfo.flowStep - 1))
+          router.push('/register/address/')
+        }
+      }
     }
   }, [userInfo, user.id])
 

@@ -40,6 +40,7 @@ import {
   Checkbox,
   Link
 } from '@mui/material'
+import { useTheme } from '@mui/system'
 
 import { OPENPAY_ID, OPENPAY_KEY } from 'src/services/api'
 
@@ -65,19 +66,22 @@ import GoBackButton from 'src/views/components/goback/GoBack'
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 // ** Store Imports
-import { sendNewUser, updateUser, createContract } from 'src/store/users'
+import { sendNewUser, updateUser, createContract, getUserInfo } from 'src/store/users'
 import { closeSnackBar } from 'src/store/notifications'
 import { createAddress, getColonies, selectColony, updateAddress, addressList } from 'src/store/address'
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod, setOpenPay, setDeviceSessionId } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadInfo } from 'src/store/paymentMethods'
+import { getCart } from 'src/store/cart'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { BANKS } from 'src/configs/banks'
+import { set } from 'nprogress'
 
 const steps = [
   {
@@ -143,6 +147,26 @@ const defaultTaxInfoValues = {
   identificationType: 0,
   otherIdentification: '',
   signature: ''
+}
+
+const defaultContractInfoValues = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  rfc: '',
+  phone: '',
+  street: '',
+  extNumber: '',
+  intNumber: '',
+  zipCode: '',
+  colony: '',
+  federalEntity: '',
+  identificationType: '',
+  otherIdentification: '',
+  cardNumber: '',
+  bank: '',
+  clabe: '',
+  city: ''
 }
 
 const dataSchema = yup.object().shape({
@@ -276,15 +300,22 @@ export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { user } = useSelector(state => state.dashboard.general)
-  const { email, firstName, lastName, contract, isLoadingRegister } = useSelector(state => state.users)
+  const { email, firstName, lastName, contract, isLoadingRegister, userInfo } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
-  const { isLoading: paymenthMethodIsLoading } = useSelector(state => state.paymentMethods)
+  const { isLoading: cartIsLoading } = useSelector(state => state.cart)
+  const theme = useTheme()
+  const {
+    isLoading: paymenthMethodIsLoading,
+    selectedPaymentMethod,
+    clabe
+  } = useSelector(state => state.paymentMethods)
   const {
     colonies,
     selectedColony,
     address,
     isLoading: addressIsLoading,
-    isLoadingColonies
+    isLoadingColonies,
+    selectedAddressInCart
   } = useSelector(state => state.address)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [fullContract, setFullContract] = useState('')
@@ -318,31 +349,13 @@ export default function Address() {
   const signatureRef2 = useRef(null)
   const [isSignature2Empty, setIsSignature2Empty] = useState(false)
   const [signatureValue, setSignatureValue] = useState('')
+  const [recoverCardValue, setRecoverCardValue] = useState('')
+  const [disabled, setDisabled] = useState(false)
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
   const [numPages, setNumPages] = React.useState(null)
 
   // Get the current year
   const currentYear = new Date().getFullYear()
-
-  const defaultContractInfoValues = {
-    firstName: data.firstName,
-    lastName: data.lastName,
-    email: data.email,
-    rfc: data.rfc,
-    phone: data.phone,
-    street: data.street,
-    extNumber: data.extNumber,
-    intNumber: data.intNumber,
-    zipCode: data.zipCode,
-    colony: data.colony,
-    federalEntity: data.federalEntity,
-    identificationType: data.identificationType,
-    otherIdentification: data.otherIdentification,
-    cardNumber: data.cardNumber,
-    bank: data.bank,
-    clabe: data.clabe,
-    city: data.city
-  }
 
   // Generate an array of options for the next 6 years
   const options = Array.from({ length: 10 }, (_, i) => ({
@@ -409,6 +422,33 @@ export default function Address() {
   useEffect(() => {
     dispatch(loadSession())
   }, [])
+
+  useEffect(() => {
+    if (recoverCardValue === '') {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  }, [recoverCardValue])
+
+  useEffect(() => {
+    if (activeStep >= 1 && data.phone === '') {
+      dispatch(getUserInfo(user.id))
+    }
+    if (activeStep >= 2 && data.street === '') {
+      dispatch(addressList(user.id))
+    }
+    if (activeStep === 3 && data.cardNumber === '') {
+      dispatch(loadInfo(user.id))
+    }
+    if (activeStep > 3 && data.clabe === '') {
+      dispatch(loadInfo(user.id))
+    }
+    if (activeStep === steps.length) {
+      dispatch(getUserInfo(user.id))
+      dispatch(getCart(user.id))
+    }
+  }, [activeStep])
 
   useEffect(() => {
     // Actualizar el estado de isSignatureEmpty cada vez que cambie el contenido del SignatureCanvas
@@ -590,7 +630,7 @@ export default function Address() {
     dispatch(createMethod({ body, uuid: user.id }))
   }
 
-  const onTaxInfoSubmit = values => {
+  const onTaxInfoSubmit = async values => {
     // Validar el campo de firma manualmente
     const isCanvasEmpty = signatureRef1.current.isEmpty()
     if (isCanvasEmpty) {
@@ -599,13 +639,44 @@ export default function Address() {
       return
     }
 
-    setData(prevValues => ({
-      ...prevValues,
+    // Crear un nuevo objeto con las propiedades de data
+    const newData = { ...data }
+
+    // Comprobar y asignar valores si faltan en data
+    if (data.firstName === '' || !newData.firstName) {
+      newData.firstName = userInfo.firstName
+      newData.lastName = userInfo.lastName
+      newData.email = userInfo.email
+      newData.phone = userInfo.phone
+    }
+
+    if (data.street === '' || !newData.street) {
+      newData.street = selectedAddressInCart.street
+      newData.extNumber = selectedAddressInCart.extNumber
+      newData.intNumber = selectedAddressInCart.intNumber
+      newData.zipCode = selectedAddressInCart.zipCode
+      newData.colony = selectedAddressInCart.colony
+      newData.federalEntity = selectedAddressInCart.federalEntity
+      newData.city = selectedAddressInCart.city
+    }
+
+    if (data.cardNumber === '' || !newData.cardNumber) {
+      setRecoverCardValue(selectedPaymentMethod.cardNumber)
+      newData.bank = clabe.bank
+    }
+
+    if (data.clabe === '' || !newData.clabe) {
+      newData.clabe = clabe.clabe
+    }
+    newData.signature = signatureRef1.current.toDataURL()
+    // Actualizar el estado con el nuevo objeto combinado
+    setData({
+      ...newData,
       ...values,
       signature: signatureRef1.current.toDataURL()
-    }))
+    })
 
-    contractInfoReset(defaultContractInfoValues)
+    contractInfoReset(newData)
     setIsModalOpen(true)
   }
 
@@ -613,6 +684,10 @@ export default function Address() {
     const isCanvasEmpty = signatureRef2.current.isEmpty()
     if (isCanvasEmpty) {
       console.log('La firma electrónica es requerida')
+      return
+    }
+    if (values.cardNumber === '') {
+      console.log('La tarjeta es requerida')
       return
     }
 
@@ -1495,19 +1570,32 @@ export default function Address() {
         )
       case 5:
         return isLoadingRegister === true ? (
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <FormHelperText id='loading-contract'>Se está generando su contrato, por favor espere.</FormHelperText>
-            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box />
-              <CircularProgress size={20} />
+          <Grid container>
+            <Grid item xs={12}>
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <CircularProgress sx={{ mt: '10px' }} size={35} />
+              </Box>
             </Grid>
-          </Box>
+            <Grid item xs={12}>
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <FormHelperText sx={{ mt: '20px' }} id='loading-contract'>
+                  Se está generando su contrato, por favor espere.
+                </FormHelperText>
+              </Box>
+            </Grid>
+          </Grid>
         ) : (
           <Grid container spacing={5} alignItems='center' justifyContent='center'>
             <Box
@@ -1562,14 +1650,43 @@ export default function Address() {
 
   const renderContent = () => {
     if (activeStep === steps.length) {
-      return (
+      return isLoading || cartIsLoading ? (
+        <Grid container>
+          <Grid item xs={12}>
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          </Grid>
+        </Grid>
+      ) : (
         <Fragment>
-          <Typography>Todos los pasos han sido completados</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size='large' variant='contained' onClick={handleReset}>
-              Continuar
-            </Button>
-          </Box>
+          <Grid container>
+            <Grid item xs={12}>
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Typography>Todos los pasos han sido completados</Typography>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button size='large' variant='contained' onClick={handleReset}>
+                  Continuar
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </Fragment>
       )
     } else {
@@ -1920,6 +2037,12 @@ export default function Address() {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
+                  {recoverCardValue != '' && (
+                    <FormHelperText sx={{ color: 'info.main', mb: '10px' }} id='recovercardvalue-basic-cardNumber'>
+                      Ingrese nuevamente su tarjeta, recuerde que debe ser la misma que se registro anteriormente en el
+                      sistema: {recoverCardValue}
+                    </FormHelperText>
+                  )}
                   <Controller
                     name='cardNumber'
                     control={contractInfoControl}
@@ -1928,19 +2051,23 @@ export default function Address() {
                       <TextField
                         value={value}
                         label='Numero de tarjeta'
-                        disabled
-                        onChange={onChange}
+                        disabled={recoverCardValue === '' ? true : false}
+                        onChange={e => {
+                          e.target.value === '' ? setDisabled(true) : setDisabled(false)
+                          onChange(e)
+                        }}
                         error={Boolean(contractInfoErrors['cardNumber'])}
                         placeholder='Numero de tarjeta'
-                        aria-describedby='validation-basic-string'
+                        aria-describedby='validation-basic-string2'
                       />
                     )}
                   />
-                  {contractInfoErrors.cardNumber && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-cardNumber'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
+                  {contractInfoErrors.cardNumber ||
+                    (recoverCardValue && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-cardNumber'>
+                        El campo es requerido
+                      </FormHelperText>
+                    ))}
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
@@ -2010,7 +2137,6 @@ export default function Address() {
                         value={value}
                         label='RFC'
                         onInput={e => {
-                          // Convertir el valor a mayúsculas antes de actualizar el estado
                           e.target.value = e.target.value.toUpperCase()
                           onChange(e)
                         }}
@@ -2118,7 +2244,7 @@ export default function Address() {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button type='submit' variant='contained' color='primary'>
+            <Button type='submit' disabled={disabled} variant='contained' color='primary'>
               Confirmar
             </Button>
           </DialogActions>

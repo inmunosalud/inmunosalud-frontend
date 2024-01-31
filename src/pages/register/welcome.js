@@ -53,7 +53,7 @@ const Welcome = () => {
               Bienvenido a Inmunosalud
             </Typography>
             <Typography variant='body2'>Tu registro ha sido exitoso.</Typography>
-            <Typography variant='body2'>Te enviamos un codigo a tu correo para verificar tu cuenta.</Typography>
+            <Typography variant='body2'>Te enviamos un código a tu correo para verificar tu cuenta.</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
