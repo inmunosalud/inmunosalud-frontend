@@ -37,6 +37,7 @@ import { closeSnackBar, openSnackBar } from 'src/store/notifications'
 import { getMonthlyPurchase } from 'src/store/monthlypurchase'
 import { setCvv } from 'src/store/orders'
 import { getConstants } from 'src/store/constants'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -116,6 +117,7 @@ const AddCard = props => {
 
   useEffect(() => {
     dispatch(getConstants())
+    dispatch(isDataLoaded(true))
   }, [])
 
   // useEffect(() => {

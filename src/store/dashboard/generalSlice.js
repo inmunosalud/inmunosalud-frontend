@@ -49,6 +49,7 @@ const initialState = {
   errors: null,
   data: null,
   isLoadingSession: false,
+  dataLoaded: false,
   user: {}
 }
 
@@ -58,6 +59,9 @@ export const generalSlice = createSlice({
   reducers: {
     setErrors: (state, { payload }) => {
       state.errors = payload
+    },
+    isDataLoaded: (state, { payload }) => {
+      state.dataLoaded = payload
     }
   },
   extraReducers: builder => {
@@ -91,4 +95,4 @@ export const generalSlice = createSlice({
 
 export default generalSlice.reducer
 
-export const { setErrors } = generalSlice.actions
+export const { setErrors, isDataLoaded } = generalSlice.actions

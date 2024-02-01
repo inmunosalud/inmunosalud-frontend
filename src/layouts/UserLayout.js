@@ -1,6 +1,8 @@
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useRouter } from 'next/router'
 
+import { Modal, CircularProgress, Backdrop, useTheme } from '@mui/material'
+
 // ** Layout Imports
 // !Do not remove this Layout import
 import Layout from 'src/@core/layouts/Layout'
@@ -21,58 +23,74 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession, isDataLoaded } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
 import { loadInfo } from 'src/store/paymentMethods'
 import { addressList } from 'src/store/address'
 import { setActiveStep } from 'src/store/register'
 
+const LoadingModal = ({ open }) => {
+  const theme = useTheme()
+  return (
+    <Modal
+      open={open}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.palette.background.default
+      }}
+      closeAfterTransition
+    >
+      <CircularProgress color='primary' />
+    </Modal>
+  )
+}
+
 const UserLayout = ({ children }) => {
   // ** Hooks
   const dispatch = useDispatch()
-  const [dataLoaded, isDataLoaded] = useState(false)
   const { settings, saveSettings } = useSettings()
   const router = useRouter()
 
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user, dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
     if (!localStorage.getItem('im-user')) {
+      dispatch(isDataLoaded(true))
       return
     }
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
     }
-    if (user.id && !dataLoaded) {
+    if (user.id && !userInfo) {
       dispatch(getUserInfo(user.id))
-      if (userInfo) {
-        if (userInfo.flowStep >= 6) {
-          dispatch(getCart(user.id))
-          dispatch(loadInfo(user.id))
-          dispatch(addressList(user.id))
-          isDataLoaded(true)
-        }
+    }
+    if (userInfo && userInfo.flowStep >= 6) {
+      dispatch(getCart(user.id))
+      dispatch(loadInfo(user.id))
+      dispatch(addressList(user.id))
+      if (userInfo.flowStep === 7) {
+        dispatch(isDataLoaded(true))
       }
+    }
+    if (userInfo && userInfo.flowStep === 6) {
+      router.push('/ecommerce/cart/')
     }
     if (userInfo) {
-      if (userInfo.flowStep === 6 && dataLoaded) {
-        router.push('/ecommerce/cart/')
-      }
-    }
-    if (userInfo && !dataLoaded) {
       if (!userInfo.registrationCompleted) {
         if (userInfo.flowStep === 0) {
-          router.push('/register/welcome/')
+          router.replace('/register/welcome/')
         }
         if (userInfo.flowStep > 0 && userInfo.flowStep < 6) {
           dispatch(setActiveStep(userInfo.flowStep - 1))
-          router.push('/register/address/')
+          router.replace('/register/address/')
         }
       }
     }
-  }, [userInfo, user.id])
+  }, [userInfo, user.id, dataLoaded])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
@@ -85,41 +103,44 @@ const UserLayout = ({ children }) => {
   const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
   return (
-    <Layout
-      hidden={hidden}
-      settings={settings}
-      saveSettings={saveSettings}
-      {...(settings.layout === 'horizontal'
-        ? {
-            // ** Navigation Items
-            horizontalNavItems: HorizontalNavItems(),
+    <>
+      <Layout
+        hidden={hidden}
+        settings={settings}
+        saveSettings={saveSettings}
+        {...(settings.layout === 'horizontal'
+          ? {
+              // ** Navigation Items
+              horizontalNavItems: HorizontalNavItems(),
 
-            // Uncomment the below line when using server-side menu in horizontal layout and comment the above line
-            // horizontalNavItems: ServerSideHorizontalNavItems(),
-            // ** AppBar Content
-            horizontalAppBarContent: () => (
-              <HorizontalAppBarContent hidden={hidden} settings={settings} saveSettings={saveSettings} />
-            )
-          }
-        : {
-            // ** Navigation Items
-            verticalNavItems: VerticalNavItems(),
+              // Uncomment the below line when using server-side menu in horizontal layout and comment the above line
+              // horizontalNavItems: ServerSideHorizontalNavItems(),
+              // ** AppBar Content
+              horizontalAppBarContent: () => (
+                <HorizontalAppBarContent hidden={hidden} settings={settings} saveSettings={saveSettings} />
+              )
+            }
+          : {
+              // ** Navigation Items
+              verticalNavItems: VerticalNavItems(),
 
-            // Uncomment the below line when using server-side menu in vertical layout and comment the above line
-            // verticalNavItems: ServerSideVerticalNavItems(),
-            // ** AppBar Content
-            verticalAppBarContent: props => (
-              <VerticalAppBarContent
-                hidden={hidden}
-                settings={settings}
-                saveSettings={saveSettings}
-                toggleNavVisibility={props.toggleNavVisibility}
-              />
-            )
-          })}
-    >
-      {children}
-    </Layout>
+              // Uncomment the below line when using server-side menu in vertical layout and comment the above line
+              // verticalNavItems: ServerSideVerticalNavItems(),
+              // ** AppBar Content
+              verticalAppBarContent: props => (
+                <VerticalAppBarContent
+                  hidden={hidden}
+                  settings={settings}
+                  saveSettings={saveSettings}
+                  toggleNavVisibility={props.toggleNavVisibility}
+                />
+              )
+            })}
+      >
+        {children}
+      </Layout>
+      <LoadingModal open={!dataLoaded} />
+    </>
   )
 }
 
