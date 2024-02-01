@@ -8,12 +8,18 @@ import FormRegister from 'src/views/forms/forms-login-register/FormRegister'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import GoBackButton from 'src/views/components/goback/GoBack'
 import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import FallbackSpinner from 'src/@core/components/spinner'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
 
 const Register = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
   const { isLoading } = useSelector(state => state.session)
+
+  React.useEffect(() => {
+    dispatch(isDataLoaded(false))
+  }, [])
 
   // ** State
 

@@ -72,7 +72,7 @@ import { createAddress, getColonies, selectColony, updateAddress, addressList } 
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod, setOpenPay, setDeviceSessionId } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession, isDataLoaded } from 'src/store/dashboard/generalSlice'
 import { loadInfo } from 'src/store/paymentMethods'
 import { getCart } from 'src/store/cart'
 
@@ -421,6 +421,7 @@ export default function Address() {
 
   useEffect(() => {
     dispatch(loadSession())
+    dispatch(isDataLoaded(false))
   }, [])
 
   useEffect(() => {
@@ -555,7 +556,7 @@ export default function Address() {
   }
 
   const handleReset = () => {
-    router.push({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
+    router.replace({ pathname: '/ecommerce/cart', query: { type: 'affiliated' } })
   }
 
   const handleDownload = fullContract => {
