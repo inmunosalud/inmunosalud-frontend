@@ -43,21 +43,6 @@ import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
 import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getComissionsByUser } from 'src/store/comissions'
 
-const data = [
-  {
-    stats: '01/05/2023',
-    title: 'Próximo corte'
-  },
-  {
-    stats: '1 año 2 meses',
-    title: 'Antigüedad promedio'
-  },
-  {
-    stats: '$1,240.56',
-    title: 'Rendimiento promedio por cartera'
-  }
-]
-
 const dataList = {
   nivel1: [
     { nombre: 'Juan Ignacio', referencia: 'Alberto Ruiz' },
@@ -170,12 +155,7 @@ function getNextMonth(date) {
 
   const currentMonthIndex = spanishMonths.findIndex(month => month.startsWith(currentMonth))
 
-  let nextMonthIndex = currentMonthIndex + 1
-  if (nextMonthIndex === 12) {
-    nextMonthIndex = 0
-  }
-
-  const nextMonth = `${day} de ${spanishMonths[nextMonthIndex]}`
+  const nextMonth = `${day} de ${spanishMonths[currentMonthIndex]}`
 
   return nextMonth
 }
@@ -309,6 +289,7 @@ const Users = () => {
       colors: ['transparent']
     }
   }
+  const isEmptySeriesUsers = totalUsuariosActivos === 0 && totalUsuariosInactivos === 0
   const seriesUsers = [totalUsuariosActivos, totalUsuariosInactivos]
 
   const optionsCommissions = {
@@ -336,7 +317,11 @@ const Users = () => {
 
   const renderList = nivel => {
     if (!userInfo || !userInfo.network || !userInfo.network[nivel]) {
-      return null
+      return (
+        <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+          <List sx={{ minHeight: '180px' }}></List>
+        </Box>
+      )
     }
     return (
       <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
@@ -445,12 +430,6 @@ const Users = () => {
   }, [])
 
   React.useEffect(() => {
-    if (user.profile === 'Afiliado') {
-      getMonthlyCountdown(data[0].stats)
-    }
-  }, [user, userInfo])
-
-  React.useEffect(() => {
     if (userInfo?.cutoffDate) {
       setCutoffDate(getNextMonth(userInfo.cutoffDate))
     }
@@ -473,11 +452,6 @@ const Users = () => {
 
       setDataSeriesCommissionsHistory(data)
     }
-  }
-
-  const getMonthlyCountdown = date => {
-    const diffDays = moment(date, 'DD/MM/YYYY').diff(moment(), 'days')
-    data[0].stats = `${date} - Faltan ${diffDays} para el siguiente corte`
   }
 
   // Función para contar usuarios activos e inactivos en un nivel específico
@@ -564,7 +538,12 @@ const Users = () => {
                     <Grid item xs={12} md={7}>
                       <CardContent>
                         <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-                          <ReactApexcharts options={optionsUsers} series={seriesUsers} type='donut' width='300' />
+                          <ReactApexcharts
+                            options={optionsUsers}
+                            series={isEmptySeriesUsers ? [] : seriesUsers}
+                            type='donut'
+                            width='300'
+                          />
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                           <Typography variant='h5' color='primary' sx={{ mr: '20px' }}>
