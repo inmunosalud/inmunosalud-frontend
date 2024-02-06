@@ -12,6 +12,7 @@ import { Pencil } from 'mdi-material-ui'
 import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
 import { Button } from '@mui/material'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
 
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
@@ -111,6 +112,9 @@ const AdminLogistics = () => {
   React.useEffect(() => {
     dispatch(getOrders())
   }, [dispatch])
+  React.useEffect(() => {
+    dispatch(isDataLoaded(true))
+  }, [])
 
   const handleOpenModalEdit = item => {
     dispatch(setUpdatedOrder(item))
