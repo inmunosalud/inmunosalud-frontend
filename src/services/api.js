@@ -27,6 +27,9 @@ axiosInstance.interceptors.response.use(
   },
   error => {
     let message = ''
+    if (error.response.status === 503) {
+      message = 'Por favor intenté más tarde, si el error persiste contacte al soporte de Inmunosalud.'
+    }
     if (error.response.status === 404) {
       message = 'Error al enviar la petición.'
     } else if (error.response.data && error.response.data.message && error.response.data.message.error) {

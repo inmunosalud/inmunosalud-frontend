@@ -12,90 +12,70 @@ import { Pencil } from 'mdi-material-ui'
 import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
 import { Button } from '@mui/material'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
 
-import { getOrders, setUpdatedOrder } from 'src/store/orders'
+import { getLogisticsOrders } from 'src/store/orders'
 
 const columns = [
   {
-    minWidth: 80,
+    minWidth: 180,
     field: 'date',
     headerName: 'Fecha',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.userEmail}
-      </Typography>
-    )
+    valueGetter: params => params.row.purchaseDate
   },
   {
-    minWidth: 140,
+    minWidth: 240,
     field: 'contact',
     headerName: 'Contacto',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.userEmail}
-      </Typography>
-    )
+    valueGetter: params => params.row.user.name
   },
   {
-    minWidth: 110,
+    minWidth: 240,
     field: 'address',
     headerName: 'Dirección',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.paymentMethodMapped}
-      </Typography>
-    )
+    valueGetter: params => params.row.address.streetAndNumber
   },
   {
-    minWidth: 110,
+    minWidth: 240,
     field: 'colony',
     headerName: 'Colonia',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.shipmentMapped}
-      </Typography>
-    )
+    valueGetter: params => params.row.address.colony
+  },
+  {
+    minWidth: 130,
+    field: 'city',
+    headerName: 'Ciudad',
+    valueGetter: params => params.row.address.city
   },
   {
     minWidth: 100,
-    field: 'city',
-    headerName: 'Ciudad',
-    renderCell: params => {}
-  },
-  {
-    minWidth: 20,
-    maxWidth: 60,
     field: 'pc',
     headerName: 'CP',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        ${params.row.total}
-      </Typography>
-    )
+    valueGetter: params => params.row.address.zipCode
   },
   {
     minWidth: 120,
     field: 'state',
     headerName: 'Estado',
-    renderCell: params => {}
+    valueGetter: params => params.row.address.federalEntity
   },
   {
     minWidth: 120,
     field: 'phone',
     headerName: 'Teléfono',
-    renderCell: params => {}
+    valueGetter: params => params.row.user.phone
   },
   {
-    minWidth: 160,
+    minWidth: 260,
     field: 'reference',
     headerName: 'Referencia',
-    renderCell: params => {}
+    valueGetter: params => params.row.address.refer
   },
   {
-    minWidth: 190,
+    minWidth: 240,
     field: 'email',
     headerName: 'Correo Electrónico',
-    renderCell: params => {}
+    valueGetter: params => params.row.user.email
   }
 ]
 
@@ -108,14 +88,17 @@ const AdminLogistics = () => {
   const { users } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { ordersAll, isLoading } = useSelector(state => state.orders)
+
   React.useEffect(() => {
-    dispatch(getOrders())
+    dispatch(getLogisticsOrders())
   }, [dispatch])
 
-  const handleOpenModalEdit = item => {
-    dispatch(setUpdatedOrder(item))
-    router.push('/ecommerce/edit-order')
-  }
+  React.useEffect(() => {
+    dispatch(isDataLoaded(true))
+  }, [])
+  React.useEffect(() => {
+    console.log(ordersAll)
+  }, [ordersAll])
 
   function CustomToolbar() {
     return (

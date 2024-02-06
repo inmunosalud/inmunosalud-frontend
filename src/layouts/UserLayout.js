@@ -68,6 +68,9 @@ const UserLayout = ({ children }) => {
     if (user.id && !userInfo) {
       dispatch(getUserInfo(user.id))
     }
+    if (user.profile === 'Logistica') {
+      router.push('/dashboards/logistics')
+    }
     if (userInfo && userInfo.flowStep >= 6) {
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
