@@ -19,6 +19,17 @@ export const getOrders = createAsyncThunk('order/getAllOrders', async thunkApi =
   }
 })
 
+export const getLogisticsOrders = createAsyncThunk('order/getLogisticsOrders', async thunkApi => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${ORDERS}/orders/logistics/`, auth)
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 export const getOrdersByUser = createAsyncThunk('order/getOrders', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
@@ -180,6 +191,16 @@ export const ordersSlice = createSlice({
       state.ordersAll = mappedOrders
     })
     builder.addCase(getOrders.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(getLogisticsOrders.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(getLogisticsOrders.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(getLogisticsOrders.fulfilled, (state, { payload }) => {
+      state.ordersAll = payload.content
       state.isLoading = false
     })
     builder.addCase(updateOrder.fulfilled, (state, { payload }) => {
