@@ -96,9 +96,6 @@ const AdminLogistics = () => {
   React.useEffect(() => {
     dispatch(isDataLoaded(true))
   }, [])
-  React.useEffect(() => {
-    console.log(logisticsOrdersAll)
-  }, [logisticsOrdersAll])
 
   function CustomToolbar() {
     return (
