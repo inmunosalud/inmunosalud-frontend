@@ -27,7 +27,7 @@ const columns = [
     minWidth: 240,
     field: 'contact',
     headerName: 'Contacto',
-    valueGetter: params => params.row.user.name
+    valueGetter: params => params.row.user.name ?? 'Sin Datos'
   },
   {
     minWidth: 240,
@@ -48,9 +48,9 @@ const columns = [
     valueGetter: params => params.row.address.city
   },
   {
-    minWidth: 100,
-    field: 'pc',
-    headerName: 'CP',
+    minWidth: 140,
+    field: 'zipCode',
+    headerName: 'Código Postal',
     valueGetter: params => params.row.address.zipCode
   },
   {
@@ -63,7 +63,7 @@ const columns = [
     minWidth: 120,
     field: 'phone',
     headerName: 'Teléfono',
-    valueGetter: params => params.row.user.phone
+    valueGetter: params => params.row.user.phone ?? 'Sin Datos'
   },
   {
     minWidth: 260,
@@ -87,7 +87,7 @@ const AdminLogistics = () => {
   const { user } = useSelector(state => state.session)
   const { users } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { ordersAll, isLoading } = useSelector(state => state.orders)
+  const { logisticsOrdersAll, isLoading } = useSelector(state => state.orders)
 
   React.useEffect(() => {
     dispatch(getLogisticsOrders())
@@ -97,8 +97,8 @@ const AdminLogistics = () => {
     dispatch(isDataLoaded(true))
   }, [])
   React.useEffect(() => {
-    console.log(ordersAll)
-  }, [ordersAll])
+    console.log(logisticsOrdersAll)
+  }, [logisticsOrdersAll])
 
   function CustomToolbar() {
     return (
@@ -119,7 +119,7 @@ const AdminLogistics = () => {
         <DataGrid
           autoHeight
           loading={isLoading}
-          rows={ordersAll}
+          rows={logisticsOrdersAll}
           disableColumnMenu={true}
           columns={columns}
           sx={{ width: '100%' }}

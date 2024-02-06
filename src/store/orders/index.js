@@ -123,6 +123,7 @@ const initialState = {
   messageValid: '',
   orders: [],
   ordersAll: [],
+  logisticsOrdersAll: [],
   cvv: '',
   itemUpdated: null,
   isUpdate: false,
@@ -200,7 +201,7 @@ export const ordersSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getLogisticsOrders.fulfilled, (state, { payload }) => {
-      state.ordersAll = payload.content
+      state.logisticsOrdersAll = payload.content
       state.isLoading = false
     })
     builder.addCase(updateOrder.fulfilled, (state, { payload }) => {
