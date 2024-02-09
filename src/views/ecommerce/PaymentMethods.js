@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
@@ -12,6 +13,8 @@ import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 import { setPayment } from 'src/store/cart'
+
+import Image from 'next/image'
 
 export const PaymentMethods = ({ onClose }) => {
   const dispatch = useDispatch()
@@ -44,31 +47,41 @@ export const PaymentMethods = ({ onClose }) => {
             }
           }}
         >
-          <div>
-            <img height='20' alt={item.imgAlt} src={item.imgSrc} />
-            <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
-              <Typography sx={{ fontWeight: 500 }}>{item.nameOnCard}</Typography>
-              {item.cardStatus ? (
-                <CustomChip
-                  skin='light'
-                  size='small'
-                  label={item.cardStatus}
-                  color={item.badgeColor}
-                  sx={{ height: 20, ml: 2, fontSize: '0.75rem', fontWeight: 600, borderRadius: '5px' }}
+          <Grid container>
+            <Grid xs={7.5} item>
+              <Box>
+                <Image
+                  width={'32.5'}
+                  height='20'
+                  alt={item.cardType}
+                  src={
+                    item.cardType === 'mastercard'
+                      ? '/images/logos/mastercard.png'
+                      : item.cardType === 'visa'
+                      ? '/images/logos/visa.png'
+                      : '/images/logos/american-express.png'
+                  }
                 />
-              ) : null}
-            </Box>
-            <Typography variant='body2'>{item.cardNumber}</Typography>
-          </div>
-
-          <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-            <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleSelectPaymentMethod(item)}>
-              {selectedPayment === item ? 'Seleccionado' : 'Seleccionar'}
-            </Button>
-            <Typography variant='body2' sx={{ mt: 5 }}>
-              Expira el {item.expDate}
-            </Typography>
-          </Box>
+                <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                  <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
+                </Box>
+                <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>
+                  <Typography>{item.nameOnCard}</Typography>
+                </Box>
+                <Typography variant='body2'>{item.cardNumber}</Typography>
+              </Box>
+            </Grid>
+            <Grid xs={4} item>
+              <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
+                <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleSelectPaymentMethod(item)}>
+                  {selectedPayment === item ? 'Seleccionado' : 'Seleccionar'}
+                </Button>
+                <Typography variant='body2' sx={{ mt: 10, mr: '-15px' }}>
+                  Expira el {item.expDate}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       ))}
     </Fragment>
