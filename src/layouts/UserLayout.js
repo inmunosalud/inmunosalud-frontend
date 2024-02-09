@@ -43,7 +43,9 @@ const LoadingModal = ({ open }) => {
       }}
       closeAfterTransition
     >
-      <CircularProgress color='primary' />
+      <div style={{ pointerEvents: 'none' }}>
+        <CircularProgress color='primary' />
+      </div>
     </Modal>
   )
 }
