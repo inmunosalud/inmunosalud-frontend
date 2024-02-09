@@ -17,17 +17,13 @@ import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
   {
-    minWidth: 180,
+    width: 200,
     field: 'c',
     headerName: 'Usuario',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.userEmail}
-      </Typography>
-    )
+    renderCell: params => params.row.userEmail
   },
   {
-    minWidth: 110,
+    width: 240,
     field: 'paymentMethodMapped',
     headerName: 'Método de Pago',
     renderCell: params => (
@@ -37,7 +33,7 @@ const columns = [
     )
   },
   {
-    minWidth: 110,
+    width: 160,
     field: 'shipmentMapped',
     headerName: 'Numero de Guía',
     renderCell: params => (
@@ -47,7 +43,7 @@ const columns = [
     )
   },
   {
-    minWidth: 110,
+    width: 110,
     field: 'address',
     headerName: 'Dirección',
     renderCell: params => (
@@ -57,13 +53,13 @@ const columns = [
     )
   },
   {
-    minWidth: 100,
+    width: 120,
     field: 'totalProducts',
     headerName: 'Productos',
     renderCell: params => {}
   },
   {
-    minWidth: 140,
+    width: 160,
     field: 'total',
     headerName: 'Total del pedido',
     renderCell: params => (
@@ -73,25 +69,25 @@ const columns = [
     )
   },
   {
-    minWidth: 180,
+    width: 180,
     field: 'deliveryStatus',
     headerName: 'Estatus de envio',
     renderCell: params => {}
   },
   {
-    minWidth: 180,
+    width: 180,
     headerName: 'Fecha de compra',
     field: 'purchaseDate',
     renderCell: params => {}
   },
   {
-    minWidth: 160,
+    width: 160,
     headerName: 'Fecha estimada de envio',
     field: 'deliveryEstimateDate',
     renderCell: params => {}
   },
   {
-    minWidth: 120,
+    width: 120,
     headerName: 'Fecha de entrega',
     field: 'deliveryDate',
     renderCell: params => {}
