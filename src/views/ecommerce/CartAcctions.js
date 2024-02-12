@@ -51,7 +51,8 @@ const CartActions = () => {
       return
     }
     if (products[0].canBeRemoved === false) {
-      const cartPrice = total.shippingCost - total.total
+      const cartPrice = total.total - total.shippingCost
+      console.log('cart', cartPrice, constants.minimalAmountOfPurchase)
       if (cartPrice < constants.minimalAmountOfPurchase) {
         dispatch(
           openSnackBar({
