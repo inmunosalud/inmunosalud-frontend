@@ -51,8 +51,8 @@ export const PaymentMethods = ({ onClose }) => {
             <Grid xs={7.5} item>
               <Box>
                 <Image
-                  width={'32.5'}
-                  height='20'
+                  width={item.cardType === 'mastercard' ? '32.5' : item.cardType === 'visa' ? '60' : '60'}
+                  height={item.cardType === 'mastercard' ? '20' : item.cardType === 'visa' ? '20' : '20'}
                   alt={item.cardType}
                   src={
                     item.cardType === 'mastercard'
