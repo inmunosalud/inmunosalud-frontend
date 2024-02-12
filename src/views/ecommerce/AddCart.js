@@ -279,10 +279,13 @@ const AddCard = props => {
                 Tarjeta: {selectedPayment?.cardType}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
-                Numero: {selectedPayment?.cardNumber}
+                Alias: {selectedPayment?.alias}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Nombre: {selectedPayment?.nameOnCard}
+              </Typography>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                Numero: {selectedPayment?.cardNumber}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Fecha: {selectedPayment?.expDate}
