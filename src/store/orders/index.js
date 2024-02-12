@@ -47,7 +47,6 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
   try {
     const response = await api_patch(`${ORDERS}/orders/${body.idParam}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(getOrders())
     Router.push('/orders/admin-orders')
     return response
   } catch (error) {
@@ -206,6 +205,12 @@ export const ordersSlice = createSlice({
     })
     builder.addCase(updateOrder.fulfilled, (state, { payload }) => {
       state.orders = payload
+    })
+    builder.addCase(updateOrder.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateOrder.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(createOrder.fulfilled, (state, { payload }) => {
       state.isLoading = false

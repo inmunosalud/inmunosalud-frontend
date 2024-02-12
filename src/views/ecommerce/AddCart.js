@@ -346,7 +346,7 @@ const AddCard = props => {
                           Artículo
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <img width={40} height={50} alt='img' src={product.urlImage} />
+                          <Image width={40} height={50} alt='img' src={product.urlImage} />
                           <Typography sx={{ ml: 3 }}>{product.product}</Typography>
                         </Box>
                       </Grid>
@@ -376,7 +376,7 @@ const AddCard = props => {
                           placeholder='1'
                           defaultValue={product.quantity}
                           InputProps={{
-                            // inputProps: { min: getMinQuantity(product.id, product.canBeRemoved) },
+                            inputProps: { min: 0 },
                             onKeyDown: handleKeyDown,
                             onKeyPress: handleKeyPress
                           }}
@@ -395,11 +395,9 @@ const AddCard = props => {
                       </Grid>
                     </Grid>
                     <InvoiceAction>
-                      {product.canBeRemoved ? (
-                        <IconButton size='small' onClick={e => deleteForm(product.id)}>
-                          <Close fontSize='small' />
-                        </IconButton>
-                      ) : null}
+                      <IconButton size='small' onClick={e => deleteForm(product.id)}>
+                        <Close fontSize='small' />
+                      </IconButton>
                     </InvoiceAction>
                   </RepeatingContent>
                 </Grid>
@@ -453,15 +451,6 @@ const AddCard = props => {
               </CalcWrapper>
             </Grid>
           </Grid>
-        </CardContent>
-
-        <Divider />
-
-        <CardContent>
-          <InputLabel htmlFor='invoice-note' sx={{ mb: 2 }}>
-            Nota:
-          </InputLabel>
-          <TextField rows={2} fullWidth multiline id='invoice-note' />
         </CardContent>
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
