@@ -59,6 +59,8 @@ const UserLayout = ({ children }) => {
   const { user, dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
+  useEffect(() => {}, [])
+
   useEffect(() => {
     if (!localStorage.getItem('im-user')) {
       dispatch(isDataLoaded(true))
@@ -73,13 +75,13 @@ const UserLayout = ({ children }) => {
     if (user.profile === 'Logistica') {
       router.push('/dashboards/logistics')
     }
-    if (userInfo && userInfo.flowStep >= 6) {
+    if (userInfo && userInfo.flowStep >= 6 && !dataLoaded) {
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
       dispatch(addressList(user.id))
-      if (userInfo.flowStep === 7) {
-        dispatch(isDataLoaded(true))
-      }
+    }
+    if (userInfo && userInfo.flowStep === 7) {
+      dispatch(isDataLoaded(true))
     }
     if (userInfo && userInfo.flowStep === 6) {
       router.push('/ecommerce/cart/')
