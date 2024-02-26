@@ -343,9 +343,8 @@ export default function AffiliationPage() {
                         </Typography>
                         <Typography variant='body2'>
                           Esteban y María han estado consumiendo el mínimo mensual lo cual le genera a Juan una ganancia
-                          del 5% sobre el monto total de compra de cada uno. José por su lado, no hizo el consumo
-                          mensual por lo cual no generará comisión para Juan y José no podrá recibir comisión de su(s)
-                          referido(s) ni de su red debido a que está inactivo.
+                          del 5% sobre el monto total de compra de cada uno. José por su lado no hizo el consumo mensual
+                          por lo cual generara comisión para juan pero no recibirá comisión de su red de referidos.
                         </Typography>
                       </Box>
                     </Parallax>
@@ -407,7 +406,7 @@ export default function AffiliationPage() {
                       <Grid item xs={12} sm={4}>
                         <Typography variant='body2' sx={{ mr: '10px', ml: '10px' }}>
                           Armando por lo general se le complica comprar el pedido mensual y se mantiene inactivo. Por lo
-                          que ni Esteban ni Juan recibirán comisión por parte de Armando.
+                          que no podrá recibir comisiones de su red.
                         </Typography>
                       </Grid>
                       <Grid item xs={12} sm={4}>
@@ -445,8 +444,7 @@ export default function AffiliationPage() {
                       <Grid item xs={12} sm={4}></Grid>
                       <Grid item xs={12} sm={4}>
                         <Typography variant='body2'>
-                          Alma se mantiene como usuario consumidor. Sin embargo lo que consume no cubre el mínimo
-                          mensual por lo cual queda como consumidor inactivo.
+                          Alma no ha comprado nada por lo que cual no genera comisión para nadie.
                         </Typography>
                       </Grid>
                     </Grid>
@@ -882,9 +880,8 @@ export default function AffiliationPage() {
                       </Typography>
                       <Typography variant='body2'>
                         Esteban y María han estado consumiendo el mínimo mensual lo cual le genera a Juan una ganancia
-                        del 5% sobre el monto total de compra de cada uno. José por su lado, no hizo el consumo mensual
-                        por lo cual no generará comisión para Juan y José no podrá recibir comisión de su(s) referido(s)
-                        ni de su red debido a que está inactivo.
+                        del 5% sobre el monto total de compra de cada uno. José por su lado no hizo el consumo mensual
+                        por lo cual generara comisión para juan pero no recibirá comisión de su red de referidos.
                       </Typography>
                     </Box>
                   </Grid>
@@ -938,7 +935,7 @@ export default function AffiliationPage() {
                     <Grid item xs={12} sm={4}>
                       <Typography variant='body2'>
                         Armando por lo general se le complica comprar el pedido mensual y se mantiene inactivo. Por lo
-                        que ni Esteban ni Juan recibirán comisión por parte de Armando.
+                        que no podrá recibir comisiones de su red.
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -972,8 +969,7 @@ export default function AffiliationPage() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography variant='body2'>
-                        Alma se mantiene como usuario consumidor. Sin embargo lo que consume no cubre el mínimo mensual
-                        por lo cual queda como consumidor inactivo.
+                        Alma no ha comprado nada por lo que cual no genera comisión para nadie.
                       </Typography>
                     </Grid>
                   </Grid>

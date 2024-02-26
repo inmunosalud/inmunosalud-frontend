@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import DialogDelete from 'src/views/components/dialogs/DialogDelete'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getLocaleText } from '../../../configs/defaultLocaleText'
 import { Button } from '@mui/material'
 
@@ -21,7 +21,7 @@ import { columns } from './configTable'
 
 const TableUsers = () => {
   const dispatch = useDispatch()
-  const [pageSize, setPageSize] = React.useState(10)
+  const [pageSize, setPageSize] = React.useState(50)
 
   const { showModal, modalRow, showDelete, users, loading } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -90,6 +90,9 @@ const TableUsers = () => {
           onPageSizeChange={newPageSize => setPageSize(newPageSize)}
           localeText={getLocaleText()}
           loading={loading}
+          components={{
+            Toolbar: GridToolbar
+          }}
         />
       </Card>
       <DialogDelete

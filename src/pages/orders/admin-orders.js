@@ -97,7 +97,7 @@ const columns = [
 const AdminOrders = () => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const [pageSize, setPageSize] = React.useState(5)
+  const [pageSize, setPageSize] = React.useState(100)
 
   const { user } = useSelector(state => state.session)
   const { users } = useSelector(state => state.users)

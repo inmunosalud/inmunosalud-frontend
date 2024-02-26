@@ -16,6 +16,7 @@ import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
 import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 import { OPENPAY_ID, OPENPAY_KEY } from 'src/services/api'
+import { openSnackBar } from 'src/store/notifications'
 
 const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
@@ -33,6 +34,7 @@ const InvoicePreview = ({}) => {
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { isLoading, cvv } = useSelector(state => state.orders)
+  const timestampInSeconds = Math.floor(Date.now() / 1000)
 
   const data = {
     products,
@@ -69,18 +71,36 @@ const InvoicePreview = ({}) => {
   return (
     <>
       <Script
-        src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+        src={`https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js?timestamp=${timestampInSeconds}`}
         onLoad={() => {
           setOpenPayObject(OpenPay)
         }}
+        strategy={'beforeInteractive'}
+        onError={e => {
+          console.error('Script failed to load', e)
+          openSnackBar({
+            open: true,
+            message: 'Error en el sistema de pagos intenta iniciando sesión nuevamente',
+            severity: 'error'
+          })
+        }}
       />
       <Script
-        src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+        src={`https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js?timestamp=${timestampInSeconds}`}
         onLoad={() => {
           OpenPay.setId(OPENPAY_ID)
           OpenPay.setApiKey(OPENPAY_KEY)
           const deviceSessionId = OpenPay.deviceData.setup()
           setDeviceData(deviceSessionId)
+        }}
+        strategy={'beforeInteractive'}
+        onError={e => {
+          console.error('Script failed to load', e)
+          openSnackBar({
+            open: true,
+            message: 'Error en el sistema de pagos intenta iniciando sesión nuevamente',
+            severity: 'error'
+          })
         }}
       />
       <Grid container spacing={6}>

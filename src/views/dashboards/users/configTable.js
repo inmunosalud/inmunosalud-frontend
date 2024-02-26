@@ -5,9 +5,9 @@ import GraphRow from './GraphRow'
 
 const useGraphConfig =
   (network = {}) =>
-    (type = '') => {
-      return network[type]
-    }
+  (type = '') => {
+    return network[type]
+  }
 
 const getValidUsers = (row, type) => {
   if (!row.network || !row.network[type]) return 0
@@ -76,7 +76,7 @@ export const columns = [
   {
     flex: 0.125,
     field: 'last',
-    minWidth: 80,
+    minWidth: 100,
     headerName: 'Comisión',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
@@ -113,7 +113,7 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: "Nivel 1",
+    headerName: 'Nivel 1',
     field: 1,
     renderCell: params => {
       const value = getValidUsers(params.row, 1)
@@ -128,7 +128,7 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: "Nivel 2",
+    headerName: 'Nivel 2',
     field: 2,
     renderCell: params => {
       const value = getValidUsers(params.row, 2)
@@ -143,7 +143,7 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: "Nivel 3",
+    headerName: 'Nivel 3',
     field: 3,
     renderCell: params => {
       const value = getValidUsers(params.row, 3)
@@ -158,7 +158,7 @@ export const columns = [
   {
     flex: 0.175,
     minWidth: 80,
-    headerName: "Nivel 4",
+    headerName: 'Nivel 4',
     field: 4,
     renderCell: params => {
       const value = getValidUsers(params.row, 4)

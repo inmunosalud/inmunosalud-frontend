@@ -1,7 +1,7 @@
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useRouter } from 'next/router'
 
-import { Modal, CircularProgress, Backdrop, useTheme } from '@mui/material'
+import { Modal, CircularProgress, Backdrop, useTheme, Box } from '@mui/material'
 
 // ** Layout Imports
 // !Do not remove this Layout import
@@ -35,7 +35,7 @@ const LoadingModal = ({ open }) => {
   return (
     <Modal
       open={open}
-      style={{
+      sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -43,9 +43,18 @@ const LoadingModal = ({ open }) => {
       }}
       closeAfterTransition
     >
-      <div style={{ pointerEvents: 'none' }}>
+      <Box
+        sx={{
+          height: '1000vh',
+          width: '1000vh',
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+      >
         <CircularProgress color='primary' />
-      </div>
+      </Box>
     </Modal>
   )
 }

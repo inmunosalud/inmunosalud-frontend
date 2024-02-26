@@ -3,6 +3,7 @@ import React, { forwardRef, useState, useEffect, Fragment, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import Image from 'next/image'
+import { openSnackBar } from 'src/store/notifications'
 
 // ** MUI Components Imports
 import {
@@ -353,6 +354,7 @@ export default function Address() {
   const [disabled, setDisabled] = useState(false)
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
   const [numPages, setNumPages] = React.useState(null)
+  const timestampInSeconds = Math.floor(Date.now() / 1000)
 
   // Get the current year
   const currentYear = new Date().getFullYear()
@@ -1074,18 +1076,36 @@ export default function Address() {
         return (
           <form key={2} onSubmit={handlePaymentSubmit(onPaymentSubmit)}>
             <Script
-              src='https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js'
+              src={`https://resources.openpay.mx/lib/openpay-js/1.2.38/openpay.v1.min.js?timestamp=${timestampInSeconds}`}
               onLoad={() => {
                 setOpenPayObject(OpenPay)
               }}
+              strategy={'beforeInteractive'}
+              onError={e => {
+                console.error('Script failed to load', e)
+                openSnackBar({
+                  open: true,
+                  message: 'Error en el sistema de pagos intenta iniciando sesión nuevamente',
+                  severity: 'error'
+                })
+              }}
             />
             <Script
-              src='https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js'
+              src={`https://resources.openpay.mx/lib/openpay-data-js/1.2.38/openpay-data.v1.min.js?timestamp=${timestampInSeconds}`}
               onLoad={() => {
                 OpenPay.setId(OPENPAY_ID)
                 OpenPay.setApiKey(OPENPAY_KEY)
                 const deviceSessionId = OpenPay.deviceData.setup()
                 setDeviceData(deviceSessionId)
+              }}
+              strategy={'beforeInteractive'}
+              onError={e => {
+                console.error('Script failed to load', e)
+                openSnackBar({
+                  open: true,
+                  message: 'Error en el sistema de pagos intenta iniciando sesión nuevamente',
+                  severity: 'error'
+                })
               }}
             />
             <Grid container spacing={5}>

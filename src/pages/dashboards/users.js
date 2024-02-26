@@ -616,7 +616,7 @@ const Users = () => {
                       <CardContent>
                         <Box sx={{ alignItems: 'center' }}>
                           <Typography variant='h7' sx={{ mt: '20px' }} color={theme.palette.success.main}>
-                            Comisión a pagar por usuarios activos:
+                            Comisión a pagar:
                           </Typography>
                           <Typography variant='h5' color={theme.palette.success.main}>
                             ${userInfo?.commission?.nextReal}
