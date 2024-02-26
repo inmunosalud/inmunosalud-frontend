@@ -1615,35 +1615,47 @@ export default function Address() {
                 </Grid>
               )}
               <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
+                <InputLabel id='identificationType-label'>
+                  Método de facturación para recibir pago de comisión
+                </InputLabel>
+                <FormControl component='fieldset'>
                   <Controller
-                    name='rfc'
+                    name='identificationType'
                     control={taxInfoControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <TextField
+                      <RadioGroup
                         value={value}
-                        label='RFC'
-                        sx={{ mt: '30px' }}
-                        onInput={e => {
-                          // Convertir el valor a mayúsculas antes de actualizar el estado
-                          e.target.value = e.target.value.toUpperCase()
-                          onChange(e)
+                        sx={{ mr: '100px' }}
+                        onChange={e => {
+                          const value = e.target.value
+                          onChange(value)
                           setData(prevData => ({
                             ...prevData,
-                            rfc: e.target.value
+                            identificationType: value
                           }))
                         }}
-                        placeholder='RFC'
-                        style={{ textTransform: 'uppercase' }}
-                        error={Boolean(taxInfoErrors['rfc'])}
-                      />
+                      >
+                        <FormControlLabel
+                          value={1}
+                          control={<Radio size='small' />}
+                          label={<Typography variant='body2'>Quiero generar factura</Typography>}
+                          sx={{ marginY: 0 }}
+                        />
+                        <FormControlLabel
+                          value={2}
+                          control={<Radio size='small' />}
+                          label={
+                            <Typography variant='body2'>Liberar dinero sin factura (se retiene IVA 16%)</Typography>
+                          }
+                          sx={{ marginY: -3 }}
+                        />
+                      </RadioGroup>
                     )}
                   />
-                  <FormHelperText id='helper-linear-taxInfo-rfc'>Ingrese el RFC sin guiones o espacios</FormHelperText>
-                  {taxInfoErrors['rfc'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-rfc'>
-                      {taxInfoErrors['rfc'] ? taxInfoErrors['rfc'].message : 'El campo es requerido'}
+                  {taxInfoErrors['identificationType'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-taxInfo-identificationType'>
+                      {taxInfoErrors['identificationType']?.message || 'El campo es requerido'}
                     </FormHelperText>
                   )}
                 </FormControl>

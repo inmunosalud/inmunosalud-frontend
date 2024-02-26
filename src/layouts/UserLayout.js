@@ -41,7 +41,6 @@ const LoadingModal = ({ open }) => {
         justifyContent: 'center',
         backgroundColor: theme.palette.background.default
       }}
-      closeAfterTransition
     >
       <Box
         sx={{
@@ -67,8 +66,6 @@ const UserLayout = ({ children }) => {
 
   const { user, dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
-
-  useEffect(() => {}, [])
 
   useEffect(() => {
     if (!localStorage.getItem('im-user')) {
