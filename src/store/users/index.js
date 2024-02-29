@@ -151,6 +151,20 @@ export const recoverPassword = createAsyncThunk('users/passwordRecoveryCode', as
     return thunkApi.rejectWithValue('error')
   }
 })
+export const validatePasswordRecoveryCode = createAsyncThunk(
+  'users/validatePasswordRecoveryCode',
+  async (body, thunkApi) => {
+    try {
+      const response = await api_post(`${PROYECT}/users/validatePasswordRecoveryCode`, body)
+      return response
+    } catch (error) {
+      const errMessage = error?.response?.data?.message
+      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+      return thunkApi.rejectWithValue('error')
+    }
+  }
+)
+
 //validate Verification Code
 export const validateVerificationCode = createAsyncThunk('users/validateVerificationCode', async (body, thunkApi) => {
   try {
@@ -378,6 +392,15 @@ export const usersSlice = createSlice({
       state.isLoading = false
     })
     builder.addCase(recoverPassword.rejected, state => {
+      state.isLoading = false
+    })
+    builder.addCase(validatePasswordRecoveryCode.pending, state => {
+      state.isLoading = true
+    })
+    builder.addCase(validatePasswordRecoveryCode.fulfilled, state => {
+      state.isLoading = false
+    })
+    builder.addCase(validatePasswordRecoveryCode.rejected, state => {
       state.isLoading = false
     })
     builder.addCase(validateVerificationCode.pending, state => {
