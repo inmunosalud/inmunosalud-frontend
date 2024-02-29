@@ -191,10 +191,22 @@ const UserProfileAddress = () => {
         />
       </Card>
       {isLoading ? (
-        <FallbackSpinner />
+        <Card>
+          <Box
+            sx={{
+              width: '100%',
+              height: '63.5vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <FallbackSpinner />
+          </Box>
+        </Card>
       ) : (
         address.map(item => (
-          <Card key={item.id} sx={{ margin: '20px 0px' }}>
+          <Card>
             <CardHeader
               title='Dirección'
               titleTypographyProps={{ variant: 'h6' }}
@@ -436,7 +448,7 @@ const UserProfileAddress = () => {
         onClose={() => setOpenDeleteCard(false)}
         sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 450, p: [2, 5] } }}
       >
-        <DialogContent>Seguro de eliminar la direccion seleccionada?</DialogContent>
+        <DialogContent>¿Estas seguro de eliminar la dirección seleccionada?</DialogContent>
         <DialogActions>
           <Button variant='contained' sx={{ mr: 1 }} onClick={() => sendDelete()}>
             Eliminar

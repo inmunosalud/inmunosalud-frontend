@@ -25,20 +25,19 @@ export const updateMonthlyPurchase = createAsyncThunk(
 
       return response
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response && error.response.data && error.response.data.message && error.response.data.message === 500) {
         thunkApi.dispatch(
           openSnackBar({
             open: true,
-            message: error.response.data.message,
+            message: error.response.data.content.details,
             severity: 'error'
           })
         )
-      }
-      if (error.response.status == 500) {
+      } else if (error.response && error.response.data && error.response.data.message) {
         thunkApi.dispatch(
           openSnackBar({
             open: true,
-            message: 'El total del pedido no puede ser menor a la compra mensual requerida',
+            message: error.response.data.content.details.error,
             severity: 'error'
           })
         )

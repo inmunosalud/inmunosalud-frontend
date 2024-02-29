@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -17,6 +18,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
 import Alert from '@mui/material/Alert'
+import VerificationInput from 'react-verification-input'
 
 // ** Icons Imports
 import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -27,63 +29,14 @@ import {
   setShowConfirmModal,
   setRecoveryCode,
   updatePassword,
-  validateVerificationCode
+  validatePasswordRecoveryCode
 } from 'src/store/users'
 import { CircularProgress } from '@mui/material'
-
-const modalContentStyle = {
-  display: 'inline-block',
-  padding: '1.2rem 2.6rem',
-  borderRadius: '9px',
-  boxShadow: '0.8rem 1.2rem 3.2rem rgba(0, 0, 0, 0.3)',
-  backgroundColor: '#0d1625',
-  color: 'rgb(239, 239, 239)',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)'
-}
-
-const passwordModalStyle = {
-  display: 'inline-block',
-  padding: '1.2rem 2.6rem',
-  borderRadius: '9px',
-  color: 'rgb(239, 239, 239)',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)'
-}
-
-const inputStyle = {
-  size: '1',
-  border: 'none',
-  backgroundColor: '#eee',
-  textAlign: 'center',
-  borderRadius: '11px',
-  padding: '12px',
-  caretColor: 'transparent !important'
-}
-
-const formStyle = {
-  display: 'flex',
-  alignItems: 'stretch',
-  gap: '0.8rem'
-}
-
-const buttonStyle = {
-  padding: ' 12px',
-  backgroundColor: '#0070f0',
-  borderRadius: '11px',
-  color: 'white',
-  transition: 'all 0.3s',
-  border: 'none',
-  cursor: 'pointer'
-}
 
 const VerifyCodeModal = ({ open, handleClose, userData }) => {
   const array = new Array(6).fill('')
   const dispatch = useDispatch()
+  const [verificationCode, setVerificationCode] = useState('')
 
   const { recoveryCode } = useSelector(state => state.users)
   const [code, setCode] = useState(array)
@@ -108,41 +61,32 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
     })
   }, [])
 
-  useEffect(() => {
-    const currentInput = document.getElementById(`input-${currentIndex}`)
-    if (currentInput) {
-      currentInput.focus()
-    }
-  }, [currentIndex])
-
-  const handleVerifyCode = () => {
-    dispatch(setRecoveryCode(Number(code.join(''))))
+  const validateCodeEmail = () => {
     const body = {
-      email: userData.email,
-      code: Number(code.join(''))
+      email: userData.email
     }
 
-    setShowForm(true)
     setShowInputs(true)
-    // dispatch(validateVerificationCode(body)).then(response => {
-    //   if (response.payload === 'error') return
-
-    // })
+    dispatch(recoverPassword(body)).then(response => {
+      if (response.payload === 'error') dispatch(setShowConfirmModal(false))
+    })
   }
 
-  const handleForm = (event, index) => {
-    const { value } = event.target
-    setCode(prevCode => {
-      const newCode = [...prevCode]
-      newCode[index] = value
-      return newCode
-    })
-    if (/^\d$/.test(value)) {
-      const nextIndex = index + 1
-      if (nextIndex < code.length) {
-        setCurrentIndex(nextIndex)
-      }
+  const handleVerifyCode = value => {
+    const body = {
+      email: userData.email,
+      code: value
     }
+
+    dispatch(validatePasswordRecoveryCode(body)).then(response => {
+      if (response.payload === 'error') {
+        return
+      } else {
+        setVerificationCode(value)
+        setShowForm(true)
+        setShowInputs(true)
+      }
+    })
   }
 
   const verifyPasswords = () => {
@@ -165,7 +109,7 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
 
     const body = {
       email: userData.email,
-      code: recoveryCode,
+      code: verificationCode,
       password: passwords.password
     }
 
@@ -181,39 +125,37 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
   const renderPasswordInputs = () => {
     return (
       <>
-        <Card>
-          <CardHeader title='Actualizar Contraseña' titleTypographyProps={{ variant: 'h6' }} />
-          <CardContent>
-            <Stack spacing={2}>
-              <InputLabel htmlFor='password'>Ingresa tu nueva contraseña</InputLabel>
-              <TextField
-                id='password'
-                label='Contraseña'
-                variant='outlined'
-                onChange={e => handlePasswordInput(e)}
-                type='password'
-                required
-              />
-              <InputLabel htmlFor='reWritedPassword'>Ingresa nuevamente tu contraseña</InputLabel>
-              <TextField
-                id='reWritedPassword'
-                label='Contraseña'
-                variant='outlined'
-                onChange={e => handlePasswordInput(e)}
-                type='password'
-                required
-              />
-              <Button variant='contained' onClick={handleUpdatePassword}>
-                Actualizar Contraseña
-              </Button>
-            </Stack>
-            {error && (
-              <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
-                {error}
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
+        <CardHeader title='Actualizar Contraseña' />
+        <Stack spacing={2}>
+          <InputLabel htmlFor='password'>Ingresa tu nueva contraseña</InputLabel>
+          <TextField
+            id='password'
+            label='Contraseña'
+            variant='outlined'
+            onChange={e => handlePasswordInput(e)}
+            type='password'
+            required
+          />
+          <InputLabel htmlFor='reWritedPassword'>Ingresa nuevamente tu contraseña</InputLabel>
+          <TextField
+            id='reWritedPassword'
+            label='Contraseña'
+            variant='outlined'
+            onChange={e => handlePasswordInput(e)}
+            type='password'
+            required
+          />
+          <CardActions>
+            <Button variant='contained' onClick={handleUpdatePassword}>
+              Actualizar Contraseña
+            </Button>
+          </CardActions>
+        </Stack>
+        {error && (
+          <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
+            {error}
+          </Alert>
+        )}
       </>
     )
   }
@@ -222,39 +164,70 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
     return !showInputs ? (
       <CircularProgress />
     ) : (
-      <div className='inputs--container'>
-        <h2 class='heading-secondary margin-bottom-m'>Ingresar Codigo</h2>
-        <p class='margin-bottom-s'>Ingresa el codigo que se envio a su correo para recuperar tu contraseña </p>
-        <form class='form--verifiy-code' style={formStyle}>
-          {inputValues.map((value, index) => (
-            <input
-              autoFocus={index === 0}
-              key={index}
-              id={`input-${index}`}
-              className='input input--single-char'
-              placeholder='0'
-              size='1'
-              maxLength='1'
-              style={inputStyle}
-              value={code[index]}
-              onChange={event => handleForm(event, index)}
-            />
-          ))}
-          <Button style={buttonStyle} onClick={handleVerifyCode}>
-            &rarr;
+      <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+        <CardHeader title='Se ha enviado un código de recuperación a su correo electrónico' />
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <VerificationInput
+            classNames={{
+              container: 'container',
+              character: 'character',
+              characterInactive: 'character--inactive',
+              characterSelected: 'character--selected'
+            }}
+            onChange={value => {
+              setVerificationCode(value)
+              if (value.length === 6) {
+                handleVerifyCode(value)
+              }
+            }}
+            validChars='0-9'
+            inputProps={{ inputMode: 'numeric' }}
+          />
+          <Button
+            sx={{ ml: '20px' }}
+            variant='contained'
+            size='large'
+            onClick={verificationCode.lenght === 6 ? handleVerifyCode : null}
+          >
+            Validar
           </Button>
-        </form>
-      </div>
+          <Button sx={{ ml: '20px' }} variant='outlined' size='large' onClick={validateCodeEmail}>
+            Reenviar Código
+          </Button>
+        </Box>
+        <CardActions
+          sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: '-20px' }}
+        ></CardActions>
+      </form>
     )
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <div class='modal-content' style={!showForm ? modalContentStyle : passwordModalStyle}>
-        {!showForm && renderVerifyCodeForm()}
+    <Modal
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      open={open}
+      onClose={handleClose}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+      >
+        <Card>
+          <CardContent>
+            {!showForm && renderVerifyCodeForm()}
 
-        {showForm && renderPasswordInputs()}
-      </div>
+            {showForm && renderPasswordInputs()}
+          </CardContent>
+        </Card>
+      </Box>
     </Modal>
   )
 }

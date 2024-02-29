@@ -188,9 +188,21 @@ const UserProfileBilling = () => {
             </Button>
           }
         />
+      </Card>
+      <Card>
         <CardContent>
           {isLoading ? (
-            <FallbackSpinner />
+            <Box
+              sx={{
+                width: '100%',
+                height: '58vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <FallbackSpinner />
+            </Box>
           ) : (
             paymentMethods?.map((item, index) => (
               <Box
@@ -253,18 +265,18 @@ const UserProfileBilling = () => {
             ))
           )}
         </CardContent>
-
-        <DialogBilling
-          isOpen={isOpen}
-          onHandleEditCardClose={handleEditCardClose}
-          editItem={editItem}
-          isFormEditing={isFormEditing}
-          paymentControl={paymentControl}
-          paymentErrors={paymentErrors}
-          onPaymentSubmit={onPaymentSubmit}
-          handleSubmit={handleSubmit}
-        />
       </Card>
+
+      <DialogBilling
+        isOpen={isOpen}
+        onHandleEditCardClose={handleEditCardClose}
+        editItem={editItem}
+        isFormEditing={isFormEditing}
+        paymentControl={paymentControl}
+        paymentErrors={paymentErrors}
+        onPaymentSubmit={onPaymentSubmit}
+        handleSubmit={handleSubmit}
+      />
       <Dialog
         open={isOpenDelete}
         onClose={handleCloseModal}
