@@ -81,6 +81,12 @@ const UserLayout = ({ children }) => {
     if (user.profile === 'Logistica') {
       router.push('/dashboards/logistics')
     }
+    if (user.profile === 'Consumidor' && !dataLoaded && userInfo && userInfo.registrationCompleted) {
+      dispatch(getCart(user.id))
+      dispatch(loadInfo(user.id))
+      dispatch(addressList(user.id))
+      dispatch(isDataLoaded(true))
+    }
     if (userInfo && userInfo.flowStep >= 6 && !dataLoaded) {
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
