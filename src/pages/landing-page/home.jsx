@@ -136,6 +136,9 @@ const Pricing = () => {
 
   return (
     <>
+      <title>Inmunosalud</title>
+      <link data-n-head='ssr' rel='icon' type='image/x-icon' href='/images/logos/Favicon-03.ico' />
+
       <Box sx={{ position: 'relative' }}>
         <Image src={BannerPrincipal} height={600} />
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>

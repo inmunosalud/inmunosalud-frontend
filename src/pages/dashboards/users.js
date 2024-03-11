@@ -1,47 +1,33 @@
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import moment from 'moment'
-import Chart from 'react-apexcharts'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
+import { ContentCopy, FileUpload } from 'mdi-material-ui'
 import Link from 'next/link'
-import { FileUpload } from 'mdi-material-ui'
-import { ContentCopy } from 'mdi-material-ui'
 
 // ** Styled Component Import
-import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import CardNumber from 'src/views/general/CardNumber'
-import NextComision from 'src/views/dashboards/users/NextComision'
-import LinearChart from 'src/views/dashboards/users/LinearChart'
 import { useTheme } from '@mui/material/styles'
+import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 //actions
-import { getUserInfo } from 'src/store/users'
 import {
+  Box,
+  Button,
   Card,
   CardContent,
-  Button,
   CircularProgress,
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Tab,
-  Tabs,
   List,
   ListItem,
-  ListItemText
+  ListItemText,
+  Tab,
+  Tabs,
+  Typography
 } from '@mui/material'
-import CardActions from '@mui/material/CardActions'
 import CardHeader from '@mui/material/CardHeader'
-import { InputBase } from '@mui/material'
-import CustomizedTooltip from '../components/tooltip/Tooltip'
-import GraphBar from 'src/views/dashboards/users/GraphBar'
-import NumberUsersTable from 'src/views/dashboards/users/NumberUsersTable'
-import { loadSession } from 'src/store/dashboard/generalSlice'
 import { getComissionsByUser } from 'src/store/comissions'
+import { loadSession } from 'src/store/dashboard/generalSlice'
+import { getUserInfo } from 'src/store/users'
 
 const dataList = {
   nivel1: [
@@ -435,8 +421,15 @@ const Users = () => {
     }
   }, [userInfo])
 
-  const handlePaste = () => {
-    navigator.clipboard.writeText(`https://www.inmunosalud.mx/register?id=${user?.id}`)
+  const handleCopyCode = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`${user?.id}`)
+    }
+  }
+  const handleCopyUrl = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`https://www.inmunosalud.mx/register?id=${user?.id}`)
+    }
   }
 
   const handleYearChange = (event, newValue) => {
@@ -496,12 +489,7 @@ const Users = () => {
                       md={4}
                       sx={{ mt: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '30%' }}
                     >
-                      <Button
-                        startIcon={<ContentCopy />}
-                        variant='contained'
-                        size='small'
-                        onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
-                      >
+                      <Button startIcon={<ContentCopy />} variant='contained' size='small' onClick={handleCopyCode}>
                         Copiar tu codigo
                       </Button>
                       <Button
@@ -509,7 +497,7 @@ const Users = () => {
                         variant='contained'
                         sx={{ mt: '10px' }}
                         size='small'
-                        onClick={handlePaste}
+                        onClick={handleCopyUrl}
                       >
                         Copiar tu enlace
                       </Button>
