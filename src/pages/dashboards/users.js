@@ -421,8 +421,15 @@ const Users = () => {
     }
   }, [userInfo])
 
-  const handlePaste = () => {
-    // navigator.clipboard.writeText(`https://www.inmunosalud.mx/register?id=${user?.id}`)
+  const handleCopyCode = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`${user?.id}`)
+    }
+  }
+  const handleCopyUrl = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(`https://www.inmunosalud.mx/register?id=${user?.id}`)
+    }
   }
 
   const handleYearChange = (event, newValue) => {
@@ -482,12 +489,7 @@ const Users = () => {
                       md={4}
                       sx={{ mt: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '30%' }}
                     >
-                      <Button
-                        startIcon={<ContentCopy />}
-                        variant='contained'
-                        size='small'
-                        //onClick={() => navigator.clipboard.writeText(`${user?.id}`)}
-                      >
+                      <Button startIcon={<ContentCopy />} variant='contained' size='small' onClick={handleCopyCode}>
                         Copiar tu codigo
                       </Button>
                       <Button
@@ -495,7 +497,7 @@ const Users = () => {
                         variant='contained'
                         sx={{ mt: '10px' }}
                         size='small'
-                        onClick={handlePaste}
+                        onClick={handleCopyUrl}
                       >
                         Copiar tu enlace
                       </Button>
