@@ -1,33 +1,26 @@
-const path = require('path');
+const million = require('million/compiler')
 
 /** @type {import('next').NextConfig} */
-
-// Remove this if you're not using Fullcalendar features
-const withTM = require('next-transpile-modules')([
-  '@fullcalendar/common',
-  '@fullcalendar/react',
-  '@fullcalendar/daygrid',
-  '@fullcalendar/list',
-  '@fullcalendar/timegrid'
-]);
-
-module.exports = withTM({
+const nextConfig = {
   trailingSlash: true,
-  reactStrictMode: false,
+  reactStrictMode: true,
   experimental: {
-    esmExternals: false,
-    jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
+    esmExternals: false
   },
+  transpilePackages: [
+    '@fullcalendar/common',
+    '@fullcalendar/react',
+    '@fullcalendar/daygrid',
+    '@fullcalendar/list',
+    '@fullcalendar/timegrid'
+  ],
   images: {
-    domains: ['products-images-9fe5.s3.amazonaws.com', 'products-images-9fe5.s3.us-east-1.amazonaws.com'],
-  },
-  webpack: config => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
-    };
-
-    return config;
+    domains: ['products-images-9fe5.s3.amazonaws.com', 'products-images-9fe5.s3.us-east-1.amazonaws.com']
   }
-});
+}
 
+const millionConfig = {
+  auto: { rsc: true }
+}
+
+module.exports = million.next(nextConfig, millionConfig)

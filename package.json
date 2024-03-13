@@ -55,6 +55,7 @@
     "jsonwebtoken": "8.5.1",
     "keen-slider": "6.6.14",
     "mdi-material-ui": "7.1.0",
+    "million": "^3.0.6",
     "moment": "^2.30.1",
     "next": "12.1.6",
     "next-transpile-modules": "9.0.0",
