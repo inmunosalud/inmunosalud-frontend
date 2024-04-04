@@ -144,9 +144,13 @@ const AddMonthlyPurchase = () => {
       dispatch(setUpdatedProducts(newProducts))
 
       // Verificar si todas las cantidades son iguales a las cantidades originales
-      const allQuantitiesEqual = newProducts.every(
-        (product, index) => parseInt(product.quantity, 10) === parseInt(products[index].quantity, 10)
-      )
+      const allQuantitiesEqual = newProducts.every((product, index) => {
+        if (index < products.length) {
+          return parseInt(product.quantity, 10) === parseInt(products[index].quantity, 10)
+        } else {
+          return false // Si index es mayor o igual a la longitud de products, devuelve falso
+        }
+      })
 
       // Actualizar el estado de cambios y totalUpdate
       dispatch(setChanges(!allQuantitiesEqual))
