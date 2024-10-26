@@ -1,7 +1,7 @@
 const DefaultPalette = (mode, skin, themeColor) => {
   // ** Vars
-  const lightColor = '58, 53, 65'
-  const darkColor = '231, 227, 252'
+  const lightColor = `83, 79, 90`
+  const darkColor = '248, 249, 250'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
   const primaryGradient = () => {

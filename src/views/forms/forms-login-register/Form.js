@@ -124,9 +124,14 @@ const Form = props => {
                   value={values.email}
                   onChange={handleChange('email')}
                   type='text'
+                  error={!!errors}
+                  helperText={
+                    !!errors
+                      ? 'El correo electrónico o la contraseña no coinciden'
+                      : 'Puedes usar letras, números y puntos'
+                  }
                   label='Cuenta o correo electrónico'
                   placeholder='joe@gmail.com'
-                  helperText='Puedes usar letras, números y puntos'
                 />
               </Grid>
               <Grid item xs={12}>
@@ -135,6 +140,7 @@ const Form = props => {
                   <OutlinedInput
                     label='Contraseña'
                     value={values.password}
+                    error={!!errors}
                     id='form-layouts-basic-password'
                     onChange={handleChange('password')}
                     type={values.showPassword ? 'text' : 'password'}
@@ -154,11 +160,6 @@ const Form = props => {
                   />
                   <FormHelperText id='form-layouts-basic-password-helper'></FormHelperText>
                 </FormControl>
-                {errors ? (
-                  <Alert variant='outlined' sx={{ mt: 3 }} severity='error'>
-                    {errors[0]?.msg}
-                  </Alert>
-                ) : null}
               </Grid>
             </Grid>
             <Grid item xs={12} sx={{ mt: 4 }}>
