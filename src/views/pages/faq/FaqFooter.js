@@ -17,7 +17,7 @@ const StyledBox1 = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   padding: theme.spacing(6.5, 6),
   marginRight: theme.spacing(3.125),
-  backgroundColor: `rgba(${theme.palette.customColors.main}, 0.04)`,
+  backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.04)`,
   [theme.breakpoints.down('md')]: {
     marginRight: 0,
     marginBottom: theme.spacing(3.125)
@@ -32,7 +32,7 @@ const StyledBox2 = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   padding: theme.spacing(6.5, 6),
   marginLeft: theme.spacing(3.125),
-  backgroundColor: `rgba(${theme.palette.customColors.main}, 0.04)`,
+  backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.04)`,
   [theme.breakpoints.down('md')]: {
     marginLeft: 0,
     marginTop: theme.spacing(3.125)
@@ -54,7 +54,7 @@ const FaqFooter = () => {
           <StyledBox1>
             <Avatar
               variant='rounded'
-              sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)` }}
+              sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.mainCustom}, 0.08)` }}
             >
               <Phone sx={{ fontSize: '1.375rem' }} />
             </Avatar>
@@ -71,7 +71,7 @@ const FaqFooter = () => {
           <StyledBox2>
             <Avatar
               variant='rounded'
-              sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)` }}
+              sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.mainCustom}, 0.08)` }}
             >
               <EmailOutline sx={{ fontSize: '1.375rem' }} />
             </Avatar>

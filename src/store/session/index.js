@@ -17,7 +17,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
       Router.push({ pathname: '/register/welcome' })
       return response
     } else {
-      Router.push('/ecommerce/products')
+      Router.push('/landing-page/home/')
       return response
     }
   } catch (error) {

@@ -51,7 +51,7 @@ const Drawer = props => {
     } else if (skin === 'semi-dark' && theme.palette.mode === 'dark') {
       return {
         '& .MuiTypography-root, & .MuiSvgIcon-root': {
-          color: `rgba(${theme.palette.customColors.light}, 0.87)`
+          color: `rgba(${theme.palette.customColors.lightCustom}, 0.87)`
         }
       }
     } else return {}

@@ -47,16 +47,16 @@ const VerticalNavSectionTitle = props => {
       }
     } else if (skin === 'semi-dark' && theme.palette.mode === 'dark') {
       return {
-        color: `rgba(${theme.palette.customColors.light}, 0.38)`,
+        color: `rgba(${theme.palette.customColors.lightCustom}, 0.38)`,
         '& .MuiDivider-root:before, & .MuiDivider-root:after, & hr': {
-          borderColor: `rgba(${theme.palette.customColors.light}, ${navCollapsed && !navHover ? 0.3 : 0.12})`
+          borderColor: `rgba(${theme.palette.customColors.lightCustom}, ${navCollapsed && !navHover ? 0.3 : 0.12})`
         }
       }
     } else {
       return {
         color: theme.palette.text.disabled,
         '& .MuiDivider-root:before, & .MuiDivider-root:after, & hr': {
-          borderColor: `rgba(${theme.palette.customColors.main}, ${navCollapsed && !navHover ? 0.3 : 0.12})`
+          borderColor: `rgba(${theme.palette.customColors.mainCustom}, ${navCollapsed && !navHover ? 0.3 : 0.12})`
         }
       }
     }

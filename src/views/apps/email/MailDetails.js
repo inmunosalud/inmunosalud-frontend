@@ -53,7 +53,7 @@ const HiddenReplyBack = styled(Box)(({ theme }) => ({
   borderTopLeftRadius: theme.shape.borderRadius,
   borderTopRightRadius: theme.shape.borderRadius,
   backgroundColor: theme.palette.background.paper,
-  borderColor: `rgba(${theme.palette.customColors.main}, 0.12)`
+  borderColor: `rgba(${theme.palette.customColors.mainCustom}, 0.12)`
 }))
 
 const HiddenReplyFront = styled(Box)(({ theme }) => ({
@@ -69,7 +69,7 @@ const HiddenReplyFront = styled(Box)(({ theme }) => ({
   borderTopLeftRadius: theme.shape.borderRadius,
   borderTopRightRadius: theme.shape.borderRadius,
   backgroundColor: theme.palette.background.paper,
-  borderColor: `rgba(${theme.palette.customColors.main}, 0.12)`
+  borderColor: `rgba(${theme.palette.customColors.mainCustom}, 0.12)`
 }))
 
 const MailCardMenu = () => {

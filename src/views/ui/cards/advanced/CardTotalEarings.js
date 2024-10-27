@@ -86,7 +86,7 @@ const CardTotalEarnings = () => {
             >
               <Avatar
                 variant='rounded'
-                sx={{ mr: 3, backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.04)` }}
+                sx={{ mr: 3, backgroundColor: theme => `rgba(${theme.palette.customColors.mainCustom}, 0.04)` }}
               >
                 <img src={item.imgSrc} alt={item.title} width={item.imgWidth} height={item.imgHeight} />
               </Avatar>

@@ -32,7 +32,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   paddingTop: theme.spacing(5),
-  backgroundColor: `rgba(${theme.palette.customColors.main}, 0.08)`
+  backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.08)`
 }))
 
 const KnowledgeBase = ({ apiData }) => {

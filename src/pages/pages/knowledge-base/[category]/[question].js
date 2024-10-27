@@ -22,7 +22,7 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(3.75, 5.5),
-  backgroundColor: `rgba(${theme.palette.customColors.main}, 0.08)`
+  backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.08)`
 }))
 
 // Styled Link component

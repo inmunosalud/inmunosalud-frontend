@@ -78,9 +78,9 @@ const VerticalNavLink = ({
       }
     } else if (skin === 'semi-dark' && theme.palette.mode === 'dark') {
       return {
-        color: `rgba(${theme.palette.customColors.light}, 0.87)`,
+        color: `rgba(${theme.palette.customColors.lightCustom}, 0.87)`,
         '&:hover': {
-          backgroundColor: `rgba(${theme.palette.customColors.light}, 0.04)`
+          backgroundColor: `rgba(${theme.palette.customColors.lightCustom}, 0.04)`
         }
       }
     } else return {}

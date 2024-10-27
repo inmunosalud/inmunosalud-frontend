@@ -83,7 +83,7 @@ const FaqAccordions = ({ data }) => {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar
                       variant='rounded'
-                      sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)` }}
+                      sx={{ backgroundColor: theme => `rgba(${theme.palette.customColors.mainCustom}, 0.08)` }}
                     >
                       <IconTag sx={{ fontSize: '1.375rem' }} />
                     </Avatar>

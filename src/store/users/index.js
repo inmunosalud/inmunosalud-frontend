@@ -210,12 +210,9 @@ export const validateNewUser = createAsyncThunk('user/validateNewUser', async (b
   try {
     const response = await api_post(`${PROYECT}/users/validateVerificationCode`, body)
     localStorage.setItem('im-user', response.content.token)
-    if (response.content.profile === PROFILES_USER.affiliatedUser) {
-      thunkApi.dispatch(setActiveStep(0))
-      Router.push('/register/address')
-    } else {
-      Router.push('/ecommerce/products')
-    }
+
+    Router.push('/landing-page/home/')
+
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message

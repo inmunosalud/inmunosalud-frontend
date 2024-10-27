@@ -283,8 +283,8 @@ const CalendarWrapper = styled(Box)(({ theme }) => ({
       color: `${theme.palette.text.primary} !important`
     },
     '& .fc-day-today': {
-      background: `rgba(${theme.palette.customColors.main}, 0.04) !important`,
-      backgroundColor: `rgba(${theme.palette.customColors.main}, 0.04) !important`
+      background: `rgba(${theme.palette.customColors.mainCustom}, 0.04) !important`,
+      backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.04) !important`
     },
 
     // ** WeekView
@@ -336,13 +336,13 @@ const CalendarWrapper = styled(Box)(({ theme }) => ({
         position: 'relative'
       },
       '& .fc-list-day-cushion': {
-        background: `rgba(${theme.palette.customColors.main}, 0.04)`
+        background: `rgba(${theme.palette.customColors.mainCustom}, 0.04)`
       },
       '.fc-list-event': {
         cursor: 'pointer',
         '&:hover': {
           '& td': {
-            backgroundColor: `rgba(${theme.palette.customColors.main}, 0.04)`
+            backgroundColor: `rgba(${theme.palette.customColors.mainCustom}, 0.04)`
           }
         },
         '& td': {

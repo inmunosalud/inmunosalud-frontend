@@ -221,7 +221,7 @@ const ComposePopup = props => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.08)`
+          backgroundColor: theme => `rgba(${theme.palette.customColors.mainCustom}, 0.08)`
         }}
       >
         <Typography sx={{ fontWeight: 500 }}>Compose Mail</Typography>

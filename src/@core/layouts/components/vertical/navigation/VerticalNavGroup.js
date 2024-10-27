@@ -169,7 +169,7 @@ const VerticalNavGroup = props => {
       }
     } else if (skin === 'semi-dark' && theme.palette.mode === 'dark') {
       return {
-        color: `rgba(${theme.palette.customColors.light}, 0.68) !important`
+        color: `rgba(${theme.palette.customColors.lightCustom}, 0.68) !important`
       }
     } else {
       return {
@@ -194,14 +194,14 @@ const VerticalNavGroup = props => {
       }
     } else if (skin === 'semi-dark' && theme.palette.mode === 'dark') {
       return {
-        color: `rgba(${theme.palette.customColors.light}, 0.87)`,
+        color: `rgba(${theme.palette.customColors.lightCustom}, 0.87)`,
         '&:hover': {
-          backgroundColor: `rgba(${theme.palette.customColors.light}, 0.04)`
+          backgroundColor: `rgba(${theme.palette.customColors.lightCustom}, 0.04)`
         },
         '&.Mui-selected': {
-          backgroundColor: `rgba(${theme.palette.customColors.light}, 0.08)`,
+          backgroundColor: `rgba(${theme.palette.customColors.lightCustom}, 0.08)`,
           '&:hover': {
-            backgroundColor: `rgba(${theme.palette.customColors.light}, 0.12)`
+            backgroundColor: `rgba(${theme.palette.customColors.lightCustom}, 0.12)`
           }
         }
       }
