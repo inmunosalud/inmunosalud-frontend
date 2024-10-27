@@ -2,6 +2,8 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import Link from '@mui/material/Link'
+
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
 import DialogContent from '@mui/material/DialogContent'
@@ -186,7 +188,7 @@ export const ProductItem = props => {
                   sx={{ color: theme.palette.text.secundary }}
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
-                <a
+                <Link
                   href='#'
                   onClick={e => {
                     e.preventDefault()
@@ -202,7 +204,7 @@ export const ProductItem = props => {
                   onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
                 >
                   <ChevronUpIcon style={{ fontSize: 16 }} /> Ver menos
-                </a>
+                </Link>
               </>
             ) : (
               <>
@@ -211,7 +213,7 @@ export const ProductItem = props => {
                   component='div'
                   dangerouslySetInnerHTML={{ __html: `${description.substring(0, 100)}...` }}
                 />
-                <a
+                <Link
                   href='#'
                   onClick={e => {
                     e.preventDefault()
@@ -227,7 +229,7 @@ export const ProductItem = props => {
                   onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
                 >
                   <ChevronDownIcon style={{ fontSize: 16 }} /> Ver más
-                </a>
+                </Link>
               </>
             )}
           </>

@@ -140,7 +140,7 @@ const Pricing = () => {
       <link data-n-head='ssr' rel='icon' type='image/x-icon' href='/images/logos/Favicon-03.ico' />
 
       <Box sx={{ position: 'relative' }}>
-        <Image src={BannerPrincipal} height={600} />
+        <Image src={BannerPrincipal} height={450}  />
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <Image src={Logo} height={150} width={230} />
         </Box>
@@ -190,20 +190,21 @@ const Pricing = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={8}>
             <Box sx={{ margin: '1rem' }}>
-              <Image src={Banner} alt='aboutUs' />
+              <Image src={Banner} alt='aboutUs' height={300} />
             </Box>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          {user.profile != PROFILES_USER.affiliatedUser ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+            {user.profile != PROFILES_USER.affiliatedUser && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
               <Link href='/landing-page/join' passHref>
                 <Button variant='outlined' size='large'>
                   AFÍLIATE A NOSOTROS
                 </Button>
               </Link>
             </Box>
-          ) : null}
+          )}
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+        
         </Grid>
       </Card>
 

@@ -23,29 +23,29 @@ const FooterContent = () => {
         </Typography>
         <Typography fontSize={'12px'}>
           <strong>Correo:</strong>{' '}
-          <a style={{ textDecoration: 'none', fontSize: '12px' }} href='mailto:atencion@inmunosalud.mx'>
+          <Link style={{ textDecoration: 'none', fontSize: '12px' }} href='mailto:atencion@inmunosalud.mx'>
             atencion@inmunosalud.mx
-          </a>
+          </Link>
         </Typography>
       </Box>
       <Typography>Inmunosalud</Typography>
 
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          <a
+          <Link
             style={{ textDecoration: 'none', fontSize: '12px' }}
             target='_blank'
             rel='noreferrer'
             href='/docs/Privacy.pdf'
           >
             Aviso de privacidad
-          </a>
+          </Link>
           <Typography color={'grey'} fontSize={'12px'}>
             |
           </Typography>
-          <a style={{ textDecoration: 'none', fontSize: '12px' }} target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
+          <Link style={{ textDecoration: 'none', fontSize: '12px' }} target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
             Términos y condiciones
-          </a>
+          </Link>
         </Box>
       )}
     </Box>

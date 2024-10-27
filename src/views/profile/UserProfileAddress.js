@@ -60,7 +60,6 @@ import {
 } from 'src/store/address'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogAddress from '../components/dialogs/DialogAddress'
-import { TabItem } from '@aws-amplify/ui-react'
 import FallbackSpinner from 'src/@core/components/spinner'
 
 const defaultAddressValues = {

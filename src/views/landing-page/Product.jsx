@@ -85,8 +85,8 @@ const Product = props => {
           <Image
             src={`${data?.urlImages[0]}`}
             alt={`${data?.product.toLowerCase()}-plan-img`}
-            width={1000} // Ancho máximo que se ajuste a tu diseño
-            height={1100} // Altura máxima que se ajuste a tu diseño
+            width={300} // Ancho máximo que se ajuste a tu diseño
+            height={310} // Altura máxima que se ajuste a tu diseño
             // style={{
             //   transform: 'scale(1.5)'
             // }}
@@ -98,14 +98,9 @@ const Product = props => {
         <Box sx={{ marginBottom: '20px' }}>
           <Typography variant='body2'>
             <Link href={`/ecommerce/products/?product=${data?.id}`}>
-              <a
-                rel='noopener noreferrer'
-                style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
-                onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-                onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-              >
+              
                 Ver más
-              </a>
+             
             </Link>
           </Typography>
         </Box>

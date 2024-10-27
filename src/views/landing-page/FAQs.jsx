@@ -66,15 +66,8 @@ const FAQs = props => {
                 <Typography variant='body2' component='span'>
                   {' '}
                   <Link href={item.link}>
-                    <a
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      style={{ color: theme.palette.primary.main, transition: 'color 0.3s' }}
-                      onMouseOver={e => (e.currentTarget.style.color = theme.palette.primary.light)}
-                      onMouseOut={e => (e.currentTarget.style.color = theme.palette.primary.main)}
-                    >
+                    
                       {item.link}
-                    </a>
                   </Link>
                 </Typography>
               )}

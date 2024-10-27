@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Router, { useRouter } from 'next/router'
 import { useSelector, useDispatch } from 'react-redux'
+import Link from '@mui/material/Link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -243,9 +244,9 @@ const FormRegister = () => {
                     }
                     label={
                       <Typography variant='body2'>
-                        <a target='_blank' rel='noreferrer' href='/docs/Privacy.pdf'>
+                        <Link target='_blank' rel='noreferrer' href='/docs/Privacy.pdf'>
                           Aviso de privacidad.
-                        </a>
+                        </Link>
                       </Typography>
                     }
                   />
@@ -258,9 +259,9 @@ const FormRegister = () => {
                     }
                     label={
                       <Typography variant='body2'>
-                        <a target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
+                        <Link target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
                           Términos y condiciones.
-                        </a>
+                        </Link>
                       </Typography>
                     }
                   />
