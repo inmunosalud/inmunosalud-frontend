@@ -1,6 +1,9 @@
+import { Netflix } from 'mdi-material-ui'
+
 export const PERMISSIONS = {
   home: 'home',
   join: 'join',
+  network: 'network',
   dashboardUsers: 'dashboard/users',
   dashboardComissions: 'dashboard/comissions',
   dashboardLogistics: 'dashboard/logistics',
@@ -34,6 +37,7 @@ export const PROFILES = {
   Afiliado: [
     PERMISSIONS.home,
     PERMISSIONS.join,
+    PERMISSIONS.network,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
@@ -48,6 +52,7 @@ export const PROFILES = {
   'Afiliado sin compras': [
     PERMISSIONS.home,
     PERMISSIONS.join,
+    PERMISSIONS.network,
     PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
@@ -68,26 +73,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceAddProduct
   ],
   Logistica: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts, PERMISSIONS.dashboardLogistics],
-  'Administrador General': [
-    PERMISSIONS.home,
-    PERMISSIONS.join,
-    PERMISSIONS.dashboardGeneral,
-    PERMISSIONS.dashboardProfile,
-    PERMISSIONS.dashboardUsers,
-    PERMISSIONS.dashboardComissions,
-    PERMISSIONS.ecommerceProducts,
-    PERMISSIONS.adminUsersNewUser,
-    PERMISSIONS.ecommerceCart,
-    PERMISSIONS.ecommerceCheckout,
-    PERMISSIONS.ecommerceAddProduct,
-    PERMISSIONS.ecommerceOrders,
-    PERMISSIONS.ecommerceEditOrders,
-    PERMISSIONS.ordersAdmin,
-    PERMISSIONS.ecommerceMonthlyPurchase,
-    PERMISSIONS.dashboardConstants,
-    PERMISSIONS.dashboardLogistics,
-    PERMISSIONS.ecommerceBilling
-  ],
+  'Administrador General': Object.values(PERMISSIONS),
   default: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts]
 }
 
@@ -100,6 +86,7 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/logistics']: PERMISSIONS.dashboardLogistics,
   ['/dashboards/constants']: PERMISSIONS.dashboardConstants,
   ['/profile']: PERMISSIONS.dashboardProfile,
+  ['/network']: PERMISSIONS.network,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
   ['/ecommerce/checkout']: PERMISSIONS.ecommerceCheckout,

@@ -28,7 +28,6 @@ import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@co
 import CardWrapper from 'src/@core/styles/libs/react-credit-cards'
 
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
 
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'

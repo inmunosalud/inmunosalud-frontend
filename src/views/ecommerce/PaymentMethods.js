@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
+
 import { setPayment } from 'src/store/cart'
 
 import Image from 'next/image'
@@ -58,8 +58,8 @@ export const PaymentMethods = ({ onClose }) => {
                     item.cardType === 'mastercard'
                       ? '/images/logos/mastercard.png'
                       : item.cardType === 'visa'
-                      ? '/images/logos/visa.png'
-                      : '/images/logos/american-express.png'
+                        ? '/images/logos/visa.png'
+                        : '/images/logos/american-express.png'
                   }
                 />
                 <Box sx={{ mt: 0.5, display: 'flex', alignItems: 'center' }}>

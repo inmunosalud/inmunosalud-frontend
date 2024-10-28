@@ -46,7 +46,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
 
 import {
   createAddress,
