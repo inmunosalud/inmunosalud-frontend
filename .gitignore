@@ -57,3 +57,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 yarn.lock
 package-lock.json
+.vscode/settings.json

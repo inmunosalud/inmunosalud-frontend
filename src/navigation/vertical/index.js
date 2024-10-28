@@ -28,6 +28,13 @@ const navigation = () => {
       title: user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate',
       path: '/landing-page/join',
       permission: PERMISSIONS.join,
+      visible: false
+    },
+    {
+      icon: ShoppingOutline,
+      title: 'Pedidos',
+      path: '/ecommerce/orders',
+      permission: PERMISSIONS.ecommerceOrders,
       visible: true
     },
     {
@@ -77,25 +84,26 @@ const navigation = () => {
           permission: PERMISSIONS.dashboardConstants
         }
       ]
-    },
-    {
-      title: 'Ecommerce',
-      icon: ShoppingOutline,
-      permission: 'ecommerce',
-      visible: true,
-      children: [
-        {
-          title: 'Productos',
-          path: '/ecommerce/products',
-          permission: PERMISSIONS.ecommerceProducts
-        },
-        {
-          title: 'Pedidos',
-          path: '/ecommerce/orders',
-          permission: PERMISSIONS.ecommerceOrders
-        }
-      ]
     }
+    // {
+    //   title: 'Ecommerce',
+    //   icon: ShoppingOutline,
+    //   permission: 'ecommerce',
+    //   visible: true,
+    //   children: [
+    //     {
+    //       title: 'Productos',
+    //       path: '/ecommerce/products',
+    //       permission: PERMISSIONS.ecommerceProducts,
+    //       visible: false
+    //     },
+    //     {
+    //       title: 'Pedidos',
+    //       path: '/ecommerce/orders',
+    //       permission: PERMISSIONS.ecommerceOrders
+    //     }
+    //   ]
+    // }
     // {
     //   title: 'Pedidos',
     //   icon: OrderBoolDescending,

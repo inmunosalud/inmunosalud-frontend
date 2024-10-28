@@ -46,7 +46,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
 
 import {
   createAddress,
@@ -60,7 +59,6 @@ import {
 } from 'src/store/address'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogAddress from '../components/dialogs/DialogAddress'
-import { TabItem } from '@aws-amplify/ui-react'
 import FallbackSpinner from 'src/@core/components/spinner'
 
 const defaultAddressValues = {

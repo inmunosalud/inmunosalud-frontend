@@ -26,7 +26,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
+
 import {
   createMethod,
   setModal,

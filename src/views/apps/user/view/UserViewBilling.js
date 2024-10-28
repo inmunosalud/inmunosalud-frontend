@@ -49,7 +49,6 @@ import { formatCVC, formatExpirationDate, formatCreditCardNumber } from 'src/@co
 import CardWrapper from 'src/@core/styles/libs/react-credit-cards'
 
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
 
 // ** Styled <sup> component
 const Sup = styled('sup')(({ theme }) => ({

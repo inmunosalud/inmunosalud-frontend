@@ -15,6 +15,7 @@ import PricingPlans from 'src/views/pages/pricing/PricingPlans'
 import PricingHeader from 'src/views/pages/pricing/PricingHeader'
 import PricingFooter from 'src/views/pages/pricing/PricingFooter'
 import { Box, Button, Grid, Typography } from '@mui/material'
+import Products from 'src/views/landing-page/Products'
 
 import Banner from 'public/images/banners/banner.webp'
 import BannerPrincipal from 'public/images/banners/ImagenBanner.webp'
@@ -140,7 +141,7 @@ const Pricing = () => {
       <link data-n-head='ssr' rel='icon' type='image/x-icon' href='/images/logos/Favicon-03.ico' />
 
       <Box sx={{ position: 'relative' }}>
-        <Image src={BannerPrincipal} height={600} />
+        <Image src={BannerPrincipal} height={450} />
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <Image src={Logo} height={150} width={230} />
         </Box>
@@ -148,19 +149,16 @@ const Pricing = () => {
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant='h4' sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-            Nuevos Productos
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          {products ? <NewProducts plan={plan} data={products.content} /> : null}
-        </Grid>
-        <Grid container justifyContent='center' sx={{ mb: 6 }} xs={12}>
-          <Button color='primary' variant='contained' onClick={handleSeeMoreProducts}>
-            Ver Mas Productos
-          </Button>
+          <Box
+            sx={{
+              py: '2rem'
+            }}
+          >
+            <Products />
+          </Box>
         </Grid>
       </Grid>
+
       <Card>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={4}>
@@ -190,21 +188,20 @@ const Pricing = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={8}>
             <Box sx={{ margin: '1rem' }}>
-              <Image src={Banner} alt='aboutUs' />
+              <Image src={Banner} alt='aboutUs' height={300} />
             </Box>
+            {user.profile != PROFILES_USER.affiliatedUser && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
+                <Link href='/landing-page/join' passHref>
+                  <Button variant='outlined' size='large'>
+                    AFÍLIATE A NOSOTROS
+                  </Button>
+                </Link>
+              </Box>
+            )}
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          {user.profile != PROFILES_USER.affiliatedUser ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-              <Link href='/landing-page/join' passHref>
-                <Button variant='outlined' size='large'>
-                  AFÍLIATE A NOSOTROS
-                </Button>
-              </Link>
-            </Box>
-          ) : null}
-        </Grid>
+        <Grid item xs={12}></Grid>
       </Card>
 
       <FAQs data={questions} />

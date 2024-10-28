@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CustomChip from 'src/@core/components/mui/chip'
 // ** Styles Import
-import 'react-credit-cards/es/styles-compiled.css'
+
 import { setSelectedAddressInCart } from 'src/store/address'
 import { setAddress } from 'src/store/cart'
 import { setOpenAddressesModal } from 'src/store/cart'

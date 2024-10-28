@@ -1,6 +1,6 @@
 // ** Next Import
 import Link from 'next/link'
-import Image from 'next/image';
+import Image from 'next/image'
 
 // ** MUI Imports
 import IconButton from '@mui/material/IconButton'
@@ -17,11 +17,10 @@ import RecordCircleOutline from 'mdi-material-ui/RecordCircleOutline'
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Images
-import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png';
-import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png';
-import NegroIotipo from '/public/images/logos/Negro-Isotipo.png';
-import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png';
-
+import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png'
+import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png'
+import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
+import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
 
 // ** Styled Components
 const MenuHeaderWrapper = styled(Box)(({ theme }) => ({
@@ -107,23 +106,31 @@ const VerticalNavHeader = props => {
           <Link href='/' passHref style={{ textDecoration: 'none' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', ...menuCollapsedStyles }}>
               <StyledLink sx={{ margin: '10px' }}>
-                <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' width={180} height={25} />
+                <Image
+                  src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo}
+                  alt='Logo'
+                  width={180}
+                  height={25}
+                />
               </StyledLink>
             </Box>
           </Link>
-      <Link href='/' passHref style={{ textDecoration: 'none' }}>
-        <IconButton
-          disableRipple
-          disableFocusRipple
-          sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
-        >
-          <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' width={30} height={30} />
-        </IconButton>
-      </Link>
+          <Link href='/' passHref style={{ textDecoration: 'none' }}>
+            <IconButton
+              disableRipple
+              disableFocusRipple
+              sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
+            >
+              <Image
+                src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo}
+                alt='Isotipo'
+                width={30}
+                height={30}
+              />
+            </IconButton>
+          </Link>
         </>
       )}
-
-
     </MenuHeaderWrapper>
   )
 }

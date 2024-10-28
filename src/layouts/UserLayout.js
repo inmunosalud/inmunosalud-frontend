@@ -38,8 +38,7 @@ const LoadingModal = ({ open }) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: theme.palette.background.default
+        justifyContent: 'center'
       }}
     >
       <Box
@@ -47,6 +46,7 @@ const LoadingModal = ({ open }) => {
           height: '1000vh',
           width: '1000vh',
           display: 'flex',
+          backgroundColor: theme.palette.background.paper,
           alignItems: 'center',
           flexDirection: 'column',
           justifyContent: 'center'
@@ -81,33 +81,14 @@ const UserLayout = ({ children }) => {
     if (user.profile === 'Logistica') {
       router.push('/dashboards/logistics')
     }
+    if (user.profile === 'Administrador General') {
+      dispatch(isDataLoaded(true))
+    }
     if (user.profile === 'Consumidor' && !dataLoaded && userInfo && userInfo.registrationCompleted) {
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
       dispatch(addressList(user.id))
       dispatch(isDataLoaded(true))
-    }
-    if (userInfo && userInfo.flowStep >= 6 && !dataLoaded) {
-      dispatch(getCart(user.id))
-      dispatch(loadInfo(user.id))
-      dispatch(addressList(user.id))
-    }
-    if (userInfo && userInfo.flowStep === 7) {
-      dispatch(isDataLoaded(true))
-    }
-    if (userInfo && userInfo.flowStep === 6) {
-      router.push('/ecommerce/cart/')
-    }
-    if (userInfo) {
-      if (!userInfo.registrationCompleted) {
-        if (userInfo.flowStep === 0) {
-          router.replace('/register/welcome/')
-        }
-        if (userInfo.flowStep > 0 && userInfo.flowStep < 6) {
-          dispatch(setActiveStep(userInfo.flowStep - 1))
-          router.replace('/register/address/')
-        }
-      }
     }
   }, [userInfo, user.id, dataLoaded])
 
