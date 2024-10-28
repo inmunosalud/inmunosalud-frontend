@@ -31,6 +31,13 @@ const navigation = () => {
       visible: false
     },
     {
+      icon: ShoppingOutline,
+      title: 'Pedidos',
+      path: '/ecommerce/orders',
+      permission: PERMISSIONS.ecommerceOrders,
+      visible: true
+    },
+    {
       title: 'Dashboard',
       icon: ViewDashboard,
       permission: 'dashboard',
@@ -77,26 +84,26 @@ const navigation = () => {
           permission: PERMISSIONS.dashboardConstants
         }
       ]
-    },
-    {
-      title: 'Ecommerce',
-      icon: ShoppingOutline,
-      permission: 'ecommerce',
-      visible: true,
-      children: [
-        // {
-        //   title: 'Productos',
-        //   path: '/ecommerce/products',
-        //   permission: PERMISSIONS.ecommerceProducts,
-        //   visible: false
-        // },
-        {
-          title: 'Pedidos',
-          path: '/ecommerce/orders',
-          permission: PERMISSIONS.ecommerceOrders
-        }
-      ]
     }
+    // {
+    //   title: 'Ecommerce',
+    //   icon: ShoppingOutline,
+    //   permission: 'ecommerce',
+    //   visible: true,
+    //   children: [
+    //     {
+    //       title: 'Productos',
+    //       path: '/ecommerce/products',
+    //       permission: PERMISSIONS.ecommerceProducts,
+    //       visible: false
+    //     },
+    //     {
+    //       title: 'Pedidos',
+    //       path: '/ecommerce/orders',
+    //       permission: PERMISSIONS.ecommerceOrders
+    //     }
+    //   ]
+    // }
     // {
     //   title: 'Pedidos',
     //   icon: OrderBoolDescending,
