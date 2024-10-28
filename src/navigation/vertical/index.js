@@ -28,7 +28,7 @@ const navigation = () => {
       title: user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate',
       path: '/landing-page/join',
       permission: PERMISSIONS.join,
-      visible: true
+      visible: false
     },
     {
       title: 'Dashboard',
@@ -84,11 +84,12 @@ const navigation = () => {
       permission: 'ecommerce',
       visible: true,
       children: [
-        {
-          title: 'Productos',
-          path: '/ecommerce/products',
-          permission: PERMISSIONS.ecommerceProducts
-        },
+        // {
+        //   title: 'Productos',
+        //   path: '/ecommerce/products',
+        //   permission: PERMISSIONS.ecommerceProducts,
+        //   visible: false
+        // },
         {
           title: 'Pedidos',
           path: '/ecommerce/orders',

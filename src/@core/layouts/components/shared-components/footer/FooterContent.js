@@ -18,36 +18,8 @@ const FooterContent = () => {
             <strong>+52 3334173934</strong>
           </Typography>
         </Box>
-        <Typography fontSize={'12px'}>
-          <strong>Dirección:</strong> Iztaccihuatl 1915, Tlajomulco, Jalisco.
-        </Typography>
-        <Typography fontSize={'12px'}>
-          <strong>Correo:</strong>{' '}
-          <Link style={{ textDecoration: 'none', fontSize: '12px' }} href='mailto:atencion@inmunosalud.mx'>
-            atencion@inmunosalud.mx
-          </Link>
-        </Typography>
       </Box>
       <Typography>Inmunosalud</Typography>
-
-      {hidden ? null : (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          <Link
-            style={{ textDecoration: 'none', fontSize: '12px' }}
-            target='_blank'
-            rel='noreferrer'
-            href='/docs/Privacy.pdf'
-          >
-            Aviso de privacidad
-          </Link>
-          <Typography color={'grey'} fontSize={'12px'}>
-            |
-          </Typography>
-          <Link style={{ textDecoration: 'none', fontSize: '12px' }} target='_blank' rel='noreferrer' href='/docs/TyC.pdf'>
-            Términos y condiciones
-          </Link>
-        </Box>
-      )}
     </Box>
   )
 }
