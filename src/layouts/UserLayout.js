@@ -32,15 +32,13 @@ import { setActiveStep } from 'src/store/register'
 
 const LoadingModal = ({ open }) => {
   const theme = useTheme()
-  const isDarkMode = theme.palette.mode === 'dark'
   return (
     <Modal
       open={open}
       sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: !isDarkMode ? theme.palette.background.default : '#fff'
+        justifyContent: 'center'
       }}
     >
       <Box
@@ -48,7 +46,7 @@ const LoadingModal = ({ open }) => {
           height: '1000vh',
           width: '1000vh',
           display: 'flex',
-          backgroundColor: !isDarkMode ? theme.palette.background.default : '#fff',
+          backgroundColor: theme.palette.background.paper,
           alignItems: 'center',
           flexDirection: 'column',
           justifyContent: 'center'
