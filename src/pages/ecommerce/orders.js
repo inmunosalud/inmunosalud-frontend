@@ -396,7 +396,6 @@ const Orders = () => {
         </Button>
       </Box>
 
-      {orders.length && orders.map(order => <Cards key={order.id} {...order} />)}
       {/* <ProblemFormModal  /> */}
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </React.Fragment>

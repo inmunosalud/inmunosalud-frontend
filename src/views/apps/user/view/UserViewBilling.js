@@ -37,7 +37,6 @@ import Plus from 'mdi-material-ui/Plus'
 
 // ** Third Party Imports
 import Payment from 'payment'
-import Cards from 'react-credit-cards'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -380,9 +379,7 @@ const UserViewBilling = () => {
             <form>
               <Grid container spacing={6}>
                 <Grid item xs={12}>
-                  <CardWrapper sx={{ '& .rccs': { m: '0 auto' } }}>
-                    <Cards cvc={cvc} focused={focus} expiry={expiry} name={name} number={cardNumber} />
-                  </CardWrapper>
+                  <CardWrapper sx={{ '& .rccs': { m: '0 auto' } }}></CardWrapper>
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container spacing={6}>
