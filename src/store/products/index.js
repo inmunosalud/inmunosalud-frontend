@@ -1,105 +1,160 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
 import { PROYECT_PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
-import { openSnackBar } from '../notifications'
+import toast from 'react-hot-toast'
 
-export const getProducts = createAsyncThunk('product/getProducts', async thunkApi => {
+export const getProducts = createAsyncThunk('ProductsList', async thunkApi => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROYECT_PRODUCTS}/products`)
-    //thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    const response = await api_get(`${PROYECT_PRODUCTS}/products`, auth)
     return response
   } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const createProduct = createAsyncThunk('product/createProduct', async ({ body, headers }, thunkApi) => {
+export const getProductById = createAsyncThunk('currentProduct', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${PROYECT_PRODUCTS}/products/${id}`, auth)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const createProduct = createAsyncThunk('ProductsCreate', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
-
   try {
     const response = await api_post(`${PROYECT_PRODUCTS}/products`, body, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    Router.push('/ecommerce/products')
+    toast.success(response.message)
+    Router.push('/marketplace')
     return response
   } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const updateProduct = createAsyncThunk('product/updateProduct', async ({ body, headers }, thunkApi) => {
+export const updateProduct = createAsyncThunk('ProductsUpdate', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
     const response = await api_patch(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    Router.push('/ecommerce/products')
+    toast.success(response.message)
+    Router.push('/marketplace')
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const deleteProduct = createAsyncThunk('product/deleteProduct', async ({ id, headers }, thunkApi) => {
+export const deleteProduct = createAsyncThunk('ProductsDelete', async ({ id, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
     const response = await api_delete(`${PROYECT_PRODUCTS}/products/${id}`, {}, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    toast.success(response.message)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
 
-export const uploadProductImages = createAsyncThunk('product/uploadProductImages', async (body, thunkApi) => {
+import { Buffer } from 'buffer'
+
+export const uploadProductImages = createAsyncThunk('ProductsPresignedUrl', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = `Bearer ${token}`
-  const urlImages = []
+  const urlImage = []
 
   try {
     for (const image of body.images) {
       if (image.includes('http')) {
-        urlImages.push(image)
+        urlImage.push(image)
       } else {
-        const filetype = image.split(';')[0].split('/')[1]
+        // Convertir a WebP
+        const webpBuffer = await convertToWebP(image)
+
+        const filetype = 'image/webp'
         const presignedUrlHeaders = { headers: { Authorization: auth, filetype } }
 
         const presignedUrlResponse = await api_get(
-          `${PROYECT_PRODUCTS}/products/s3Upload/${body.productName}`,
+          `${PROYECT_PRODUCTS}/products/s3Upload?folder=${body.productName}`,
           presignedUrlHeaders
         )
         const presignedUrl = presignedUrlResponse?.content?.url
-
         if (presignedUrl) {
-          const buffer = Buffer.from(image.replace(/^data:image\/\w+;base64,/, ''), 'base64')
-          const headers = { 'Content-Type': `image/${filetype}`, 'Content-Encoding': 'base64' }
+          const headers = { 'Content-Type': filetype }
 
-          await api_put(presignedUrl, buffer, headers)
-          urlImages.push(presignedUrl.split('?')[0])
+          await api_put(presignedUrl, webpBuffer, headers)
+          urlImage.push(presignedUrl.split('?')[0])
         }
       }
     }
-    return urlImages
+    return urlImage
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
+
+// Función auxiliar para convertir imagen a WebP
+async function convertToWebP(dataURI) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+      canvas.toBlob(
+        blob => {
+          if (blob) {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+              const arrayBuffer = reader.result
+              resolve(Buffer.from(arrayBuffer))
+            }
+            reader.onerror = reject
+            reader.readAsArrayBuffer(blob)
+          } else {
+            reject(new Error('Failed to create WebP blob'))
+          }
+        },
+        'image/webp',
+        0.9
+      )
+    }
+    img.onerror = reject
+    img.src = dataURI
+  })
+}
 
 const initialState = {
   isLoading: false,
   isImagesUploading: false,
   products: [],
-  productImages: [],
+  productImagesUpload: [],
   editItem: null,
-  mainComponents: [],
-  productId: ''
+  benefits: [],
+  studies: [],
+  productId: '',
+  currentProduct: null
 }
 
 export const productsSlice = createSlice({
@@ -122,9 +177,19 @@ export const productsSlice = createSlice({
     })
     builder.addCase(getProducts.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.products = payload
+      state.products = payload.content
     })
     builder.addCase(getProducts.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(getProductById.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(getProductById.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.currentProduct = payload.content
+    })
+    builder.addCase(getProductById.rejected, (state, { payload }) => {
       state.isLoading = false
     })
     builder.addCase(createProduct.pending, (state, action) => {
@@ -132,7 +197,7 @@ export const productsSlice = createSlice({
     })
     builder.addCase(createProduct.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.products = payload
+      state.products = payload.content
     })
     builder.addCase(createProduct.rejected, (state, { payload }) => {
       state.isLoading = false
@@ -141,21 +206,21 @@ export const productsSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateProduct.fulfilled, (state, { payload }) => {
-      state.products = payload
+      state.products = payload.content
       state.isLoading = false
     })
     builder.addCase(updateProduct.rejected, (state, { payload }) => {
       state.isLoading = false
     })
     builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
-      state.products = payload
+      state.products = payload.content
     })
     builder.addCase(uploadProductImages.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(uploadProductImages.fulfilled, (state, { payload }) => {
       state.isLoading = false
-      state.productImages = payload
+      state.productImagesUpload = payload
     })
     builder.addCase(uploadProductImages.rejected, (state, { payload }) => {
       state.isLoading = false

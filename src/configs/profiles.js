@@ -88,6 +88,7 @@ export const ROUTES_PERMISSION = {
   ['/profile']: PERMISSIONS.dashboardProfile,
   ['/network']: PERMISSIONS.network,
   ['/ecommerce/products']: PERMISSIONS.ecommerceProducts,
+  ['/ecommerce/product/[id]']: PERMISSIONS.ecommerceProducts,
   ['/ecommerce/cart']: PERMISSIONS.ecommerceCart,
   ['/ecommerce/checkout']: PERMISSIONS.ecommerceCheckout,
   ['/admin/users/new-user']: PERMISSIONS.adminUsersNewUser,

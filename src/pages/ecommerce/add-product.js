@@ -19,21 +19,21 @@ import {
   Box
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { closeSnackBar, openSnackBar } from 'src/store/notifications'
-import { createProduct, setRemoveEdit, updateProduct, uploadProductImages } from 'src/store/products'
+import { createProduct, setRemoveEdit, updateProduct, uploadProductImages, getProductById } from 'src/store/products'
 import { setShowConfirmModal } from 'src/store/users'
-import { getCustomStructure, getCustomStructureMainComponents, parseDataToEdit } from 'src/utils/functions'
+import { getCustomStructureMainComponents, parseDataToEdit } from 'src/utils/functions'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
-import ImageUploader from 'src/views/components/image-uploader/ImageUploader'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import ImageUploader from 'src/views/components/form/ImageUploader'
+import RichTextEditor from 'src/views/components/form/RichTextEditor'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
-import dynamic from 'next/dynamic'
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
-import 'react-quill/dist/quill.snow.css'
+import { Plus } from 'mdi-material-ui'
 
 const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {}, isEditItem = false }) => {
   return (
@@ -52,8 +52,7 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = (
 const AddProduct = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { editItem, mainComponents, isLoading } = useSelector(state => state.products)
-  const { open, message, severity } = useSelector(state => state.notifications)
+  const { editItem, isLoading, currentProduct } = useSelector(state => state.products)
   const { showConfirmModal } = useSelector(state => state.users)
   const [authPassword, setAuthPassword] = React.useState('')
   const {
@@ -62,50 +61,64 @@ const AddProduct = () => {
     handleSubmit,
     formState: { errors }
   } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        product: yup.string().trim().required('El campo es requerido'),
+        stock: yup.string().trim().required('El campo es requerido'),
+        content: yup.string().trim().required('El campo es requerido'),
+        ingredients: yup.string().trim().required('El campo es requerido'),
+        price: yup.string().trim().required('El campo es requerido'),
+        description: yup.string().trim().required('El campo es requerido'),
+        images: yup
+          .array()
+          .of(yup.string())
+          .min(1, 'Debes subir al menos una imagen')
+          .required('Las imágenes son requeridas'),
+        benefits: yup
+          .array()
+          .of(
+            yup.object().shape({
+              title: yup.string().trim().required('El beneficio es requerido'),
+              detail: yup.string().trim().required('El detalle del beneficio es requerido')
+            })
+          )
+          .min(1, 'Debes agregar al menos un beneficio'),
+        studies: yup
+          .array()
+          .of(
+            yup.object().shape({
+              title: yup.string().trim().required('El título es requerido'),
+              pageName: yup.string().trim().required('El nombre de la página es requerido'),
+              url: yup.string().trim().url('Debe ser una URL válida').required('La URL es requerida')
+            })
+          )
+          .min(1, 'Debes agregar al menos un estudio')
+      })
+    ),
     defaultValues: {
       product: '',
-      capsuleQuantity: '',
-      capsuleConcentration: '',
-      instructions: '',
+      stock: '',
+      content: '',
       ingredients: '',
       price: '',
-      quantity: ''
+      stock: '',
+      description: '',
+      benefits: [],
+      studies: []
     }
   })
 
-  /* images state */
-  const [images, setImages] = React.useState([])
-
-  /* properties */
-  const [values, setValues] = React.useState({
-    viasRespiratorias: '',
-    activacionMental: '',
-    generacionMuscular: '',
-    saludHormonal: '',
-    pielCabelloUñas: '',
-    digestion: '',
-    relajación: '',
-    sistemaOseo: '',
-    sistemaInmune: '',
-    circulaciónArterial: ''
-  })
-  /* fields of main components property - value form */
-  const [fields, setFields] = React.useState([])
+  /* benefits of main components property - value form */
+  const [benefits, setBenefits] = React.useState([{ benefit: '', benefitDetail: '' }])
   const [formBody, setFormBody] = React.useState({})
-  const [mainComponentValue, setMainComponentValue] = React.useState([])
-
+  const [benefitValue, setBenefitValue] = React.useState([])
+  const [studies, setStudies] = React.useState([{ title: '', pageName: '', url: '' }])
   /* the new option for select */
-  const [newOption, setNewOption] = React.useState('')
+  const [newBenefit, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
-  const [editorHtml, setEditorHtml] = React.useState('') // Estado para almacenar el contenido enriquecido
   const [isDescriptionEmpty, setIsDescriptionEmpty] = React.useState(true)
 
   // Maneja cambios en el editor de texto enriquecido
-  const handleEditorChange = (content, delta, source, editor) => {
-    const isEmpty = !content.trim() // Verifica si el contenido está vacío
-    setIsDescriptionEmpty(isEmpty)
-    setEditorHtml(content) // Actualiza el estado con el contenido enriquecido
-  }
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -121,71 +134,11 @@ const AddProduct = () => {
     )
   }
 
-  /* main component handle on change select */
-  const handleOptionChange = ({ target }) => {
-    const selectedValues = target.value
-    let newFields = []
-
-    // Map through the selected values and create a new field object for each one
-    selectedValues.forEach(value => {
-      newFields.push({
-        property: value.value,
-        value: ''
-      })
-    })
-
-    // Update state with the new fields and selected values
-    setFields(newFields)
-    setMainComponentValue(selectedValues)
+  const handleAddBenefit = () => {
+    setBenefits([...benefits, { benefit: '', benefitDetail: '' }])
   }
 
-  const handleNewOptionChange = event => {
-    setNewOption(event.target.value)
-  }
-
-  const handleFieldChange = (index, field, value) => {
-    const newFields = [...fields]
-    newFields[index][field] = value
-    setFields(newFields)
-  }
-
-  const handleAddOption = () => {
-    // Check if the new option is already in the options list
-    const existingOption = mainComponents.find(option => option.value === newOption)
-
-    if (existingOption) {
-      // If the new option already exists, set it as the selected option
-      setMainComponentValue([...mainComponentValue, existingOption])
-    } else {
-      // If the new option doesn't exist, add it to the options list and set it as the selected option
-      const newOptionObject = { value: newOption }
-      setMainComponentValue([...mainComponentValue, newOptionObject])
-    }
-
-    // Update the last input field's property with the new option
-    setFields(prevFields => [...prevFields, { property: newOption.trim(), value: '' }])
-
-    // Clear the new option text field
-    setNewOption('')
-  }
-
-  const handleCleanOptions = () => {
-    setMainComponentValue([])
-    setFields([])
-  }
-
-  const handleImagesUpdate = images => {
-    setImages(images)
-  }
-
-  const handlePropertiesList = prop => event => {
-    const newValue = event.target.value
-    if (newValue >= 0 && newValue <= 10) {
-      setValues(prevValues => ({ ...prevValues, [prop]: newValue }))
-    }
-  }
-
-  const handleImagesUpload = async productName => {
+  const handleImagesUpload = async (productName, images) => {
     const body = {
       productName: productName,
       images: images
@@ -216,29 +169,17 @@ const AddProduct = () => {
 
   const onSubmit = (data, event) => {
     event.preventDefault()
-    if (isDescriptionEmpty === true) {
-      return
-    }
-    if (images.length === 0) {
-      dispatch(
-        openSnackBar({ open: true, message: 'Debes agregar al menos una imagen del producto', severity: 'error' })
-      )
-      return
-    }
-    handleImagesUpload(data.product).then(productImages => {
-      const newProperties = getCustomStructure(values)
+    handleImagesUpload(data.product, data.images).then(productImages => {
       const body = {
-        product: data?.product,
-        description: editorHtml,
-        capsuleQuantity: data?.capsuleQuantity,
-        capsuleConcentration: data?.capsuleConcentration,
-        mainComponents: fields,
-        instructions: data?.instructions,
-        price: data?.price,
-        ingredients: data?.ingredients,
-        quantity: data?.quantity,
-        properties: newProperties,
+        product: data.product,
         urlImages: productImages.payload,
+        ingredients: data.ingredients,
+        content: data.content,
+        price: parseFloat(data.price),
+        stock: parseInt(data.stock),
+        description: data.description,
+        benefits: data.benefits.map(benefit => ({ title: benefit.title, detail: benefit.detail })),
+        studies: data.studies.map(study => ({ title: study.title, pageName: study.pageName, url: study.url })),
         id: editItem?.id ?? ''
       }
       if (productImages.payload === 'error') {
@@ -249,60 +190,62 @@ const AddProduct = () => {
     })
   }
 
-  React.useEffect(() => {
-    return () => {
-      dispatch(setRemoveEdit()) //cleaning edit values
-    }
-  }, [dispatch])
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (editItem) {
-      reset({
-        product: editItem.product,
-        capsuleQuantity: editItem.capsuleQuantity,
-        capsuleConcentration: editItem.capsuleConcentration,
-        mainComponents: editItem.mainComponent,
-        instructions: editItem.instructions,
-        price: editItem.price,
-        ingredients: editItem.ingredients,
-        quantity: 1
-      })
-      setEditorHtml(editItem.description)
-      setIsDescriptionEmpty(false)
-      const defaultProperties = parseDataToEdit(editItem.properties)
-      setValues(defaultProperties)
-      setImages(editItem.urlImages)
-      setFields(editItem?.mainComponents)
-      const defaultMainComponents = getCustomStructureMainComponents(editItem?.mainComponents)
-      setMainComponentValue(defaultMainComponents)
+      dispatch(getProductById(editItem.id))
     }
-  }, [editItem])
+  }, [dispatch, editItem])
 
   React.useEffect(() => {
-    if (!editItem) {
-      const existingOption = mainComponents.find(option => option.value === newOption)
-
-      if (existingOption) {
-        // If the new option already exists, set it as the selected option
-        setMainComponentValue([...mainComponentValue, existingOption])
-      } else {
-        // If the new option doesn't exist, add it to the options list and set it as the selected option
-        const newOptionObject = { value: newOption }
-        setMainComponentValue([...mainComponentValue, newOptionObject])
+    const handleRouteChange = url => {
+      if (url !== '/ecommerce/add-products') {
+        dispatch(setRemoveEdit())
       }
-
-      // Update the last input field's property with the new option
-      setFields(prevFields => [...prevFields, { property: newOption.trim(), value: '' }])
-
-      // Clear the new option text field
-      setNewOption('')
     }
-  }, [])
 
-  const handleDeleteComponent = index => {
-    let newFields = [...fields]
-    newFields.splice(index, 1)
-    setFields(newFields)
+    router.events.on('routeChangeStart', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [dispatch, router.events])
+
+  React.useEffect(() => {
+    if (editItem && currentProduct) {
+      reset({
+        product: currentProduct.product,
+        stock: currentProduct.stock,
+        content: currentProduct.content,
+        benefits: currentProduct.benefits,
+        studies: currentProduct.studies,
+        price: currentProduct.price,
+        ingredients: currentProduct.ingredients,
+        description: currentProduct.description,
+        urlImages: currentProduct.urlImages,
+        stock: currentProduct.stock
+      })
+      setBenefits(currentProduct.benefits)
+      setStudies(currentProduct.studies)
+    }
+  }, [currentProduct])
+
+  const handleDeleteBenefit = index => {
+    if (benefits.length > 1) {
+      const newBenefits = [...benefits]
+      newBenefits.splice(index, 1)
+      setBenefits(newBenefits)
+    }
+  }
+
+  const handleAddStudy = () => {
+    setStudies([...studies, { title: '', pageName: '', url: '' }])
+  }
+
+  const handleDeleteStudy = index => {
+    if (studies.length > 1) {
+      const newStudies = [...studies]
+      newStudies.splice(index, 1)
+      setStudies(newStudies)
+    }
   }
 
   return isLoading ? (
@@ -319,265 +262,336 @@ const AddProduct = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent>
             <Grid container spacing={5}>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name='product'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField error={!!errors.product} label='Producto' fullWidth {...field} />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name='price'
-                  rules={{ required: true }}
-                  render={({ field, formState }) => {
-                    const { value } = field
-                    return (
-                      <TextField
-                        label='Precio'
-                        fullWidth
-                        error={!!errors.price}
-                        {...field}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <Typography variant='subtitle2' color='textSecondary'>
-                                $
-                              </Typography>
-                            </InputAdornment>
-                          )
-                        }}
-                        onInput={handleInputFloat}
-                      />
-                    )
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Controller
-                  control={control}
-                  name='capsuleQuantity'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      error={!!errors.capsuleQuantity}
-                      label='Cantidad de Cápsulas'
-                      fullWidth
-                      {...field}
-                      type='text'
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <Typography variant='subtitle2' color='textSecondary'>
-                              cápsulas
-                            </Typography>
-                          </InputAdornment>
-                        )
-                      }}
-                      onKeyDown={handleKeyDownInt}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Controller
-                  control={control}
-                  name='capsuleConcentration'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      error={!!errors.capsuleConcentration}
-                      label='Concentración de Cápsulas'
-                      fullWidth
-                      {...field}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <Typography variant='subtitle2' color='textSecondary'>
-                              mg en cada cápsula
-                            </Typography>
-                          </InputAdornment>
-                        )
-                      }}
-                      onInput={handleInputFloat}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Controller
-                  control={control}
-                  name='quantity'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      error={!!errors.capsuleQuantity}
-                      label='Cantidad en almacén'
-                      fullWidth
-                      {...field}
-                      type='text'
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <Typography variant='subtitle2' color='textSecondary'>
-                              en almacén
-                            </Typography>
-                          </InputAdornment>
-                        )
-                      }}
-                      onKeyDown={handleKeyDownInt}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name='instructions'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField error={!!errors.instructions} label='Instrucciones' fullWidth {...field} />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Controller
-                  control={control}
-                  name='ingredients'
-                  rules={{ required: true }}
-                  render={({ field, fieldState }) => (
-                    <TextField error={!!errors.ingredients} label='Ingredientes' fullWidth {...field} />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <Grid item xs={12} sm={6}>
-                  <div>
-                    <InputLabel id='signature-label' sx={{ mb: 2 }}>
-                      Descripcion del producto:
-                    </InputLabel>
-                    <ReactQuill
-                      value={editorHtml}
-                      onChange={handleEditorChange}
-                      formats={['link', 'p', 'br']}
-                      modules={{
-                        toolbar: [['link']],
-                        clipboard: {
-                          matchVisual: false // Evita la coincidencia visual para mantener las etiquetas HTML sin cambios
-                        }
-                      }}
-                      style={{ height: '200px' }}
-                    />
-                  </div>
-                  {isDescriptionEmpty && (
-                    <FormHelperText sx={{ color: 'error.main', mt: '50px' }} id='stepper-linear-description'>
-                      La descripción es requerida
-                    </FormHelperText>
-                  )}
-                </Grid>
-                <Grid item xs={12} sx={{ marginTop: '50px' }}>
-                  {/* create here dropdown dynammic */}
-                  <MultiSelectWithAddOption
-                    //handle select
-                    options={mainComponents.map((option, index) => ({
-                      label: option,
-                      value: option,
-                      fieldIndex: index
-                    }))}
-                    onOptionChange={handleOptionChange}
-                    value={mainComponentValue}
-                    //handle text
-                    newOption={newOption}
-                    onHandleNewOptionChange={handleNewOptionChange}
-                    onHandleAddOption={handleAddOption}
-                    onCleanOptions={handleCleanOptions}
-                  />
-                </Grid>
-                {/* main components fields */}
-                <Typography sx={{ margin: '8px 0px' }} variant='h6'>
-                  Componentes principales
-                </Typography>
-                {fields.map((field, index) => {
-                  return (
-                    <Grid container item xs={12} spacing={5} key={index}>
-                      <Grid item xs={6} sx={{ marginTop: '10px' }}>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={5}>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
+                      name='product'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
                         <TextField
-                          label='Componente Principal'
-                          variant='outlined'
-                          value={field.property}
-                          error={field.property == ''}
+                          error={!!errors.product}
+                          helperText={errors.product?.message}
+                          label='Producto'
                           fullWidth
-                          onChange={e => handleFieldChange(index, 'property', e.target.value)}
+                          {...field}
                         />
-                      </Grid>
-                      <Grid item xs={5} sx={{ marginTop: '10px' }}>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
+                      name='price'
+                      rules={{ required: true }}
+                      render={({ field, formState }) => {
+                        const { value } = field
+                        return (
+                          <TextField
+                            label='Precio'
+                            fullWidth
+                            error={!!errors.price}
+                            helperText={errors.price?.message}
+                            {...field}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position='start'>
+                                  <Typography variant='subtitle2' color='textSecondary'>
+                                    $
+                                  </Typography>
+                                </InputAdornment>
+                              )
+                            }}
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            onInput={handleInputFloat}
+                          />
+                        )
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
+                      name='content'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
                         <TextField
-                          label='Valor'
-                          variant='outlined'
-                          value={field.value}
-                          error={field.value == ''}
+                          error={!!errors.content}
+                          label='Contenido'
                           fullWidth
-                          onChange={e => handleFieldChange(index, 'value', e.target.value)}
+                          helperText={errors.content?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
+                      name='stock'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          error={!!errors.stock}
+                          helperText={errors.stock?.message}
+                          label='Cantidad en almacén'
+                          fullWidth
+                          {...field}
                           type='text'
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position='end'>
-                                <Typography variant='subtitle2' color='textSecondary'>
-                                  mg en cada cápsula
-                                </Typography>
-                              </InputAdornment>
-                            )
-                          }}
-                          onInput={handleInputFloat}
+                          onKeyDown={handleKeyDownInt}
                         />
-                      </Grid>
-                      <Grid item xs={1} sx={{ marginTop: '17px' }}>
-                        <Button variant='text' color='error' onClick={() => handleDeleteComponent(index)}>
-                          Eliminar
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  )
-                })}
-                <Grid item sx={{ marginTop: '10px' }}></Grid>
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
+                      name='ingredients'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          error={!!errors.ingredients}
+                          helperText={errors.ingredients?.message}
+                          label='Ingredientes activos'
+                          multiline
+                          maxRows={2}
+                          fullWidth
+                          {...field}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <InputLabel
+                      id='signature-label'
+                      sx={{
+                        mb: 2,
+                        color: errors.description ? 'error.main' : 'text.primary'
+                      }}
+                    >
+                      Descripcion del producto
+                    </InputLabel>
+                    <Controller
+                      control={control}
+                      name='description'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => <RichTextEditor field={field} errors={errors} />}
+                    />
+                    {errors.description && (
+                      <FormHelperText sx={{ color: 'error.main', mt: '50px' }} id='stepper-linear-description'>
+                        {errors.description.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Typography sx={{ margin: 'auto 0px' }} variant='h5'>
-                  Imágenes Del Producto
-                </Typography>
-                <ImageUploader base64Images={editItem ? editItem.urlImages : []} handleImages={handleImagesUpdate} />
+
+              <Grid item xs={12} md={6}>
+                <InputLabel id='signature-label' sx={{ mb: 2, color: errors.images ? 'error.main' : 'text.primary' }}>
+                  Imágenes del producto
+                </InputLabel>
+                <Controller
+                  name='images'
+                  control={control}
+                  style={{ height: '100%' }}
+                  rules={{ required: 'Debes subir al menos una imagen' }}
+                  render={({ field, fieldState }) => (
+                    <ImageUploader
+                      field={field}
+                      fieldState={fieldState}
+                      base64Images={editItem && currentProduct ? currentProduct.urlImages : []}
+                    />
+                  )}
+                />
+                {errors.images && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-description'>
+                    {errors.images.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
+              <Grid item xs={12} md={12}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: '20px',
+                    mb: '20px'
+                  }}
+                >
+                  <Typography variant='h6' sx={{ alignSelf: 'flex-end' }}>
+                    Beneficios del producto:
+                  </Typography>
+                </Box>
+                <Grid container item xs={12} spacing={5}>
+                  <Grid item xs={12} sx={{ marginTop: '10px' }}>
+                    {benefits?.map((field, index) => (
+                      <Grid container item xs={12} spacing={5} key={index}>
+                        <Grid item xs={3} sx={{ marginTop: '10px' }}>
+                          <Controller
+                            name={`benefits[${index}].title`}
+                            control={control}
+                            defaultValue={field.title}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <TextField
+                                label='Beneficio'
+                                variant='outlined'
+                                error={!!errors.benefits?.[index]?.title}
+                                helperText={errors.benefits?.[index]?.title?.message}
+                                fullWidth
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={8} sx={{ marginTop: '10px' }}>
+                          <Controller
+                            name={`benefits[${index}].detail`}
+                            control={control}
+                            defaultValue={field.detail}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <TextField
+                                label='Detalles del Beneficio'
+                                variant='outlined'
+                                error={!!errors.benefits?.[index]?.detail}
+                                helperText={errors.benefits?.[index]?.detail?.message}
+                                fullWidth
+                                multiline
+                                minRows={6}
+                                maxRows={6}
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={1} sx={{ display: 'flex', alignItems: 'center' }}>
+                          {benefits.length > 1 && (
+                            <Button variant='text' color='error' onClick={() => handleDeleteBenefit(index)}>
+                              Eliminar
+                            </Button>
+                          )}
+                        </Grid>
+                      </Grid>
+                    ))}
+                    <Grid item xs={12}>
+                      <Button color='primary' onClick={handleAddBenefit} sx={{ mt: 2, width: '100%' }}>
+                        <Plus /> Agregar Nuevo Beneficio
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12} md={12}>
+                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mt: '20px', mb: '20px' }}>
+                  <Typography variant='h6'>Estudios relacionados:</Typography>
+                </Box>
+                <Grid container item xs={12} spacing={5}>
+                  <Grid item xs={12} sx={{ marginTop: '10px' }}>
+                    {studies?.map((study, index) => (
+                      <Grid container item xs={12} spacing={5} key={index}>
+                        <Grid item xs={3} sx={{ marginTop: '10px' }}>
+                          <Controller
+                            name={`studies[${index}].title`}
+                            control={control}
+                            defaultValue={study.title}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <TextField
+                                label='Título'
+                                variant='outlined'
+                                error={!!errors.studies?.[index]?.title}
+                                helperText={errors.studies?.[index]?.title?.message}
+                                fullWidth
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={3} sx={{ marginTop: '10px' }}>
+                          <Controller
+                            name={`studies[${index}].pageName`}
+                            control={control}
+                            defaultValue={study.pageName}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <TextField
+                                label='Nombre de la página'
+                                variant='outlined'
+                                error={!!errors.studies?.[index]?.pageName}
+                                helperText={errors.studies?.[index]?.pageName?.message}
+                                fullWidth
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={5} sx={{ marginTop: '10px' }}>
+                          <Controller
+                            name={`studies[${index}].url`}
+                            control={control}
+                            defaultValue={study.url}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <TextField
+                                label='URL'
+                                variant='outlined'
+                                error={!!errors.studies?.[index]?.url}
+                                helperText={errors.studies?.[index]?.url?.message}
+                                fullWidth
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={1} sx={{ display: 'flex', alignItems: 'center' }}>
+                          {studies.length > 1 && (
+                            <Button variant='text' color='error' onClick={() => handleDeleteStudy(index)}>
+                              Eliminar
+                            </Button>
+                          )}
+                        </Grid>
+                      </Grid>
+                    ))}
+                    <Grid item xs={12}>
+                      <Button color='primary' onClick={handleAddStudy} sx={{ mt: 2, width: '100%' }}>
+                        <Plus /> Agregar Nuevo Estudio
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </CardContent>
           <Grid item xs={12}>
             <Divider sx={{ mb: 2 }} />
           </Grid>
-          <CardActions>
-            <Button size='large' type='submit' sx={{ m: 0 }} variant='contained'>
-              {editItem ? 'Guardar Cambios' : 'Crear Producto'}
-            </Button>
+          <CardActions sx={{ justifyContent: 'flex-end' }}>
             <Button
               onClick={() => router.push('/ecommerce/products')}
               size='large'
               color='secondary'
               variant='outlined'
             >
-              Regresar
+              Volver
+            </Button>
+            <Button size='large' type='submit' sx={{ ml: 1 }} variant='contained'>
+              {editItem ? 'Guardar Cambios' : 'Crear Producto'}
             </Button>
           </CardActions>
         </form>
       </Card>
-      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <Modal
         open={openModal}
         onHandleOpenModal={handleOpenModal}
         onSubmitConfirm={() => dispatch(setShowConfirmModal(true))}
         isEditItem={Boolean(editItem)}
       />
+
       <DialogForm
         text={'Ingrese su contraseña para continuar'}
         open={showConfirmModal}
