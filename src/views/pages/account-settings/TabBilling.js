@@ -22,7 +22,6 @@ import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
 
 // ** Third Party Imports
 import Payment from 'payment'
-import Cards from 'react-credit-cards'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -118,9 +117,7 @@ const TabBilling = () => {
               {paymentMethod === 'card' ? (
                 <Grid item xs={12}>
                   <CreditCardWrapper>
-                    <CardWrapper>
-                      <Cards cvc={cvc} focused={focus} expiry={expiry} name={name} number={cardNumber} />
-                    </CardWrapper>
+                    <CardWrapper></CardWrapper>
                     <Grid container spacing={6}>
                       <Grid item xs={12}>
                         <TextField

@@ -23,7 +23,6 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Third Party Imports
 import Payment from 'payment'
-import Cards from 'react-credit-cards'
 
 // ** Icons Imports
 import ChevronDown from 'mdi-material-ui/ChevronDown'
@@ -253,9 +252,7 @@ const FormLayoutsCollapsible = () => {
                   <Grid item xs={12}>
                     <Grid container spacing={6}>
                       <Grid item xs={12}>
-                        <CardWrapper>
-                          <Cards cvc={cvc} focused={focus} expiry={expiry} name={name} number={cardNumber} />
-                        </CardWrapper>
+                        <CardWrapper></CardWrapper>
                       </Grid>
                       <Grid item xs={12} md={8} xl={6} sx={{ mt: 2 }}>
                         <Grid container spacing={6}>
