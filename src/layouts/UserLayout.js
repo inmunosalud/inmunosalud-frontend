@@ -84,7 +84,7 @@ const UserLayout = ({ children }) => {
     if (user.profile === 'Administrador General') {
       dispatch(isDataLoaded(true))
     }
-    if (user.profile === 'Consumidor' && !dataLoaded && userInfo && userInfo.registrationCompleted) {
+    if (user.profile === 'Consumidor' && !dataLoaded && userInfo) {
       dispatch(getCart(user.id))
       dispatch(loadInfo(user.id))
       dispatch(addressList(user.id))

@@ -34,7 +34,6 @@ import ImageUploader from 'src/views/components/form/ImageUploader'
 import RichTextEditor from 'src/views/components/form/RichTextEditor'
 import MultiSelectWithAddOption from '../components/multiselectWithAddOption'
 import { Plus } from 'mdi-material-ui'
-
 const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitConfirm = () => {}, isEditItem = false }) => {
   return (
     <Dialog open={open}>
@@ -59,6 +58,9 @@ const AddProduct = () => {
     control,
     reset,
     handleSubmit,
+    getValues,
+    setValue,
+    watch,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(
@@ -103,20 +105,16 @@ const AddProduct = () => {
       price: '',
       stock: '',
       description: '',
-      benefits: [],
-      studies: []
+      benefits: [{ title: '', detail: '' }],
+      studies: [{ title: '', pageName: '', url: '' }]
     }
   })
-
+  const benefits = watch('benefits')
+  const studies = watch('studies')
   /* benefits of main components property - value form */
-  const [benefits, setBenefits] = React.useState([{ benefit: '', benefitDetail: '' }])
   const [formBody, setFormBody] = React.useState({})
-  const [benefitValue, setBenefitValue] = React.useState([])
-  const [studies, setStudies] = React.useState([{ title: '', pageName: '', url: '' }])
   /* the new option for select */
-  const [newBenefit, setNewOption] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
-  const [isDescriptionEmpty, setIsDescriptionEmpty] = React.useState(true)
 
   // Maneja cambios en el editor de texto enriquecido
 
@@ -135,7 +133,8 @@ const AddProduct = () => {
   }
 
   const handleAddBenefit = () => {
-    setBenefits([...benefits, { benefit: '', benefitDetail: '' }])
+    const currentBenefits = benefits
+    setValue('benefits', [...currentBenefits, { title: '', detail: '' }])
   }
 
   const handleImagesUpload = async (productName, images) => {
@@ -220,31 +219,29 @@ const AddProduct = () => {
         price: currentProduct.price,
         ingredients: currentProduct.ingredients,
         description: currentProduct.description,
-        urlImages: currentProduct.urlImages,
-        stock: currentProduct.stock
+        urlImages: currentProduct.urlImages
       })
-      setBenefits(currentProduct.benefits)
-      setStudies(currentProduct.studies)
     }
   }, [currentProduct])
 
   const handleDeleteBenefit = index => {
-    if (benefits.length > 1) {
-      const newBenefits = [...benefits]
-      newBenefits.splice(index, 1)
-      setBenefits(newBenefits)
+    const currentBenefits = benefits
+    if (currentBenefits.length > 1) {
+      const newBenefits = currentBenefits.filter((_, i) => i !== index)
+      setValue('benefits', newBenefits)
     }
   }
 
   const handleAddStudy = () => {
-    setStudies([...studies, { title: '', pageName: '', url: '' }])
+    const currentStudies = studies
+    setValue('studies', [...currentStudies, { title: '', pageName: '', url: '' }])
   }
 
   const handleDeleteStudy = index => {
-    if (studies.length > 1) {
-      const newStudies = [...studies]
-      newStudies.splice(index, 1)
-      setStudies(newStudies)
+    const currentStudies = studies
+    if (currentStudies.length > 1) {
+      const newStudies = currentStudies.filter((_, i) => i !== index)
+      setValue('studies', newStudies)
     }
   }
 
@@ -344,7 +341,7 @@ const AddProduct = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={12}>
                     <Controller
                       control={control}
                       name='ingredients'
@@ -355,7 +352,7 @@ const AddProduct = () => {
                           helperText={errors.ingredients?.message}
                           label='Ingredientes activos'
                           multiline
-                          maxRows={2}
+                          maxRows={3}
                           fullWidth
                           {...field}
                         />
@@ -603,5 +600,5 @@ const AddProduct = () => {
   )
 }
 AddProduct.getLayout = page => <BlankLayout>{page}</BlankLayout>
-AddProduct.guestGuard = true
+
 export default AddProduct

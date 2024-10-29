@@ -25,6 +25,7 @@ const Register = () => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const { isLoading } = useSelector(state => state.session)
+  const { isLoadingRegister } = useSelector(state => state.users)
 
   React.useEffect(() => {
     dispatch(isDataLoaded(false))
@@ -32,7 +33,7 @@ const Register = () => {
 
   // ** State
 
-  return isLoading ? (
+  return isLoading || isLoadingRegister ? (
     <FallbackSpinner />
   ) : (
     <>

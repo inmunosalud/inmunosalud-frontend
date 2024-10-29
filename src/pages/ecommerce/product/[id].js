@@ -58,9 +58,6 @@ export default function ProductPage() {
             <Button variant='outlined' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
               Agregar al Carrito
             </Button>
-            <Button variant='outlined' sx={{ width: '50%' }}>
-              Agregar a tu Selección
-            </Button>
           </Box>
         </Grid>
       </Grid>
@@ -158,8 +155,8 @@ export default function ProductPage() {
         ))}
       </Grid>
 
-      <Grid container spacing={4} sx={{ marginTop: 30 }}>
-        {/* Reseñas */}
+      {/* <Grid container spacing={4} sx={{ marginTop: 30 }}>
+          
         <Grid item xs={12}>
           <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             Reseñas
@@ -190,6 +187,7 @@ export default function ProductPage() {
           </Grid>
         </Grid>
       </Grid>
+       */}
     </Container>
   )
 }

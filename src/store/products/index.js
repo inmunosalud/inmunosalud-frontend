@@ -35,7 +35,7 @@ export const createProduct = createAsyncThunk('ProductsCreate', async ({ body, h
   try {
     const response = await api_post(`${PROYECT_PRODUCTS}/products`, body, auth)
     toast.success(response.message)
-    Router.push('/marketplace')
+    Router.push('/ecommerce/products')
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -50,7 +50,7 @@ export const updateProduct = createAsyncThunk('ProductsUpdate', async ({ body, h
   try {
     const response = await api_patch(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
     toast.success(response.message)
-    Router.push('/marketplace')
+    Router.push('/ecommerce/products')
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
