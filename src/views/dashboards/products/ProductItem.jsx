@@ -177,7 +177,7 @@ export const ProductItem = props => {
               <Grid item xs={12} md={6}>
                 <Link href={`/ecommerce/product/${props.id}`} passHref>
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img loading='lazy' src={props.urlImage} alt={props.product} width='60%' />
+                    <img loading='lazy' src={props.urlImages} alt={props.product} width='60%' />
                   </Box>
                 </Link>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

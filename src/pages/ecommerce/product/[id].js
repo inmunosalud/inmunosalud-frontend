@@ -155,8 +155,8 @@ export default function ProductPage() {
         ))}
       </Grid>
 
-      <Grid container spacing={4} sx={{ marginTop: 30 }}>
-        {/* Reseñas */}
+      {/* <Grid container spacing={4} sx={{ marginTop: 30 }}>
+          
         <Grid item xs={12}>
           <Typography variant='h5' sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
             Reseñas
@@ -187,6 +187,7 @@ export default function ProductPage() {
           </Grid>
         </Grid>
       </Grid>
+       */}
     </Container>
   )
 }
