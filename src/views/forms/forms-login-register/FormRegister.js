@@ -167,15 +167,21 @@ export default function FormRegister() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Controller
-                  name='birthdate'
-                  control={control}
-                  defaultValue={null}
-                  render={({ field }) => <DatePicker {...field} label='Fecha de nacimiento' />}
-                />
-              </LocalizationProvider>
-              {errors.birthdate && <FormHelperText error>{errors.birthdate.message}</FormHelperText>}
+              <Controller
+                name='birthdate'
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    type='date'
+                    label='Fecha de nacimiento'
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -183,9 +189,9 @@ export default function FormRegister() {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <TextField {...field} select fullWidth label='Género' error={!!error} helperText={error?.message}>
-                    <MenuItem value='male'>Masculino</MenuItem>
-                    <MenuItem value='female'>Femenino</MenuItem>
-                    <MenuItem value='other'>Otro</MenuItem>
+                    <MenuItem value='Hombre'>Hombre</MenuItem>
+                    <MenuItem value='Mujer'>Mujer</MenuItem>
+                    <MenuItem value='Otro'>Otro</MenuItem>
                   </TextField>
                 )}
               />

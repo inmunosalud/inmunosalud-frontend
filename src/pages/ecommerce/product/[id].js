@@ -58,9 +58,6 @@ export default function ProductPage() {
             <Button variant='outlined' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
               Agregar al Carrito
             </Button>
-            <Button variant='outlined' sx={{ width: '50%' }}>
-              Agregar a tu Selección
-            </Button>
           </Box>
         </Grid>
       </Grid>

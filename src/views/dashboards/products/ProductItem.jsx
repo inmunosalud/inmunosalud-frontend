@@ -203,9 +203,6 @@ export const ProductItem = props => {
                   >
                     Agregar al Carrito
                   </Button>
-                  <Button variant='outlined' sx={{ width: '50%' }}>
-                    Agregar a tu Selección
-                  </Button>
                 </Box>
               </Grid>
             </Grid>
