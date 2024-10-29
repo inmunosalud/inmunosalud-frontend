@@ -63,7 +63,6 @@ export default function FormRegister() {
   })
 
   const onSubmit = data => {
-    console.log(data)
     const body = {
       firstName: data.firstName,
       lastName: data.lastName,
