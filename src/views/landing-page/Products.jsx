@@ -13,27 +13,6 @@ import Carousel from 'src/views/components/swiper/Carousel'
 const Products = props => {
   const { products, isLoading } = useSelector(state => state.products)
 
-  /*************  ✨ Codeium Command ⭐  *************/
-  const dummyProducts = [
-    {
-      urlImage: '/images/mockups/2ComplejoBRutina.png',
-      id: 1
-    },
-    {
-      urlImage: '/images/mockups/3VitaminaC.png',
-      id: 2
-    },
-    {
-      urlImage: '/images/mockups/4Omega3.png',
-      id: 3
-    },
-    {
-      urlImage: '/images/mockups/6DHA.png',
-      id: 4
-    }
-  ]
-  /******  2eadc040-713d-485e-a087-cb200f4ca684  *******/
-
   return (
     <Card>
       <CardHeader title='Nuevos productos' subheader='Inmunosalud' />
@@ -44,7 +23,7 @@ const Products = props => {
       ) : (
         <>
           <CardContent>
-            <Carousel products={dummyProducts} />
+            <Carousel products={products} />
           </CardContent>
           <CardActions sx={{ justifyContent: 'center' }}>
             <RedirectButton path={'/ecommerce/products'} text={'Productos'} />

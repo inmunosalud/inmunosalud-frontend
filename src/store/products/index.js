@@ -24,7 +24,7 @@ export const getProductById = createAsyncThunk('currentProduct', async (id, thun
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
-    toast.error(errMessage)
+    Router.push('/ecommerce/products')
     return thunkApi.rejectWithValue('error')
   }
 })

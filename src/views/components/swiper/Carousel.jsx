@@ -49,7 +49,7 @@ const Carousel = ({ products }) => {
             onClick={() => router.push(`/ecommerce/product/${product.id}`)}
           >
             <Image
-              src={product.urlImage}
+              src={product.urlImages}
               width={mobile ? 350 : 450}
               height={mobile ? 350 : 450}
               alt='product'

@@ -9,7 +9,7 @@ import {
   CardContent,
   CardActions,
   CardHeader,
-  Rating
+  CircularProgress
 } from '@mui/material'
 import CarouselProducts from 'src/views/components/swiper/CarouselProducts'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,6 +27,14 @@ export default function ProductPage() {
       dispatch(getProductById(id))
     }
   }, [dispatch, id])
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <Container maxWidth='lg'>
