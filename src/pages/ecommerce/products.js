@@ -8,6 +8,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import PageHeader from 'src/@core/components/page-header'
 import Typography from '@mui/material/Typography'
+import CircularProgress from '@mui/material/CircularProgress'
 import { ProductItem } from 'src/views/dashboards/products/ProductItem'
 import { Button } from '@mui/material'
 import { getProducts } from 'src/store/products'
@@ -38,7 +39,7 @@ const Store = () => {
     return (
       <Grid item xs={12}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
-          <Typography>Cargando productos...</Typography>
+          <CircularProgress />
         </Box>
       </Grid>
     )
