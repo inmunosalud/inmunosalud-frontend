@@ -20,9 +20,9 @@ import ArticleIcon from '@mui/icons-material/Article'
 // ** Icons Imports
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountTie from 'mdi-material-ui/AccountTie'
-
 import { Flag } from 'mdi-material-ui'
 import { setModal } from 'src/store/contactus'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -50,6 +50,7 @@ const UserDropdown = props => {
   // ** Hooks
   const router = useRouter()
   const theme = useTheme()
+  const hidden = useMediaQuery(theme => theme.breakpoints.down('md'))
 
   // ** Vars
   const { direction } = settings
@@ -81,7 +82,7 @@ const UserDropdown = props => {
   }
 
   const handleConvertProfile = () => {
-    router.push({ pathname: '/register/address', query: { newAssociate: true } })
+    router.push({ pathname: '/landing-page/join', query: { newAssociate: true } })
     handleDropdownClose()
   }
 
@@ -129,7 +130,7 @@ const UserDropdown = props => {
             Perfil
           </MenuItem>
         ) : null}
-        {user?.profile === PROFILES_USER.consumerUser ? (
+        {user?.profile === PROFILES_USER.consumerUser && hidden ? (
           <MenuItem sx={{ py: 2 }} onClick={handleConvertProfile}>
             <AccountTie sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
             Convertirme en Afiliado
