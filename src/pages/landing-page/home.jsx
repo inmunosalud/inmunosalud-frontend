@@ -14,7 +14,7 @@ import axios from 'axios'
 import PricingPlans from 'src/views/pages/pricing/PricingPlans'
 import PricingHeader from 'src/views/pages/pricing/PricingHeader'
 import PricingFooter from 'src/views/pages/pricing/PricingFooter'
-import { Box, Button, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material'
 import Products from 'src/views/landing-page/Products'
 
 import Banner from 'public/images/banners/banner.webp'
@@ -30,6 +30,8 @@ import { getProducts } from 'src/store/products'
 import Router from 'next/router'
 import Link from 'next/link'
 import { PROFILES_USER } from 'src/configs/profiles'
+import { closeSnackBar } from 'src/store/notifications'
+import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
@@ -112,37 +114,62 @@ const questions = [
 
 const Pricing = () => {
   // ** States
-  const [plan, setPlan] = useState('monthly')
   const { products, isLoading } = useSelector(state => state.products)
   const { user } = useSelector(state => state.dashboard.general)
   const dispatch = useDispatch()
-
+  const { open, message, severity } = useSelector(state => state.notifications)
   useEffect(() => {
     if (products.length === 0) {
       dispatch(getProducts())
     }
   }, [products, dispatch])
-
-  const handleChange = e => {
-    if (e.target.checked) {
-      setPlan('annually')
-    } else {
-      setPlan('monthly')
-    }
-  }
-
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const handleSeeMoreProducts = () => {
     Router.push('/ecommerce/products')
   }
 
   return (
     <>
-      <Box sx={{ position: 'relative' }}>
-        <Image src={BannerPrincipal} height={450} />
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-          <Image src={Logo} height={150} width={230} />
-        </Box>
-      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+              height: '0',
+              paddingTop: '40%', // Ajusta este valor para cambiar la altura del banner
+              overflow: 'hidden'
+            }}
+          >
+            <Image
+              src='/images/banners/ImagenBanner.webp'
+              alt='Banner'
+              layout='fill'
+              objectFit='cover'
+              quality={100}
+              priority
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 'auto',
+                height: 'auto',
+                maxWidth: '80%',
+                maxHeight: '80%'
+              }}
+            >
+              {isMobile ? (
+                <Image src='/images/logos/LogoBlanco.webp' alt='Logo' width={150} height={100} objectFit='contain' />
+              ) : (
+                <Image src='/images/logos/LogoBlanco.webp' alt='Logo' width={230} height={150} objectFit='contain' />
+              )}
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
 
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -200,8 +227,8 @@ const Pricing = () => {
         </Grid>
         <Grid item xs={12}></Grid>
       </Card>
-
       <FAQs data={questions} />
+      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       {/* <Footer /> */}
     </>
   )

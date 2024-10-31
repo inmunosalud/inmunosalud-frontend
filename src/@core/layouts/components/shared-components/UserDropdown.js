@@ -166,18 +166,6 @@ const UserDropdown = props => {
           <Flag sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
           Tengo un problema
         </MenuItem>
-        <MenuItem>
-          <PolicyIcon sx={{ mr: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-          <Link href={'/docs/Privacy.pdf'} underline='none' sx={{ color: 'text.primary' }}>
-            Aviso de privacidad
-          </Link>
-        </MenuItem>
-        <MenuItem>
-          <ArticleIcon sx={{ mr: 1, fontSize: '1.375rem', color: 'text.secondary' }} />
-          <Link href={'/docs/TyC.pdf'} underline='none' sx={{ color: 'text.primary' }}>
-            Términos y condiciones
-          </Link>
-        </MenuItem>
 
         <Divider />
         {user?.id ? (

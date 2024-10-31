@@ -34,35 +34,35 @@ const dataList = [
   {
     nivel: 1,
     users: [
-      { name: 'Juan Ignacio', recommenderName: 'Alberto Ruiz' },
-      { name: 'Carlos Villalobos', recommenderName: 'Pedro Rodriguez' }
+      // { name: 'Juan Ignacio', recommenderName: 'Alberto Ruiz' },
+      // { name: 'Carlos Villalobos', recommenderName: 'Pedro Rodriguez' }
     ]
   },
   {
     nivel: 2,
     users: [
-      { name: 'Nivel 2A', recommenderName: 'Nivel 1A' },
-      { name: 'Nivel 2B', recommenderName: 'Nivel 1A' },
-      { name: 'Nivel 2C', recommenderName: 'Nivel 1B' }
+      // { name: 'Nivel 2A', recommenderName: 'Nivel 1A' },
+      // { name: 'Nivel 2B', recommenderName: 'Nivel 1A' },
+      // { name: 'Nivel 2C', recommenderName: 'Nivel 1B' }
     ]
   },
   {
     nivel: 3,
     users: [
-      { name: 'Nivel 3A', recommenderName: 'Nivel 2A' },
-      { name: 'Nivel 3B', recommenderName: 'Nivel 2A' },
-      { name: 'Nivel 3C', recommenderName: 'Nivel 2B' },
-      { name: 'Nivel 3D', recommenderName: 'Nivel 2C' }
+      // { name: 'Nivel 3A', recommenderName: 'Nivel 2A' },
+      // { name: 'Nivel 3B', recommenderName: 'Nivel 2A' },
+      // { name: 'Nivel 3C', recommenderName: 'Nivel 2B' },
+      // { name: 'Nivel 3D', recommenderName: 'Nivel 2C' }
     ]
   },
   {
     nivel: 4,
     users: [
-      { name: 'Nivel 4A', reference: 'Nivel 3A' },
-      { name: 'Nivel 4B', reference: 'Nivel 3A' },
-      { name: 'Nivel 4C', reference: 'Nivel 3B' },
-      { name: 'Nivel 4D', reference: 'Nivel 3C' },
-      { name: 'Nivel 4E', reference: 'Nivel 3D' }
+      // { name: 'Nivel 4A', reference: 'Nivel 3A' },
+      // { name: 'Nivel 4B', reference: 'Nivel 3A' },
+      // { name: 'Nivel 4C', reference: 'Nivel 3B' },
+      // { name: 'Nivel 4D', reference: 'Nivel 3C' },
+      // { name: 'Nivel 4E', reference: 'Nivel 3D' }
     ]
   }
 ]
@@ -170,13 +170,13 @@ const Network = () => {
   const [dataSeriesCommissionsHistory, setDataSeriesCommissionsHistory] = React.useState([
     {
       name: new Date().getFullYear(),
-      data: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500]
+      data: []
     }
   ])
   const [dataSeriesNetworkHistory, setDataSeriesNetworkHistory] = React.useState([
     {
       name: new Date().getFullYear(),
-      data: [1, 5, 15, 20, 30, 32, 35, 45, 50, 50, 51, 60]
+      data: []
     }
   ])
   const [availableYears, setAvailableYears] = React.useState([])
@@ -189,7 +189,8 @@ const Network = () => {
   const [conteoPorNivel, setConteoPorNivel] = React.useState({
     1: { valid: 0, invalid: 0 },
     2: { valid: 0, invalid: 0 },
-    3: { valid: 0, invalid: 0 }
+    3: { valid: 0, invalid: 0 },
+    4: { valid: 0, invalid: 0 }
   })
 
   const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear())
@@ -670,7 +671,7 @@ const Network = () => {
   }
   const handleCopyUrl = () => {
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(`https://www.multinaturecompany.com/register?id=${user?.id}`)
+      navigator.clipboard.writeText(`https://www.inmunosalud.mx/register/?id=${user?.id}`)
     }
   }
 
@@ -784,7 +785,7 @@ const Network = () => {
                     </Grid>
                     <Grid item xs={12} md={12}>
                       <Box sx={{ mt: '46px' }}>
-                        <CardHeader title={'Próximo corte: ' + (cutoffDate ? cutoffDate : '15 de Marzo')} />
+                        <CardHeader title={'Próximo corte: ' + (cutoffDate ? cutoffDate : '')} />
                       </Box>
                     </Grid>
                   </Grid>
@@ -809,17 +810,21 @@ const Network = () => {
                         </Typography>
 
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={4}>
+                          <Grid item xs={12} sm={3}>
                             <h2>Nivel 1: {conteoPorNivel[1].invalid + conteoPorNivel[1].valid}</h2>
                             {renderList(0)}
                           </Grid>
-                          <Grid item xs={12} sm={4}>
+                          <Grid item xs={12} sm={3}>
                             <h2>Nivel 2: {conteoPorNivel[2].invalid + conteoPorNivel[2].valid}</h2>
                             {renderList(1)}
                           </Grid>
-                          <Grid item xs={12} sm={4}>
+                          <Grid item xs={12} sm={3}>
                             <h2>Nivel 3: {conteoPorNivel[3].invalid + conteoPorNivel[3].valid}</h2>
                             {renderList(2)}
+                          </Grid>
+                          <Grid item xs={12} sm={3}>
+                            <h2>Nivel 4: {conteoPorNivel[4].invalid + conteoPorNivel[4].valid}</h2>
+                            {renderList(3)}
                           </Grid>
                         </Grid>
                       </Box>

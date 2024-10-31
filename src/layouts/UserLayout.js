@@ -78,17 +78,20 @@ const UserLayout = ({ children }) => {
     if (user.id && !userInfo) {
       dispatch(getUserInfo(user.id))
     }
-    if (user.profile === 'Logistica') {
-      router.push('/dashboards/logistics')
-    }
-    if (user.profile === 'Administrador General') {
-      dispatch(isDataLoaded(true))
-    }
-    if (user.profile === 'Consumidor' && !dataLoaded && userInfo) {
-      dispatch(getCart(user.id))
-      dispatch(loadInfo(user.id))
-      dispatch(addressList(user.id))
-      dispatch(isDataLoaded(true))
+    if (userInfo) {
+      if (userInfo.profile === 'Logistica') {
+        router.push('/dashboards/logistics')
+        dispatch(isDataLoaded(true))
+      }
+      if (userInfo.profile === 'Administrador General') {
+        dispatch(isDataLoaded(true))
+      }
+      if (userInfo.profile === 'Consumidor' || (userInfo.profile === 'Afiliado' && !dataLoaded && userInfo)) {
+        dispatch(getCart(user.id))
+        dispatch(loadInfo(user.id))
+        dispatch(addressList(user.id))
+        dispatch(isDataLoaded(true))
+      }
     }
   }, [userInfo, user.id, dataLoaded])
 

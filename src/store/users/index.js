@@ -6,7 +6,7 @@ import { PROJECT_CONTRACT, PROYECT, api_delete, api_get, api_patch, api_post } f
 import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
-
+import { updateGeneralUser } from '../dashboard/generalSlice'
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
@@ -58,6 +58,23 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   } catch (error) {
     const errMessage = error?.response?.data?.message
     thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const createPartner = createAsyncThunk('/join/register', async ({ body, id }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_patch(`${PROYECT}/users/affiliate/${id}`, body, auth)
+
+    console.log('response', response)
+    thunkApi.dispatch(updateGeneralUser(response.content))
+    Router.push({ pathname: '/landing-page/home' })
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -398,6 +415,18 @@ export const usersSlice = createSlice({
       state.isLoading = false
     })
     builder.addCase(validatePasswordRecoveryCode.rejected, state => {
+      state.isLoading = false
+    })
+    builder.addCase(createPartner.pending, state => {
+      state.isLoading = true
+    })
+    builder.addCase(createPartner.fulfilled, (state, { payload }) => {
+      const { content } = payload
+
+      state.isLoading = false
+      state.userInfo = content
+    })
+    builder.addCase(createPartner.rejected, state => {
       state.isLoading = false
     })
     builder.addCase(validateVerificationCode.pending, state => {

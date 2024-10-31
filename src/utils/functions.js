@@ -1,3 +1,5 @@
+import CPMexico from 'src/utils/CPMexico.json'
+
 const viasRespiratorias = "Vías Respiratorias";
 const activacionMental = "Activación Mental";
 const generacionMuscular = "Regeneración Muscular";
@@ -101,4 +103,17 @@ export {
 
   //parseDataToEdit
   parseDataToEdit,
+}
+
+export const getColonies = zipCode => {
+  return CPMexico.filter(colony => colony.zipCode === String(zipCode)).map(colony => colony)
+}
+export const onZipCodeChange = (e, onChange, setColonies) => {
+  const newValue = e.target.value
+  onChange(newValue)
+  if (newValue.length >= 4 && newValue.length <= 5) {
+    setColonies(getColonies(newValue) ?? [])
+  } else {
+    setColonies([])
+  }
 }
