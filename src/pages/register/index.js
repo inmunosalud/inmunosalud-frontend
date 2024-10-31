@@ -41,7 +41,7 @@ const Register = () => {
         <Grid container spacing={6}>
           <Grid item xs={12} display='flex' justifyContent='flex-end' style={{ marginBottom: '1rem' }}>
             <Box display='flex' justifyContent='center' alignItems='center' style={{ margin: '0 auto' }}>
-              <Link href='/' passHref style={{ textDecoration: 'none' }}>
+              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: 2 }}>
                   <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' height={50} />
                 </Box>

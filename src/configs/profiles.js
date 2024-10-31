@@ -3,6 +3,7 @@ import { Netflix } from 'mdi-material-ui'
 export const PERMISSIONS = {
   home: 'home',
   join: 'join',
+  joinRegister: 'join/register',
   network: 'network',
   dashboardUsers: 'dashboard/users',
   dashboardComissions: 'dashboard/comissions',
@@ -26,6 +27,7 @@ export const PROFILES = {
   Consumidor: [
     PERMISSIONS.home,
     PERMISSIONS.join,
+    PERMISSIONS.joinRegister,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
@@ -77,6 +79,7 @@ export const PROFILES = {
 export const ROUTES_PERMISSION = {
   ['/landing-page/home']: PERMISSIONS.home,
   ['/landing-page/join']: PERMISSIONS.join,
+  ['/join/register']: PERMISSIONS.joinRegister,
   ['/dashboards/general']: PERMISSIONS.dashboardGeneral,
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/dashboards/comissions']: PERMISSIONS.dashboardComissions,

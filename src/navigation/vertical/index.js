@@ -48,16 +48,16 @@ const navigation = () => {
           path: '/dashboards/general',
           permission: PERMISSIONS.dashboardGeneral
         },
-        {
-          title: 'Usuarios',
-          path: '/dashboards/users',
-          permission: PERMISSIONS.dashboardUsers
-        },
-        {
-          title: 'Compra mensual',
-          path: '/ecommerce/monthly-purchase/',
-          permission: PERMISSIONS.ecommerceMonthlyPurchase
-        },
+        // {
+        //   title: 'Usuarios',
+        //   path: '/dashboards/users',
+        //   permission: PERMISSIONS.dashboardUsers
+        // },
+        // {
+        //   title: 'Compra mensual',
+        //   path: '/ecommerce/monthly-purchase/',
+        //   permission: PERMISSIONS.ecommerceMonthlyPurchase
+        // },
         {
           title: 'Comisiones',
           path: '/dashboards/comissions',
@@ -73,11 +73,11 @@ const navigation = () => {
           path: '/dashboards/logistics',
           permission: PERMISSIONS.dashboardLogistics
         },
-        {
-          title: 'Facturación',
-          path: '/ecommerce/billing',
-          permission: PERMISSIONS.ecommerceBilling
-        },
+        // {
+        //   title: 'Facturación',
+        //   path: '/ecommerce/billing',
+        //   permission: PERMISSIONS.ecommerceBilling
+        // },
         {
           title: 'Constantes',
           path: '/dashboards/constants',

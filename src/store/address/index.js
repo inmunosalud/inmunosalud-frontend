@@ -34,6 +34,15 @@ export const addressList = createAsyncThunk('user/getAddress', async id => {
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
     const response = await api_get(`${PROJECT_ADDRESS}/addresses/user/${id}`, auth)
+    if (Array.isArray(response.content) && response.content.length === 0) {
+      thunkApi.dispatch(
+        openSnackBar({
+          open: true,
+          message: 'No tienes direcciones. Por favor, agrega uno en tu perfil para realizar compras.',
+          severity: 'info'
+        })
+      )
+    }
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -163,6 +172,9 @@ export const addressSlice = createSlice({
     //get users tables
     builder.addCase(addressList.pending, (state, action) => {
       state.isLoading = true
+    })
+    builder.addCase(addressList.rejected, (state, action) => {
+      state.isLoading = false
     })
     builder.addCase(addressList.fulfilled, (state, action) => {
       const {

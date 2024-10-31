@@ -11,7 +11,7 @@ import {
   OPENPAY_KEY
 } from '../../services/api'
 import { setAddresses } from '../address'
-
+import toast from 'react-hot-toast'
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
 
@@ -163,6 +163,15 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
 
   try {
     const response = await api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
+    if (Array.isArray(response.content) && response.content.length === 0) {
+      thunkApi.dispatch(
+        openSnackBar({
+          open: true,
+          message: 'No tienes métodos de pago. Por favor, agrega uno en tu perfil para realizar compras.',
+          severity: 'info'
+        })
+      )
+    }
     return setPaymentMethods(response.content)
   } catch (error) {
     return thunkApi.rejectWithValue(error)

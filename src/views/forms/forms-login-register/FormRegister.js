@@ -26,6 +26,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { createUser } from 'src/store/users'
 import { useDispatch } from 'react-redux'
+import { useSearchParams } from 'next/navigation'
 
 const schema = yup.object().shape({
   email: yup.string().email('Correo electrónico inválido').required('El correo electrónico es requerido'),
@@ -43,9 +44,12 @@ const schema = yup.object().shape({
 
 export default function FormRegister() {
   const [showPassword, setShowPassword] = React.useState(false)
+
   const dispatch = useDispatch()
+  const searchParams = useSearchParams()
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm({
@@ -75,6 +79,13 @@ export default function FormRegister() {
 
     dispatch(createUser(body))
   }
+
+  React.useEffect(() => {
+    const id = searchParams.get('id')
+    if (id) {
+      setValue('recommenderId', id)
+    }
+  }, [searchParams])
 
   return (
     <Card>

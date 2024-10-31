@@ -13,7 +13,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 
-const JoinInformation = () => {
+const JoinInformation = ({ profile }) => {
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
   return (
@@ -22,7 +22,7 @@ const JoinInformation = () => {
         <Grid container spacing={20}>
           <Grid item xs={12} md={12}>
             <Box sx={{ textAlign: 'center' }}>
-              <CardHeader title={<Typography variant='h4'>Conviertete en socio</Typography>} />
+              <CardHeader title={<Typography variant='h4'>Conviértete en socio</Typography>} />
             </Box>
             <CardMedia
               sx={{
@@ -339,11 +339,19 @@ const JoinInformation = () => {
             </CardContent>
             <CardActions sx={{ justifyContent: 'center' }}>
               <Box sx={{ mt: '50px', mb: '50px' }}>
-                <Link href={'/join/register'} passHref>
-                  <Button variant='outlined' size='large' disabled>
-                    {'Convertirme en socio'}
-                  </Button>
-                </Link>
+                {profile === 'Consumidor' ? (
+                  <Link href={'/join/register'} passHref>
+                    <Button variant='outlined' size='large'>
+                      {'Convertirme en socio'}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={'/register'} passHref>
+                    <Button variant='outlined' size='large'>
+                      {'Registrate'}
+                    </Button>
+                  </Link>
+                )}
               </Box>
             </CardActions>
           </Grid>

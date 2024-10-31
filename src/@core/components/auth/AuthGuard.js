@@ -11,8 +11,10 @@ import { PROFILES, ROUTES_PERMISSION } from 'src/configs/profiles'
 const resolveProfile = (user, path) => {
   const userProfile = user?.profile ? PROFILES[user.profile] : PROFILES.default
 
+  if (!userProfile) {
+    return []
+  }
   const permission = ROUTES_PERMISSION[path]
-
   return userProfile.includes(permission)
 }
 
@@ -28,7 +30,7 @@ const AuthGuard = props => {
         return
       }
 
-      if (!resolveProfile(user, router.pathname)) {
+      if (user && !resolveProfile(user, router.pathname)) {
         router.replace({
           pathname: '/landing-page/home/'
         })
@@ -37,9 +39,9 @@ const AuthGuard = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.route]
   )
-  if (isLoading || user === null) {
-    return fallback
-  }
+  // if (isLoading || user === null) {
+  //   return fallback
+  // }
 
   return <>{children}</>
 }
