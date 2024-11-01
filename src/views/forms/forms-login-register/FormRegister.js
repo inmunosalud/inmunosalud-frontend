@@ -172,7 +172,13 @@ export default function FormRegister() {
                 name='recommenderId'
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} label='Código de recomendado' fullWidth error={!!errors.recommenderId} />
+                  <TextField
+                    {...field}
+                    label='Código de recomendado'
+                    fullWidth
+                    disabled={!!searchParams.get('id')}
+                    error={!!errors.recommenderId}
+                  />
                 )}
               />
             </Grid>

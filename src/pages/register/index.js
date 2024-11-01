@@ -46,7 +46,7 @@ const Register = () => {
                   <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' height={50} />
                 </Box>
               </Link>
-              <Link href='/' passHref style={{ textDecoration: 'none' }}>
+              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
                 <IconButton
                   disableRipple
                   disableFocusRipple
