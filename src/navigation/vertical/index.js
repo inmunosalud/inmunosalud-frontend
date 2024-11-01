@@ -6,9 +6,11 @@ import ViewDashboard from 'mdi-material-ui/ViewDashboard'
 import AccountGroupIcon from 'mdi-material-ui/AccountGroup'
 import OrderBoolDescending from 'mdi-material-ui/OrderBoolDescending'
 import { PERMISSIONS, PROFILES_USER } from 'src/configs/profiles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 
 const navigation = () => {
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user, isMobile } = useSelector(state => state.dashboard.general)
 
   const isAuthorized = permission => {
     // Check if the current user has the given permission
@@ -26,12 +28,19 @@ const navigation = () => {
     {
       icon: AccountGroupIcon,
       title: user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate',
-      path: '/landing-page/join',
+      path: user.profile === 'Afiliado' ? '/network' : '/landing-page/join',
       permission: PERMISSIONS.join,
-      visible: false
+      visible: isMobile
     },
     {
       icon: ShoppingOutline,
+      title: 'Productos',
+      path: '/ecommerce/products',
+      permission: PERMISSIONS.ecommerceProducts,
+      visible: isMobile
+    },
+    {
+      icon: LocalShippingIcon,
       title: 'Pedidos',
       path: '/ecommerce/orders',
       permission: PERMISSIONS.ecommerceOrders,
