@@ -82,7 +82,7 @@ const UserDropdown = props => {
   }
 
   const handleConvertProfile = () => {
-    router.push({ pathname: '/landing-page/join', query: { newAssociate: true } })
+    router.push({ pathname: '/landing-page/join' })
     handleDropdownClose()
   }
 

@@ -47,9 +47,7 @@ const DataGrid = theme => {
         columnSeparator: {
           color: theme.palette.divider
         },
-        virtualScroller: {
-          marginTop: '54px !important'
-        },
+
         virtualScrollerRenderZone: {
           '& .MuiDataGrid-row': {
             maxHeight: '50px !important',

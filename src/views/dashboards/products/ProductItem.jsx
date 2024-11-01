@@ -97,7 +97,7 @@ export const ProductItem = props => {
     }
 
     dispatch(updateCart({ id: props.cartId, body }))
-    router.push('/cart')
+    router.push('/ecommerce/cart/')
   }
 
   const listMenuProps = {

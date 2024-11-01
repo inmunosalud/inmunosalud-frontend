@@ -48,6 +48,7 @@ const initialState = {
   isLoading: false,
   errors: null,
   data: null,
+  isMobile: false,
   isLoadingSession: false,
   dataLoaded: false,
   user: {}
@@ -65,6 +66,9 @@ export const generalSlice = createSlice({
     },
     updateGeneralUser: (state, { payload }) => {
       state.user = payload
+    },
+    setIsMobile: (state, { payload }) => {
+      state.isMobile = payload
     }
   },
   extraReducers: builder => {
@@ -98,4 +102,4 @@ export const generalSlice = createSlice({
 
 export default generalSlice.reducer
 
-export const { setErrors, isDataLoaded, updateGeneralUser } = generalSlice.actions
+export const { setErrors, isDataLoaded, updateGeneralUser, setIsMobile } = generalSlice.actions

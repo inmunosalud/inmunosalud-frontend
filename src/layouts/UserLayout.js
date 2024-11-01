@@ -6,7 +6,6 @@ import { Modal, CircularProgress, Backdrop, useTheme, Box } from '@mui/material'
 // ** Layout Imports
 // !Do not remove this Layout import
 import Layout from 'src/@core/layouts/Layout'
-
 // ** Navigation Imports
 import VerticalNavItems from 'src/navigation/vertical'
 import HorizontalNavItems from 'src/navigation/horizontal'
@@ -23,7 +22,7 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadSession, isDataLoaded } from 'src/store/dashboard/generalSlice'
+import { loadSession, isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
 import { loadInfo } from 'src/store/paymentMethods'
@@ -64,6 +63,9 @@ const UserLayout = ({ children }) => {
   const { settings, saveSettings } = useSettings()
   const router = useRouter()
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const { user, dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
@@ -94,6 +96,10 @@ const UserLayout = ({ children }) => {
       }
     }
   }, [userInfo, user.id, dataLoaded])
+
+  useEffect(() => {
+    dispatch(setIsMobile(isMobile))
+  }, [isMobile])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.
