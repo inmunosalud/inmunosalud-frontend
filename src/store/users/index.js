@@ -346,6 +346,9 @@ export const usersSlice = createSlice({
       state.loading = false
       state.users = [...content]
     })
+    builder.addCase(usersList.rejected, (state, action) => {
+      state.loading = true
+    })
     //create user
     builder.addCase(sendNewUser.pending, (state, action) => {
       state.isLoading = 'pending'
