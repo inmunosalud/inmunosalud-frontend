@@ -19,6 +19,8 @@ import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png'
 import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
 import { styled, useTheme } from '@mui/material/styles'
+import { Card, CardHeader, Typography, CardContent } from '@mui/material'
+import { Whatsapp } from 'mdi-material-ui'
 
 const Register = () => {
   const router = useRouter()
@@ -56,10 +58,21 @@ const Register = () => {
                 </IconButton>
               </Link>
             </Box>
-            <GoBackButton onChangePage={() => router.back()} />
+            <GoBackButton onChangePage={'/landing-page/home'} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Form />
+            <Card sx={{ mt: 4 }}>
+              <CardHeader title='¿Tienes algún problema? Comunícate con nosotros enviándonos un mensaje por WhatsApp.' />
+              <CardContent>
+                <Box display='flex' alignItems='center' justifyContent='flex-end'>
+                  <Typography variant='h6' fontWeight='bold' color='textPrimary' mr={1}>
+                    +52 33 3417 3934
+                  </Typography>
+                  <Whatsapp color='primary' sx={{ fontSize: '2rem' }} />
+                </Box>
+              </CardContent>
+            </Card>
           </Grid>
           <Grid item xs={12} md={6}>
             <FormRegister />
