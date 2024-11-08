@@ -241,7 +241,7 @@ export const ProductItem = props => {
       <RedirectModal
         open={showRedirectModal}
         handleClose={() => dispatch(setShowRedirectModal(false))}
-        pageToRedirect={'/register'}
+        pageToRedirect={'/login'}
       ></RedirectModal>
     </Card>
   )

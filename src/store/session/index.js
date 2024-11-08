@@ -38,6 +38,19 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
   }
 })
 
+export const loadSession = createAsyncThunk('/session/loadSession', async thunkApi => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${USERS}/users/data-user`, auth)
+    return response.content
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   user: {},
   token: null,
@@ -71,6 +84,16 @@ export const sessionSlice = createSlice({
     })
     builder.addCase(loginCall.rejected, (state, action) => {
       state.isLoading = false
+    })
+    builder.addCase(loadSession.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(loadSession.rejected, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(loadSession.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.user = payload.user
     })
   }
 })

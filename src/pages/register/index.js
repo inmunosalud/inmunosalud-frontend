@@ -21,6 +21,9 @@ import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
 import { styled, useTheme } from '@mui/material/styles'
 import { Card, CardHeader, Typography, CardContent } from '@mui/material'
 import { Whatsapp } from 'mdi-material-ui'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 const Register = () => {
   const router = useRouter()
@@ -28,6 +31,8 @@ const Register = () => {
   const theme = useTheme()
   const { isLoading } = useSelector(state => state.session)
   const { isLoadingRegister } = useSelector(state => state.users)
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const { settings, saveSettings } = useSettings()
 
   React.useEffect(() => {
     dispatch(isDataLoaded(false))
@@ -39,46 +44,20 @@ const Register = () => {
     <FallbackSpinner />
   ) : (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem' }}>
-        <Grid container spacing={6}>
-          <Grid item xs={12} display='flex' justifyContent='flex-end' style={{ marginBottom: '1rem' }}>
-            <Box display='flex' justifyContent='center' alignItems='center' style={{ margin: '0 auto' }}>
-              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: 2 }}>
-                  <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' height={50} />
-                </Box>
-              </Link>
-              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
-                <IconButton
-                  disableRipple
-                  disableFocusRipple
-                  sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
-                >
-                  <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={60} />
-                </IconButton>
-              </Link>
-            </Box>
-            <GoBackButton onChangePage={'/landing-page/home'} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Form />
-            <Card sx={{ mt: 4 }}>
-              <CardHeader title='¿Tienes algún problema? Comunícate con nosotros enviándonos un mensaje por WhatsApp.' />
-              <CardContent>
-                <Box display='flex' alignItems='center' justifyContent='flex-end'>
-                  <Typography variant='h6' fontWeight='bold' color='textPrimary' mr={1}>
-                    +52 33 3417 3934
-                  </Typography>
-                  <Whatsapp color='primary' sx={{ fontSize: '2rem' }} />
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormRegister />
-          </Grid>
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px', mr: '20px', ml: '20px' }}>
+            <GoBackButton onChangePage={'/login'} />
+            <ModeToggler settings={settings} saveSettings={saveSettings} />
+          </Box>
         </Grid>
-      </div>
+
+        <Grid item xs={12}>
+          <Box maxWidth={isMobile ? '90vw' : '600px'} mx='auto'>
+            <FormRegister />
+          </Box>
+        </Grid>
+      </Grid>
     </>
   )
 }

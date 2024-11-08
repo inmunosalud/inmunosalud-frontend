@@ -249,7 +249,7 @@ const initialState = {
   error: false,
   message: '',
   // new user
-  isLoading: 'idle',
+  isLoading: false,
   user: {},
   //user contract
   contract: {},
@@ -351,16 +351,16 @@ export const usersSlice = createSlice({
     })
     //create user
     builder.addCase(sendNewUser.pending, (state, action) => {
-      state.isLoading = 'pending'
+      state.isLoading = true
     })
     builder.addCase(sendNewUser.fulfilled, (state, { payload }) => {
       const newUser = payload.content
       const values = [...state.users, newUser]
-      state.isLoading = 'resolved'
+      state.isLoading = false
       state.users = values
     })
     builder.addCase(sendNewUser.rejected, (state, action) => {
-      state.isLoading = 'rejected'
+      state.isLoading = false
     })
     //update user
     builder.addCase(updateUser.pending, (state, { payload }) => {

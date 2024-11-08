@@ -77,7 +77,7 @@ const UserDropdown = props => {
   }
 
   const handleLogin = () => {
-    router.push('/register')
+    router.push('/login')
     handleDropdownClose()
   }
 

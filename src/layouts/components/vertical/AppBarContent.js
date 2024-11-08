@@ -23,7 +23,7 @@ const AppBarContent = props => {
   const router = useRouter()
 
   const handleLogin = () => {
-    router.push('/register')
+    router.push('/login')
   }
 
   const isActiveRoute = route => {

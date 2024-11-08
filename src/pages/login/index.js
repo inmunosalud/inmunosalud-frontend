@@ -1,301 +1,118 @@
-// ** React Imports
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-
-// ** Next Imports
-import Link from 'next/link'
-
-// ** MUI Components
-import Alert from '@mui/material/Alert'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
-import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import { styled, useTheme } from '@mui/material/styles'
-import FormHelperText from '@mui/material/FormHelperText'
-import InputAdornment from '@mui/material/InputAdornment'
+import * as React from 'react'
+import Image from 'next/image'
+import { useDispatch, useSelector } from 'react-redux'
+import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import MuiFormControlLabel from '@mui/material/FormControlLabel'
-
-// ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
-import EyeOutline from 'mdi-material-ui/EyeOutline'
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
-
-// ** Third Party Imports
-import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-import useBgColor from 'src/@core/hooks/useBgColor'
-import { useSettings } from 'src/@core/hooks/useSettings'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
-
-// ** Layout Import
+import Box from '@mui/material/Box'
+import FallbackSpinner from 'src/@core/components/spinner'
+import FormLogin from 'src/views/forms/forms-login-register/FormLogin'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Demo Imports
-import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
-
-// ** Styled Components
-const LoginIllustrationWrapper = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(20),
-  paddingRight: '0 !important',
-  [theme.breakpoints.down('lg')]: {
-    padding: theme.spacing(10)
-  }
-}))
-
-const LoginIllustration = styled('img')(({ theme }) => ({
-  maxWidth: '48rem',
-  [theme.breakpoints.down('lg')]: {
-    maxWidth: '35rem'
-  }
-}))
-
-const RightWrapper = styled(Box)(({ theme }) => ({
-  width: '100%',
-  [theme.breakpoints.up('md')]: {
-    maxWidth: 450
-  }
-}))
-
-const BoxWrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('xl')]: {
-    width: '100%'
-  },
-  [theme.breakpoints.down('md')]: {
-    maxWidth: 400
-  }
-}))
-
-const TypographyStyled = styled(Typography)(({ theme }) => ({
-  fontWeight: 600,
-  marginBottom: theme.spacing(1.5),
-  [theme.breakpoints.down('md')]: { mt: theme.spacing(8) }
-}))
-
-const LinkStyled = styled('a')(({ theme }) => ({
-  fontSize: '0.875rem',
-  textDecoration: 'none',
-  color: theme.palette.primary.main
-}))
-
-const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
-  '& .MuiFormControlLabel-label': {
-    fontSize: '0.875rem',
-    color: theme.palette.text.secondary
-  }
-}))
-
-const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required()
-})
-
-const defaultValues = {
-  password: 'admin',
-  email: 'admin@materio.com'
-}
-
-const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false)
-  const router = useRouter()
-
-  // ** Hooks
-  const auth = useAuth()
+import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
+import { loadSession } from 'src/store/session'
+import Router from 'next/router'
+import { useSettings } from 'src/@core/hooks/useSettings'
+import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
+import GoBackButton from 'src/views/components/goback/GoBack'
+import { Whatsapp } from 'mdi-material-ui'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
+import Avatar from '@mui/material/Avatar'
+import IconButton from '@mui/material/IconButton'
+import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png'
+import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png'
+import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
+import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
+const Login = () => {
+  const dispatch = useDispatch()
+  const { settings, saveSettings } = useSettings()
+  const { isLoading, user } = useSelector(state => state.session)
   const theme = useTheme()
-  const bgClasses = useBgColor()
-  const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  // ** Vars
-  const { skin } = settings
-
-  useEffect(() => {
-    router.push('/register')
+  React.useEffect(() => {
+    const usuarioLocalStorage = localStorage.getItem('im-user')
+    if (usuarioLocalStorage && !user && usuarioLocalStorage !== 'undefined') {
+      dispatch(loadSession())
+      Router.push('/home')
+    } else if (usuarioLocalStorage && user && usuarioLocalStorage !== 'undefined') {
+      Router.push('/home')
+    }
   }, [])
 
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    defaultValues,
-    mode: 'onBlur',
-    resolver: yupResolver(schema)
-  })
-
-  const onSubmit = data => {
-    const { email, password } = data
-    auth.login({ email, password }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      })
-    })
-  }
-  const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
-
   return (
-    <Box className='content-right'>
-      {!hidden ? (
-        <Box sx={{ flex: 1, display: 'flex', position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
-          <LoginIllustrationWrapper>
-            {/* <LoginIllustration
-              alt='login-illustration'
-              src={`/images/pages/${imageSource}-${theme.palette.mode}.png`}
-            /> */}
-          </LoginIllustrationWrapper>
-          {/* <FooterIllustrationsV2 /> */}
-        </Box>
-      ) : null}
-      <RightWrapper sx={skin === 'bordered' && !hidden ? { borderLeft: `1px solid ${theme.palette.divider}` } : {}}>
-        <Box
-          sx={{
-            p: 12,
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'background.paper'
-          }}
-        >
-          <BoxWrapper>
-            <Box
-              sx={{
-                top: 30,
-                left: 40,
-                display: 'flex',
-                position: 'absolute',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Typography
-                variant='h6'
-                sx={{
-                  ml: 3,
-                  lineHeight: 1,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  fontSize: '1.5rem !important'
-                }}
-              >
-                {themeConfig.templateName}
-              </Typography>
-            </Box>
-            <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>¡Bienvenido a {themeConfig.templateName}!</TypographyStyled>
-            </Box>
-            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgClasses.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-              <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
-                Admin: <strong>admin@materio.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='caption' sx={{ display: 'block', color: 'primary.main' }}>
-                Client: <strong>client@materio.com</strong> / Pass: <strong>client</strong>
-              </Typography>
-            </Alert>
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-              <FormControl fullWidth sx={{ mb: 4 }}>
-                <Controller
-                  name='email'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <TextField
-                      autoFocus
-                      label='Correo'
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      error={Boolean(errors.email)}
-                      placeholder='admin@materio.com'
-                    />
-                  )}
-                />
-                {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
-              </FormControl>
-              <FormControl fullWidth>
-                <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                  Password
-                </InputLabel>
-                <Controller
-                  name='password'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <OutlinedInput
-                      value={value}
-                      onBlur={onBlur}
-                      label='Contraseña'
-                      onChange={onChange}
-                      id='auth-login-v2-password'
-                      error={Boolean(errors.password)}
-                      type={showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        <InputAdornment position='end'>
-                          <IconButton
-                            edge='end'
-                            onMouseDown={e => e.preventDefault()}
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <EyeOutline /> : <EyeOffOutline />}
-                          </IconButton>
-                        </InputAdornment>
+    <>
+      {isLoading ? (
+        <FallbackSpinner />
+      ) : (
+        <BlankLayout>
+          <Grid container spacing={5} sx={{ overflow: 'hidden' }}>
+            <Grid item xs={12}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px', mr: '20px', ml: '20px' }}>
+                <GoBackButton onChangePage={'/landing-page/home'} />
+                <ModeToggler settings={settings} saveSettings={saveSettings} />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box mt={5}>
+                <FormLogin />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box maxWidth={isMobile ? '90vw' : '600px'} mx='auto'>
+                {isMobile ? (
+                  <Card>
+                    <CardHeader
+                      title='¿Tienes ningún problema? '
+                      subheader={
+                        <Typography variant='body2' color='textSecondary'>
+                          Comunícate con nosotros enviando un mensaje por WhatsApp.
+                        </Typography>
                       }
                     />
-                  )}
-                />
-                {errors.password && (
-                  <FormHelperText sx={{ color: 'error.main' }} id=''>
-                    {errors.password.message}
-                  </FormHelperText>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <IconButton href='https://wa.me/523334173934'>
+                          <Typography variant='h6' fontWeight='bold' color='textPrimary' mr={1}>
+                            +52 33 3417 3934
+                          </Typography>
+                          <Whatsapp color='primary' sx={{ fontSize: '3rem' }} />
+                        </IconButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card>
+                    <CardHeader
+                      action={
+                        <IconButton href='https://wa.me/523334173934'>
+                          <Typography variant='h6' fontWeight='bold' color='textPrimary' mr={1}>
+                            +52 33 3417 3934
+                          </Typography>
+                          <Whatsapp color='primary' sx={{ fontSize: '3rem' }} />
+                        </IconButton>
+                      }
+                      title='¿Tienes algún problema? '
+                      subheader={
+                        <Typography variant='body2' color='textSecondary'>
+                          Comunícate con nosotros enviándonos un mensaje por WhatsApp.
+                        </Typography>
+                      }
+                    />
+                  </Card>
                 )}
-              </FormControl>
-              <Box
-                sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
-              >
-                <FormControlLabel control={<Checkbox />} label='Recordarme' />
-                <Link passHref href='/forgot-password'>
-                  <LinkStyled>¿Olvidaste tu contraseña?</LinkStyled>
-                </Link>
               </Box>
-              <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                Iniciar Sesión
-              </Button>
-              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography variant='body2' sx={{ mr: 2 }}>
-                  ¿Nuevo en la plataforma?
-                </Typography>
-                <Typography variant='body2'>
-                  <Link passHref href='/register/register-01'>
-                    <LinkStyled>Crear una cuenta</LinkStyled>
-                  </Link>
-                </Typography>
-              </Box>
-            </form>
-          </BoxWrapper>
-        </Box>
-      </RightWrapper>
-    </Box>
+            </Grid>
+          </Grid>
+        </BlankLayout>
+      )}
+    </>
   )
 }
-LoginPage.getLayout = page => <BlankLayout>{page}</BlankLayout>
-LoginPage.guestGuard = true
 
-export default LoginPage
+Login.getLayout = page => <BlankLayout>{page}</BlankLayout>
+Login.guestGuard = true
+
+export default Login
