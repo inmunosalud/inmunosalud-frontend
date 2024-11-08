@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post } from '../../services/api'
+import { USERS, api_post } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
 import { openSnackBar } from '../notifications'
@@ -10,7 +10,7 @@ import { openSnackBar } from '../notifications'
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/login`, body)
+    const response = await api_post(`${USERS}/users/login`, body)
 
     thunkApi.dispatch(setUser(response.content))
     if (response.content.user.active === false) {
@@ -34,6 +34,19 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
       thunkApi.dispatch(setErrors(newErrors))
     }
 
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const loadSession = createAsyncThunk('/session/loadSession', async thunkApi => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${USERS}/users/data-user`, auth)
+    return response.content
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -71,6 +84,16 @@ export const sessionSlice = createSlice({
     })
     builder.addCase(loginCall.rejected, (state, action) => {
       state.isLoading = false
+    })
+    builder.addCase(loadSession.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(loadSession.rejected, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(loadSession.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.user = payload.user
     })
   }
 })

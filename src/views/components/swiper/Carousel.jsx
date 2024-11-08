@@ -10,7 +10,7 @@ import { Navigation, Autoplay, Parallax, Zoom, Pagination } from 'swiper/modules
 SwiperCore.use([Autoplay, Navigation, Pagination])
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-
+import Skeleton from '@mui/material/Skeleton'
 const Carousel = ({ products }) => {
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const theme = useTheme()
@@ -36,27 +36,42 @@ const Carousel = ({ products }) => {
           '--swiper-pagination-color': theme.palette.primary.main
         }}
       >
-        {products?.map(product => (
+        {products.length === 0 ? (
           <SwiperSlide
-            key={product.id}
             style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              position: 'relative',
-              cursor: 'pointer'
+              position: 'relative'
             }}
-            onClick={() => router.push(`/ecommerce/product/${product.id}`)}
           >
-            <Image
-              src={product.urlImages}
-              width={mobile ? 350 : 450}
-              height={mobile ? 350 : 450}
-              alt='product'
-              priority
-            />
+            <div style={{ width: mobile ? 350 : 450, height: mobile ? 350 : 450 }}>
+              <Skeleton variant='rectangular' width='100%' height='100%' />
+            </div>
           </SwiperSlide>
-        ))}
+        ) : (
+          products.map(product => (
+            <SwiperSlide
+              key={product.id}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                cursor: 'pointer'
+              }}
+              onClick={() => router.push(`/ecommerce/product/${product.id}`)}
+            >
+              <Image
+                src={product.urlImages}
+                width={mobile ? 350 : 450}
+                height={mobile ? 350 : 450}
+                alt='product'
+                priority
+              />
+            </SwiperSlide>
+          ))
+        )}
       </Swiper>
     </div>
   )

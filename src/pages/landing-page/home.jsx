@@ -16,6 +16,7 @@ import PricingHeader from 'src/views/pages/pricing/PricingHeader'
 import PricingFooter from 'src/views/pages/pricing/PricingFooter'
 import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material'
 import Products from 'src/views/landing-page/Products'
+import Certifications from 'src/views/landing-page/Certifications'
 
 import Banner from 'public/images/banners/banner.webp'
 import BannerPrincipal from 'public/images/banners/ImagenBanner.webp'
@@ -175,7 +176,8 @@ const Pricing = () => {
         <Grid item xs={12}>
           <Box
             sx={{
-              py: '2rem'
+              pt: '2rem',
+              pb: '2rem'
             }}
           >
             <Products />
@@ -235,6 +237,18 @@ const Pricing = () => {
         </Grid>
         <Grid item xs={12}></Grid>
       </Card>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              pt: '2rem',
+              pb: '2rem'
+            }}
+          >
+            <Certifications />
+          </Box>
+        </Grid>
+      </Grid>
       <FAQs data={questions} />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       {/* <Footer /> */}

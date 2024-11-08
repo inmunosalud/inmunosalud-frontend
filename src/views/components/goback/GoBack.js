@@ -5,7 +5,7 @@ import Link from 'next/link'
 export const GoBackButton = ({ onChangePage }) => {
   return (
     <div style={{ margin: '8px', witdh: '8px', height: '8px' }}>
-      <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
+      <Link href={onChangePage} passHref style={{ textDecoration: 'none' }}>
         <Button style={{ borderRadius: '30px' }} variant='contained'>
           <ArrowLeft />
         </Button>

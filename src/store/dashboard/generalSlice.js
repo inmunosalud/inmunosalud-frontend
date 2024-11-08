@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { PROYECT, api_post, api_get } from '../../services/api'
+import { USERS, api_post, api_get } from '../../services/api'
 import { setUser } from '../users'
 
 //actions
@@ -8,7 +8,7 @@ export const loadSession = createAsyncThunk('general/loadSession', async (body, 
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROYECT}/users/data-user`, auth)
+    const response = await api_get(`${USERS}/users/data-user`, auth)
 
     return response.content
   } catch (error) {
@@ -26,7 +26,7 @@ export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROYECT}/users/dashboard`, auth)
+    const response = await api_get(`${USERS}/users/dashboard`, auth)
 
     return response
   } catch (error) {

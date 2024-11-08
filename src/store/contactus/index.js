@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { api_post, PROYECT } from '../../services/api'
+import { api_post, USERS } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const contactUs = createAsyncThunk('user/contactUsEmail', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_post(`${PROYECT}/users/contactUsEmail`, body, auth)
+    const response = await api_post(`${USERS}/users/contactUsEmail`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {

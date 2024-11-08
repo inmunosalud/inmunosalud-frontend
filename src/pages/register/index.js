@@ -19,6 +19,11 @@ import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png'
 import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
 import { styled, useTheme } from '@mui/material/styles'
+import { Card, CardHeader, Typography, CardContent } from '@mui/material'
+import { Whatsapp } from 'mdi-material-ui'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 const Register = () => {
   const router = useRouter()
@@ -26,6 +31,8 @@ const Register = () => {
   const theme = useTheme()
   const { isLoading } = useSelector(state => state.session)
   const { isLoadingRegister } = useSelector(state => state.users)
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const { settings, saveSettings } = useSettings()
 
   React.useEffect(() => {
     dispatch(isDataLoaded(false))
@@ -37,35 +44,49 @@ const Register = () => {
     <FallbackSpinner />
   ) : (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem' }}>
-        <Grid container spacing={6}>
-          <Grid item xs={12} display='flex' justifyContent='flex-end' style={{ marginBottom: '1rem' }}>
-            <Box display='flex' justifyContent='center' alignItems='center' style={{ margin: '0 auto' }}>
-              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: 2 }}>
-                  <Image src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo} alt='Logo' height={50} />
-                </Box>
-              </Link>
-              <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
-                <IconButton
-                  disableRipple
-                  disableFocusRipple
-                  sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
-                >
-                  <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={60} />
-                </IconButton>
-              </Link>
-            </Box>
-            <GoBackButton onChangePage={() => router.back()} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Form />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormRegister />
-          </Grid>
+      <Grid container spacing={5}>
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px', mr: '20px', ml: '20px' }}>
+            <GoBackButton onChangePage={'/login'} />
+            <ModeToggler settings={settings} saveSettings={saveSettings} />
+          </Box>
         </Grid>
-      </div>
+
+        <Grid item xs={12}>
+          <Box display='flex' justifyContent='center' alignItems='center' sx={{ margin: '0 auto' }}>
+            <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: '2rem' }}>
+                <Image
+                  src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo}
+                  alt='Logo'
+                  height={isMobile ? 30 : 50}
+                  priority
+                />
+              </Box>
+            </Link>
+            <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
+              <IconButton
+                disableRipple
+                disableFocusRipple
+                sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
+              >
+                <Image
+                  src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo}
+                  alt='Isotipo'
+                  priority
+                  height={isMobile ? 30 : 60}
+                />
+              </IconButton>
+            </Link>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box maxWidth={isMobile ? '90vw' : '600px'} mx='auto'>
+            <FormRegister />
+          </Box>
+        </Grid>
+      </Grid>
     </>
   )
 }

@@ -16,20 +16,13 @@ const Products = props => {
   return (
     <Card>
       <CardHeader title='Nuevos productos' subheader='Inmunosalud' />
-      {isLoading ? (
-        <CardContent sx={{ display: 'flex', justifyContent: 'center' }}>
-          <CircularProgress />
-        </CardContent>
-      ) : (
-        <>
-          <CardContent>
-            <Carousel products={products} />
-          </CardContent>
-          <CardActions sx={{ justifyContent: 'center' }}>
-            <RedirectButton path={'/ecommerce/products'} text={'Productos'} />
-          </CardActions>
-        </>
-      )}
+
+      <CardContent>
+        <Carousel products={products} />
+      </CardContent>
+      <CardActions sx={{ justifyContent: 'center' }}>
+        <RedirectButton path={'/ecommerce/products'} text={'Productos'} />
+      </CardActions>
     </Card>
   )
 }

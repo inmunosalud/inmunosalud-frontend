@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { PROYECT, api_post, HOST_MONTHLY_PURCHASE, api_get, api_patch } from '../../services/api'
+import { USERS, api_post, HOST_MONTHLY_PURCHASE, api_get, api_patch } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getMonthlyPurchase = createAsyncThunk('monthlyPurchase/getMonthlyPurchase', async (id, thunkApi) => {
