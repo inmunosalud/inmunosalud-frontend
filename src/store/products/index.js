@@ -10,8 +10,6 @@ export const getProducts = createAsyncThunk('ProductsList', async thunkApi => {
     const response = await api_get(`${PROYECT_PRODUCTS}/products`, auth)
     return response
   } catch (error) {
-    const errMessage = error?.response?.data?.message
-    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
