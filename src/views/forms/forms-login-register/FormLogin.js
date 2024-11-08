@@ -62,7 +62,7 @@ const FormLogin = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   const loginSchema = Yup.object().shape({
-    email: Yup.string().email('Email inválido').required(t('common:error.required_field')),
+    email: Yup.string().email('Email inválido').required('Email es requerido'),
     password: Yup.string().min(8, 'Contraseña inválida').required('La contraseña es requerida')
   })
 
@@ -115,6 +115,7 @@ const FormLogin = () => {
         </Box>
         <form onSubmit={handleSubmit(submitLogin)}>
           <Card sx={{ overflow: 'auto', maxHeight: isMobile ? 'calc(100vh - 150px)' : 'auto' }}>
+            <CardHeader title='Iniciar Sesión' />
             <CardContent>
               <Grid container spacing={3}>
                 <Grid item xs={12}>

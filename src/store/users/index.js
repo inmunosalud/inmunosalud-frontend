@@ -1,16 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROJECT_CONTRACT, PROYECT, api_delete, api_get, api_patch, api_post } from '../../services/api'
+import { PROJECT_CONTRACT, USERS, api_delete, api_get, api_patch, api_post } from '../../services/api'
 
 import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
 import { updateGeneralUser } from '../dashboard/generalSlice'
+import toast from 'react-hot-toast'
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users`, body)
+    const response = await api_post(`${USERS}/users`, body)
     const newUser = {
       user: {
         firstName: response.content.firstName,
@@ -43,7 +44,7 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
 export const usersList = createAsyncThunk('user/list', async () => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const response = await api_get(`${PROYECT}/users`, auth)
+  const response = await api_get(`${USERS}/users`, auth)
   return response
 })
 
@@ -51,7 +52,7 @@ export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thu
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_post(`${PROYECT}/users/admin`, body, auth)
+    const response = await api_post(`${USERS}/users/admin`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     Router.push('/dashboards/general/')
     return response
@@ -66,7 +67,7 @@ export const createPartner = createAsyncThunk('/join/register', async ({ body, i
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_patch(`${PROYECT}/users/affiliate/${id}`, body, auth)
+    const response = await api_patch(`${USERS}/users/affiliate/${id}`, body, auth)
 
     console.log('response', response)
     thunkApi.dispatch(updateGeneralUser(response.content))
@@ -86,8 +87,8 @@ export const updateUser = createAsyncThunk(
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
       const response = isAdministrator
-        ? await api_patch(`${PROYECT}/users/admin/${uuid}`, body, auth)
-        : await api_patch(`${PROYECT}/users/${uuid}`, body, auth)
+        ? await api_patch(`${USERS}/users/admin/${uuid}`, body, auth)
+        : await api_patch(`${USERS}/users/${uuid}`, body, auth)
       thunkApi.dispatch(nextStep())
       thunkApi.dispatch(setModal(false))
       // If param loadUserData values is true, load the user info again
@@ -109,7 +110,7 @@ export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, hea
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
-    const response = await api_delete(`${PROYECT}/users/${body.id}`, body, auth)
+    const response = await api_delete(`${USERS}/users/${body.id}`, body, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
@@ -142,50 +143,47 @@ export const createContract = createAsyncThunk('contracts/createContract', async
   }
 })
 
-//update Password
-export const updatePassword = createAsyncThunk('users/password', async (body, thunkApi) => {
-  try {
-    const response = await api_patch(`${PROYECT}/users/password`, body)
-
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    return response
-  } catch (error) {
-    const errMessage = error?.response?.data?.message
-
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
-    return thunkApi.rejectWithValue('error')
-  }
-})
-
 //Recover Password
-export const recoverPassword = createAsyncThunk('users/passwordRecoveryCode', async (body, thunkApi) => {
+export const sendPasswordVerificationCode = createAsyncThunk('users/verification-code', async (email, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/passwordRecoveryCode`, body)
+    const response = await api_post(`${USERS}/users/password-recovery-code`, email)
+
+    toast.success('Se ha enviado un código de verificación a su correo electrónico')
     return response
   } catch (error) {
-    const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(error.message)
     return thunkApi.rejectWithValue('error')
   }
 })
+
 export const validatePasswordRecoveryCode = createAsyncThunk(
   'users/validatePasswordRecoveryCode',
   async (body, thunkApi) => {
     try {
-      const response = await api_post(`${PROYECT}/users/validatePasswordRecoveryCode`, body)
+      const response = await api_post(`${USERS}/users/validate-password-recovery-code`, body)
       return response
     } catch (error) {
-      const errMessage = error?.response?.data?.message
-      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+      toast.error('El código de verificación no es valido')
       return thunkApi.rejectWithValue('error')
     }
   }
 )
 
+export const recoverPassword = createAsyncThunk('/users/password', async (body, thunkApi) => {
+  try {
+    const response = await api_patch(`${USERS}/users/password`, body)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 //validate Verification Code
 export const validateVerificationCode = createAsyncThunk('users/validateVerificationCode', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/validateVerificationCode`, body)
+    const response = await api_post(`${USERS}/users/validateVerificationCode`, body)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -198,7 +196,7 @@ export const validateVerificationCode = createAsyncThunk('users/validateVerifica
 export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const response = await api_get(`${PROYECT}/users/${id}`, auth)
+  const response = await api_get(`${USERS}/users/${id}`, auth)
   return response
 })
 
@@ -213,7 +211,7 @@ export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async i
 
 export const sendVerificationCode = createAsyncThunk('user/verificationCode', async (email, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/verificationCode`, email)
+    const response = await api_post(`${USERS}/users/verificationCode`, email)
     alert('Se ha enviado un código de verificación a su correo electrónico')
     return response
   } catch (error) {
@@ -225,7 +223,7 @@ export const sendVerificationCode = createAsyncThunk('user/verificationCode', as
 
 export const validateNewUser = createAsyncThunk('user/validateNewUser', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/validateVerificationCode`, body)
+    const response = await api_post(`${USERS}/users/validateVerificationCode`, body)
     localStorage.setItem('im-user', response.content.token)
 
     Router.push('/landing-page/home/')

@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { ThumbDown } from 'mdi-material-ui'
 
-import { PROYECT, api_post, HOST_CART, api_get, api_patch } from '../../services/api'
+import { USERS, api_post, HOST_CART, api_get, api_patch } from '../../services/api'
 
 // ** Add User
 export const initCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => {

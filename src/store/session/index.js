@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
-import { PROYECT, api_post } from '../../services/api'
+import { USERS, api_post } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
 import { openSnackBar } from '../notifications'
@@ -10,7 +10,7 @@ import { openSnackBar } from '../notifications'
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${PROYECT}/users/login`, body)
+    const response = await api_post(`${USERS}/users/login`, body)
 
     thunkApi.dispatch(setUser(response.content))
     if (response.content.user.active === false) {

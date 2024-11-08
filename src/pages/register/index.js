@@ -44,11 +44,40 @@ const Register = () => {
     <FallbackSpinner />
   ) : (
     <>
-      <Grid container spacing={6}>
+      <Grid container spacing={5}>
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px', mr: '20px', ml: '20px' }}>
             <GoBackButton onChangePage={'/login'} />
             <ModeToggler settings={settings} saveSettings={saveSettings} />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box display='flex' justifyContent='center' alignItems='center' sx={{ margin: '0 auto' }}>
+            <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', mr: '2rem' }}>
+                <Image
+                  src={theme.palette.mode === 'dark' ? BlancoLogotipo : NegroLogotipo}
+                  alt='Logo'
+                  height={isMobile ? 30 : 50}
+                  priority
+                />
+              </Box>
+            </Link>
+            <Link href='/landing-page/home' passHref style={{ textDecoration: 'none' }}>
+              <IconButton
+                disableRipple
+                disableFocusRipple
+                sx={{ p: 0, color: 'text.primary', backgroundColor: 'transparent !important' }}
+              >
+                <Image
+                  src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo}
+                  alt='Isotipo'
+                  priority
+                  height={isMobile ? 30 : 60}
+                />
+              </IconButton>
+            </Link>
           </Box>
         </Grid>
 
