@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROJECT_ADDRESS, api_post, api_get, api_put, api_delete, api_patch } from '../../services/api'
+import { ADDRESS, api_post, api_get, api_put, api_delete, api_patch } from '../../services/api'
 
 import { openSnackBar } from '../notifications'
 import { nextStep } from '../register'
@@ -12,7 +12,7 @@ export const createAddress = createAsyncThunk('user/newAddress', async ({ body, 
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_post(`${PROJECT_ADDRESS}/addresses/${uuid}`, body, auth)
+    const response = await api_post(`${ADDRESS}/addresses/${uuid}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(addressList(uuid))
     thunkApi.dispatch(setModal(false))
@@ -33,7 +33,7 @@ export const addressList = createAsyncThunk('user/getAddress', async id => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROJECT_ADDRESS}/addresses/user/${id}`, auth)
+    const response = await api_get(`${ADDRESS}/addresses/user/${id}`, auth)
     if (Array.isArray(response.content) && response.content.length === 0) {
       thunkApi.dispatch(
         openSnackBar({
@@ -53,7 +53,7 @@ export const updateAddress = createAsyncThunk('user/updateAddress', async ({ bod
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_patch(`${PROJECT_ADDRESS}/addresses/${body.id}`, body, auth)
+    const response = await api_patch(`${ADDRESS}/addresses/${body.id}`, body, auth)
     thunkApi.dispatch(setModal(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
 
@@ -70,7 +70,7 @@ export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, t
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_delete(`${PROJECT_ADDRESS}/addresses/${id}`, {}, auth)
+    const response = await api_delete(`${ADDRESS}/addresses/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
@@ -84,7 +84,7 @@ export const deleteAddress = createAsyncThunk('user/deleteAddress', async (id, t
 
 export const getColonies = createAsyncThunk('address/getColonies', async (zipCode, thunkApi) => {
   try {
-    const response = await api_get(`${PROJECT_ADDRESS}/addresses/colonies/${zipCode}`)
+    const response = await api_get(`${ADDRESS}/addresses/colonies/${zipCode}`)
     return response.content
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -97,7 +97,7 @@ export const setMonthlyPaymentAddress = createAsyncThunk('address/setMonthlyPaym
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_patch(`${PROJECT_ADDRESS}/addresses/shippingAddress/${id}`, {}, auth)
+    const response = await api_patch(`${ADDRESS}/addresses/shippingAddress/${id}`, {}, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return response
   } catch (error) {

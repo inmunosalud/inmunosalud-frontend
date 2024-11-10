@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
-import { PROYECT_PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
+import { PRODUCTS, api_delete, api_get, api_patch, api_post, api_put } from '../../services/api'
 import toast from 'react-hot-toast'
 
 export const getProducts = createAsyncThunk('ProductsList', async thunkApi => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROYECT_PRODUCTS}/products`, auth)
+    const response = await api_get(`${PRODUCTS}/products`, auth)
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -18,7 +18,7 @@ export const getProductById = createAsyncThunk('currentProduct', async (id, thun
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${PROYECT_PRODUCTS}/products/${id}`, auth)
+    const response = await api_get(`${PRODUCTS}/products/${id}`, auth)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -31,7 +31,7 @@ export const createProduct = createAsyncThunk('ProductsCreate', async ({ body, h
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
-    const response = await api_post(`${PROYECT_PRODUCTS}/products`, body, auth)
+    const response = await api_post(`${PRODUCTS}/products`, body, auth)
     toast.success(response.message)
     Router.push('/ecommerce/products')
     return response
@@ -46,7 +46,7 @@ export const updateProduct = createAsyncThunk('ProductsUpdate', async ({ body, h
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
-    const response = await api_patch(`${PROYECT_PRODUCTS}/products/${body.id}`, body, auth)
+    const response = await api_patch(`${PRODUCTS}/products/${body.id}`, body, auth)
     toast.success(response.message)
     Router.push('/ecommerce/products')
     return response
@@ -61,7 +61,7 @@ export const deleteProduct = createAsyncThunk('ProductsDelete', async ({ id, hea
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}`, Password: headers.password } }
   try {
-    const response = await api_delete(`${PROYECT_PRODUCTS}/products/${id}`, {}, auth)
+    const response = await api_delete(`${PRODUCTS}/products/${id}`, {}, auth)
     toast.success(response.message)
     return response
   } catch (error) {
@@ -90,7 +90,7 @@ export const uploadProductImages = createAsyncThunk('ProductsPresignedUrl', asyn
         const presignedUrlHeaders = { headers: { Authorization: auth, filetype } }
 
         const presignedUrlResponse = await api_get(
-          `${PROYECT_PRODUCTS}/products/s3Upload?folder=${body.productName}`,
+          `${PRODUCTS}/products/s3Upload?folder=${body.productName}`,
           presignedUrlHeaders
         )
         const presignedUrl = presignedUrlResponse?.content?.url

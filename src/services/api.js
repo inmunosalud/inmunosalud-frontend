@@ -1,21 +1,16 @@
 import axios from 'axios'
-export const USERS = 'https://vu7mo4k6he.execute-api.us-east-1.amazonaws.com'
-export const HOST_CART = 'https://mbl4fgifp7.execute-api.us-east-1.amazonaws.com'
-export const HOST_MONTHLY_PURCHASE = 'https://fiwnd962ol.execute-api.us-east-1.amazonaws.com'
-export const PROJECT_ADDRESS = 'https://63a9nz7ww9.execute-api.us-east-1.amazonaws.com'
-export const PROJECT_PAYMENT_METHODS = 'https://3sdv3a6phe.execute-api.us-east-1.amazonaws.com'
-export const PROJECT_CONTRACT = 'https://vu7mo4k6he.execute-api.us-east-1.amazonaws.com'
-export const PROYECT_PRODUCTS = 'https://vf5ybznisi.execute-api.us-east-1.amazonaws.com'
-export const COMISSIONS = 'https://texfh6ms7h.execute-api.us-east-1.amazonaws.com'
-export const ORDERS = 'https://xw7d0opao6.execute-api.us-east-1.amazonaws.com'
-export const INVOICES = 'https://h0d2ixtch4.execute-api.us-east-1.amazonaws.com'
-export const CONSTANTS = 'https://qxpmqlakma.execute-api.us-east-1.amazonaws.com'
-export const STRIPE = 'https://vu7mo4k6he.execute-api.us-east-1.amazonaws.com'
-export const OPENPAY_ID = 'mmp8mqnd0myfw4i8byx2'
-export const OPENPAY_KEY = 'pk_6c5fc6fe79e444199710ba138534f9d0'
-// sandbox
-// export const OPENPAY_ID = 'maa7v96xww9vj0ftkvuo'
-// export const OPENPAY_KEY = 'pk_a88142ad4f154712a9a7c0cf73e00af3'
+export const USERS = process.env.USERS
+export const CART = process.env.CART
+export const MONTHLY_PURCHASE = process.env.MONTHLY_PURCHASE
+export const ADDRESS = process.env.ADDRESS
+export const PAYMENT_METHODS = process.env.PAYMENT_METHODS
+export const PRODUCTS = process.env.PRODUCTS
+export const COMISSIONS = process.env.COMISSIONS
+export const ORDERS = process.env.ORDERS
+export const INVOICES = process.env.INVOICES
+export const CONSTANTS = process.env.CONSTANTS
+export const OPENPAY_ID = process.env.OPENPAY_ID
+export const OPENPAY_KEY = process.env.OPENPAY_KEY
 
 const axiosInstance = axios.create({
   baseURL: ''
