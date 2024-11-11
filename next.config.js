@@ -16,7 +16,8 @@ const nextConfig = {
     INVOICES: process.env.INVOICES,
     CONSTANTS: process.env.CONSTANTS,
     OPENPAY_ID: process.env.OPENPAY_ID,
-    OPENPAY_KEY: process.env.OPENPAY_KEY
+    OPENPAY_KEY: process.env.OPENPAY_KEY,
+    ENVIROMENT: process.env.ENVIROMENT
   },
   experimental: {
     esmExternals: false
