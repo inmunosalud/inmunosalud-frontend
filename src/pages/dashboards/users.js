@@ -26,7 +26,7 @@ import {
 } from '@mui/material'
 import CardHeader from '@mui/material/CardHeader'
 import { getComissionsByUser } from 'src/store/comissions'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 import { getUserInfo } from 'src/store/users'
 
 const dataList = {
@@ -159,7 +159,7 @@ const Users = () => {
     }
   ])
   const [availableYears, setAvailableYears] = React.useState([])
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   // Estados para usuarios activos e inactivos
   const [totalUsuariosActivos, setTotalUsuariosActivos] = React.useState(0)
   const [totalUsuariosInactivos, setTotalUsuariosInactivos] = React.useState(0)

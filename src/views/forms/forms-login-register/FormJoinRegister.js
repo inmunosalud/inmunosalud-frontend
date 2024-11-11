@@ -62,7 +62,7 @@ const FormJoinRegister = () => {
   const newAssociate = query.newAssociate === 'true'
   const { isLoadingRegister: isLoading, registerErrors: errors } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const currentYear = new Date().getFullYear()
   const [colonies, setColonies] = useState([])
 

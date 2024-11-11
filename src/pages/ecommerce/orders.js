@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogActions, DialogContentText, Link } from '@mui/material'
 import { cancelOrder, getOrdersByUser } from 'src/store/orders'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 import { parseDate } from '../../utils/functions'
 
 // ** MUI Imports
@@ -298,7 +298,7 @@ const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) =
 const Cards = props => {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = React.useState(false)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -350,7 +350,7 @@ const Cards = props => {
 
 const Orders = () => {
   const dispatch = useDispatch()
-  const { user, isLoadingSession } = useSelector(state => state.dashboard.general)
+  const { user, isLoading: isLoadingSession } = useSelector(state => state.session)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { orders, isLoading } = useSelector(state => state.orders)
 

@@ -47,7 +47,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   // ** States
   const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
 
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { isOpen, isOpenDelete, bank, clabe } = useSelector(state => state.paymentMethods)
   const { open, message, severity } = useSelector(state => state.notifications)
   const {

@@ -27,8 +27,8 @@ import {
 } from '@mui/material'
 import CardHeader from '@mui/material/CardHeader'
 import { getComissionsByUser } from 'src/store/comissions'
-import { loadSession } from 'src/store/dashboard/generalSlice'
-import { getUserInfo } from 'src/store/users'
+import { loadSession } from 'src/store/session'
+import { getNetworkById } from 'src/store/users'
 
 const dataList = [
   {
@@ -161,8 +161,8 @@ function getNextMonth(date) {
 
 const Network = () => {
   const dispatch = useDispatch()
-  const { userInfo, isLoading } = useSelector(state => state.users)
-  const { comissionsHistory, isLoading: isLoadingComisions } = useSelector(state => state.comissions)
+  const { userInfo, isLoading, network } = useSelector(state => state.users)
+  const { comissionsHistory, isLoading: isLoadingCommissions } = useSelector(state => state.comissions)
   const [cutoffDate, setCutoffDate] = React.useState('')
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
@@ -180,7 +180,7 @@ const Network = () => {
     }
   ])
   const [availableYears, setAvailableYears] = React.useState([])
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   // Estados para usuarios activos e inactivos
   const [totalUsuariosActivos, setTotalUsuariosActivos] = React.useState(0)
   const [totalUsuariosInactivos, setTotalUsuariosInactivos] = React.useState(0)
@@ -193,7 +193,8 @@ const Network = () => {
     4: { valid: 0, invalid: 0 }
   })
 
-  const [selectedYear, setSelectedYear] = React.useState(new Date().getFullYear())
+  const [selectedCommissionsYear, setSelectedCommissionsYear] = React.useState(new Date().getFullYear().toString())
+  const [selectedNetworkYear, setSelectedNetworkYear] = React.useState(new Date().getFullYear().toString())
 
   const theme = useTheme()
 
@@ -463,70 +464,15 @@ const Network = () => {
     }
   }
 
-  const optionsUsers = {
-    labels: ['Usuarios Activos', 'Usuarios Inactivos'],
-    chart: {
-      offsetX: -10,
-      stacked: true,
-      parentHeightOffset: 0,
-      toolbar: {
-        show: false
-      }
-    },
-    legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      show: false
-    },
-    colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.background.default],
-    stroke: {
-      show: true,
-      colors: ['transparent']
-    }
-  }
-  const isEmptySeriesUsers = totalUsuariosActivos === 0 && totalUsuariosInactivos === 0
-  // const seriesUsers = [totalUsuariosActivos, totalUsuariosInactivos]
-  const seriesUsers = [10, 5]
-
-  const optionsCommissions = {
-    labels: ['Recompensa por usuarios inactivos', 'Recompensa por usuarios activos'],
-    colors: [theme.palette.secondary.main, theme.palette.primary.main, theme.palette.background.default],
-    chart: {
-      offsetX: -10,
-      stacked: true,
-      parentHeightOffset: 0,
-      toolbar: {
-        show: false
-      }
-    },
-    legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      show: false
-    },
-    stroke: {
-      show: true,
-      colors: ['transparent']
-    }
-  }
-  // const seriesCommissions = [userInfo?.commission?.nextLost ?? 0, userInfo?.commission?.nextReal ?? 0]
-  const seriesCommissions = [260, 220]
-
   const renderList = nivel => {
-    // if (!userInfo || !userInfo.network || !userInfo.network[nivel]) {
-    //   return (
-    //     <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
-    //       <List sx={{ minHeight: '180px' }}></List>
-    //     </Box>
-    //   )
-    // }
     return (
       <Box sx={{ border: `1px solid ${theme.palette.divider}` }}>
         <Box
           elevation={3}
           sx={{
-            padding: '10px',
-            margin: '10px',
+            padding: '5px',
+            margin: '5px',
+            height: '220px',
             overflowY: 'auto',
             '&::-webkit-scrollbar': {
               width: '3px',
@@ -542,26 +488,31 @@ const Network = () => {
           }}
         >
           <List sx={{ height: '180px' }}>
-            {/* {userInfo.network[nivel]?.users?.map(
-            user =>
-              !user.valid && (
-                <ListItem key={user.name}>
-                  <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
-                </ListItem>
-              )
-          )} */}
-            {dataList[nivel].users.map(
-              (user, index) =>
-                !user.valid && (
-                  <ListItem key={user.name} divider={index !== dataList[nivel].users.length - 1}>
-                    {nivel === 0 ? (
-                      <ListItemText primary={user.name} />
-                    ) : (
-                      <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
-                    )}
-                  </ListItem>
-                )
-            )}
+            {network.network[nivel].map((user, index) => (
+              <ListItem key={user.name} divider={index !== network.network[nivel].length - 1}>
+                {nivel === '1' ? (
+                  <ListItemText
+                    primary={`- ${user.name}`}
+                    secondary={
+                      <>
+                        Consumo: <br />${user.lastTotalConsume || '0'}
+                      </>
+                    }
+                  />
+                ) : (
+                  <ListItemText
+                    primary={`- ${user.name}`}
+                    secondary={
+                      <>
+                        Referido por: <br />
+                        {user.recommenderName || 'N/A'} <br />
+                        Consumo: <br />${user.lastTotalConsume || '0'}
+                      </>
+                    }
+                  />
+                )}
+              </ListItem>
+            ))}
           </List>
         </Box>
       </Box>
@@ -569,100 +520,44 @@ const Network = () => {
   }
 
   React.useEffect(() => {
-    // Contar usuarios activos e inactivos en cada nivel
-    if (userInfo) {
-      for (let nivel in userInfo.network) {
-        contarUsuariosPorNivel(nivel)
-      }
-    }
-  }, [userInfo])
-
-  React.useEffect(() => {
-    // if (Object.keys(comissionsHistory).length === 0) dispatch(getComissionsByUser(user.id))
-  }, [])
-
-  // React.useEffect(() => {
-  //   console.log(
-  //     comissionsHistory,
-  //     chartSeriesCommissionsHistory,
-  //     chartSeriesCommissionsHistory[selectedYear],
-  //     availableYears,
-  //     selectedYear
-  //   )
-  // }, [comissionsHistory])
-
-  React.useEffect(() => {
-    if (!comissionsHistory || Object.keys(comissionsHistory).length === 0) {
-      return
-    }
-
-    const initialData = [
-      { month: '01', amount: 0 },
-      { month: '02', amount: 0 },
-      { month: '03', amount: 0 },
-      { month: '04', amount: 0 },
-      { month: '05', amount: 0 },
-      { month: '06', amount: 0 },
-      { month: '07', amount: 0 },
-      { month: '08', amount: 0 },
-      { month: '09', amount: 0 },
-      { month: '10', amount: 0 },
-      { month: '11', amount: 0 },
-      { month: '12', amount: 0 }
-    ]
-
-    const commissionDataByMonth = {}
-    const years = []
-
-    for (const yearMonth in comissionsHistory) {
-      const [year, month] = yearMonth.split('-')
-
-      if (!years.includes(year)) {
-        years.push(year)
-        commissionDataByMonth[year] = initialData.map(item => ({ ...item }))
-      }
-
-      const liquidatedCommissions =
-        comissionsHistory[yearMonth]?.filter(commission => commission.status === 'Comisión liquidada') || []
-
-      const totalCommissionAmount = liquidatedCommissions.reduce(
-        (total, commission) => total + commission.commission,
-        0
-      )
-
-      // Actualizar el valor del mes correspondiente
-      const monthData = commissionDataByMonth[year].find(data => data.month === month)
-      if (monthData) {
-        monthData.amount = totalCommissionAmount
-      }
-    }
-
-    setChartSeriesCommissionsHistory(commissionDataByMonth)
-    setAvailableYears(years)
-    setSelectedYear(years[0])
-    const firstData = [
-      {
-        name: years[0],
-        data: commissionDataByMonth[years[0]].map(item => item.amount)
-      }
-    ]
-    setDataSeriesCommissionsHistory(firstData)
-  }, [isLoading])
+    console.log('network', network, network.network)
+  }, [network])
 
   React.useEffect(() => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
-      // dispatch(loadSession())
-    }
-    if (userInfo === null && user.id != null) {
-      //dispatch(getUserInfo(user.id))
+      dispatch(loadSession())
     }
   }, [])
 
   React.useEffect(() => {
-    if (userInfo?.cutoffDate) {
-      //setCutoffDate(getNextMonth(userInfo.cutoffDate))
+    if (user.id && !isLoadingCommissions) {
+      dispatch(getNetworkById(user.id))
     }
-  }, [userInfo])
+  }, [user.id, isLoadingCommissions])
+
+  React.useEffect(() => {
+    if (network) {
+      const data = [
+        {
+          name: selectedCommissionsYear,
+          data: network?.commissionHistory?.[selectedCommissionsYear] || []
+        }
+      ]
+      setDataSeriesCommissionsHistory(data)
+    }
+  }, [network])
+
+  React.useEffect(() => {
+    if (network) {
+      const data = [
+        {
+          name: selectedNetworkYear,
+          data: network?.growingYourNetwork?.[selectedNetworkYear] || []
+        }
+      ]
+      setDataSeriesNetworkHistory(data)
+    }
+  }, [network])
 
   const handleCopyCode = () => {
     if (typeof window !== 'undefined') {
@@ -675,41 +570,35 @@ const Network = () => {
     }
   }
 
-  const handleYearChange = (event, newValue) => {
-    if (chartSeriesCommissionsHistory && newValue) {
-      setSelectedYear(newValue)
+  const handleCommissionsYearChange = (event, newValue) => {
+    if (network.commissionHistory && newValue) {
+      setSelectedCommissionsYear(newValue)
 
       const data = [
         {
           name: newValue,
-          data: chartSeriesCommissionsHistory[newValue].map(item => item.amount)
+          data: network.commissionHistory[newValue]
         }
       ]
-
       setDataSeriesCommissionsHistory(data)
     }
   }
 
-  // Función para contar usuarios activos e inactivos en un nivel específico
-  const contarUsuariosPorNivel = nivel => {
-    const nivelInfo = userInfo.network[nivel]
+  const handleNetworkYearChange = (event, newValue) => {
+    if (network.growingYourNetwork && newValue) {
+      setSelectedNetworkYear(newValue)
 
-    if (nivelInfo && nivelInfo.users && nivelInfo.users.length > 0) {
-      // Contar usuarios activos e inactivos en el nivel actual
-      const usuariosActivos = nivelInfo.valid || 0
-      const usuariosInactivos = nivelInfo.invalid || 0
-
-      setTotalUsuariosActivos(prevTotal => prevTotal + usuariosActivos)
-      setTotalUsuariosInactivos(prevTotal => prevTotal + usuariosInactivos)
-
-      setConteoPorNivel(prevConteo => ({
-        ...prevConteo,
-        [nivel]: { valid: usuariosActivos, invalid: usuariosInactivos }
-      }))
+      const data = [
+        {
+          name: newValue,
+          data: network.growingYourNetwork[newValue]
+        }
+      ]
+      setDataSeriesNetworkHistory(data)
     }
   }
 
-  return !isLoading || !isLoadingComisions ? (
+  return !isLoading || !isLoadingCommissions ? (
     <>
       <Grid xs={12} justifyContent='center'>
         <ApexChartWrapper>
@@ -757,7 +646,20 @@ const Network = () => {
                 <CardContent>
                   <Grid container>
                     <Grid item xs={12} md={12}>
-                      <CardHeader title={'Tu siguiente comisión'} />
+                      <CardHeader
+                        title={'Tu siguiente comisión'}
+                        action={
+                          <Link href='/profile/?=&tab=banks'>
+                            <Button
+                              variant='contained'
+                              size='small'
+                              sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
+                            >
+                              Agregar datos <br /> bancarios
+                            </Button>
+                          </Link>
+                        }
+                      />
                     </Grid>
 
                     <Grid item xs={12} md={12}>
@@ -772,7 +674,7 @@ const Network = () => {
                       </Box>
                       <Box sx={{ mb: '20px', mt: '-20px', display: 'flex', justifyContent: 'center' }}>
                         <Typography variant='h1' fontWeight='bold' color='primary'>
-                          ${userInfo?.commission?.nextTotal ? userInfo?.commission?.nextTotal : 0}
+                          ${network.nextCommission || 0}
                         </Typography>
                       </Box>
                     </Grid>
@@ -785,7 +687,7 @@ const Network = () => {
                     </Grid>
                     <Grid item xs={12} md={12}>
                       <Box sx={{ mt: '46px' }}>
-                        <CardHeader title={'Próximo corte: ' + (cutoffDate ? cutoffDate : '')} />
+                        <CardHeader title={'Próximo corte: ' + (network.cutoffDate || '')} />
                       </Box>
                     </Grid>
                   </Grid>
@@ -806,25 +708,25 @@ const Network = () => {
                     <Grid item xs={12} md={12}>
                       <Box sx={{ textAlign: 'center' }}>
                         <Typography variant='h6' color='textPrimary'>
-                          Total de usuarios en tu red: {userInfo?.network?.totalUsers ?? 0}
+                          Total de usuarios en tu red: {network.network?.totalUsers || '0'}
                         </Typography>
 
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 1: {conteoPorNivel[1].invalid + conteoPorNivel[1].valid}</h2>
-                            {renderList(0)}
+                            <h2>Nivel 1: {network?.network?.['1']?.length || 0}</h2>
+                            {network?.network && renderList('1')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 2: {conteoPorNivel[2].invalid + conteoPorNivel[2].valid}</h2>
-                            {renderList(1)}
+                            <h2>Nivel 2: {network?.network?.['2']?.length || 0}</h2>
+                            {network?.network && renderList('2')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 3: {conteoPorNivel[3].invalid + conteoPorNivel[3].valid}</h2>
-                            {renderList(2)}
+                            <h2>Nivel 3: {network?.network?.['3']?.length || 0}</h2>
+                            {network?.network && renderList('3')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 4: {conteoPorNivel[4].invalid + conteoPorNivel[4].valid}</h2>
-                            {renderList(3)}
+                            <h2>Nivel 4: {network?.network?.['4']?.length || 0}</h2>
+                            {network?.network && renderList('4')}
                           </Grid>
                         </Grid>
                       </Box>
@@ -848,17 +750,16 @@ const Network = () => {
                   <Box>
                     <Box>
                       <Tabs
-                        value={'2024'}
-                        onChange={handleYearChange}
+                        value={selectedNetworkYear}
+                        onChange={(event, newValue) => handleNetworkYearChange(event, newValue)}
                         indicatorColor='primary'
                         textColor='primary'
                         centered
                         sx={{ mt: '10px' }}
                       >
-                        {availableYears.map(year => (
+                        {Object.keys(network?.growingYourNetwork || {}).map(year => (
                           <Tab id={year} key={year} label={year} value={year} />
                         ))}
-                        <Tab label={'2024'} value={'2024'} />
                       </Tabs>
                     </Box>
                     <Box sx={{ mt: '70px' }}>
@@ -881,17 +782,16 @@ const Network = () => {
                   <Box>
                     <Box>
                       <Tabs
-                        value={'2024'}
-                        onChange={handleYearChange}
+                        value={selectedCommissionsYear}
+                        onChange={(event, newValue) => handleCommissionsYearChange(event, newValue)}
                         indicatorColor='primary'
                         textColor='primary'
                         centered
                         sx={{ mt: '10px' }}
                       >
-                        {availableYears.map(year => (
-                          <Tab id={year} key={year} label={year} value={year} />
-                        ))}
-                        <Tab label={'2024'} value={'2024'} />
+                        {Object.keys(network?.commissionHistory || {}).map(year => {
+                          return <Tab id={year} key={year} label={year} value={year} />
+                        })}
                       </Tabs>
                     </Box>
                     <Box sx={{ mt: '70px' }}>

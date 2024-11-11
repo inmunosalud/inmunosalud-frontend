@@ -200,6 +200,13 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   return response
 })
 
+export const getNetworkById = createAsyncThunk('user/networkUser', async id => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const response = await api_get(`${USERS}/users/network/${id}`, auth)
+  return response
+})
+
 //get link to register user in stripe
 export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
   const token = localStorage.getItem('im-user')
@@ -246,6 +253,7 @@ const initialState = {
   token: null,
   error: false,
   message: '',
+  network: {},
   // new user
   isLoading: false,
   user: {},
@@ -390,6 +398,17 @@ export const usersSlice = createSlice({
       const { content } = payload
       state.isLoading = false
       state.userInfo = content
+    })
+    builder.addCase(getNetworkById.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(getNetworkById.fulfilled, (state, { payload }) => {
+      const { content } = payload
+      state.isLoading = false
+      state.network = content
+    })
+    builder.addCase(getNetworkById.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     //get stripe link
     builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {

@@ -22,12 +22,13 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadSession, isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
+import { isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
 import { loadInfo } from 'src/store/paymentMethods'
 import { addressList } from 'src/store/address'
 import { setActiveStep } from 'src/store/register'
+import { loadSession } from 'src/store/session'
 
 const LoadingModal = ({ open }) => {
   const theme = useTheme()
@@ -43,7 +44,7 @@ const LoadingModal = ({ open }) => {
       <Box
         sx={{
           height: '1000vh',
-          width: '1000vh',
+          width: '1000vw',
           display: 'flex',
           backgroundColor: theme.palette.background.paper,
           alignItems: 'center',
@@ -65,8 +66,8 @@ const UserLayout = ({ children }) => {
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  const { user, dataLoaded } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
+  const { dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
@@ -77,25 +78,22 @@ const UserLayout = ({ children }) => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
     }
-    if (user.id && !userInfo) {
-      dispatch(getUserInfo(user.id))
-    }
-    if (userInfo) {
-      if (userInfo.profile === 'Logistica') {
+    if (user) {
+      if (user.profile === 'Logistica') {
         router.push('/dashboards/logistics')
         dispatch(isDataLoaded(true))
       }
-      if (userInfo.profile === 'Administrador General') {
+      if (user.profile === 'Administrador General') {
         dispatch(isDataLoaded(true))
       }
-      if (userInfo.profile === 'Consumidor' || (userInfo.profile === 'Afiliado' && !dataLoaded && userInfo)) {
+      if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && !dataLoaded && user)) {
         dispatch(getCart(user.id))
         dispatch(loadInfo(user.id))
         dispatch(addressList(user.id))
         dispatch(isDataLoaded(true))
       }
     }
-  }, [userInfo, user.id, dataLoaded])
+  }, [user, dataLoaded])
 
   useEffect(() => {
     dispatch(setIsMobile(isMobile))

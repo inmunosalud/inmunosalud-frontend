@@ -35,7 +35,7 @@ import ConfirmationModal from '../dashboards/users/ConfirmationModal'
 // ** store imports
 import { getUserInfo } from 'src/store/users'
 import { React } from 'mdi-material-ui'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 

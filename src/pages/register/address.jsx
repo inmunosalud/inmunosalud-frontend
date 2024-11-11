@@ -72,7 +72,8 @@ import { createAddress, getColonies, selectColony, updateAddress, addressList } 
 import { setActiveStep, nextStep } from 'src/store/register'
 import { createMethod, setOpenPay, setDeviceSessionId } from 'src/store/paymentMethods'
 import { PROFILES_USER } from 'src/configs/profiles'
-import { loadSession, isDataLoaded } from 'src/store/dashboard/generalSlice'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 import { loadInfo } from 'src/store/paymentMethods'
 import { getCart } from 'src/store/cart'
 
@@ -287,7 +288,7 @@ function PAGE() {
 export default function Address() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { email, firstName, lastName, contract, isLoadingRegister, userInfo } = useSelector(state => state.users)
   const { isLoading } = useSelector(state => state.users)
   const { isLoading: cartIsLoading } = useSelector(state => state.cart)

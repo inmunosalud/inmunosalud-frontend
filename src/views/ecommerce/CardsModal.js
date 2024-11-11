@@ -76,7 +76,7 @@ const CardsModal = () => {
 
   const { isOpen, isLoading } = useSelector(state => state.paymentMethods)
   const { isPaymentsModalOpen } = useSelector(state => state.cart)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
 
   useEffect(() => {
     if (isPaymentsModalOpen) {

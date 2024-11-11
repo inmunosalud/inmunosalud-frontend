@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -29,6 +29,14 @@ const UserProfileRight = ({ bankInfo = {} }) => {
   // ** State
   const [value, setValue] = useState('address')
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const tab = urlParams.get('tab')
+
+    if (tab === 'banks') {
+      setValue('bankInfo')
+    }
+  }, [])
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }

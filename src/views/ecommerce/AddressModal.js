@@ -49,7 +49,7 @@ const addressSchema = yup.object().shape({
 
 const AddressModal = () => {
   const dispatch = useDispatch()
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { showModal, selectedColony, isLoading } = useSelector(state => state.address)
   const { isAddressesModalOpen } = useSelector(state => state.cart)
 
