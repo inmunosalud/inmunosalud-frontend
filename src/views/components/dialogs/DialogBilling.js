@@ -128,7 +128,7 @@ export default function DialogBilling({
             window.OpenPay.deviceData.setup &&
             typeof window.OpenPay.deviceData.setup === 'function'
           ) {
-            window.OpenPay.setSandboxMode(process.env.NODE_ENV !== 'production')
+            window.OpenPay.setSandboxMode(process.env.ENVIRONMENT !== 'production')
             window.OpenPay.setId(OPENPAY_ID)
             window.OpenPay.setApiKey(OPENPAY_KEY)
             const deviceSessionId = window.OpenPay.deviceData.setup()
@@ -474,7 +474,7 @@ export default function DialogBilling({
                 <FormHelperText>Tarjetas permitidas</FormHelperText>
               </Box>
               <Box>
-                {process.env.NODE_ENV !== 'production' && (
+                {process.env.ENVIRONMENT !== 'production' && (
                   <Button sx={{ mr: '10px' }} variant='outlined' color='primary' onClick={generateToken}>
                     Generar Token
                   </Button>
