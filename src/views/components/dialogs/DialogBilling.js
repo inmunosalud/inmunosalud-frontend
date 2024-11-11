@@ -474,7 +474,8 @@ export default function DialogBilling({
                 <FormHelperText>Tarjetas permitidas</FormHelperText>
               </Box>
               <Box>
-                {process.env.ENVIRONMENT !== 'production' && (
+                {console.log(process.env.ENVIRONMENT)}
+                {process.env.ENVIRONMENT !== 'development' && (
                   <Button sx={{ mr: '10px' }} variant='outlined' color='primary' onClick={generateToken}>
                     Generar Token
                   </Button>
