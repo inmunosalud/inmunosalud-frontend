@@ -80,7 +80,6 @@ const AddressModal = () => {
         country: 'Mexico',
         refer: data.refer
       }
-      console.log(body)
       dispatch(createAddress({ body: body, uuid: user.id }))
       handleAddressClose(false)
     }
