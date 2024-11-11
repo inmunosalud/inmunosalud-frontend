@@ -251,19 +251,19 @@ const Pricing = () => {
                 Nuestra Historia
               </Typography>
               <Typography variant='body2' paragraph>
-                Somos una empresa mexicana dedicada a la fabricación de productos de origen natural, Desde el inicio,
-                nuestra empresa tuvo un sueño, acercar productos que no solo fueran de alta calidad, sino que impactaran
+                Somos una empresa mexicana dedicada a la fabricación de productos de origen natural. Desde el inicio,
+                nuestra empresa tuvo un sueño: acercar productos que no solo fueran de alta calidad, sino que impactaran
                 de verdad en la vida de cada persona.
               </Typography>
               <Typography variant='body2' paragraph>
                 Nuestro equipo de especialistas se esfuerza día a día en crear productos con tecnología innovadora,
-                diseñados para que tu cuerpo aproveche al máximo cada nutriente y queremos que los beneficios de nuestro
+                diseñados para que tu cuerpo aproveche al máximo cada nutriente. Queremos que los beneficios de nuestro
                 trabajo realmente lleguen a ti y a los tuyos.
               </Typography>
               <Typography variant='body2' paragraph>
                 Sin embargo, nos dimos cuenta de algo muy importante. Podíamos llevar nuestros productos a grandes
-                cadenas y supermercados, pero en ese camino algo esencial se perdería, el contacto directo y la
-                posibilidad de ver, en cada persona que confía en nosotros, a un miembro valioso de nuestra familia.
+                cadenas y supermercados, pero en ese camino algo esencial se perdería: el contacto directo y la
+                posibilidad de ver en cada persona que confía en nosotros a un miembro valioso de nuestra familia.
               </Typography>
               <Typography variant='body2' paragraph>
                 Pensamos en lo mucho que se puede construir juntos, en el poder de que seas tú, y no una gran tienda,
@@ -305,21 +305,24 @@ const Pricing = () => {
                 Políticas de Remuneración y Consumo
               </Typography>
               <Typography variant='body2' paragraph>
-                1. Valoramos a cada consumidor y afiliado: Creemos que cada persona es importante en nuestra comunidad,
-                y por eso buscamos retribuir el esfuerzo y la confianza que depositan en nuestra empresa.
+                1. <strong>Compromiso de la empresa:</strong> Valoramos a cada consumidor y afiliado, creemos que cada
+                persona es importante en nuestra comunidad, y por eso buscamos retribuir el esfuerzo y la confianza que
+                depositan en nuestra empresa.
               </Typography>
               <Typography variant='body2' paragraph>
-                2. Remuneración a afiliados: Los afiliados que comparten nuestros productos y los llevan a más personas
-                reciben una remuneración económica como agradecimiento por su compromiso y trabajo.
+                2. <strong>Remuneración a afiliados:</strong> Los afiliados que comparten nuestros productos y los
+                llevan a más personas reciben una remuneración económica como agradecimiento por su compromiso y
+                trabajo.
               </Typography>
               <Typography variant='body2' paragraph>
-                3. Requisito de consumo: Para recibir las comisiones generadas en el mes, pedimos a cada afiliado un
-                consumo mínimo de $800 pesos en productos. En caso de no cumplir con este consumo, el afiliado no pierde
-                su estatus en la empresa, solo la comisión generada en ese mes.
+                3. <strong>Requisito de consumo:</strong> Para recibir las comisiones generadas en el mes, pedimos a
+                cada afiliado un consumo mínimo de $800 pesos en productos. En caso de no cumplir con este consumo, el
+                afiliado no pierde su estatus en la empresa, solo la comisión generada en ese mes.
               </Typography>
               <Typography variant='body2' paragraph>
-                4. Compromiso mutuo: Al consumir nuestros productos, los afiliados no solo disfrutan de sus beneficios,
-                sino que contribuyen a una comunidad de bienestar que beneficia a todos los involucrados.
+                4. <strong> Compromiso mutuo: </strong> Al consumir nuestros productos, los afiliados no solo disfrutan
+                de sus beneficios, sino que contribuyen a una comunidad de bienestar que beneficia a todos los
+                involucrados.
               </Typography>
             </Box>
           </Grid>
