@@ -7,7 +7,7 @@ import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
 import { createOrder } from 'src/store/orders'
 import { getUserInfo } from 'src/store/users'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 import { updateCart } from 'src/store/cart'
 import { getCart } from 'src/store/cart'
 import { closeSnackBar } from 'src/store/notifications'
@@ -28,7 +28,7 @@ const InvoicePreview = ({}) => {
   const toggleAddPaymentDrawer = () => setAddPaymentOpen(!addPaymentOpen)
 
   const { total, products, id } = useSelector(state => state.cart)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { userInfo } = useSelector(state => state.users)
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)

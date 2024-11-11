@@ -11,7 +11,6 @@ const GuestGuard = props => {
   const { children, fallback } = props
 
   const { isLoading } = useSelector(state => state.session)
-  const { user } = useSelector(state => state.dashboard.general)
 
   const router = useRouter()
   useEffect(() => {

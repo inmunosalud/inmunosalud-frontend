@@ -88,7 +88,7 @@ const AddMonthlyPurchase = () => {
 
   // ** Selectors
   const { total, products, id, isLoading, updatedProducts, changes } = useSelector(state => state.monthlyPurchase)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { open, message, severity } = useSelector(state => state.notifications)
 
   // ** Hook

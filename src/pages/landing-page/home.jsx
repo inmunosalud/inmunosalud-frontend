@@ -116,7 +116,7 @@ const questions = [
 const Pricing = () => {
   // ** States
   const { products, isLoading } = useSelector(state => state.products)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const dispatch = useDispatch()
   const { open, message, severity } = useSelector(state => state.notifications)
   useEffect(() => {

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { PROFILES } from 'src/configs/profiles'
 import { useEffect, useMemo } from 'react'
 import { getUserInfo } from 'src/store/users'
-import { loadSession } from 'src/store/dashboard/generalSlice'
+import { loadSession } from 'src/store/session'
 
 const resolveNavItemComponent = item => {
   if (item.sectionTitle) return VerticalNavSectionTitle
@@ -35,7 +35,7 @@ const resolvePermissions = (user, items = []) => {
 }
 
 const VerticalNavItems = props => {
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { userInfo } = useSelector(state => state.users)
   const { verticalNavItems } = props
 

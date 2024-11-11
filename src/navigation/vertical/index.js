@@ -10,8 +10,8 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 
 const navigation = () => {
-  const { user, isMobile } = useSelector(state => state.dashboard.general)
-
+  const { isMobile } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const isAuthorized = permission => {
     // Check if the current user has the given permission
     return PROFILES_USER['admin'] === permission

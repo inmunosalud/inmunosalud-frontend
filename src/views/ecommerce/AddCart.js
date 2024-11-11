@@ -94,7 +94,7 @@ const AddCard = props => {
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { constants } = useSelector(state => state.constants)
 
   // ** Hook

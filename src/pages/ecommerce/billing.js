@@ -13,7 +13,7 @@ import { getInvoices, getInvoicesByUser, updateStatus, uploadFiles } from 'src/s
 const BillingPage = () => {
   const dispatch = useDispatch()
   const [tabValue, setTabValue] = useState(0)
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { invoicesAll } = useSelector(state => state.billing)
   const { invoices } = useSelector(state => state.billing)
   const { open, message, severity } = useSelector(state => state.notifications)

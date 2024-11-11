@@ -19,7 +19,7 @@ import { Button } from '@mui/material'
 const AppBarContent = props => {
   // ** Props
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const router = useRouter()
 
   const handleLogin = () => {

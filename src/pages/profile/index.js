@@ -13,7 +13,7 @@ import UserProfileRight from 'src/views/profile/UserProfileRight'
 import UserProfileLeft from 'src/views/profile/UserProfileLeft'
 
 const Profile = () => {
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
 
   return user.id ? (
     <Grid container spacing={6}>

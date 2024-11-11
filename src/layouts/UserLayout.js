@@ -22,12 +22,13 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 import { useSettings } from 'src/@core/hooks/useSettings'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadSession, isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
+import { isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
 import { loadInfo } from 'src/store/paymentMethods'
 import { addressList } from 'src/store/address'
 import { setActiveStep } from 'src/store/register'
+import { loadSession } from 'src/store/session'
 
 const LoadingModal = ({ open }) => {
   const theme = useTheme()
@@ -65,8 +66,8 @@ const UserLayout = ({ children }) => {
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-  const { user, dataLoaded } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
+  const { dataLoaded } = useSelector(state => state.dashboard.general)
   const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {

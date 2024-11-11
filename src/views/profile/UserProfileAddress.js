@@ -93,7 +93,7 @@ const UserProfileAddress = () => {
   const [editItem, setEditItem] = useState(null)
   const [deleteID, setDeleteID] = useState(null)
 
-  const { user } = useSelector(state => state.dashboard.general)
+  const { user } = useSelector(state => state.session)
   const { open, message, severity } = useSelector(state => state.notifications)
 
   const { showModal, selectedColony, address, isLoading } = useSelector(state => state.address)
