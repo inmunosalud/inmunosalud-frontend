@@ -6,7 +6,7 @@ import { USERS, api_post, api_get } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
 import { openSnackBar } from '../notifications'
-
+import toast from 'react-hot-toast'
 //actions
 export const loginCall = createAsyncThunk('/session/login', async (body, thunkApi) => {
   try {
@@ -21,18 +21,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
       return response
     }
   } catch (error) {
-    const data = error.response.data
-    if (data.content && data.content.message) {
-      thunkApi.dispatch(openSnackBar({ open: true, message: data.content.message, severity: 'error' }))
-    }
-
-    if (data.content.errors) {
-      thunkApi.dispatch(setErrors(data.content.errors.body))
-    } else {
-      const newErrors = []
-      newErrors.push({ msg: data.message })
-      thunkApi.dispatch(setErrors(newErrors))
-    }
+    toast.error('El usuario o la contraseña son incorrectos')
 
     return thunkApi.rejectWithValue('error')
   }
@@ -65,8 +54,8 @@ export const sessionSlice = createSlice({
   name: 'session',
   initialState,
   reducers: {
-    setErrors: (state, { payload }) => {
-      state.errors = payload
+    updateSession: (state, { payload }) => {
+      state.user = payload
     }
   },
   extraReducers: builder => {
@@ -100,4 +89,4 @@ export const sessionSlice = createSlice({
 
 export default sessionSlice.reducer
 
-export const { setErrors } = sessionSlice.actions
+export const { updateSession } = sessionSlice.actions
