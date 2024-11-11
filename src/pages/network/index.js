@@ -714,27 +714,23 @@ const Network = () => {
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={3}>
                             <h2>Nivel 1: {network?.network?.['1']?.length || 0}</h2>
-                            {network?.network && renderList('1')}
+                            {network?.network?.['1'] && renderList('1')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <h2>Nivel 2: {network?.network?.['2']?.length || 0}</h2>
-                            {network?.network && renderList('2')}
+                            {network?.network?.['2'] && renderList('2')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <h2>Nivel 3: {network?.network?.['3']?.length || 0}</h2>
-                            {network?.network && renderList('3')}
+                            {network?.network?.['3'] && renderList('3')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
                             <h2>Nivel 4: {network?.network?.['4']?.length || 0}</h2>
-                            {network?.network && renderList('4')}
+                            {network?.network?.['4'] && renderList('4')}
                           </Grid>
                         </Grid>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} md={6}></Grid>
-
-                    <Grid item xs={12} md={6}></Grid>
-                    <Grid item xs={12} md={8}></Grid>
                   </Grid>
                 </CardContent>
               </Card>

@@ -253,7 +253,16 @@ const initialState = {
   token: null,
   error: false,
   message: '',
-  network: {},
+  network: {
+    nextCommission: 0,
+    cutoffDate: '15 nov',
+    network: {},
+    growingYourNetwork: {},
+    commissionHistory: {
+      2024: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500],
+      2025: []
+    }
+  },
   // new user
   isLoading: false,
   user: {},
