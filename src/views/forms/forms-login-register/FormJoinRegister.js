@@ -227,7 +227,7 @@ const FormJoinRegister = () => {
                           helperText={error ? error.message : ' '}
                           label={'Código Postal*'}
                           value={value}
-                          onChange={e => onZipCodeChange(e, onChange, setColonies)}
+                          onChange={e => onZipCodeChange(e.target.value, onChange, setColonies)}
                           type='text'
                         />
                       )}

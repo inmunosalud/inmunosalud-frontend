@@ -27,7 +27,7 @@ const defaultAddressValues = {
   street: '',
   extNumber: '',
   intNumber: '',
-  colony: '',
+  neighborhood: '',
   federalEntity: '',
   zipCode: '',
   country: '',
@@ -57,6 +57,7 @@ const AddressModal = () => {
     reset,
     control: addressControl,
     handleSubmit,
+    setValue,
     formState: { errors: addressErrors }
   } = useForm({
     defaultValues: defaultAddressValues,
@@ -73,9 +74,9 @@ const AddressModal = () => {
         extNumber: data.extNumber,
         intNumber: data?.intNumber,
         zipCode: data.zipCode,
-        colony: data.colony.colony,
-        city: data.colony.city,
-        federalEntity: data.colony.federalEntity,
+        neighborhood: data.neighborhood.neighborhood,
+        city: data.neighborhood.city,
+        federalEntity: data.neighborhood.federalEntity,
         country: 'Mexico',
         refer: data.refer
       }
@@ -155,6 +156,7 @@ const AddressModal = () => {
         openAddressCard={showModal}
         handleAddressClose={() => dispatch(setModal(false))}
         handleSubmit={handleSubmit}
+        setValue={setValue}
         addressControl={addressControl}
         addressErrors={addressErrors}
         onSubmit={onSubmit}
