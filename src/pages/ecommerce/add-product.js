@@ -70,6 +70,7 @@ const AddProduct = () => {
         content: yup.string().trim().required('El campo es requerido'),
         ingredients: yup.string().trim().required('El campo es requerido'),
         price: yup.string().trim().required('El campo es requerido'),
+        affiliatedPrice: yup.string().trim().required('El campo es requerido'),
         description: yup.string().trim().required('El campo es requerido'),
         images: yup
           .array()
@@ -103,6 +104,7 @@ const AddProduct = () => {
       content: '',
       ingredients: '',
       price: '',
+      affiliatedPrice: '',
       stock: '',
       description: '',
       benefits: [{ title: '', detail: '' }],
@@ -175,6 +177,7 @@ const AddProduct = () => {
         ingredients: data.ingredients,
         content: data.content,
         price: parseFloat(data.price),
+        affiliatedPrice: parseFloat(data.affiliatedPrice),
         stock: parseInt(data.stock),
         description: data.description,
         benefits: data.benefits.map(benefit => ({ title: benefit.title, detail: benefit.detail })),
@@ -217,6 +220,7 @@ const AddProduct = () => {
         benefits: currentProduct.benefits,
         studies: currentProduct.studies,
         price: currentProduct.price,
+        affiliatedPrice: currentProduct.affiliatedPrice,
         ingredients: currentProduct.ingredients,
         description: currentProduct.description,
         urlImages: currentProduct.urlImages
@@ -280,13 +284,31 @@ const AddProduct = () => {
                   <Grid item xs={12} md={6}>
                     <Controller
                       control={control}
+                      name='stock'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          error={!!errors.stock}
+                          helperText={errors.stock?.message}
+                          label='Cantidad en almacén'
+                          fullWidth
+                          {...field}
+                          type='text'
+                          onKeyDown={handleKeyDownInt}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Controller
+                      control={control}
                       name='price'
                       rules={{ required: true }}
                       render={({ field, formState }) => {
                         const { value } = field
                         return (
                           <TextField
-                            label='Precio'
+                            label='Precio General'
                             fullWidth
                             error={!!errors.price}
                             helperText={errors.price?.message}
@@ -310,6 +332,36 @@ const AddProduct = () => {
                   <Grid item xs={12} md={6}>
                     <Controller
                       control={control}
+                      name='affiliatedPrice'
+                      rules={{ required: true }}
+                      render={({ field, formState }) => {
+                        const { value } = field
+                        return (
+                          <TextField
+                            label='Precio para afiliados'
+                            fullWidth
+                            error={!!errors.affiliatedPrice}
+                            helperText={errors.affiliatedPrice?.message}
+                            {...field}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position='start'>
+                                  <Typography variant='subtitle2' color='textSecondary'>
+                                    $
+                                  </Typography>
+                                </InputAdornment>
+                              )
+                            }}
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            onInput={handleInputFloat}
+                          />
+                        )
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Controller
+                      control={control}
                       name='content'
                       rules={{ required: true }}
                       render={({ field, fieldState }) => (
@@ -323,24 +375,7 @@ const AddProduct = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      control={control}
-                      name='stock'
-                      rules={{ required: true }}
-                      render={({ field, fieldState }) => (
-                        <TextField
-                          error={!!errors.stock}
-                          helperText={errors.stock?.message}
-                          label='Cantidad en almacén'
-                          fullWidth
-                          {...field}
-                          type='text'
-                          onKeyDown={handleKeyDownInt}
-                        />
-                      )}
-                    />
-                  </Grid>
+
                   <Grid item xs={12} md={12}>
                     <Controller
                       control={control}

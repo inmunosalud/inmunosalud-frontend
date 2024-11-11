@@ -25,14 +25,14 @@ import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
 import { updateCart } from 'src/store/cart'
 import DialogForm from 'src/views/components/dialogs/DialogForm'
 import RedirectModal from 'src/pages/components/modals/RedirectModal'
-
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 export const ProductItem = props => {
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const [authPassword, setAuthPassword] = React.useState('')
-
+  const { user } = useSelector(state => state.session)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
@@ -181,9 +181,25 @@ export const ProductItem = props => {
                   </Box>
                 </Link>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Typography variant='h5' sx={{ marginTop: 4 }}>
-                    {`$${props.price}`}
+                  <Typography variant='h5' sx={{ marginRight: 1 }}>
+                    {user.profile === 'Afiliado' ? (
+                      <span style={{ textDecoration: 'line-through', color: theme.palette.text.secondary }}>
+                        <Typography variant='h5' color='text.secondary'>
+                          ${props.price}
+                        </Typography>
+                      </span>
+                    ) : (
+                      `$${props.price}`
+                    )}
                   </Typography>
+                  {user.profile === 'Afiliado' && (
+                    <>
+                      <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                      <Typography variant='h5' sx={{ marginLeft: 1 }}>
+                        ${props.affiliatedPrice || props.price}
+                      </Typography>
+                    </>
+                  )}
                 </Box>
 
                 <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

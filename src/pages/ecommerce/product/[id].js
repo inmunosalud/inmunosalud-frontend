@@ -15,13 +15,17 @@ import CarouselProducts from 'src/views/components/swiper/CarouselProducts'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { getProductById } from 'src/store/products'
+import { useTheme } from '@mui/material/styles'
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 
 export default function ProductPage() {
   const router = useRouter()
   const { id } = router.query
   const dispatch = useDispatch()
-  const { currentProduct, isLoading } = useSelector(state => state.products)
+  const theme = useTheme()
 
+  const { currentProduct, isLoading } = useSelector(state => state.products)
+  const { user } = useSelector(state => state.session)
   useEffect(() => {
     if (id) {
       dispatch(getProductById(id))
@@ -54,9 +58,25 @@ export default function ProductPage() {
             <CarouselProducts images={currentProduct?.urlImages} />
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Typography variant='h5' sx={{ marginTop: 4 }}>
-              ${currentProduct?.price}
+            <Typography variant='h5' sx={{ marginRight: 1 }}>
+              {user.profile === 'Afiliado' ? (
+                <span style={{ textDecoration: 'line-through', color: theme.palette.text.secondary }}>
+                  <Typography variant='h5' color='text.secondary'>
+                    ${currentProduct?.price}
+                  </Typography>
+                </span>
+              ) : (
+                `$${currentProduct?.price}`
+              )}
             </Typography>
+            {user.profile === 'Afiliado' && (
+              <>
+                <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                <Typography variant='h5' sx={{ marginLeft: 1 }}>
+                  ${currentProduct?.affiliatedPrice || currentProduct?.price}
+                </Typography>
+              </>
+            )}
           </Box>
 
           <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
