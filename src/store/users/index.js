@@ -6,7 +6,7 @@ import { USERS, api_delete, api_get, api_patch, api_post } from '../../services/
 import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
-import { updateGeneralUser } from '../dashboard/generalSlice'
+import { updateSession } from '../session'
 import toast from 'react-hot-toast'
 //actions
 export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi) => {
@@ -70,7 +70,7 @@ export const createPartner = createAsyncThunk('/join/register', async ({ body, i
     const response = await api_patch(`${USERS}/users/affiliate/${id}`, body, auth)
 
     console.log('response', response)
-    thunkApi.dispatch(updateGeneralUser(response.content))
+    thunkApi.dispatch(updateSession(response.content))
     Router.push({ pathname: '/landing-page/home' })
     return response
   } catch (error) {
@@ -253,16 +253,7 @@ const initialState = {
   token: null,
   error: false,
   message: '',
-  network: {
-    nextCommission: 0,
-    cutoffDate: '15 nov',
-    network: {},
-    growingYourNetwork: {},
-    commissionHistory: {
-      2024: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500],
-      2025: []
-    }
-  },
+  network: {},
   // new user
   isLoading: false,
   user: {},

@@ -134,6 +134,7 @@ export default function FormRegister() {
                     fullWidth
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    autoComplete='off'
                   />
                 )}
               />
@@ -150,6 +151,7 @@ export default function FormRegister() {
                     fullWidth
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    autoComplete='new-password'
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position='end'>
