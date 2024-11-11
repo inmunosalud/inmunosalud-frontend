@@ -253,50 +253,7 @@ const initialState = {
   token: null,
   error: false,
   message: '',
-  network: {
-    nextCommission: 0,
-    cutoffDate: '15 nov',
-    network: {
-      1: [
-        {
-          name: 'Oscar Cristobal Lopez Ramirez',
-          recommenderName: 'Belen Orozco'
-        },
-        {
-          name: 'Luis de Jesús Vargas Jiménez',
-          recommenderName: 'Belen Orozco'
-        },
-        {
-          name: 'Gloria Arcelia García Mora',
-          recommenderName: 'Belen Orozco'
-        },
-        {
-          name: 'Mitzhu Heidy Reyna Mendoza',
-          recommenderName: 'Belen Orozco'
-        },
-        {
-          name: '003 Test',
-          recommenderName: 'Belen Orozco'
-        }
-      ],
-      2: [
-        {
-          name: 'Amelia Fiegueroa',
-          recommenderName: 'Luis de Jesús Vargas Jiménez'
-        }
-      ],
-      3: [],
-      4: [],
-      totalUsers: 6
-    },
-    growingYourNetwork: {
-      2024: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0]
-    },
-    commissionHistory: {
-      2024: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500],
-      2025: []
-    }
-  },
+  network: {},
   // new user
   isLoading: false,
   user: {},
