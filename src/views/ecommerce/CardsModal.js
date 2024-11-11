@@ -65,6 +65,7 @@ const CardsModal = () => {
     reset,
     control: paymentControl,
     handleSubmit,
+    getValues,
     formState: { errors: paymentErrors }
   } = useForm({
     defaultValues: defaultPaymentValues,
@@ -162,6 +163,7 @@ const CardsModal = () => {
         isOpen={isOpen}
         onHandleEditCardClose={handleEditCardClose}
         paymentControl={paymentControl}
+        getValues={getValues}
         paymentErrors={paymentErrors}
         handleSubmit={handleSubmit}
         onPaymentSubmit={onPaymentSubmit}

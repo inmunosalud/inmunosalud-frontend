@@ -111,6 +111,7 @@ const UserProfileBilling = () => {
     reset,
     control: paymentControl,
     handleSubmit,
+    getValues,
     formState: { errors: paymentErrors }
   } = useForm({
     defaultValues: editItem && Object.keys(editItem).length ? defautlPaymentEditValues : defaultPaymentValues,
@@ -273,6 +274,7 @@ const UserProfileBilling = () => {
         editItem={editItem}
         isFormEditing={isFormEditing}
         paymentControl={paymentControl}
+        getValues={getValues}
         paymentErrors={paymentErrors}
         onPaymentSubmit={onPaymentSubmit}
         handleSubmit={handleSubmit}

@@ -103,12 +103,9 @@ const RecoverPassword = () => {
       email: value.email
     }
     try {
-      console.log('si entro')
       await dispatch(sendPasswordVerificationCode(body)).unwrap()
       setStep(2)
     } catch (error) {
-      console.log('no entro')
-
       console.error(error)
     }
   }
