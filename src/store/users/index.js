@@ -253,29 +253,7 @@ const initialState = {
   token: null,
   error: false,
   message: '',
-  network: {
-    nextCommission: 10,
-    cutoffDate: '15 nov',
-    network: {
-      1: [
-        {
-          name: '000 Apellido',
-          recommenderName: 'Miguel Angel Valdés García'
-        }
-      ],
-      2: [],
-      3: [],
-      4: [],
-      totalUsers: 1
-    },
-    growingYourNetwork: {
-      2024: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
-    },
-    commissionHistory: {
-      2024: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500],
-      2025: []
-    }
-  },
+  network: {},
   // new user
   isLoading: false,
   user: {},
