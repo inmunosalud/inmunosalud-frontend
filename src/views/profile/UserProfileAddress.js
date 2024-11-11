@@ -203,6 +203,7 @@ const UserProfileAddress = () => {
           </Box>
         </Card>
       ) : (
+        Array.isArray(address) &&
         address.map(item => (
           <Card>
             <CardHeader

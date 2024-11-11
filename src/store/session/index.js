@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
-import { USERS, api_post } from '../../services/api'
+import { USERS, api_post, api_get } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
 import { openSnackBar } from '../notifications'
@@ -100,4 +100,4 @@ export const sessionSlice = createSlice({
 
 export default sessionSlice.reducer
 
-export const { login, setErrors } = sessionSlice.actions
+export const { setErrors } = sessionSlice.actions

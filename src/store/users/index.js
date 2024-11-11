@@ -200,6 +200,13 @@ export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   return response
 })
 
+export const getNetworkById = createAsyncThunk('user/networkUser', async id => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const response = await api_get(`${USERS}/users/network/${id}`, auth)
+  return response
+})
+
 //get link to register user in stripe
 export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
   const token = localStorage.getItem('im-user')
@@ -246,6 +253,29 @@ const initialState = {
   token: null,
   error: false,
   message: '',
+  network: {
+    nextCommission: 10,
+    cutoffDate: '15 nov',
+    network: {
+      1: [
+        {
+          name: '000 Apellido',
+          recommenderName: 'Miguel Angel Valdés García'
+        }
+      ],
+      2: [],
+      3: [],
+      4: [],
+      totalUsers: 1
+    },
+    growingYourNetwork: {
+      2024: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+    },
+    commissionHistory: {
+      2024: [1, 5, 15, 50, 100, 250, 500, 800, 900, 1400, 2000, 2500],
+      2025: []
+    }
+  },
   // new user
   isLoading: false,
   user: {},
@@ -390,6 +420,17 @@ export const usersSlice = createSlice({
       const { content } = payload
       state.isLoading = false
       state.userInfo = content
+    })
+    builder.addCase(getNetworkById.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
+    builder.addCase(getNetworkById.fulfilled, (state, { payload }) => {
+      const { content } = payload
+      state.isLoading = false
+      state.network = content
+    })
+    builder.addCase(getNetworkById.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     //get stripe link
     builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {

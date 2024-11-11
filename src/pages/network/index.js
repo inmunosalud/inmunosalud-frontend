@@ -28,7 +28,7 @@ import {
 import CardHeader from '@mui/material/CardHeader'
 import { getComissionsByUser } from 'src/store/comissions'
 import { loadSession } from 'src/store/session'
-import { getUserInfo } from 'src/store/users'
+import { getNetworkById } from 'src/store/users'
 
 const dataList = [
   {
@@ -161,7 +161,7 @@ function getNextMonth(date) {
 
 const Network = () => {
   const dispatch = useDispatch()
-  const { userInfo, isLoading } = useSelector(state => state.users)
+  const { userInfo, isLoading, network } = useSelector(state => state.users)
   const { comissionsHistory, isLoading: isLoadingComisions } = useSelector(state => state.comissions)
   const [cutoffDate, setCutoffDate] = React.useState('')
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
@@ -180,7 +180,8 @@ const Network = () => {
     }
   ])
   const [availableYears, setAvailableYears] = React.useState([])
-  const { user } = useSelector(state => state.session) // Estados para usuarios activos e inactivos
+  const { user } = useSelector(state => state.session)
+  // Estados para usuarios activos e inactivos
   const [totalUsuariosActivos, setTotalUsuariosActivos] = React.useState(0)
   const [totalUsuariosInactivos, setTotalUsuariosInactivos] = React.useState(0)
 
@@ -511,14 +512,15 @@ const Network = () => {
   // const seriesCommissions = [userInfo?.commission?.nextLost ?? 0, userInfo?.commission?.nextReal ?? 0]
   const seriesCommissions = [260, 220]
 
+  const handleSelectAge = yearData => {
+    const year = Object.keys(yearData)[0]
+    return {
+      name: parseInt(year),
+      data: yearData[year]
+    }
+  }
+
   const renderList = nivel => {
-    // if (!userInfo || !userInfo.network || !userInfo.network[nivel]) {
-    //   return (
-    //     <Box elevation={3} style={{ padding: '10px', margin: '10px', maxHeight: '200px', overflowY: 'auto' }}>
-    //       <List sx={{ minHeight: '180px' }}></List>
-    //     </Box>
-    //   )
-    // }
     return (
       <Box sx={{ border: `1px solid ${theme.palette.divider}` }}>
         <Box
@@ -541,22 +543,20 @@ const Network = () => {
           }}
         >
           <List sx={{ height: '180px' }}>
-            {/* {userInfo.network[nivel]?.users?.map(
-            user =>
-              !user.valid && (
-                <ListItem key={user.name}>
-                  <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
-                </ListItem>
-              )
-          )} */}
-            {dataList[nivel].users.map(
+            {network.network[nivel].map(
               (user, index) =>
                 !user.valid && (
-                  <ListItem key={user.name} divider={index !== dataList[nivel].users.length - 1}>
-                    {nivel === 0 ? (
-                      <ListItemText primary={user.name} />
+                  <ListItem key={user.name} divider={index !== network.network[nivel].length - 1}>
+                    {nivel === '1' ? (
+                      <ListItemText primary={user.name} secondary={`Consumo: ${user.lastTotalConsume || '0'}$`} />
                     ) : (
-                      <ListItemText primary={user.name} secondary={`Referido por: ${user.recommenderName || 'N/A'}`} />
+                      <ListItemText
+                        primary={user.name}
+                        secondary={{
+                          referidoPor: `Referido por: ${user.recommenderName || 'N/A'}`,
+                          consumo: `Consumo: ${user.lastTotalConsume || '0'}$`
+                        }}
+                      />
                     )}
                   </ListItem>
                 )
@@ -566,6 +566,10 @@ const Network = () => {
       </Box>
     )
   }
+
+  React.useEffect(() => {
+    console.log('network', network, network.network)
+  }, [network])
 
   React.useEffect(() => {
     // Contar usuarios activos e inactivos en cada nivel
@@ -591,77 +595,16 @@ const Network = () => {
   // }, [comissionsHistory])
 
   React.useEffect(() => {
-    if (!comissionsHistory || Object.keys(comissionsHistory).length === 0) {
-      return
-    }
-
-    const initialData = [
-      { month: '01', amount: 0 },
-      { month: '02', amount: 0 },
-      { month: '03', amount: 0 },
-      { month: '04', amount: 0 },
-      { month: '05', amount: 0 },
-      { month: '06', amount: 0 },
-      { month: '07', amount: 0 },
-      { month: '08', amount: 0 },
-      { month: '09', amount: 0 },
-      { month: '10', amount: 0 },
-      { month: '11', amount: 0 },
-      { month: '12', amount: 0 }
-    ]
-
-    const commissionDataByMonth = {}
-    const years = []
-
-    for (const yearMonth in comissionsHistory) {
-      const [year, month] = yearMonth.split('-')
-
-      if (!years.includes(year)) {
-        years.push(year)
-        commissionDataByMonth[year] = initialData.map(item => ({ ...item }))
-      }
-
-      const liquidatedCommissions =
-        comissionsHistory[yearMonth]?.filter(commission => commission.status === 'Comisión liquidada') || []
-
-      const totalCommissionAmount = liquidatedCommissions.reduce(
-        (total, commission) => total + commission.commission,
-        0
-      )
-
-      // Actualizar el valor del mes correspondiente
-      const monthData = commissionDataByMonth[year].find(data => data.month === month)
-      if (monthData) {
-        monthData.amount = totalCommissionAmount
-      }
-    }
-
-    setChartSeriesCommissionsHistory(commissionDataByMonth)
-    setAvailableYears(years)
-    setSelectedYear(years[0])
-    const firstData = [
-      {
-        name: years[0],
-        data: commissionDataByMonth[years[0]].map(item => item.amount)
-      }
-    ]
-    setDataSeriesCommissionsHistory(firstData)
-  }, [isLoading])
-
-  React.useEffect(() => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
-    }
-    if (userInfo === null && user.id != null) {
-      //dispatch(getUserInfo(user.id))
     }
   }, [])
 
   React.useEffect(() => {
-    if (userInfo?.cutoffDate) {
-      //setCutoffDate(getNextMonth(userInfo.cutoffDate))
+    if (user.id !== null) {
+      dispatch(getNetworkById(user.id))
     }
-  }, [userInfo])
+  }, [user])
 
   const handleCopyCode = () => {
     if (typeof window !== 'undefined') {
@@ -756,7 +699,20 @@ const Network = () => {
                 <CardContent>
                   <Grid container>
                     <Grid item xs={12} md={12}>
-                      <CardHeader title={'Tu siguiente comisión'} />
+                      <CardHeader
+                        title={'Tu siguiente comisión'}
+                        action={
+                          <Link href='/profile/?=&tab=banks'>
+                            <Button
+                              variant='contained'
+                              size='small'
+                              sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
+                            >
+                              Agregar datos <br /> bancarios
+                            </Button>
+                          </Link>
+                        }
+                      />
                     </Grid>
 
                     <Grid item xs={12} md={12}>
@@ -771,7 +727,7 @@ const Network = () => {
                       </Box>
                       <Box sx={{ mb: '20px', mt: '-20px', display: 'flex', justifyContent: 'center' }}>
                         <Typography variant='h1' fontWeight='bold' color='primary'>
-                          ${userInfo?.commission?.nextTotal ? userInfo?.commission?.nextTotal : 0}
+                          ${network.nextCommission || 0}
                         </Typography>
                       </Box>
                     </Grid>
@@ -784,7 +740,7 @@ const Network = () => {
                     </Grid>
                     <Grid item xs={12} md={12}>
                       <Box sx={{ mt: '46px' }}>
-                        <CardHeader title={'Próximo corte: ' + (cutoffDate ? cutoffDate : '')} />
+                        <CardHeader title={'Próximo corte: ' + (network.cutoffDate || '')} />
                       </Box>
                     </Grid>
                   </Grid>
@@ -805,25 +761,25 @@ const Network = () => {
                     <Grid item xs={12} md={12}>
                       <Box sx={{ textAlign: 'center' }}>
                         <Typography variant='h6' color='textPrimary'>
-                          Total de usuarios en tu red: {userInfo?.network?.totalUsers ?? 0}
+                          Total de usuarios en tu red: {network.network.totalUsers}
                         </Typography>
 
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 1: {conteoPorNivel[1].invalid + conteoPorNivel[1].valid}</h2>
-                            {renderList(0)}
+                            <h2>Nivel 1: {network.network['1'].length}</h2>
+                            {renderList('1')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 2: {conteoPorNivel[2].invalid + conteoPorNivel[2].valid}</h2>
-                            {renderList(1)}
+                            <h2>Nivel 2: {network.network['2'].length}</h2>
+                            {renderList('2')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 3: {conteoPorNivel[3].invalid + conteoPorNivel[3].valid}</h2>
-                            {renderList(2)}
+                            <h2>Nivel 3: {network.network['3'].length}</h2>
+                            {renderList('3')}
                           </Grid>
                           <Grid item xs={12} sm={3}>
-                            <h2>Nivel 4: {conteoPorNivel[4].invalid + conteoPorNivel[4].valid}</h2>
-                            {renderList(3)}
+                            <h2>Nivel 4: {network.network['4'].length}</h2>
+                            {renderList('4')}
                           </Grid>
                         </Grid>
                       </Box>

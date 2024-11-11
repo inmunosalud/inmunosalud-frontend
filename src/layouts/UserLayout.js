@@ -44,7 +44,7 @@ const LoadingModal = ({ open }) => {
       <Box
         sx={{
           height: '1000vh',
-          width: '1000vh',
+          width: '1000vw',
           display: 'flex',
           backgroundColor: theme.palette.background.paper,
           alignItems: 'center',
@@ -78,25 +78,22 @@ const UserLayout = ({ children }) => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
     }
-    if (user.id && !userInfo) {
-      dispatch(getUserInfo(user.id))
-    }
-    if (userInfo) {
-      if (userInfo.profile === 'Logistica') {
+    if (user) {
+      if (user.profile === 'Logistica') {
         router.push('/dashboards/logistics')
         dispatch(isDataLoaded(true))
       }
-      if (userInfo.profile === 'Administrador General') {
+      if (user.profile === 'Administrador General') {
         dispatch(isDataLoaded(true))
       }
-      if (userInfo.profile === 'Consumidor' || (userInfo.profile === 'Afiliado' && !dataLoaded && userInfo)) {
+      if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && !dataLoaded && user)) {
         dispatch(getCart(user.id))
         dispatch(loadInfo(user.id))
         dispatch(addressList(user.id))
         dispatch(isDataLoaded(true))
       }
     }
-  }, [userInfo, user.id, dataLoaded])
+  }, [user, dataLoaded])
 
   useEffect(() => {
     dispatch(setIsMobile(isMobile))
