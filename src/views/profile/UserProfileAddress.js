@@ -65,7 +65,7 @@ const defaultAddressValues = {
   street: '',
   extNumber: '',
   intNumber: '',
-  colony: '',
+  neighborhood: '',
   federalEntity: '',
   zipCode: '',
   country: '',
@@ -104,6 +104,7 @@ const UserProfileAddress = () => {
     reset,
     control: addressControl,
     handleSubmit,
+    setValue,
     formState: { errors: addressErrors }
   } = useForm({
     defaultValues: defaultAddressValues,
@@ -111,35 +112,33 @@ const UserProfileAddress = () => {
   })
 
   const onSubmit = data => {
-    if (selectedColony.colony != null) {
-      let body = {
-        street: data.street,
-        extNumber: data.extNumber,
-        intNumber: data?.intNumber,
-        zipCode: data.zipCode,
-        colony: data.colony.colony,
-        city: data.colony.city,
-        federalEntity: data.colony.federalEntity,
-        country: 'Mexico',
-        refer: data.refer
-      }
-      if (editItem && Object.keys(editItem).length) {
-        body.id = editItem.id
-        dispatch(updateAddress({ body: body }))
-      } else {
-        dispatch(createAddress({ body: body, uuid: user.id }))
-      }
-      handleAddressClose(false)
+    let body = {
+      street: data.street,
+      extNumber: data.extNumber,
+      intNumber: data?.intNumber,
+      zipCode: data.zipCode,
+      neighborhood: data.neighborhood,
+      city: data.city,
+      federalEntity: data.federalEntity,
+      country: 'Mexico',
+      refer: data.refer
     }
+    if (editItem && Object.keys(editItem).length) {
+      body.id = editItem.id
+      dispatch(updateAddress({ body: body }))
+    } else {
+      dispatch(createAddress({ body: body, uuid: user.id }))
+    }
+    handleAddressClose(false)
   }
 
   // Handle Edit Card dialog and get card ID
   const handleEditAddressClickOpen = addressItem => {
     setEditItem(addressItem)
     dispatch(getColonies(addressItem.zipCode)).then(colonies => {
-      const colony = colonies.payload.find(zipCode => zipCode.colony === addressItem.colony)
-      dispatch(selectColony(colony))
-      setEditItem(prevState => ({ ...prevState, colony: selectedColony }))
+      const neighborhood = colonies.payload.find(zipCode => zipCode.neighborhood === addressItem.neighborhood)
+      dispatch(selectColony(neighborhood))
+      setEditItem(prevState => ({ ...prevState, neighborhood: selectedColony }))
     })
     dispatch(setModal(true))
     reset(addressItem)
@@ -320,7 +319,7 @@ const UserProfileAddress = () => {
                               Colonia:
                             </Typography>
                           </TableCell>
-                          <TableCell>{item.colony}</TableCell>
+                          <TableCell>{item.neighborhood}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -438,6 +437,7 @@ const UserProfileAddress = () => {
         handleAddressClose={() => dispatch(setModal(false))}
         editItem={editItem}
         handleSubmit={handleSubmit}
+        setValue={setValue}
         addressControl={addressControl}
         addressErrors={addressErrors}
         onSubmit={onSubmit}

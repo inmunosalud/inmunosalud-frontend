@@ -20,6 +20,7 @@ const CircularProgress = dynamic(() => import('@mui/material/CircularProgress'),
 })
 import { useDispatch, useSelector } from 'react-redux'
 import { getColonies, selectColony, cleanColonies } from 'src/store/address'
+import { onZipCodeChange } from 'src/utils/functions'
 
 const DialogAddress = ({
   openAddressCard = false,
@@ -27,15 +28,28 @@ const DialogAddress = ({
   editItem = null,
   handleSubmit = () => {},
   onSubmit = () => {},
+  setValue = () => {},
   addressControl = {},
   addressErrors = {}
 }) => {
-  const { colonies, selectedColony, isLoadingColonies } = useSelector(state => state.address)
   const dispatch = useDispatch()
+  const [colonies, setColonies] = useState([])
 
   useEffect(() => {
-    dispatch(cleanColonies())
-  }, [])
+    if (colonies.length > 0) {
+      setValue('city', colonies[0].city)
+      setValue('federalEntity', colonies[0].federalEntity)
+    } else {
+      setValue('city', '')
+      setValue('federalEntity', '')
+    }
+  }, [colonies, setValue])
+
+  useEffect(() => {
+    if (editItem && Object.keys(editItem).length) {
+      onZipCodeChange(editItem.zipCode, setValue, setColonies)
+    }
+  }, [editItem])
 
   return (
     <Card>
@@ -123,130 +137,96 @@ const DialogAddress = ({
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <Controller
                     name='zipCode'
                     control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange }, fieldState: { error } }) => (
                       <TextField
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                        label={'Código Postal*'}
                         value={value}
-                        label='Código Postal'
-                        onChange={event => {
-                          const newValue = event.target.value
-                          if (newValue.length <= 5) {
-                            onChange(newValue)
-                          }
-                          if (newValue.length === 5) {
-                            dispatch(getColonies(newValue))
-                            dispatch(selectColony({}))
-                          }
-                        }}
-                        error={Boolean(addressErrors.zipCode)}
-                        placeholder='Código Postal'
-                        aria-describedby='validation-basic-zipCode'
+                        onChange={e => onZipCodeChange(e.target.value, onChange, setColonies)}
+                        type='text'
                       />
                     )}
                   />
-                  {addressErrors.zipCode?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-zipCode'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              {/* Colonia */}
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <Controller
-                    name='colony'
+                    name='neighborhood'
                     control={addressControl}
                     rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <>
-                        <InputLabel id='colony-label'>
-                          {isLoadingColonies ? <CircularProgress size={20} sx={{ ml: '10px' }} /> : 'Colonia'}
-                        </InputLabel>
-                        <Select
-                          labelId='colony-label'
-                          label='Colonia'
-                          value={selectedColony}
-                          disabled={colonies.length === 0}
-                          onChange={event => {
-                            const newValue = event.target.value
-                            onChange(newValue)
-                            dispatch(selectColony(newValue))
-                          }}
-                        >
-                          {colonies.map(zipCodeData => (
-                            <MenuItem value={zipCodeData}>{zipCodeData.colony}</MenuItem>
-                          ))}
-                        </Select>
-                      </>
+                    render={({ field: { value, onChange }, fieldState: { error } }) => (
+                      <TextField
+                        select
+                        disabled={colonies.length === 0}
+                        value={value}
+                        label={'Colonias*'}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                      >
+                        {colonies?.map((item, id) => (
+                          <MenuItem key={id} value={item.colony}>
+                            {item.colony}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     )}
                   />
-                  {!selectedColony ? (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-colony'>
-                      El campo es requerido
-                    </FormHelperText>
-                  ) : null}
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              {/* Ciudad */}
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <Controller
                     name='city'
                     control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange }, fieldState: { error } }) => (
                       <TextField
-                        value={selectedColony && selectedColony.city ? selectedColony.city : ' '}
-                        label='Ciudad'
-                        onChange={null}
-                        placeholder='Ciudad'
-                        aria-describedby='validation-basic-city'
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                        label={'Ciudad*'}
+                        value={value}
+                        onChange={onChange}
+                        type='text'
+                        InputLabelProps={{
+                          shrink: colonies.length > 0
+                        }}
                         disabled
                       />
                     )}
                   />
                 </FormControl>
               </Grid>
-
-              <Grid item xs={12} sm={4}>
+              {/* Estado */}
+              <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <Controller
                     name='federalEntity'
                     control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange }, fieldState: { error } }) => (
                       <TextField
-                        value={selectedColony && selectedColony.federalEntity ? selectedColony.federalEntity : ' '}
-                        label='Estado'
-                        onChange={null}
-                        placeholder='Entidad Federativa'
-                        aria-describedby='validation-basic-state'
-                        disabled
-                      />
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <Controller
-                    name='country'
-                    control={addressControl}
-                    rules={{ required: false }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        value={'México'}
-                        label='País'
-                        onChange={null}
-                        placeholder='País'
-                        aria-describedby='validation-basic-country'
+                        error={!!error}
+                        helperText={error ? error.message : ''}
+                        label={'Estado*'}
+                        value={value}
+                        onChange={onChange}
+                        type='text'
+                        InputLabelProps={{
+                          shrink: colonies.length > 0
+                        }}
                         disabled
                       />
                     )}
