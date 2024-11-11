@@ -252,6 +252,7 @@ const RecoverPassword = () => {
                             sx={{ mb: 3 }}
                             error={!!passwordErrors.password}
                             helperText={passwordErrors.password ? passwordErrors.password.message : ' '}
+                            autoComplete='new-password'
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position='end'>

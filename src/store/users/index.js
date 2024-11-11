@@ -146,7 +146,7 @@ export const createContract = createAsyncThunk('contracts/createContract', async
 //Recover Password
 export const sendPasswordVerificationCode = createAsyncThunk('users/verification-code', async (email, thunkApi) => {
   try {
-    const response = await api_post(`${USERS}/users/password-recovery-code`, email)
+    const response = await api_post(`${USERS}/users/passwordRecoveryCode`, email)
 
     toast.success('Se ha enviado un código de verificación a su correo electrónico')
     return response
@@ -160,7 +160,7 @@ export const validatePasswordRecoveryCode = createAsyncThunk(
   'users/validatePasswordRecoveryCode',
   async (body, thunkApi) => {
     try {
-      const response = await api_post(`${USERS}/users/validate-password-recovery-code`, body)
+      const response = await api_post(`${USERS}/users/validatePasswordRecoveryCode`, body)
       return response
     } catch (error) {
       toast.error('El código de verificación no es valido')
@@ -366,6 +366,15 @@ export const usersSlice = createSlice({
       state.users = values
     })
     builder.addCase(sendNewUser.rejected, (state, action) => {
+      state.isLoading = false
+    })
+    builder.addCase(sendPasswordVerificationCode.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(sendPasswordVerificationCode.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(sendPasswordVerificationCode.rejected, (state, action) => {
       state.isLoading = false
     })
     //update user
