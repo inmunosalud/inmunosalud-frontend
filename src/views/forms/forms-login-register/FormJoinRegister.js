@@ -112,7 +112,6 @@ const FormJoinRegister = () => {
   })
 
   const submitRegister = values => {
-    console.log(user)
     const body = {
       curp: values.curp,
       rfc: values.rfc,

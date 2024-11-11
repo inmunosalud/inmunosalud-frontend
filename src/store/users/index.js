@@ -69,7 +69,6 @@ export const createPartner = createAsyncThunk('/join/register', async ({ body, i
   try {
     const response = await api_patch(`${USERS}/users/affiliate/${id}`, body, auth)
 
-    console.log('response', response)
     thunkApi.dispatch(updateSession(response.content))
     Router.push({ pathname: '/landing-page/home' })
     return response

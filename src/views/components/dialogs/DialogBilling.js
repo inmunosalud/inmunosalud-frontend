@@ -30,6 +30,7 @@ export default function DialogBilling({
   editItem = null,
   isFormEditing = false,
   paymentControl = {},
+  getValues = {},
   paymentErrors = {},
   handleSubmit = () => {},
   onPaymentSubmit = () => {}
@@ -185,6 +186,60 @@ export default function DialogBilling({
         })
       )
   }, [maxRetriesReached2, maxRetriesReached1])
+
+  const generateToken = async () => {
+    const { cardNumber, nameOnCard, month, year, cvc } = getValues()
+    if (
+      cardNumber &&
+      nameOnCard &&
+      month &&
+      year &&
+      cvc &&
+      window.OpenPay &&
+      window.OpenPay.deviceData &&
+      window.OpenPay.deviceData.setup
+    ) {
+      window.OpenPay.setSandboxMode(true)
+      const deviceSessionId = window.OpenPay.deviceData.setup()
+      if (deviceSessionId) {
+        window.OpenPay.setId(OPENPAY_ID)
+        window.OpenPay.setApiKey(OPENPAY_KEY)
+        const tokenBody = {
+          card_number: cardNumber,
+          holder_name: nameOnCard,
+          expiration_year: String(year).slice(-2),
+          expiration_month: month,
+          cvv2: cvc
+        }
+
+        var openpayTokenId
+        const tokenPromise = new Promise((resolve, reject) => {
+          window.OpenPay.token.create(
+            tokenBody,
+            response => {
+              openpayTokenId = response.data.id
+              resolve(openpayTokenId)
+            },
+            onError => {
+              console.log('error', onError)
+              reject(onError)
+            }
+          )
+        })
+        try {
+          await tokenPromise
+          console.log('openpayTokenId', openpayTokenId)
+          console.log('deviceSessionId', deviceSessionId)
+          return
+        } catch (error) {
+          console.log('error', error)
+          return
+        }
+      }
+    } else {
+      console.log('llena todos los campos')
+    }
+  }
 
   return (
     <Card>
@@ -419,6 +474,11 @@ export default function DialogBilling({
                 <FormHelperText>Tarjetas permitidas</FormHelperText>
               </Box>
               <Box>
+                {process.env.NODE_ENV !== 'production' && (
+                  <Button sx={{ mr: '10px' }} variant='outlined' color='primary' onClick={generateToken}>
+                    Generar Token
+                  </Button>
+                )}
                 <Button variant='contained' sx={{ mr: 1 }} type='submit'>
                   Agregar
                 </Button>
