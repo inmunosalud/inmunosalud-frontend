@@ -21,8 +21,7 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   const user = thunkApi.getState().users.user
-  const userInfo = thunkApi.getState().users.userInfo
-  const openpayUserId = user?.openpay?.openpayUserId ?? userInfo.openpay.openpayUserId
+  const openpayUserId = user?.openpay?.openpayUserId
 
   if (body.cardUse === 'Pago') {
     const openPay = thunkApi.getState().paymentMethods.openPay
