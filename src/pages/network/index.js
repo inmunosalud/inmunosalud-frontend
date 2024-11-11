@@ -29,7 +29,7 @@ import CardHeader from '@mui/material/CardHeader'
 import { getComissionsByUser } from 'src/store/comissions'
 import { loadSession } from 'src/store/session'
 import { getNetworkById } from 'src/store/users'
-
+import Check from '@mui/icons-material/Check'
 const dataList = [
   {
     nivel: 1,
@@ -165,7 +165,8 @@ const Network = () => {
   const { comissionsHistory, isLoading: isLoadingCommissions } = useSelector(state => state.comissions)
   const [cutoffDate, setCutoffDate] = React.useState('')
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
-
+  const [isCopied, setIsCopied] = React.useState(false)
+  const [isCopied2, setIsCopied2] = React.useState(false)
   const [chartSeriesCommissionsHistory, setChartSeriesCommissionsHistory] = React.useState([])
   const [dataSeriesCommissionsHistory, setDataSeriesCommissionsHistory] = React.useState([
     {
@@ -472,7 +473,7 @@ const Network = () => {
           sx={{
             padding: '5px',
             margin: '5px',
-            height: '220px',
+            height: '350px',
             overflowY: 'auto',
             '&::-webkit-scrollbar': {
               width: '3px',
@@ -487,7 +488,7 @@ const Network = () => {
             }
           }}
         >
-          <List sx={{ height: '180px' }}>
+          <List sx={{ height: '350px' }}>
             {network.network[nivel].map((user, index) => (
               <ListItem key={user.name} divider={index !== network.network[nivel].length - 1}>
                 {nivel === '1' ? (
@@ -518,10 +519,6 @@ const Network = () => {
       </Box>
     )
   }
-
-  React.useEffect(() => {
-    console.log('network', network, network.network)
-  }, [network])
 
   React.useEffect(() => {
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
@@ -562,11 +559,15 @@ const Network = () => {
   const handleCopyCode = () => {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(`${user?.id}`)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 1000)
     }
   }
   const handleCopyUrl = () => {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(`https://www.inmunosalud.mx/register/?id=${user?.id}`)
+      setIsCopied2(true)
+      setTimeout(() => setIsCopied2(false), 1000)
     }
   }
 
@@ -603,45 +604,97 @@ const Network = () => {
       <Grid xs={12} justifyContent='center'>
         <ApexChartWrapper>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={8}>
-                      <CardHeader
-                        title='INVITA A TUS AMIGOS Y GANA DINERO'
-                        subheader='Comparte el enlace de registro o copia tu código para compartirlo a tus amigos'
-                      />
+            <Grid item xs={12} md={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <CardHeader
+                  title={
+                    <Typography sx={{ mt: '20px', textAlign: 'center' }} variant='h5' color='textPrimary'>
+                      INVITA A TUS AMIGOS Y GANA DINERO
+                    </Typography>
+                  }
+                  subheader={
+                    <Typography sx={{ mt: '20px', textAlign: 'center' }} variant='body2' color='textSecondary'>
+                      Comparte el enlace de registro o copia tu código para compartirlo a tus amigos
+                    </Typography>
+                  }
+                />
+                <Box
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <CardContent>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+                          <Button
+                            startIcon={isCopied ? <Check /> : <ContentCopy />}
+                            variant='contained'
+                            size='large'
+                            onClick={handleCopyCode}
+                            sx={{
+                              animation: isCopied ? 'pulse 1s ease-in-out' : 'none',
+                              width: '230px',
+                              '@keyframes pulse': {
+                                '0%': {
+                                  transform: 'scale(1)'
+                                },
+                                '50%': {
+                                  transform: 'scale(1.1)'
+                                },
+                                '100%': {
+                                  transform: 'scale(1)'
+                                }
+                              }
+                            }}
+                          >
+                            {isCopied ? 'Copiado' : 'Copiar tu código'}
+                          </Button>
+                          <Button
+                            startIcon={isCopied2 ? <Check /> : <ContentCopy />}
+                            variant='contained'
+                            sx={{
+                              mt: '10px',
+                              animation: isCopied2 ? 'pulse 1s ease-in-out' : 'none',
+                              width: '230px',
+                              '@keyframes pulse': {
+                                '0%': {
+                                  transform: 'scale(1)'
+                                },
+                                '50%': {
+                                  transform: 'scale(1.1)'
+                                },
+                                '100%': {
+                                  transform: 'scale(1)'
+                                }
+                              }
+                            }}
+                            size='large'
+                            onClick={handleCopyUrl}
+                          >
+                            {isCopied2 ? 'Copiado' : 'Copiar tu enlace'}
+                          </Button>
+                        </Box>
+                      </Grid>
                     </Grid>
-
-                    <Grid item xs={12} md={4}>
-                      <Box
-                        display='flex'
-                        flexDirection='column'
-                        alignItems='center'
-                        justifyContent='center'
-                        height='100%'
-                      >
-                        <Button startIcon={<ContentCopy />} variant='contained' size='small' onClick={handleCopyCode}>
-                          Copiar tu codigo
-                        </Button>
-                        <Button
-                          startIcon={<ContentCopy />}
-                          variant='contained'
-                          sx={{ mt: '10px' }}
-                          size='small'
-                          onClick={handleCopyUrl}
-                        >
-                          Copiar tu enlace
-                        </Button>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </CardContent>
+                  </CardContent>
+                </Box>
               </Card>
             </Grid>
             {/* Columna 1 */}
-            <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <Card sx={{ height: { md: '450px' } }}>
                 <CardContent>
                   <Grid container>
@@ -697,8 +750,8 @@ const Network = () => {
 
             {/* Columna 2 */}
 
-            <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <Card sx={{ height: { md: '450px' } }}>
+            <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Card sx={{ height: { md: '600px' } }}>
                 <CardContent>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={12}>
@@ -708,7 +761,7 @@ const Network = () => {
                     <Grid item xs={12} md={12}>
                       <Box sx={{ textAlign: 'center' }}>
                         <Typography variant='h6' color='textPrimary'>
-                          Total de usuarios en tu red: {network.network?.totalUsers || '0'}
+                          <strong> Total de usuarios en tu red: {network.network?.totalUsers || '0'} </strong>
                         </Typography>
 
                         <Grid container spacing={2}>
