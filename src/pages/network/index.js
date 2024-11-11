@@ -645,19 +645,7 @@ const Network = () => {
                             size='large'
                             onClick={handleCopyCode}
                             sx={{
-                              animation: isCopied ? 'pulse 1s ease-in-out' : 'none',
-                              width: '230px',
-                              '@keyframes pulse': {
-                                '0%': {
-                                  transform: 'scale(1)'
-                                },
-                                '50%': {
-                                  transform: 'scale(1.1)'
-                                },
-                                '100%': {
-                                  transform: 'scale(1)'
-                                }
-                              }
+                              width: '230px'
                             }}
                           >
                             {isCopied ? 'Copiado' : 'Copiar tu código'}
@@ -667,19 +655,7 @@ const Network = () => {
                             variant='contained'
                             sx={{
                               mt: '10px',
-                              animation: isCopied2 ? 'pulse 1s ease-in-out' : 'none',
-                              width: '230px',
-                              '@keyframes pulse': {
-                                '0%': {
-                                  transform: 'scale(1)'
-                                },
-                                '50%': {
-                                  transform: 'scale(1.1)'
-                                },
-                                '100%': {
-                                  transform: 'scale(1)'
-                                }
-                              }
+                              width: '230px'
                             }}
                             size='large'
                             onClick={handleCopyUrl}
