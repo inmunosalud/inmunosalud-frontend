@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { USERS, api_post, HOST_MONTHLY_PURCHASE, api_get, api_patch } from '../../services/api'
+import { USERS, api_post, MONTHLY_PURCHASE, api_get, api_patch } from '../../services/api'
 import { openSnackBar } from '../notifications'
 
 export const getMonthlyPurchase = createAsyncThunk('monthlyPurchase/getMonthlyPurchase', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${HOST_MONTHLY_PURCHASE}/monthlyPurchase/${id}`, auth)
+    const response = await api_get(`${MONTHLY_PURCHASE}/monthlyPurchase/${id}`, auth)
 
     return response
   } catch (error) {
@@ -21,7 +21,7 @@ export const updateMonthlyPurchase = createAsyncThunk(
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
-      const response = await api_patch(`${HOST_MONTHLY_PURCHASE}/monthlyPurchase/${monthlyPurchaseId}`, body, auth)
+      const response = await api_patch(`${MONTHLY_PURCHASE}/monthlyPurchase/${monthlyPurchaseId}`, body, auth)
 
       return response
     } catch (error) {

@@ -138,6 +138,7 @@ const InvoicePreview = ({}) => {
             window.OpenPay.deviceData.setup &&
             typeof window.OpenPay.deviceData.setup === 'function'
           ) {
+            window.OpenPay.setSandboxMode(process.env.NODE_ENV !== 'production')
             window.OpenPay.setId(OPENPAY_ID)
             window.OpenPay.setApiKey(OPENPAY_KEY)
             const deviceSessionId = window.OpenPay.deviceData.setup()

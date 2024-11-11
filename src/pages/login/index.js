@@ -36,9 +36,9 @@ const Login = () => {
     const usuarioLocalStorage = localStorage.getItem('im-user')
     if (usuarioLocalStorage && !user && usuarioLocalStorage !== 'undefined') {
       dispatch(loadSession())
-      Router.push('/home')
+      Router.push('/landing-page/home')
     } else if (usuarioLocalStorage && user && usuarioLocalStorage !== 'undefined') {
-      Router.push('/home')
+      Router.push('/landing-page/home')
     }
   }, [])
 

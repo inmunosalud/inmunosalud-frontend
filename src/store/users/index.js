@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
-import { PROJECT_CONTRACT, USERS, api_delete, api_get, api_patch, api_post } from '../../services/api'
+import { USERS, api_delete, api_get, api_patch, api_post } from '../../services/api'
 
 import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
@@ -127,7 +127,7 @@ export const createContract = createAsyncThunk('contracts/createContract', async
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 
   try {
-    const response = await api_post(`${PROJECT_CONTRACT}/users/contract/${uuid}`, body, auth)
+    const response = await api_post(`${USERS}/users/contract/${uuid}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(setModal(false))
     return response

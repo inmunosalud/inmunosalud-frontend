@@ -5,8 +5,8 @@ import {
   api_get,
   api_patch,
   api_delete,
-  PROJECT_PAYMENT_METHODS,
-  PROJECT_ADDRESS,
+  PAYMENT_METHODS,
+  ADDRESS,
   OPENPAY_ID,
   OPENPAY_KEY
 } from '../../services/api'
@@ -68,7 +68,7 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
         shippingPayment: body.shippingPayment
       }
 
-      const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
+      const response = await api_post(`${PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(nextStep())
@@ -100,7 +100,7 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
         clabe: body.clabe
       }
 
-      const response = await api_post(`${PROJECT_PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
+      const response = await api_post(`${PAYMENT_METHODS}/payment-methods/${uuid}`, paymentBody, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(nextStep())
@@ -123,7 +123,7 @@ export const updateMethod = createAsyncThunk(
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
-      const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
+      const response = await api_patch(`${PAYMENT_METHODS}/payment-methods/${idPaymentMethod}`, body, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       thunkApi.dispatch(setModal(false))
       thunkApi.dispatch(nextStep())
@@ -145,7 +145,7 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, u
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_delete(`${PROJECT_PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
+    const response = await api_delete(`${PAYMENT_METHODS}/payment-methods/${id}`, {}, auth)
     thunkApi.dispatch(setModalDelete(false))
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     return setPaymentMethods(response.content)
@@ -162,7 +162,7 @@ export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uu
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 
   try {
-    const response = await api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
+    const response = await api_get(`${PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
     if (Array.isArray(response.content) && response.content.length === 0) {
       thunkApi.dispatch(
         openSnackBar({
@@ -183,7 +183,7 @@ export const methodsList = createAsyncThunk('user/list', async uuid => {
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 
   try {
-    return await api_get(`${PROJECT_PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
+    return await api_get(`${PAYMENT_METHODS}/payment-methods/user/${uuid}`, auth)
   } catch (error) {
     return thunkApi.rejectWithValue('error')
   }
@@ -195,7 +195,7 @@ export const setMonthlyPaymentMethod = createAsyncThunk(
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
     try {
-      const response = await api_patch(`${PROJECT_PAYMENT_METHODS}/payment-methods/shippingPayment/${id}`, {}, auth)
+      const response = await api_patch(`${PAYMENT_METHODS}/payment-methods/shippingPayment/${id}`, {}, auth)
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
       return setPaymentMethods(response.content)
     } catch (error) {

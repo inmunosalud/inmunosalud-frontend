@@ -4,14 +4,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { ThumbDown } from 'mdi-material-ui'
 
-import { USERS, api_post, HOST_CART, api_get, api_patch } from '../../services/api'
+import { USERS, api_post, CART, api_get, api_patch } from '../../services/api'
 
 // ** Add User
 export const initCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${HOST_CART}/cart/${id}`, auth)
+    const response = await api_get(`${CART}/cart/${id}`, auth)
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -21,7 +21,7 @@ export const getCart = createAsyncThunk('cart/getCart', async (id, thunkApi) => 
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${HOST_CART}/cart/${id}`, auth)
+    const response = await api_get(`${CART}/cart/${id}`, auth)
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
@@ -32,7 +32,7 @@ export const updateCart = createAsyncThunk('cart/updateCart', async ({ id: cartI
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_patch(`${HOST_CART}/cart/${cartId}`, body, auth)
+    const response = await api_patch(`${CART}/cart/${cartId}`, body, auth)
     return response.content
   } catch (error) {
     return thunkApi.rejectWithValue('error')
