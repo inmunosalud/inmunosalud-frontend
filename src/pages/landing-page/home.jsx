@@ -172,6 +172,42 @@ const Pricing = () => {
         </Grid>
       </Grid>
 
+      {user.profile != PROFILES_USER.affiliatedUser && (
+        <Card
+          sx={{
+            mt: '2rem'
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  textAlign: 'center',
+
+                  pt: '2rem',
+                  pb: '2rem'
+                }}
+              >
+                <Typography variant='h5' gutterBottom>
+                  ¡Únete a Nuestra Comunidad!
+                </Typography>
+                <Typography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
+                  Al afiliarte, obtienes descuentos exclusivos en todos nuestros productos. No te pierdas esta
+                  oportunidad de ahorrar y disfrutar de beneficios especiales.
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Link href='/landing-page/join' passHref>
+                    <Button variant='contained' size='large' color='primary'>
+                      AFÍLIATE A NOSOTROS
+                    </Button>
+                  </Link>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </Card>
+      )}
+
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Box
@@ -218,21 +254,12 @@ const Pricing = () => {
                 position: 'relative',
                 width: '100%',
                 height: '0',
-                paddingTop: '47%', // Ajusta este valor para cambiar la altura del banner
+                paddingTop: '60%', // Ajusta este valor para cambiar la altura del banner
                 overflow: 'hidden'
               }}
             >
               <Image src={Banner} alt='aboutUs' layout='fill' objectFit='cover' quality={100} />
             </Box>
-            {user.profile != PROFILES_USER.affiliatedUser && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
-                <Link href='/landing-page/join' passHref>
-                  <Button variant='outlined' size='large'>
-                    AFÍLIATE A NOSOTROS
-                  </Button>
-                </Link>
-              </Box>
-            )}
           </Grid>
         </Grid>
         <Grid item xs={12}></Grid>
