@@ -33,7 +33,7 @@ import Link from 'next/link'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-
+import useTheme from '@mui/material/styles/useTheme'
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
   padding: theme.spacing(17.5, 36, 28.25),
@@ -102,8 +102,7 @@ const questions = [
   {
     id: 'Q4',
     question: '¿Qué se necesita para afiliarte?',
-    answer:
-      'Simplemente debes adquirir nuestro paquete inicial. Este es el pedido mínimo para mantener tu afiliación activa el cual contiene las dosis necesarias para consumir en el mes. Es necesario hacer el pedido mínimo cada mes para mantener tu cuenta activa.'
+    answer: 'Solo necesitas un código de recomendación por uno de nuestros afiliados.'
   },
   {
     id: 'Q5',
@@ -119,6 +118,7 @@ const Pricing = () => {
   const { user } = useSelector(state => state.session)
   const dispatch = useDispatch()
   const { open, message, severity } = useSelector(state => state.notifications)
+  const theme = useTheme()
   useEffect(() => {
     if (products.length === 0) {
       dispatch(getProducts())
@@ -180,28 +180,64 @@ const Pricing = () => {
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Box
-                sx={{
-                  textAlign: 'center',
-
-                  pt: '2rem',
-                  pb: '2rem'
-                }}
-              >
-                <Typography variant='h5' gutterBottom>
-                  ¡Únete a Nuestra Comunidad!
+              <Box sx={{ p: '2rem' }}>
+                <Typography variant='h2'>¡Únete a Nuestra Comunidad!</Typography>
+                <Typography variant='h5' color='text.primary' sx={{ mb: 3, mt: 5 }}>
+                  Recibe beneficios al convertirte en afiliado
                 </Typography>
-                <Typography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
-                  Al afiliarte, obtienes descuentos exclusivos en todos nuestros productos. No te pierdas esta
-                  oportunidad de ahorrar y disfrutar de beneficios especiales.
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Link href='/landing-page/join' passHref>
-                    <Button variant='contained' size='large' color='primary'>
-                      AFÍLIATE A NOSOTROS
-                    </Button>
-                  </Link>
-                </Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      sx={{
+                        p: 4,
+                        height: '100%',
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        borderRadius: '10px'
+                      }}
+                    >
+                      <Typography variant='h4' color='primary'>
+                        ¡Obten Descuentos Exclusivos!
+                      </Typography>
+                      <Typography variant='h4' color='primary'>
+                        Recibe descuentos en todos nuestros productos.
+                      </Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Card
+                      sx={{
+                        p: 4,
+                        height: '100%',
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        borderRadius: '10px'
+                      }}
+                    >
+                      <Typography variant='h4' color='primary'>
+                        ¡Obten Beneficios!
+                      </Typography>
+                      <Typography variant='h4' color='primary'>
+                        Recibe comision al recomendar mas personas.
+                      </Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        height: '100%',
+                        mt: 2
+                      }}
+                    >
+                      <Link href='/landing-page/join' passHref>
+                        <Button variant='contained' size='large' color='primary'>
+                          AFÍLIATE A NOSOTROS
+                        </Button>
+                      </Link>
+                    </Box>
+                  </Grid>
+                </Grid>
               </Box>
             </Grid>
           </Grid>
