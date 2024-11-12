@@ -1,31 +1,23 @@
 import { Modal, Stack } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI Imports
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
+import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
-import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputAdornment from '@mui/material/InputAdornment'
-import FormHelperText from '@mui/material/FormHelperText'
-import Alert from '@mui/material/Alert'
+import TextField from '@mui/material/TextField'
 import VerificationInput from 'react-verification-input'
 
 // ** Icons Imports
-import EyeOutline from 'mdi-material-ui/EyeOutline'
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-import { setShowConfirmModal, setRecoveryCode, recoverPassword, validatePasswordRecoveryCode } from 'src/store/users'
 import { CircularProgress } from '@mui/material'
+import { recoverPassword, setShowConfirmModal, validatePasswordRecoveryCode } from 'src/store/users'
 
 const VerifyCodeModal = ({ open, handleClose, userData }) => {
   const array = new Array(6).fill('')
