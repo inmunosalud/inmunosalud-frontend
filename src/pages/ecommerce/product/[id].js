@@ -126,22 +126,12 @@ export default function ProductPage() {
             ) : (
               <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Grid container spacing={2}>
+                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}></Grid>
                   <Grid item xs={4}>
                     <Typography variant='body2' color='primary' sx={{ display: 'block', textAlign: 'center' }}>
                       Precio para afiliados
                     </Typography>
-                  </Grid>
-                  <Grid item xs={4}></Grid>
-                  <Grid item xs={4}></Grid>
-                  <Grid item xs={4}>
-                    <Typography variant='h5' color='primary' sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
-                      ${currentProduct?.affiliatedPrice || currentProduct?.price}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
-                      <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
-                    </Box>
                   </Grid>
                   <Grid item xs={4}>
                     <Typography
@@ -150,6 +140,16 @@ export default function ProductPage() {
                       sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}
                     >
                       ${currentProduct?.price}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Box sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                      <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography variant='h5' color='primary' sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                      ${currentProduct?.affiliatedPrice || currentProduct?.price}
                     </Typography>
                   </Grid>
                 </Grid>

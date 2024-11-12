@@ -346,9 +346,9 @@ const JoinInformation = ({ profile }) => {
                     </Button>
                   </Link>
                 ) : (
-                  <Link href={'/register'} passHref>
-                    <Button variant='outlined' size='large'>
-                      {'Registrate'}
+                  <Link href='https://wa.me/523334173934' passHref>
+                    <Button variant='contained' size='large'>
+                      {'Obtén un código para registrarte'}
                     </Button>
                   </Link>
                 )}

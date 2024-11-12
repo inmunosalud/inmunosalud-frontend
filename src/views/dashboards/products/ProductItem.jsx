@@ -222,20 +222,20 @@ export const ProductItem = props => {
                   ) : (
                     <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <Grid container spacing={2}>
+                        <Grid item xs={4}></Grid>
+                        <Grid item xs={4}></Grid>
                         <Grid item xs={4}>
                           <Typography variant='body2' color='primary' sx={{ display: 'block', textAlign: 'center' }}>
                             Precio para afiliados
                           </Typography>
                         </Grid>
-                        <Grid item xs={4}></Grid>
-                        <Grid item xs={4}></Grid>
                         <Grid item xs={4}>
                           <Typography
                             variant='h5'
-                            color='primary'
+                            color='text.primary'
                             sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}
                           >
-                            ${props?.affiliatedPrice || props?.price}
+                            ${props?.price}
                           </Typography>
                         </Grid>
                         <Grid item xs={4}>
@@ -246,10 +246,10 @@ export const ProductItem = props => {
                         <Grid item xs={4}>
                           <Typography
                             variant='h5'
-                            color='text.primary'
+                            color='primary'
                             sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}
                           >
-                            ${props?.price}
+                            ${props?.affiliatedPrice || props?.price}
                           </Typography>
                         </Grid>
                       </Grid>
