@@ -251,40 +251,34 @@ const Pricing = () => {
                 Nuestra Historia
               </Typography>
               <Typography variant='body2' paragraph>
-                Somos una empresa mexicana dedicada a la fabricación de productos de origen natural. Desde el inicio,
-                nuestra empresa tuvo un sueño: acercar productos que no solo fueran de alta calidad, sino que impactaran
-                de verdad en la vida de cada persona.
+                Somos una empresa mexicana con 6 años de experiencia en la fabricación de productos de origen natural.
+                Desde el inicio, tuvimos un sueño: acercar productos que no solo fueran de alta calidad, sino que
+                realmente impactaran la vida de cada persona.
               </Typography>
               <Typography variant='body2' paragraph>
                 Nuestro equipo de especialistas se esfuerza día a día en crear productos con tecnología innovadora,
-                diseñados para que tu cuerpo aproveche al máximo cada nutriente. Queremos que los beneficios de nuestro
-                trabajo realmente lleguen a ti y a los tuyos.
+                diseñados para que el cuerpo aproveche al máximo cada nutriente. Queremos que los beneficios de nuestro
+                trabajo realmente lleguen a quienes confían en nosotros.
               </Typography>
               <Typography variant='body2' paragraph>
                 Sin embargo, nos dimos cuenta de algo muy importante. Podíamos llevar nuestros productos a grandes
-                cadenas y supermercados, pero en ese camino algo esencial se perdería: el contacto directo y la
-                posibilidad de ver en cada persona que confía en nosotros a un miembro valioso de nuestra familia.
+                cadenas y supermercados, pero en ese camino se perdería algo esencial: el contacto directo y la
+                posibilidad de ver, en cada persona que confía en nosotros, a un miembro valioso de nuestra familia.
+                Pensamos en lo mucho que podemos construir juntos y en el poder de que seas tú, y no una gran tienda,
+                quien se convierta en nuestra voz y en nuestra conexión con cada hogar.
               </Typography>
               <Typography variant='body2' paragraph>
-                Pensamos en lo mucho que se puede construir juntos, en el poder de que seas tú, y no una gran tienda,
-                quien se convierta en nuestra voz y nuestra conexión con cada hogar. Decidimos entonces que lo mejor
-                sería crear un modelo en el que el beneficio de nuestros productos también pudiera transformarse en una
-                oportunidad para quienes los consumen.
+                Decidimos entonces que lo mejor sería crear un modelo en el que el beneficio de nuestros productos
+                también pudiera transformarse en una oportunidad para quienes los consumen. Sabemos que, al igual que
+                nosotros, buscas mejorar tu calidad de vida y la de tu familia. Para nosotros, no hay mayor satisfacción
+                que saber que cada uno de nuestros productos llega a través de personas apasionadas y comprometidas,
+                quienes son la esencia de esta gran familia.
               </Typography>
               <Typography variant='body2' paragraph>
-                Porque sabemos que, al igual que nosotros, buscas mejorar tu calidad de vida y la de tu familia. Y para
-                nosotros, no hay mayor satisfacción que saber que cada uno de nuestros productos llega a través de
-                personas apasionadas y comprometidas, que son la esencia de esta gran familia.
-              </Typography>
-              <Typography variant='body2' paragraph>
-                Queremos caminar junto a ti, apoyarte a ti y a tu familia con productos en los que puedes confiar.
-              </Typography>
-              <Typography variant='body2' paragraph>
-                Nuestro compromiso es que te sientas acompañada, escuchada y valorada en cada paso. Porque, para
-                nosotros, cada persona que forma parte de esta historia no es solo un cliente, es alguien especial.
-              </Typography>
-              <Typography variant='body2' paragraph>
-                Y sabemos que juntos, logramos mucho más de lo que podríamos alcanzar solos.
+                Queremos caminar junto a ti y apoyar a tu familia con productos en los que puedes confiar. Nuestro
+                compromiso es que te sientas acompañado(a), escuchado(a) y valorado(a) en cada paso. Porque, para
+                nosotros, cada persona que forma parte de esta historia no es solo un cliente, es alguien especial. Y
+                sabemos que, juntos, podemos lograr mucho más de lo que podríamos alcanzar solos.
               </Typography>
             </Box>
           </Grid>
