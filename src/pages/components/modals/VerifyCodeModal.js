@@ -28,7 +28,7 @@ import {
   recoverPassword,
   setShowConfirmModal,
   setRecoveryCode,
-  updatePassword,
+  recoverPassword,
   validatePasswordRecoveryCode
 } from 'src/store/users'
 import { CircularProgress } from '@mui/material'
@@ -113,7 +113,7 @@ const VerifyCodeModal = ({ open, handleClose, userData }) => {
       password: passwords.password
     }
 
-    dispatch(updatePassword(body))
+    dispatch(recoverPassword(body))
     dispatch(setShowConfirmModal(false))
   }
 
