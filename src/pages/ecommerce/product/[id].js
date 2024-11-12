@@ -57,25 +57,67 @@ export default function ProductPage() {
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <CarouselProducts images={currentProduct?.urlImages} />
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Typography variant='h5' sx={{ marginRight: 1 }}>
-              {user.profile === 'Afiliado' ? (
-                <span style={{ textDecoration: 'line-through', color: theme.palette.text.secondary }}>
-                  <Typography variant='h5' color='text.secondary'>
-                    ${currentProduct?.price}
-                  </Typography>
-                </span>
-              ) : (
-                `$${currentProduct?.price}`
-              )}
-            </Typography>
-            {user.profile === 'Afiliado' && (
+          <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {user.profile === 'Afiliado' ? (
               <>
-                <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
-                <Typography variant='h5' sx={{ marginLeft: 1 }}>
-                  ${currentProduct?.affiliatedPrice || currentProduct?.price}
-                </Typography>
+                <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4}></Grid>
+                    <Grid item xs={4}></Grid>
+                    <Grid item xs={4}></Grid>
+                    <Grid item xs={4}>
+                      <Typography
+                        variant='h5'
+                        color='text.secondary'
+                        sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}
+                      >
+                        <span style={{ textDecoration: 'line-through' }}>${currentProduct?.price}</span>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Box sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                        <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                      </Box>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Typography variant='h5' color='primary' sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                        ${currentProduct?.affiliatedPrice || currentProduct?.price}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
               </>
+            ) : (
+              <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <Typography variant='body2' color='primary' sx={{ display: 'block', textAlign: 'center' }}>
+                      Precio para afiliados
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}>
+                    <Typography variant='h5' color='primary' sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                      ${currentProduct?.affiliatedPrice || currentProduct?.price}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Box sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}>
+                      <ArrowRightAltIcon sx={{ fontSize: 40, color: theme.palette.primary.main }} />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography
+                      variant='h5'
+                      color='text.primary'
+                      sx={{ display: 'block', mb: 0.5, textAlign: 'center' }}
+                    >
+                      ${currentProduct?.price}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
             )}
           </Box>
 
