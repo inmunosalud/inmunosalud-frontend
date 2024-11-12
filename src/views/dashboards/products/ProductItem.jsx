@@ -40,6 +40,8 @@ export const ProductItem = props => {
 
   const { productId } = useSelector(state => state.products)
 
+  const [isAddToCart, setIsAddToCart] = React.useState(false)
+
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
   }
@@ -83,6 +85,8 @@ export const ProductItem = props => {
       id: props.id,
       quantity: 1
     }
+    setIsAddToCart(true)
+    setTimeout(() => setIsAddToCart(false), 800)
 
     dispatch(updateCart({ id: props.cartId, body }))
   }
@@ -268,7 +272,7 @@ export const ProductItem = props => {
                     color='primary'
                     sx={{ marginBottom: 2, width: '50%' }}
                   >
-                    Agregar al Carrito
+                    {isAddToCart ? 'agregado' : '    Agregar al Carrito'}
                   </Button>
                 </Box>
               </Grid>

@@ -17,12 +17,17 @@ import { useRouter } from 'next/router'
 import { getProductById } from 'src/store/products'
 import { useTheme } from '@mui/material/styles'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+import { updateCart } from 'src/store/cart'
+import RedirectModal from 'src/pages/components/modals/RedirectModal'
+import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
 
 export default function ProductPage() {
   const router = useRouter()
   const { id } = router.query
   const dispatch = useDispatch()
   const theme = useTheme()
+  const [isAddToCart, setIsAddToCart] = React.useState(false)
+  const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
 
   const { currentProduct, isLoading } = useSelector(state => state.products)
   const { user } = useSelector(state => state.session)
@@ -38,6 +43,37 @@ export default function ProductPage() {
         <CircularProgress />
       </Box>
     )
+  }
+
+  const handleAddToCart = () => {
+    if (!user.id) {
+      dispatch(setShowRedirectModal(true))
+      return
+    }
+
+    const body = {
+      id: id,
+      quantity: 1
+    }
+    setIsAddToCart(true)
+    setTimeout(() => setIsAddToCart(false), 800)
+
+    dispatch(updateCart({ id: user.id, body }))
+  }
+
+  const handlePurchaseNow = () => {
+    if (!user.id) {
+      dispatch(setShowRedirectModal(true))
+      return
+    }
+
+    const body = {
+      id: id,
+      quantity: 1
+    }
+
+    dispatch(updateCart({ id: user.id, body }))
+    router.push('/ecommerce/cart/')
   }
 
   return (
@@ -122,11 +158,16 @@ export default function ProductPage() {
           </Box>
 
           <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button variant='contained' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
+            <Button
+              onClick={handlePurchaseNow}
+              variant='contained'
+              color='primary'
+              sx={{ marginBottom: 2, width: '50%' }}
+            >
               Comprar Ahora
             </Button>
-            <Button variant='outlined' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
-              Agregar al Carrito
+            <Button onClick={handleAddToCart} variant='outlined' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
+              {isAddToCart ? 'agregado' : '    Agregar al Carrito'}
             </Button>
           </Box>
         </Grid>
@@ -258,6 +299,11 @@ export default function ProductPage() {
         </Grid>
       </Grid>
        */}
+      <RedirectModal
+        open={showRedirectModal}
+        handleClose={() => dispatch(setShowRedirectModal(false))}
+        pageToRedirect={'/login'}
+      ></RedirectModal>
     </Container>
   )
 }
