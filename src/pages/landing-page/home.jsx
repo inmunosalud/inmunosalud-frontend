@@ -14,7 +14,7 @@ import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material'
 import Certifications from 'src/views/landing-page/Certifications'
 import Products from 'src/views/landing-page/Products'
 
-import useTheme from '@mui/material/styles/useTheme'
+import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import Router from 'next/router'
 import Banner from 'public/images/banners/banner.webp'
