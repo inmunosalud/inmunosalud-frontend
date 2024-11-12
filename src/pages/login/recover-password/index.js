@@ -51,13 +51,7 @@ const codeSchema = Yup.object().shape({
 })
 
 const passwordSchema = Yup.object().shape({
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .matches(/[a-z]/, 'La contraseña debe tener al menos una letra minúscula')
-    .matches(/[A-Z]/, 'La contraseña debe tener al menos una letra mayúscula')
-    .matches(/[0-9]/, 'La contraseña debe tener al menos un número')
-    .matches(/[@$!%*?&]/, 'La contraseña debe tener al menos un carácter especial (@, $, !, %, *, ?, &)')
-    .required('La contraseña es requerida')
+  password: Yup.string().min(8, 'La contraseña debe tener al menos 8 caracteres').required('La contraseña es requerida')
 })
 
 const RecoverPassword = () => {
