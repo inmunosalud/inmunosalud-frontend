@@ -61,7 +61,7 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
   })
 
   useEffect(() => {
-    setClabeIsEmpty(!clabe)
+    setClabeIsEmpty(!clabe || (typeof clabe === 'object' && Object.keys(clabe).length === 0))
   }, [])
 
   const onBankInfoSubmit = values => {
@@ -129,16 +129,24 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
             </div>
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
-              <Tooltip title='Editar' placement='top'>
-                <Button
-                  variant='outlined'
-                  sx={{ mr: 3 }}
-                  onClick={() => handleEditCardClickOpen(clabe)}
-                  color='warning'
-                >
-                  <Pencil />
-                </Button>
-              </Tooltip>
+              {Object.keys(clabe).length === 0 ? (
+                <Tooltip title='Agregar' placement='top'>
+                  <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen({})} color='success'>
+                    <Pencil />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip title='Actualizar' placement='top'>
+                  <Button
+                    variant='outlined'
+                    sx={{ mr: 3 }}
+                    onClick={() => handleEditCardClickOpen(clabe)}
+                    color='primary'
+                  >
+                    <Pencil />
+                  </Button>
+                </Tooltip>
+              )}
             </Box>
           </Box>
         </CardContent>
