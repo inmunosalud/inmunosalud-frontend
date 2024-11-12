@@ -1,39 +1,29 @@
 // ** React Imports
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
-import { styled } from '@mui/material/styles'
 import MuiCardContent from '@mui/material/CardContent'
+import { styled } from '@mui/material/styles'
 
 // ** Third Party Imports
-import axios from 'axios'
 
 // ** Demo Imports
-import PricingPlans from 'src/views/pages/pricing/PricingPlans'
-import PricingHeader from 'src/views/pages/pricing/PricingHeader'
-import PricingFooter from 'src/views/pages/pricing/PricingFooter'
 import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material'
-import Products from 'src/views/landing-page/Products'
 import Certifications from 'src/views/landing-page/Certifications'
+import Products from 'src/views/landing-page/Products'
 
-import Banner from 'public/images/banners/banner.webp'
-import BannerPrincipal from 'public/images/banners/ImagenBanner.webp'
-import Logo from 'public/images/logos/LogoBlanco.webp'
-import { PlusMinus } from 'mdi-material-ui'
-import NewProducts from 'src/views/landing-page/NewProducts'
-import AboutUs from 'src/views/landing-page/AboutUs'
-import FAQs from 'src/views/landing-page/FAQs'
-import Footer from 'src/views/landing-page/Footer'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProducts } from 'src/store/products'
-import Router from 'next/router'
+import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
+import Router from 'next/router'
+import Banner from 'public/images/banners/banner.webp'
+import { useDispatch, useSelector } from 'react-redux'
 import { PROFILES_USER } from 'src/configs/profiles'
 import { closeSnackBar } from 'src/store/notifications'
+import { getProducts } from 'src/store/products'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
-import useTheme from '@mui/material/styles/useTheme'
+import FAQs from 'src/views/landing-page/FAQs'
 // ** Styled Components
 const CardContent = styled(MuiCardContent)(({ theme }) => ({
   padding: theme.spacing(17.5, 36, 28.25),
