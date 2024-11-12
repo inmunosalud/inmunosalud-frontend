@@ -24,7 +24,7 @@ import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 //actions
-import { loginCall, setErrors } from 'src/store/session'
+import { loginCall } from 'src/store/session'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { closeSnackBar } from 'src/store/notifications'
 
