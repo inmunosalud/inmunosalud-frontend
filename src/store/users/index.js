@@ -26,17 +26,8 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
     Router.push({ pathname: '/register/welcome' })
     return newUser
   } catch (error) {
-    const data = error.response.data
-    if (data.content && data.content.message) {
-      thunkApi.dispatch(openSnackBar({ open: true, message: data.content.message, severity: 'error' }))
-    }
-    if (data.content.errors) {
-      thunkApi.dispatch(setErrors(data.content.errors.body))
-    } else {
-      const newErrors = []
-      newErrors.push({ msg: data.message })
-      thunkApi.dispatch(setErrors(newErrors))
-    }
+    toast.error(error.response.data.message)
+
     return thunkApi.rejectWithValue('error')
   }
 })
