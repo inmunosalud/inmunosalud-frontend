@@ -24,13 +24,7 @@ import VerificationInput from 'react-verification-input'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-import {
-  recoverPassword,
-  setShowConfirmModal,
-  setRecoveryCode,
-  recoverPassword,
-  validatePasswordRecoveryCode
-} from 'src/store/users'
+import { setShowConfirmModal, setRecoveryCode, recoverPassword, validatePasswordRecoveryCode } from 'src/store/users'
 import { CircularProgress } from '@mui/material'
 
 const VerifyCodeModal = ({ open, handleClose, userData }) => {
