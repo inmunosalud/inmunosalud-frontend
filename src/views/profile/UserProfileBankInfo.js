@@ -42,7 +42,7 @@ const bankInfoSchema = yup.object().shape({
   bank: yup.string().required()
 })
 
-const UserProfileBankInfo = ({ bankInfo = {} }) => {
+const UserProfileBankInfo = () => {
   const dispatch = useDispatch()
   // ** States
   const [clabeIsEmpty, setClabeIsEmpty] = useState(false)
@@ -130,22 +130,18 @@ const UserProfileBankInfo = ({ bankInfo = {} }) => {
 
             <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
               {Object.keys(clabe).length === 0 ? (
-                <Tooltip title='Agregar' placement='top'>
-                  <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen({})} color='success'>
-                    <Pencil />
-                  </Button>
-                </Tooltip>
+                <Button variant='contained' sx={{ mr: 3 }} onClick={() => handleEditCardClickOpen({})} color='primary'>
+                  Agregar
+                </Button>
               ) : (
-                <Tooltip title='Actualizar' placement='top'>
-                  <Button
-                    variant='outlined'
-                    sx={{ mr: 3 }}
-                    onClick={() => handleEditCardClickOpen(clabe)}
-                    color='primary'
-                  >
-                    <Pencil />
-                  </Button>
-                </Tooltip>
+                <Button
+                  variant='contained'
+                  sx={{ mr: 3 }}
+                  onClick={() => handleEditCardClickOpen(clabe)}
+                  color='primary'
+                >
+                  Eliminar
+                </Button>
               )}
             </Box>
           </Box>

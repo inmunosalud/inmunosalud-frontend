@@ -355,12 +355,6 @@ const Orders = () => {
   const { orders, isLoading } = useSelector(state => state.orders)
 
   React.useEffect(() => {
-    if (!user) {
-      dispatch(loadSession())
-    }
-  }, [])
-
-  React.useEffect(() => {
     if (user?.id) {
       dispatch(getOrdersByUser(user.id))
     }

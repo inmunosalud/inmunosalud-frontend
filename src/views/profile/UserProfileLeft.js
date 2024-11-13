@@ -63,7 +63,8 @@ const roleColors = {
 }
 
 const UserProfileLeft = ({ data }) => {
-  const { userInfo, showModal } = useSelector(state => state.users)
+  const { user } = useSelector(state => state.session)
+  const { showModal } = useSelector(state => state.users)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const dispatch = useDispatch()
 
@@ -114,7 +115,7 @@ const UserProfileLeft = ({ data }) => {
                   sx={{ mb: 2, mr: 0.5, cursor: 'pointer' }}
                   onClick={() => dispatch(setModal(true))}
                 >
-                  {userInfo?.firstName} {userInfo?.lastName}
+                  {user?.firstName} {user?.lastName}
                   <IconButton color='primary' size='small'>
                     <Pencil color='primary' />
                   </IconButton>
@@ -144,8 +145,8 @@ const UserProfileLeft = ({ data }) => {
                 <CustomChip
                   skin='light'
                   size='small'
-                  label={userInfo?.valid ? isActive : isInactive}
-                  color={userInfo?.valid ? 'success' : 'error'}
+                  label={user?.valid ? isActive : isInactive}
+                  color={user?.valid ? 'success' : 'error'}
                   sx={{
                     height: 20,
                     fontSize: '0.875rem',
@@ -166,7 +167,7 @@ const UserProfileLeft = ({ data }) => {
                   </CustomAvatar>
                   <Box>
                     <Typography variant='h6' sx={{ lineHeight: 1.3 }}>
-                      {userInfo?.antiquity}
+                      {user?.antiquity}
                     </Typography>
                     <Typography variant='body2'>Tiempo</Typography>
                   </Box>
@@ -177,7 +178,7 @@ const UserProfileLeft = ({ data }) => {
                   </CustomAvatar>
                   <Box>
                     <Typography variant='h6' sx={{ lineHeight: 1.3 }}>
-                      {userInfo?.numberOfPurchases}
+                      {user?.numberOfPurchases}
                     </Typography>
                     <Typography variant='body2'>Compras</Typography>
                   </Box>
@@ -191,7 +192,7 @@ const UserProfileLeft = ({ data }) => {
             <CardContent>
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography variant='h6'>Saldo a favor</Typography>
-                <Typography variant='h6'>${userInfo?.balance}</Typography>
+                <Typography variant='h6'>${user?.balance}</Typography>
               </Box>
             </CardContent>
           </Card>
@@ -220,7 +221,7 @@ const UserProfileLeft = ({ data }) => {
           handleConfirm={handleCambiarPago}
         />
         {/* New Param showOnlyName to only show name and last name inputs*/}
-        <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={userInfo} showOnlyName={true} />
+        <Modal label='Editar nombre' open={showModal} handleModal={handleModal} item={user} showOnlyName={true} />
       </Grid>
     )
   } else {

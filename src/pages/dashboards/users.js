@@ -407,15 +407,6 @@ const Users = () => {
   }, [isLoading])
 
   React.useEffect(() => {
-    if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
-      dispatch(loadSession())
-    }
-    if (userInfo === null && user.id != null) {
-      dispatch(getUserInfo(user.id))
-    }
-  }, [])
-
-  React.useEffect(() => {
     if (userInfo?.cutoffDate) {
       setCutoffDate(getNextMonth(userInfo.cutoffDate))
     }

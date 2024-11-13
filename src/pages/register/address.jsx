@@ -74,7 +74,7 @@ import { createMethod, setOpenPay, setDeviceSessionId } from 'src/store/paymentM
 import { PROFILES_USER } from 'src/configs/profiles'
 import { isDataLoaded } from 'src/store/dashboard/generalSlice'
 import { loadSession } from 'src/store/session'
-import { loadInfo } from 'src/store/paymentMethods'
+import { paymentMethodsList } from 'src/store/paymentMethods'
 import { getCart } from 'src/store/cart'
 
 // ** Styled Components
@@ -416,11 +416,6 @@ export default function Address() {
   }, [contract])
 
   useEffect(() => {
-    dispatch(loadSession())
-    dispatch(isDataLoaded(false))
-  }, [])
-
-  useEffect(() => {
     if (recoverCardValue === '') {
       setDisabled(false)
     } else {
@@ -436,10 +431,10 @@ export default function Address() {
       dispatch(addressList(user.id))
     }
     if (activeStep === 3 && data.cardNumber === '') {
-      dispatch(loadInfo(user.id))
+      dispatch(paymentMethodsList(user.id))
     }
     if (activeStep > 3 && data.clabe === '') {
-      dispatch(loadInfo(user.id))
+      dispatch(paymentMethodsList(user.id))
     }
     if (activeStep === steps.length) {
       dispatch(getUserInfo(user.id))
