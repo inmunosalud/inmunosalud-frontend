@@ -186,7 +186,7 @@ const Pricing = () => {
                       }}
                     >
                       <Typography variant='h4' color='primary'>
-                        ¡Obten Descuentos Exclusivos!
+                        ¡Obtén Descuentos Exclusivos!
                       </Typography>
                       <Typography variant='h4' color='primary'>
                         Recibe descuentos en todos nuestros productos.
@@ -203,10 +203,10 @@ const Pricing = () => {
                       }}
                     >
                       <Typography variant='h4' color='primary'>
-                        ¡Obten Beneficios!
+                        ¡Obtén Beneficios!
                       </Typography>
                       <Typography variant='h4' color='primary'>
-                        Recibe comision al recomendar mas personas.
+                        Recibe comisión al recomendar mas personas.
                       </Typography>
                     </Card>
                   </Grid>
