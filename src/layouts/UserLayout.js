@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { isDataLoaded, setIsMobile } from 'src/store/dashboard/generalSlice'
 import { getCart } from 'src/store/cart'
 import { getUserInfo } from 'src/store/users'
-import { loadInfo } from 'src/store/paymentMethods'
+import { paymentMethodsList } from 'src/store/paymentMethods'
 import { addressList } from 'src/store/address'
 import { setActiveStep } from 'src/store/register'
 import { loadSession } from 'src/store/session'
@@ -88,7 +88,7 @@ const UserLayout = ({ children }) => {
       }
       if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && !dataLoaded && user)) {
         dispatch(getCart(user.id))
-        dispatch(loadInfo(user.id))
+        dispatch(paymentMethodsList(user.id))
         dispatch(addressList(user.id))
         dispatch(isDataLoaded(true))
       }

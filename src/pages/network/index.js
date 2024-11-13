@@ -521,12 +521,6 @@ const Network = () => {
   }
 
   React.useEffect(() => {
-    if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
-      dispatch(loadSession())
-    }
-  }, [])
-
-  React.useEffect(() => {
     if (user.id && !isLoadingCommissions) {
       dispatch(getNetworkById(user.id))
     }
@@ -716,7 +710,20 @@ const Network = () => {
                     </Grid>
                     <Grid item xs={12} md={12}>
                       <Box sx={{ mt: '46px' }}>
-                        <CardHeader title={'Próximo corte: ' + (network.cutoffDate || '')} />
+                        <CardHeader
+                          title={'Próximo corte: ' + (network.cutoffDate || '')}
+                          action={
+                            <Link href='/profile/?=&tab=Tax'>
+                              <Button
+                                variant='contained'
+                                size='small'
+                                sx={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
+                              >
+                                Actualiza tus datos <br /> fiscales
+                              </Button>
+                            </Link>
+                          }
+                        />
                       </Box>
                     </Grid>
                   </Grid>

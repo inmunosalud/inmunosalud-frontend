@@ -34,8 +34,9 @@ export const loadSession = createAsyncThunk('/session/loadSession', async thunkA
     const response = await api_get(`${USERS}/users/data-user`, auth)
     return response.content
   } catch (error) {
-    const errMessage = error?.response?.data?.message
-    toast.error(errMessage)
+    localStorage.removeItem('im-user')
+
+    toast.error('Session expirada inicia sesión nuevamente')
     return thunkApi.rejectWithValue('error')
   }
 })

@@ -156,7 +156,7 @@ export const deleteMethod = createAsyncThunk('user/deleteMethod', async ({ id, u
   }
 })
 
-export const loadInfo = createAsyncThunk('paymentMethods/loadProfile', async (uuid, thunkApi) => {
+export const paymentMethodsList = createAsyncThunk('paymentMethods/loadProfile', async (uuid, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 
@@ -272,18 +272,18 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(methodsList.rejected, (state, action) => {
       state.isLoading = false
     })
-    builder.addCase(loadInfo.pending, (state, action) => {
+    builder.addCase(paymentMethodsList.pending, (state, action) => {
       state.isLoading = true
       state.errors = null
     })
-    builder.addCase(loadInfo.fulfilled, (state, { payload }) => {
+    builder.addCase(paymentMethodsList.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
       state.clabe = payload.clabe ?? ''
       state.bank = payload?.clabe?.bank || ''
       state.selectedPaymentMethod = payload.paymentMethods[0]
     })
-    builder.addCase(loadInfo.rejected, (state, action) => {
+    builder.addCase(paymentMethodsList.rejected, (state, action) => {
       state.isLoading = false
     })
     builder.addCase(createMethod.pending, (state, action) => {

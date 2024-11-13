@@ -12,9 +12,16 @@ import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { useDispatch, useSelector } from 'react-redux'
+import { createPartner } from 'src/store/users'
 
 const JoinInformation = ({ profile }) => {
+  const dispatch = useDispatch()
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
+  const { user } = useSelector(state => state.session)
+  const submitPartner = values => {
+    dispatch(createPartner({ id: user.id }))
+  }
 
   return (
     <>
@@ -340,13 +347,11 @@ const JoinInformation = ({ profile }) => {
             <CardActions sx={{ justifyContent: 'center' }}>
               <Box sx={{ mt: '50px', mb: '50px' }}>
                 {profile === 'Consumidor' ? (
-                  <Link href={'/join/register'} passHref>
-                    <Button variant='outlined' size='large'>
-                      {'Convertirme en socio'}
-                    </Button>
-                  </Link>
+                  <Button variant='contained' size='large' onClick={submitPartner}>
+                    {'Convertirme en afiliado'}
+                  </Button>
                 ) : (
-                  <Link href='https://wa.me/523334173934' passHref>
+                  <Link href='https://wa.me/523334173934?text=¡Quiero%20un%20código!' passHref>
                     <Button variant='contained' size='large'>
                       {'Obtén un código para registrarte'}
                     </Button>
