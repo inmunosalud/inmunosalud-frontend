@@ -118,8 +118,8 @@ export {
 export const getColonies = zipCode => {
   return CPMexico.filter(colony => colony.zipCode === String(zipCode)).map(colony => colony)
 }
-export const onZipCodeChange = (value, onChange, setColonies) => {
-  onChange(value)
+export const onZipCodeChange = (value, onChange = () => {}, setColonies) => {
+  if (onChange) onChange(value)
   if (value.length >= 4 && value.length <= 5) {
     setColonies(getColonies(value) ?? [])
   } else {

@@ -192,7 +192,7 @@ const UserProfileLeft = ({ data }) => {
             <CardContent>
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography variant='h6'>Saldo a favor</Typography>
-                <Typography variant='h6'>${user?.balance}</Typography>
+                <Typography variant='h6'>${user?.balance || '0'}</Typography>
               </Box>
             </CardContent>
           </Card>

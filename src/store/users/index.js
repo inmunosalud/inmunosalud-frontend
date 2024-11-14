@@ -61,7 +61,7 @@ export const createPartner = createAsyncThunk('/join/register', async ({ body, i
     const response = await api_patch(`${USERS}/users/affiliate/${id}`, body, auth)
 
     thunkApi.dispatch(updateSession(response.content))
-    Router.push({ pathname: '/landing-page/home' })
+    Router.push({ pathname: '/network/' })
     toast.success('Te has afiliado con éxito')
     return response
   } catch (error) {

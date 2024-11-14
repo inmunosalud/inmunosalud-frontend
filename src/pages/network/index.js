@@ -634,17 +634,6 @@ const Network = () => {
                       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
                           <Button
-                            startIcon={isCopied ? <Check /> : <ContentCopy />}
-                            variant='contained'
-                            size='large'
-                            onClick={handleCopyCode}
-                            sx={{
-                              width: '230px'
-                            }}
-                          >
-                            {isCopied ? 'Copiado' : 'Copiar tu código'}
-                          </Button>
-                          <Button
                             startIcon={isCopied2 ? <Check /> : <ContentCopy />}
                             variant='contained'
                             sx={{
@@ -713,7 +702,7 @@ const Network = () => {
                         <CardHeader
                           title={'Próximo corte: ' + (network.cutoffDate || '')}
                           action={
-                            <Link href='/profile/?=&tab=Tax'>
+                            <Link href='/profile/?=&tab=tax'>
                               <Button
                                 variant='contained'
                                 size='small'

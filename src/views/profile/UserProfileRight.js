@@ -8,12 +8,13 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
-
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 // ** Demo Components Imports
 import { Bank, CreditCard, Home } from 'mdi-material-ui'
 import UserProfileBilling from './UserProfileBilling'
 import UserProfileAddress from './UserProfileAddress'
 import UserProfileBankInfo from './UserProfileBankInfo'
+import UserProfileTaxInfo from './UserProfileTaxInfo'
 
 // ** Styled Tab component
 const Tab = styled(MuiTab)(({ theme }) => ({
@@ -36,6 +37,9 @@ const UserProfileRight = ({ bankInfo = {} }) => {
     if (tab === 'banks') {
       setValue('bankInfo')
     }
+    if (tab === 'tax') {
+      setValue('taxInfo')
+    }
   }, [])
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -53,6 +57,7 @@ const UserProfileRight = ({ bankInfo = {} }) => {
         <Tab value='address' label='Direcciones' icon={<Home />} />
         <Tab value='paymentMethods' label='Métodos de pago' icon={<CreditCard />} />
         <Tab value='bankInfo' label='Datos bancarios' icon={<Bank />} />
+        <Tab value='taxInfo' label='Datos fiscales' icon={<ReceiptLongIcon />} />
       </TabList>
       <Box sx={{ mt: 6 }}>
         <TabPanel sx={{ p: 0 }} value='address'>
@@ -62,7 +67,10 @@ const UserProfileRight = ({ bankInfo = {} }) => {
           <UserProfileBilling />
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='bankInfo'>
-          <UserProfileBankInfo bankInfo={bankInfo} />
+          <UserProfileBankInfo />
+        </TabPanel>
+        <TabPanel sx={{ p: 0 }} value='taxInfo'>
+          <UserProfileTaxInfo />
         </TabPanel>
       </Box>
     </TabContext>
