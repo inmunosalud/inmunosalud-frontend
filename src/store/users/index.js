@@ -234,6 +234,45 @@ export const validateNewUser = createAsyncThunk('user/validateNewUser', async (b
   }
 })
 
+//TaxInfo
+export const getTaxInfo = createAsyncThunk('user/getTaxInfo', async ({ id }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_get(`${USERS}/users/tax-info/${id}`, auth)
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
+export const createTaxInfoCommission = createAsyncThunk(
+  'user/createTaxInfoCommission',
+  async ({ body, uuid }, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+      const response = await api_patch(`${USERS}/users/tax-info/commission/${uuid}`, body, auth)
+      thunkApi.dispatch(openSnackBar({ open: true, message: 'Actualizado.', severity: 'success' }))
+      return response
+    } catch (error) {
+      return thunkApi.rejectWithValue('error')
+    }
+  }
+)
+
+export const createTaxInfoOrder = createAsyncThunk('user/createTaxInfoOrder', async ({ body, uuid }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = await api_patch(`${USERS}/users/tax-info/order/${uuid}`, body, auth)
+    thunkApi.dispatch(openSnackBar({ open: true, message: 'Actualizado.', severity: 'success' }))
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
+})
+
 const initialState = {
   // register
   isLoadingRegister: false,
@@ -245,6 +284,8 @@ const initialState = {
   error: false,
   message: '',
   network: {},
+  commissionInvoice: null,
+  orderInvoice: null,
   // new user
   isLoading: false,
   user: {},
@@ -464,6 +505,43 @@ export const usersSlice = createSlice({
     builder.addCase(validateNewUser.fulfilled, (state, { payload }) => {
       const { content } = payload
       state.user = content
+    })
+    //Taxinfo
+    builder.addCase(getTaxInfo.pending, (state, action) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(getTaxInfo.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.commissionInvoice = payload.content.commissionInvoice
+      state.orderInvoice = payload.content.orderInvoice
+    })
+
+    builder.addCase(getTaxInfo.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(createTaxInfoCommission.pending, (state, action) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(createTaxInfoCommission.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.commissionInvoice = payload.content.commissionInvoice
+    })
+
+    builder.addCase(createTaxInfoCommission.rejected, (state, { payload }) => {
+      state.isLoading = false
+    })
+    builder.addCase(createTaxInfoOrder.pending, (state, action) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(createTaxInfoOrder.fulfilled, (state, { payload }) => {
+      state.isLoading = false
+      state.orderInvoice = payload.content.orderInvoice
+    })
+    builder.addCase(createTaxInfoOrder.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
   }
 })

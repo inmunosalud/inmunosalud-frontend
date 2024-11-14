@@ -234,7 +234,7 @@ const UserProfileBilling = () => {
                       variant='outlined'
                       sx={{ mr: 3 }}
                       onClick={() => handleEditCardClickOpen(item)}
-                      color='warning'
+                      color='primary'
                     >
                       <Pencil sx={{ fontSize: '1.125rem' }} />
                     </Button>
@@ -250,7 +250,7 @@ const UserProfileBilling = () => {
                     </Button>
                   </Tooltip>
                   <Tooltip title='Predeterminado Pedido Mensual' placement='top'>
-                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentMethod(item)} color='error'>
+                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentMethod(item)} color='info'>
                       {item.shippingPayment ? (
                         <Cart sx={{ fontSize: '1.125rem' }} />
                       ) : (

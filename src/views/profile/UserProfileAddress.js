@@ -217,7 +217,7 @@ const UserProfileAddress = () => {
                   }}
                 >
                   <Tooltip title='Editar' placement='top'>
-                    <Button variant='outlined' onClick={() => handleEditAddressClickOpen(item)} color='warning'>
+                    <Button variant='outlined' onClick={() => handleEditAddressClickOpen(item)} color='primary'>
                       <Pencil sx={{ mr: 1, fontSize: '1.125rem' }} />
                     </Button>
                   </Tooltip>
@@ -226,8 +226,8 @@ const UserProfileAddress = () => {
                       <Delete sx={{ mr: 1, fontSize: '1.125rem' }} />
                     </Button>
                   </Tooltip>
-                  <Tooltip title='Predeterminado Pedido Mensual' placement='top'>
-                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentAddress(item)} color='error'>
+                  <Tooltip title='Predeterminado' placement='top'>
+                    <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentAddress(item)} color='info'>
                       {item.shippingAddress ? (
                         <Cart sx={{ fontSize: '1.125rem' }} />
                       ) : (
