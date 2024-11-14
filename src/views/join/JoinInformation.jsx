@@ -351,7 +351,12 @@ const JoinInformation = ({ profile }) => {
                     {'Convertirme en afiliado'}
                   </Button>
                 ) : (
-                  <Link href='https://wa.me/523334173934?text=¡Quiero%20un%20código!' passHref>
+                  <Link
+                    href='https://wa.me/523334173934?text=¡Quiero%20un%20código!'
+                    passHref
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <Button variant='contained' size='large'>
                       {'Obtén un código para registrarte'}
                     </Button>

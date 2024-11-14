@@ -37,43 +37,6 @@ export const updateStatus = createAsyncThunk('billing/editStatus', async ({ stat
   }
 })
 
-export const getTaxInfo = createAsyncThunk('billing/getTaxInfo', async thunkApi => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_get(`${INVOICES}/billing/`, auth)
-    return response
-  } catch (error) {
-    return thunkApi.rejectWithValue('error')
-  }
-})
-
-export const createTaxInfo = createAsyncThunk('billing/createTax', async ({ status, invoiceId }, thunkApi) => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_patch(`${INVOICES}/billing/status/${invoiceId}`, { status }, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(getInvoices())
-    return response
-  } catch (error) {
-    return thunkApi.rejectWithValue('error')
-  }
-})
-
-export const updateTaxInfo = createAsyncThunk('billing/updateTax', async ({ status, invoiceId }, thunkApi) => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_patch(`${INVOICES}/billing/status/${invoiceId}`, { status }, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    thunkApi.dispatch(getInvoices())
-    return response
-  } catch (error) {
-    return thunkApi.rejectWithValue('error')
-  }
-})
-
 export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = `Bearer ${token}`
@@ -126,8 +89,6 @@ export const uploadFiles = createAsyncThunk('billing/uploadFiles', async (files,
 const initialState = {
   invoicesAll: [],
   invoices: [],
-  commissionInvoice: null,
-  orderInvoice: null,
   loading: false
 }
 
@@ -148,45 +109,7 @@ export const billingSlice = createSlice({
     builder.addCase(getInvoicesByUser.rejected, (state, { payload }) => {
       state.loading = false
     })
-    builder.addCase(getTaxInfo.pending, (state, action) => {
-      state.loading = true
-    })
 
-    builder.addCase(getTaxInfo.fulfilled, (state, { payload }) => {
-      state.loading = false
-      state.commissionInvoice = payload.commissionInvoice
-      state.orderInvoice = payload.orderInvoice
-    })
-
-    builder.addCase(getTaxInfo.rejected, (state, { payload }) => {
-      state.loading = false
-    })
-    builder.addCase(createTaxInfo.pending, (state, action) => {
-      state.loading = true
-    })
-
-    builder.addCase(createTaxInfo.fulfilled, (state, { payload }) => {
-      state.loading = false
-      state.commissionInvoice = payload.commissionInvoice
-      state.orderInvoice = payload.orderInvoice
-    })
-
-    builder.addCase(createTaxInfo.rejected, (state, { payload }) => {
-      state.loading = false
-    })
-    builder.addCase(updateTaxInfo.pending, (state, action) => {
-      state.loading = true
-    })
-
-    builder.addCase(updateTaxInfo.fulfilled, (state, { payload }) => {
-      state.loading = false
-      state.commissionInvoice = payload.commissionInvoice
-      state.orderInvoice = payload.orderInvoice
-    })
-
-    builder.addCase(updateTaxInfo.rejected, (state, { payload }) => {
-      state.loading = false
-    })
     builder.addCase(getInvoices.pending, (state, action) => {
       state.loading = true
     })
