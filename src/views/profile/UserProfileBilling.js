@@ -249,7 +249,7 @@ const UserProfileBilling = () => {
                       <Delete sx={{ fontSize: '1.125rem' }} />
                     </Button>
                   </Tooltip>
-                  <Tooltip title='Predeterminado Pedido Mensual' placement='top'>
+                  <Tooltip title='Predeterminado' placement='top'>
                     <Button variant='outlined' onClick={() => handleSelectMonthlyPaymentMethod(item)} color='info'>
                       {item.shippingPayment ? (
                         <Cart sx={{ fontSize: '1.125rem' }} />
