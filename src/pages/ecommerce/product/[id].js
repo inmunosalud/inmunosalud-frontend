@@ -26,6 +26,8 @@ export default function ProductPage() {
   const { id } = router.query
   const dispatch = useDispatch()
   const theme = useTheme()
+  const { products } = useSelector(state => state.cart)
+
   const [isAddToCart, setIsAddToCart] = React.useState(false)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
 
@@ -51,10 +53,13 @@ export default function ProductPage() {
       return
     }
 
+    const updatedQuantity = (products.find(product => product.id === currentProduct.id)?.quantity || 0) + 1
+
     const body = {
-      id: id,
-      quantity: 1
+      id: currentProduct.id,
+      quantity: updatedQuantity
     }
+
     setIsAddToCart(true)
     setTimeout(() => setIsAddToCart(false), 800)
 
@@ -67,9 +72,11 @@ export default function ProductPage() {
       return
     }
 
+    const updatedQuantity = (products.find(product => product.id === currentProduct.id)?.quantity || 0) + 1
+
     const body = {
-      id: id,
-      quantity: 1
+      id: currentProduct.id,
+      quantity: updatedQuantity
     }
 
     dispatch(updateCart({ id: user.id, body }))
@@ -167,7 +174,7 @@ export default function ProductPage() {
               Comprar Ahora
             </Button>
             <Button onClick={handleAddToCart} variant='outlined' color='primary' sx={{ marginBottom: 2, width: '50%' }}>
-              {isAddToCart ? 'agregado' : '    Agregar al Carrito'}
+              {isAddToCart ? 'agregado' : 'Agregar al Carrito'}
             </Button>
           </Box>
         </Grid>

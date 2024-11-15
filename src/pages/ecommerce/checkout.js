@@ -29,17 +29,16 @@ const InvoicePreview = ({}) => {
 
   const { total, products, id } = useSelector(state => state.cart)
   const { user } = useSelector(state => state.session)
-  const { userInfo } = useSelector(state => state.users)
   const { selectedPayment, selectedAddress } = useSelector(state => state.cart)
   const { open, message, severity } = useSelector(state => state.notifications)
   const { isLoading, cvv } = useSelector(state => state.orders)
-  const [retryCount1, setRetryCount1] = React.useState(0)
-  const [retryCount2, setRetryCount2] = React.useState(null)
+  const [retryCount1, setRetryCount1] = useState(0)
+  const [retryCount2, setRetryCount2] = useState(null)
   const MAX_RETRY = 5
-  const [dataReceivedScript1, setDataReceivedScript1] = React.useState(false) // Bandera para controlar si se recibió la data
-  const [dataReceivedScript2, setDataReceivedScript2] = React.useState(false) // Bandera para controlar si se recibió la data
-  const [maxRetriesReached1, setMaxRetriesReached1] = React.useState(false)
-  const [maxRetriesReached2, setMaxRetriesReached2] = React.useState(false)
+  const [dataReceivedScript1, setDataReceivedScript1] = useState(false) // Bandera para controlar si se recibió la data
+  const [dataReceivedScript2, setDataReceivedScript2] = useState(false) // Bandera para controlar si se recibió la data
+  const [maxRetriesReached1, setMaxRetriesReached1] = useState(false)
+  const [maxRetriesReached2, setMaxRetriesReached2] = useState(false)
 
   const data = {
     products,
@@ -52,7 +51,7 @@ const InvoicePreview = ({}) => {
     selectedAddress,
     selectedPayment,
     selectedAddress,
-    userInfo
+    user
   }
 
   const setOpenPayObject = openPay => {
@@ -70,7 +69,7 @@ const InvoicePreview = ({}) => {
         return { id: product.id, quantity: product.quantity }
       })
     }
-    dispatch(createOrder({ idUser: userInfo.id, body, cvv }))
+    dispatch(createOrder({ idUser: user.id, body, cvv }))
   }
 
   useEffect(() => {

@@ -135,24 +135,15 @@ const UserProfileTaxInfo = () => {
     setModal(false)
   }
 
-  // useEffect(() => {
-  //   if (colonies.length > 0) {
-  //     setValue('city', colonies[0].city)
-  //     setValue('state', colonies[0].federalEntity)
-  //     if (type === 'commission') {
-  //       console.log('commission', commissionInvoice?.taxAddress?.neighborhood)
-  //       console.log('commission', colonies)
-  //       setValue('neighborhood', commissionInvoice.taxAddress.neighborhood)
-  //     } else if (type === 'order') {
-  //       console.log('order', orderInvoice?.taxAddress?.neighborhood)
-  //       console.log('order', colonies)
-  //       setValue('neighborhood', orderInvoice.taxAddress.neighborhood)
-  //     }
-  //   } else {
-  //     setValue('city', '')
-  //     setValue('state', '')
-  //   }
-  // }, [colonies, setValue])
+  useEffect(() => {
+    if (colonies.length > 0) {
+      setValue('city', colonies[0].city)
+      setValue('state', colonies[0].federalEntity)
+    } else {
+      setValue('city', '')
+      setValue('state', '')
+    }
+  }, [colonies])
 
   useEffect(() => {
     if (type === 'order' && orderInvoice && Object.keys(orderInvoice).length) {
@@ -214,7 +205,7 @@ const UserProfileTaxInfo = () => {
                 <Typography sx={{ fontWeight: 500 }}>Dirección:</Typography>
               </Box>
               <Typography variant='body2'>
-                {commissionInvoice &&
+                {Object.keys(commissionInvoice || {}).length > 0 &&
                   `${commissionInvoice?.taxAddress?.street} ${commissionInvoice?.taxAddress?.extNumber}, ${commissionInvoice?.taxAddress?.neighborhood}, ${commissionInvoice?.taxAddress?.city}, ${commissionInvoice?.taxAddress?.state}, CP ${commissionInvoice?.taxAddress?.zipCode}`}
               </Typography>
             </div>
@@ -262,7 +253,7 @@ const UserProfileTaxInfo = () => {
                 <Typography sx={{ fontWeight: 500 }}>Dirección:</Typography>
               </Box>
               <Typography variant='body2'>
-                {orderInvoice &&
+                {Object.keys(orderInvoice || {}).length > 0 &&
                   `${orderInvoice?.taxAddress?.street} ${orderInvoice?.taxAddress?.extNumber}, ${orderInvoice?.taxAddress?.neighborhood}, ${orderInvoice?.taxAddress?.city}, ${orderInvoice?.taxAddress?.state}, CP ${orderInvoice?.taxAddress?.zipCode}`}
               </Typography>
             </div>
