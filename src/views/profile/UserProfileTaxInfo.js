@@ -214,7 +214,7 @@ const UserProfileTaxInfo = () => {
                 <Typography sx={{ fontWeight: 500 }}>Dirección:</Typography>
               </Box>
               <Typography variant='body2'>
-                {commissionInvoice &&
+                {Object.keys(commissionInvoice || {}).length > 0 &&
                   `${commissionInvoice?.taxAddress?.street} ${commissionInvoice?.taxAddress?.extNumber}, ${commissionInvoice?.taxAddress?.neighborhood}, ${commissionInvoice?.taxAddress?.city}, ${commissionInvoice?.taxAddress?.state}, CP ${commissionInvoice?.taxAddress?.zipCode}`}
               </Typography>
             </div>
@@ -262,7 +262,7 @@ const UserProfileTaxInfo = () => {
                 <Typography sx={{ fontWeight: 500 }}>Dirección:</Typography>
               </Box>
               <Typography variant='body2'>
-                {orderInvoice &&
+                {Object.keys(orderInvoice || {}).length > 0 &&
                   `${orderInvoice?.taxAddress?.street} ${orderInvoice?.taxAddress?.extNumber}, ${orderInvoice?.taxAddress?.neighborhood}, ${orderInvoice?.taxAddress?.city}, ${orderInvoice?.taxAddress?.state}, CP ${orderInvoice?.taxAddress?.zipCode}`}
               </Typography>
             </div>
