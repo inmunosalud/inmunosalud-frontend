@@ -116,24 +116,37 @@ const CardsModal = () => {
   // }
 
   return (
-    <div className='demo-space-x'>
+    <Box>
       <Dialog
         open={isPaymentsModalOpen}
-        scroll='paper'
-        maxWidth='md'
         onClose={handleCloseModal}
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
+        keepMounted={false} // Prevents DOM mounting when closed
+        PaperProps={{
+          sx: {
+            width: { xs: '90vw', md: '600px' },
+            maxHeight: '90vh', // Limits dialog height
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column'
+          }
+        }}
       >
         <DialogTitle id='scroll-dialog-title'>Métodos de pago</DialogTitle>
         <IconButton size='small' onClick={handleCloseModal} sx={{ position: 'absolute', right: '1rem', top: '1rem' }}>
           <Close />
         </IconButton>
-        <DialogContent dividers='paper'>
+        <DialogContent
+          dividers
+          sx={{
+            flex: 1, // Fills available space
+            overflowY: 'auto' // Adds vertical scrollbar
+          }}
+        >
           {isLoading ? (
             <Box
-              maxWidth='md'
-              style={{
+              sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -168,7 +181,7 @@ const CardsModal = () => {
         handleSubmit={handleSubmit}
         onPaymentSubmit={onPaymentSubmit}
       />
-    </div>
+    </Box>
   )
 }
 

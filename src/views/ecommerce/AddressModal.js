@@ -107,11 +107,20 @@ const AddressModal = () => {
   }, [isAddressesModalOpen])
 
   return (
-    <div className='demo-space-x'>
+    <Box>
       <Dialog
         open={isAddressesModalOpen}
         scroll='paper'
-        maxWidth='md'
+        keepMounted={false} // Prevents DOM mounting when closed
+        PaperProps={{
+          sx: {
+            width: { xs: '90vw', md: '600px' },
+            maxHeight: '90vh', // Limits dialog height
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column'
+          }
+        }}
         onClose={handleCloseModal}
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
@@ -120,7 +129,13 @@ const AddressModal = () => {
           <Close />
         </IconButton>
         <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
-        <DialogContent dividers={'paper'}>
+        <DialogContent
+          dividers
+          sx={{
+            flex: 1, // Fills available space
+            overflowY: 'auto' // Adds vertical scrollbar
+          }}
+        >
           {isLoading ? (
             <Box
               maxWidth='md'
@@ -159,7 +174,7 @@ const AddressModal = () => {
         addressErrors={addressErrors}
         onSubmit={onSubmit}
       />
-    </div>
+    </Box>
   )
 }
 

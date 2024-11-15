@@ -48,7 +48,7 @@ export const PaymentMethods = ({ onClose }) => {
           }}
         >
           <Grid container>
-            <Grid xs={7.5} item>
+            <Grid xs={6} md={8} s item>
               <Box>
                 <Image
                   width={item.cardType === 'mastercard' ? '32.5' : item.cardType === 'visa' ? '60' : '60'}
@@ -71,7 +71,7 @@ export const PaymentMethods = ({ onClose }) => {
                 <Typography variant='body2'>{item.cardNumber}</Typography>
               </Box>
             </Grid>
-            <Grid xs={4} item>
+            <Grid xs={4} md={3} item>
               <Box sx={{ mt: [3, 0], textAlign: ['start', 'end'] }}>
                 <Button variant='outlined' sx={{ mr: 3 }} onClick={() => handleSelectPaymentMethod(item)}>
                   {selectedPayment === item ? 'Seleccionado' : 'Seleccionar'}
