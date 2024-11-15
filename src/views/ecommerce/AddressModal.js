@@ -68,21 +68,19 @@ const AddressModal = () => {
   const descriptionElementRef = useRef(null)
 
   const onSubmit = data => {
-    if (selectedColony.colony != null) {
-      let body = {
-        street: data.street,
-        extNumber: data.extNumber,
-        intNumber: data?.intNumber,
-        zipCode: data.zipCode,
-        neighborhood: data.neighborhood.neighborhood,
-        city: data.neighborhood.city,
-        federalEntity: data.neighborhood.federalEntity,
-        country: 'Mexico',
-        refer: data.refer
-      }
-      dispatch(createAddress({ body: body, uuid: user.id }))
-      handleAddressClose(false)
+    let body = {
+      street: data.street,
+      extNumber: data.extNumber,
+      intNumber: data?.intNumber,
+      zipCode: data.zipCode,
+      neighborhood: data.neighborhood,
+      city: data.city,
+      federalEntity: data.federalEntity,
+      country: 'Mexico',
+      refer: data.refer
     }
+    dispatch(createAddress({ body: body, uuid: user.id }))
+    handleAddressClose(false)
   }
 
   const handleAddressClose = () => {
@@ -109,11 +107,20 @@ const AddressModal = () => {
   }, [isAddressesModalOpen])
 
   return (
-    <div className='demo-space-x'>
+    <Box>
       <Dialog
         open={isAddressesModalOpen}
         scroll='paper'
-        maxWidth='md'
+        keepMounted={false} // Prevents DOM mounting when closed
+        PaperProps={{
+          sx: {
+            width: { xs: '90vw', md: '600px' },
+            maxHeight: '90vh', // Limits dialog height
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column'
+          }
+        }}
         onClose={handleCloseModal}
         aria-labelledby='scroll-dialog-title'
         aria-describedby='scroll-dialog-description'
@@ -122,7 +129,13 @@ const AddressModal = () => {
           <Close />
         </IconButton>
         <DialogTitle id='scroll-dialog-title'>Direcciones</DialogTitle>
-        <DialogContent dividers={'paper'}>
+        <DialogContent
+          dividers
+          sx={{
+            flex: 1, // Fills available space
+            overflowY: 'auto' // Adds vertical scrollbar
+          }}
+        >
           {isLoading ? (
             <Box
               maxWidth='md'
@@ -161,7 +174,7 @@ const AddressModal = () => {
         addressErrors={addressErrors}
         onSubmit={onSubmit}
       />
-    </div>
+    </Box>
   )
 }
 

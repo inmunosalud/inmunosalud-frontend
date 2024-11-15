@@ -76,8 +76,7 @@ const defaultAddressValues = {
 const addressSchema = yup.object().shape({
   zipCode: yup
     .string()
-    .length(5)
-    .matches(/^[0-9]{5}/)
+    .matches(/^[0-9]{4,5}$/, 'Codigo Postal Invalido')
     .required(),
   extNumber: yup.string().required(),
   intNumber: yup.string(),
@@ -204,7 +203,7 @@ const UserProfileAddress = () => {
       ) : (
         Array.isArray(address) &&
         address.map(item => (
-          <Card>
+          <Card sx={{ mb: '1rem' }}>
             <CardHeader
               title='Dirección'
               titleTypographyProps={{ variant: 'h6' }}
