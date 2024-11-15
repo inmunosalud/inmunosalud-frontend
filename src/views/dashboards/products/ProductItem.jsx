@@ -31,6 +31,7 @@ export const ProductItem = props => {
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
+  const { products } = useSelector(state => state.cart)
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const [authPassword, setAuthPassword] = React.useState('')
   const { user } = useSelector(state => state.session)
@@ -81,13 +82,15 @@ export const ProductItem = props => {
       return
     }
 
+    const updatedQuantity = (products.find(product => product.id === props.id)?.quantity || 0) + 1
+
     const body = {
       id: props.id,
-      quantity: 1
+      quantity: updatedQuantity
     }
+
     setIsAddToCart(true)
     setTimeout(() => setIsAddToCart(false), 800)
-
     dispatch(updateCart({ id: props.cartId, body }))
   }
   const handlePurchaseNow = () => {
@@ -96,9 +99,11 @@ export const ProductItem = props => {
       return
     }
 
+    const updatedQuantity = (products.find(product => product.id === props.id)?.quantity || 0) + 1
+
     const body = {
       id: props.id,
-      quantity: 1
+      quantity: updatedQuantity
     }
 
     dispatch(updateCart({ id: props.cartId, body }))
@@ -272,7 +277,7 @@ export const ProductItem = props => {
                     color='primary'
                     sx={{ marginBottom: 2, width: '50%' }}
                   >
-                    {isAddToCart ? 'agregado' : '    Agregar al Carrito'}
+                    {isAddToCart ? 'agregado' : 'Agregar al Carrito'}
                   </Button>
                 </Box>
               </Grid>
