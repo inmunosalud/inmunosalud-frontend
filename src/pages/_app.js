@@ -99,9 +99,14 @@ const App = props => {
           <title>{`${themeConfig.templateName}`}</title>
           <meta
             name='description'
-            content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+            content={
+              'Somos un equipo especializado en el desarrollo de suplementos alimenticios diseñados para satisfacer las necesidades de tu mente y cuerpo. Nuestra atención se centra en la salud cardiovascular, muscular y cerebral, así como en fortalecer el sistema inmunológico y la salud integral en general. Nuestro compromiso es poner a tu alcance las mejores formulaciones científicas para que disfrutes de tu día a día y goces de una vida plena y digna. En Inmunosalud, creemos que cada persona merece llevar una vida digna y saludable. Por eso, nuestro objetivo es ayudar a miles de individuos a mejorar su calidad de vida. Inmunosalud es el camino hacia tu mejor salud.'
+            }
           />
-          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+          <meta
+            name='keywords'
+            content='suplementos alimenticios, salud integral, salud cardiovascular, salud muscular, salud cerebral, sistema inmunológico, calidad de vida, vida plena, formulaciones científicas, bienestar físico y mental, suplementos para el sistema inmune, suplementos para la salud, suplementos'
+          />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 
