@@ -64,10 +64,6 @@ const AddressModal = () => {
     resolver: yupResolver(addressSchema)
   })
 
-  useEffect(() => {
-    console.log(addressErrors)
-  }, [addressErrors])
-
   // ** Ref
   const descriptionElementRef = useRef(null)
 
