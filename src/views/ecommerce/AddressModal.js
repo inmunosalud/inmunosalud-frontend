@@ -64,25 +64,27 @@ const AddressModal = () => {
     resolver: yupResolver(addressSchema)
   })
 
+  useEffect(() => {
+    console.log(addressErrors)
+  }, [addressErrors])
+
   // ** Ref
   const descriptionElementRef = useRef(null)
 
   const onSubmit = data => {
-    if (selectedColony.colony != null) {
-      let body = {
-        street: data.street,
-        extNumber: data.extNumber,
-        intNumber: data?.intNumber,
-        zipCode: data.zipCode,
-        neighborhood: data.neighborhood.neighborhood,
-        city: data.neighborhood.city,
-        federalEntity: data.neighborhood.federalEntity,
-        country: 'Mexico',
-        refer: data.refer
-      }
-      dispatch(createAddress({ body: body, uuid: user.id }))
-      handleAddressClose(false)
+    let body = {
+      street: data.street,
+      extNumber: data.extNumber,
+      intNumber: data?.intNumber,
+      zipCode: data.zipCode,
+      neighborhood: data.neighborhood,
+      city: data.city,
+      federalEntity: data.federalEntity,
+      country: 'Mexico',
+      refer: data.refer
     }
+    dispatch(createAddress({ body: body, uuid: user.id }))
+    handleAddressClose(false)
   }
 
   const handleAddressClose = () => {
