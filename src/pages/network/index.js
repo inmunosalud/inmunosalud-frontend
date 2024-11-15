@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useTheme } from '@mui/material/styles'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import CustomChip from 'src/@core/components/mui/chip'
 
 //actions
 import {
@@ -496,6 +497,22 @@ const Network = () => {
                     primary={`- ${user.name}`}
                     secondary={
                       <>
+                        <CustomChip
+                          skin='light'
+                          size='small'
+                          label={user?.profile}
+                          color={user?.profile === 'Afiliado' ? 'success' : 'primary'}
+                          sx={{
+                            height: 20,
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            borderRadius: '5px',
+                            textTransform: 'capitalize',
+                            '& .MuiChip-label': { mt: -0.25 },
+                            mb: 1
+                          }}
+                        />
+                        <br />
                         Consumo: <br />${user.lastTotalConsume || '0'}
                       </>
                     }
@@ -505,6 +522,21 @@ const Network = () => {
                     primary={`- ${user.name}`}
                     secondary={
                       <>
+                        <CustomChip
+                          skin='light'
+                          size='small'
+                          label={user.profile}
+                          color='primary'
+                          sx={{
+                            height: 20,
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            borderRadius: '5px',
+                            textTransform: 'capitalize',
+                            '& .MuiChip-label': { mt: -0.25 },
+                            mb: 1
+                          }}
+                        />
                         Referido por: <br />
                         {user.recommenderName || 'N/A'} <br />
                         Consumo: <br />${user.lastTotalConsume || '0'}
