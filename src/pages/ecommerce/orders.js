@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogActions, DialogContentText, Link } from '@
 import { cancelOrder, getOrdersByUser } from 'src/store/orders'
 import { loadSession } from 'src/store/session'
 import { parseDate } from '../../utils/functions'
+import moment from 'moment'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -20,64 +21,25 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled, alpha, useTheme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
-
+import Accordion from '@mui/material/Accordion'
+import AccordionActions from '@mui/material/AccordionActions'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TableHead from '@mui/material/TableHead'
 import TableContainer from '@mui/material/TableContainer'
 import TableCell from '@mui/material/TableCell'
-
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import CardContent from '@mui/material/CardContent'
-
+import CardActions from '@mui/material/CardActions'
+import Badge from '@mui/material/Badge'
 import Image from 'next/image'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
 import { closeSnackBar } from 'src/store/notifications'
 import { Flag } from 'mdi-material-ui'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 
 import { setModal } from 'src/store/contactus'
 import { getUserInfo } from 'src/store/users'
-
-const CardContentStyles = {
-  margin: '10px 20px'
-}
-const InfoProductStyles = {
-  display: 'flex',
-  margin: '0px 40px',
-  flexDirection: 'column'
-}
-const ProductContainer = {
-  display: 'flex',
-  marginTop: '90px'
-}
-const AdreessContainer = {
-  display: 'flex',
-  flexDirection: 'column'
-}
-const ImageStyle = {
-  width: 40,
-  heigth: 50,
-  margin: '5px'
-}
-const DeliveryInfoStyles = {
-  display: 'flex',
-  justifyContent: 'space-around',
-  margin: '0px 15px',
-  gap: '30px'
-}
-const ButtonActionStyles = {
-  height: '50px',
-  width: ' 50px'
-}
-const ProductInfoRowStyles = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '100px',
-  alignItems: 'center'
-}
-const OrderSumaryStyles = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap: '30px'
-}
 
 const RepeatingContent = styled(Grid)(({ theme }) => ({
   paddingRight: 0,
@@ -95,14 +57,6 @@ const RepeatingContent = styled(Grid)(({ theme }) => ({
       position: 'relative'
     }
   }
-}))
-
-const InvoiceAction = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  padding: theme.spacing(2, 1),
-  borderLeft: `1px solid ${theme.palette.divider}`
 }))
 
 const RepeaterWrapper = styled(CardContent)(({ theme }) => ({
@@ -127,95 +81,74 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
   )
 }
 
-const DeliveryInfo = ({ allOrderInfo }) => {
+const DeliveryInfo = ({ allOrderInfo, address }) => {
   const paymentMethod = allOrderInfo.paymentMethod
 
   return (
-    <Grid container style={DeliveryInfoStyles} xs={12} sm={9}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div>
+    <Grid container>
+      <Grid xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
+        <Box>
           <Typography>
-            <strong>Estatus del pedido</strong>
+            <strong>Dirección de envío</strong>
           </Typography>
-          <Typography>{allOrderInfo.deliveryStatus}</Typography>
-        </div>
-        <div style={{ marginRight: '20px' }}>
+          <Typography>{`${address.street} ${address.extNumber}`}</Typography>
+          <Typography>{`${address.neighborhood}`}</Typography>
+          <Typography>{`${address.city}, ${address.federalEntity}, ${address.zipCode}`}</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
+        <Box>
           <Typography>
-            <strong>Pedido realizado</strong>
+            <strong>Método de pago</strong>
           </Typography>
-          <Typography>{allOrderInfo.purchaseDate}</Typography>
-        </div>
-      </div>
-      <div>
-        <Typography>
-          <strong>Método de pago</strong>
-        </Typography>
-        <Typography>
-          <span>{paymentMethod.cardType}</span> <span>{paymentMethod.cardNumber}</span>
-        </Typography>
-        <Typography>{paymentMethod.expDate}</Typography>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {allOrderInfo.deliveryStatus === 'Está en camino' || allOrderInfo.deliveryStatus === 'Entregado' ? (
-          <div>
+          <Typography>
+            <span>tipo: {paymentMethod.cardType}</span>
+          </Typography>
+          <Typography>
+            <span> Numero: {paymentMethod.cardNumber}</span>
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
+        <Box>
+          {(allOrderInfo.deliveryStatus === 'Está en camino' || allOrderInfo.deliveryStatus === 'Entregado') && (
+            <Box sx={{ width: '100%' }}>
+              <Typography>
+                <strong>Envío:</strong>
+              </Typography>
+              <Typography>Compañia: {allOrderInfo.shipment.company}</Typography>
+              <Typography>
+                Guía de envío: <Link href={allOrderInfo.shipment.trackingUrl}>{allOrderInfo.shipment.id}</Link>
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <section id='section-total-purchase'>
+          <Typography>
+            <strong>Resumen del pedido</strong>
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '60px' }}>
+            <Typography>Productos</Typography>
+            <Typography>${allOrderInfo.subtotal}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '60px' }}>
+            <Typography>Envío</Typography>
+            <Typography>${allOrderInfo.shippingCost}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '60px' }}>
+            <Typography>IVA</Typography>
+            <Typography>${allOrderInfo.iva}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '60px' }}>
             <Typography>
-              <strong>Envío:</strong>
+              <strong>Total (IVA incluido)</strong>
             </Typography>
-            <Typography>Compañia: {allOrderInfo.shipment.company}</Typography>
-            <Typography>
-              Guía de envío: <Link href={allOrderInfo.shipment.trackingUrl}>{allOrderInfo.shipment.id}</Link>
-            </Typography>
-          </div>
-        ) : null}
-        <div>
-          <Typography>
-            <strong>{allOrderInfo.deliveryStatus === 'Entregado' ? 'Entregado' : 'Entrega estimada'}</strong>
-          </Typography>
-          <Typography>
-            {allOrderInfo.deliveryStatus === 'Entregado'
-              ? allOrderInfo.deliveryDate
-              : allOrderInfo.deliveryEstimateDate}
-          </Typography>
-        </div>
-      </div>
-      <section id='section-total-purchase'>
-        <Typography>
-          <strong>Resumen del pedido</strong>
-        </Typography>
-        <div style={OrderSumaryStyles}>
-          <Typography>Productos</Typography>
-          <Typography>${allOrderInfo.subtotal}</Typography>
-        </div>
-        <div style={OrderSumaryStyles}>
-          <Typography>Envío</Typography>
-          <Typography>${allOrderInfo.shippingCost}</Typography>
-        </div>
-        <div style={OrderSumaryStyles}>
-          <Typography>IVA</Typography>
-          <Typography>${allOrderInfo.iva}</Typography>
-        </div>
-        <div style={OrderSumaryStyles}>
-          <Typography>
-            <strong>Total (IVA incluido)</strong>
-          </Typography>
-          <Typography>${allOrderInfo.total}</Typography>
-        </div>
-      </section>
-    </Grid>
-  )
-}
-
-const Address = ({ address }) => {
-  return (
-    <Grid style={AdreessContainer} xs={12} sm={2} textAlign={{ xs: 'center', sm: 'initial' }}>
-      <Typography variant='h3' style={{ fontSize: '19px', marginBottom: '10px' }}>
-        <strong>Dirección de envío</strong>
-      </Typography>
-      <Typography style={{ marginBottom: '5px' }}>{`${address.street} ${address.extNumber}`}</Typography>
-      <Typography style={{ marginBottom: '5px' }}>{`${address.colony}`}</Typography>
-      <Typography style={{ marginBottom: '5px' }}>
-        {`${address.city}, ${address.federalEntity}, ${address.zipCode}`}
-      </Typography>
+            <Typography>${allOrderInfo.total}</Typography>
+          </Box>
+        </section>
+      </Grid>
     </Grid>
   )
 }
@@ -230,37 +163,33 @@ const Product = ({ products }) => {
           <Tag key={p.id} className='repeater-wrapper' {...(i !== 0 ? { in: true } : {})}>
             <Grid container>
               <RepeatingContent item xs={12}>
-                <Grid container sx={{ py: 4, width: '100%', pr: { lg: 0, xs: 4 } }}>
-                  <Grid item lg={6} md={5} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
-                      Articulo
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Image width={40} height={50} src={p.urlImage} />
-                      <Typography sx={{ ml: 2 }}>{p.product}</Typography>
+                <Grid container sx={{ py: 4, px: 4, textAlign: { xs: 'center', md: 'left' } }}>
+                  <Grid item md={0.8} xs={12}>
+                    <Box sx={{ ml: 3, mr: 3, mt: 0.5 }}>
+                      <Badge
+                        key={1}
+                        badgeContent={p.quantity === 1 ? 0 : p.quantity}
+                        color='primary'
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right'
+                        }}
+                      >
+                        <Image width={40} height={50} alt='img' src={p.urlImage} />
+                      </Badge>
                     </Box>
                   </Grid>
-                  <Grid item lg={2} md={3} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
-                      Precio
+                  <Grid item md={10.2} xs={12} sx={{ py: 4 }}>
+                    <Typography sx={{ ml: 3, mt: 0.5 }}>
+                      <strong>{p.product}</strong>
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography sx={{ ml: 2 }}>${p.price}</Typography>
-                    </Box>
                   </Grid>
-                  <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
-                      Cantidad
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography sx={{ ml: 3 }}>{p.quantity}</Typography>
+                  <Grid item md={1} xs={12}>
+                    <Box sx={{ display: 'flex-end', alignItems: 'right', width: '100%', textAlign: 'right' }}>
+                      <Typography variant='h5' sx={{ ml: 3, mt: 3.5 }}>
+                        <strong>${p.total}</strong>
+                      </Typography>
                     </Box>
-                  </Grid>
-                  <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
-                    <Typography variant='body2' className='col-title' sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}>
-                      Total
-                    </Typography>
-                    <Typography>${p.total}</Typography>
                   </Grid>
                 </Grid>
               </RepeatingContent>
@@ -272,20 +201,7 @@ const Product = ({ products }) => {
   )
 }
 
-const Actions = ({ onHandleModal = () => {}, status = '', purchaseDate = '' }) => {
-  const currentDate = new Date()
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000 // 1 día en milisegundos
-
-  // Convierte la cadena de fecha en un objeto Date
-  const parsedDate = parseDate(purchaseDate)
-
-  // Verifica si la fecha actual + 1 día es posterior a la fecha del pedido
-  const isCancelable = parsedDate.getTime() + oneDayInMilliseconds > currentDate.getTime()
-
-  if (status === 'Está en camino' || status === 'Cancelado' || status === 'Entregado' || !isCancelable) {
-    return <div style={ButtonActionStyles} />
-  }
-
+const Actions = ({ onHandleModal = () => {} }) => {
   return (
     <Tooltip title='Cancelar pedido' arrow>
       <Button variant='contained' onClick={onHandleModal}>
@@ -299,6 +215,34 @@ const Cards = props => {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = React.useState(false)
   const { user } = useSelector(state => state.session)
+  const currentDate = new Date()
+  const twelveHoursInMilliseconds = 12 * 60 * 60 * 1000
+
+  const parsedDate = parseDate(props.purchaseDate)
+
+  const isCancelable = parsedDate.getTime() + twelveHoursInMilliseconds > currentDate.getTime()
+
+  const products = props.products
+  const address = props.address
+  const totalQuantity = products.reduce((accumulator, product) => {
+    if (typeof product.quantity === 'number') {
+      return accumulator + product.quantity
+    } else {
+      return accumulator
+    }
+  }, 0)
+
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const openpayId = urlParams.get('id')
+    if (openpayId && props.openpay?.id === openpayId) {
+      props.setExpandedIndex(props.index)
+    }
+  }, [])
+
+  const handleChange = index => {
+    props.setExpandedIndex(prevIndex => (prevIndex === index ? null : index))
+  }
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -310,39 +254,81 @@ const Cards = props => {
     setOpenModal(false)
   }
 
-  const products = props.products
-  const address = props.address
-
   return (
     <>
-      <Card sx={{ margin: '45px 0px' }}>
-        <CardContent style={CardContentStyles}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column'
-            }}
+      <Card sx={{ margin: '20px 0px' }}>
+        <Accordion
+          expanded={props.index === props.expandedIndex}
+          onChange={() => handleChange(props.index)}
+          slotProps={{ transition: { unmountOnExit: true } }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${props.index + 1}-content`}
+            id={`panel${props.index + 1}-header`}
           >
-            <Grid
-              container
-              id='header-info'
-              style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
-            >
-              <Address address={address} />
-              <DeliveryInfo allOrderInfo={props} />
-              <Actions
-                onHandleModal={handleOpenModal}
-                status={props.deliveryStatus}
-                purchaseDate={props.purchaseDate}
-              />
+            <Grid container spacing={4}>
+              <Grid item xs={5} md={4}>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
+                    <strong>Pedido realizado</strong>
+                  </Typography>
+                  <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.purchaseDate}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={7} md={8}>
+                <Grid container>
+                  {props.deliveryStatus !== 'Entregado' && (
+                    <Grid item xs={12} md={6}>
+                      <Box sx={{ flexShrink: 0 }}>
+                        <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
+                          <strong>Estatus del pedido</strong>
+                        </Typography>
+                        <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.deliveryStatus}</Typography>
+                      </Box>
+                    </Grid>
+                  )}
+                  <Grid item xs={12} md={6}>
+                    <Box>
+                      <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
+                        <strong>{props.deliveryStatus === 'Entregado' ? 'Entregado' : 'Entrega estimada'}</strong>
+                      </Typography>
+                      <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>
+                        {props.deliveryStatus === 'Entregado' ? props.deliveryDate : props.deliveryEstimateDate}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
-            <Divider />
-            <RepeaterWrapper>
-              <Product products={products} />
-            </RepeaterWrapper>
-          </div>
-        </CardContent>
+          </AccordionSummary>
+          <AccordionDetails>
+            <CardContent>
+              <Box>
+                <DeliveryInfo allOrderInfo={props} address={address} />
+
+                <Divider />
+                <Box sx={{ width: '100%' }}>
+                  <RepeaterWrapper>
+                    <Product products={products} />
+                  </RepeaterWrapper>
+                </Box>
+              </Box>
+            </CardContent>
+          </AccordionDetails>
+          {
+            //cancelable
+          }
+          {props.deliveryStatus === 'Confirmando el Pago' && isCancelable && (
+            <AccordionActions>
+              <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
+                <Actions onHandleModal={handleOpenModal} />
+              </CardActions>
+            </AccordionActions>
+          )}
+        </Accordion>
       </Card>
+
       <Modal open={openModal} onHandleOpenModal={handleOpenModal} onSubmitDelete={submitDelete} />
     </>
   )
@@ -350,9 +336,22 @@ const Cards = props => {
 
 const Orders = () => {
   const dispatch = useDispatch()
-  const { user, isLoading: isLoadingSession } = useSelector(state => state.session)
-  const { open, message, severity } = useSelector(state => state.notifications)
+  const { user } = useSelector(state => state.session)
   const { orders, isLoading } = useSelector(state => state.orders)
+
+  const [expandedIndex, setExpandedIndex] = React.useState(null)
+
+  React.useEffect(() => {
+    if (!user) {
+      dispatch(loadSession())
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (!user) {
+      dispatch(loadSession())
+    }
+  }, [])
 
   React.useEffect(() => {
     if (user?.id) {
@@ -360,7 +359,7 @@ const Orders = () => {
     }
   }, [user])
 
-  if (isLoading || isLoadingSession) {
+  if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
         <Typography>{`Cargando tus pedidos...`}</Typography>
@@ -389,9 +388,17 @@ const Orders = () => {
           Tengo un problema
         </Button>
       </Box>
-
+      {orders.length &&
+        orders.map((order, index) => (
+          <Cards
+            key={order.id}
+            index={index}
+            expandedIndex={expandedIndex}
+            setExpandedIndex={setExpandedIndex}
+            {...order}
+          />
+        ))}
       {/* <ProblemFormModal  /> */}
-      <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </React.Fragment>
   )
 }

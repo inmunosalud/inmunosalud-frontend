@@ -69,7 +69,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
     thunkApi.dispatch(getCart(idUser))
     if (Array.isArray(response.content)) {
-      Router.push('/ecommerce/orders')
+      Router.push(`/ecommerce/orders/?id=${response.content[0].openpay.id}`)
     } else if (
       response.content &&
       response.content.openpay &&
