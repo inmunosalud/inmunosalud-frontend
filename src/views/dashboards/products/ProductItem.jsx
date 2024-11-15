@@ -31,7 +31,7 @@ export const ProductItem = props => {
   const dispatch = useDispatch()
   const router = useRouter()
   const theme = useTheme()
-  const { products } = useSelector(state => state.cart)
+  const { products, isLoading } = useSelector(state => state.cart)
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const [authPassword, setAuthPassword] = React.useState('')
   const { user } = useSelector(state => state.session)
@@ -89,8 +89,6 @@ export const ProductItem = props => {
       quantity: updatedQuantity
     }
 
-    setIsAddToCart(true)
-    setTimeout(() => setIsAddToCart(false), 800)
     dispatch(updateCart({ id: props.cartId, body }))
   }
   const handlePurchaseNow = () => {
@@ -105,7 +103,7 @@ export const ProductItem = props => {
       id: props.id,
       quantity: updatedQuantity
     }
-
+    setIsAddToCart(true)
     dispatch(updateCart({ id: props.cartId, body }))
     router.push('/ecommerce/cart/')
   }
@@ -267,7 +265,15 @@ export const ProductItem = props => {
                     onClick={handlePurchaseNow}
                     variant='contained'
                     color='primary'
-                    sx={{ marginBottom: 2, width: '50%' }}
+                    disabled={isLoading}
+                    sx={{
+                      marginBottom: 2,
+                      width: '50%',
+                      '&.Mui-disabled': {
+                        backgroundColor: 'primary.main',
+                        color: 'white'
+                      }
+                    }}
                   >
                     Comprar Ahora
                   </Button>
@@ -275,9 +281,17 @@ export const ProductItem = props => {
                     onClick={handleAddToCart}
                     variant='outlined'
                     color='primary'
-                    sx={{ marginBottom: 2, width: '50%' }}
+                    disabled={isLoading}
+                    sx={{
+                      marginBottom: 2,
+                      width: '50%',
+                      '&.Mui-disabled': {
+                        borderColor: 'primary.main',
+                        color: 'primary.main'
+                      }
+                    }}
                   >
-                    {isAddToCart ? 'agregado' : 'Agregar al Carrito'}
+                    {isLoading && !isAddToCart ? 'agregado' : 'Agregar al Carrito'}
                   </Button>
                 </Box>
               </Grid>
