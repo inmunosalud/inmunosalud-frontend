@@ -20,7 +20,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Styles Import
 
-import { createMethod, setModal, updateMethod } from 'src/store/paymentMethods'
+import { createMethod, setModal, updateMethod, deleteMethod } from 'src/store/paymentMethods'
 import { closeSnackBar } from 'src/store/notifications'
 import DialogBankInfo from '../components/dialogs/DialogBankInfo'
 import { Divider } from '@mui/material'
@@ -69,11 +69,7 @@ const UserProfileBankInfo = () => {
       ...values,
       cardUse: 'Cobro'
     }
-    dispatch(
-      clabeIsEmpty
-        ? createMethod({ body, uuid: user.id })
-        : updateMethod({ body, uuid: user.id, idPaymentMethod: clabe.id })
-    )
+    dispatch(createMethod({ body, uuid: user.id }))
     handleEditCardClose()
   }
 
@@ -86,6 +82,10 @@ const UserProfileBankInfo = () => {
     })
 
     dispatch(setModal(true))
+  }
+
+  const handleDeleteCardClickOpen = item => {
+    dispatch(deleteMethod({ id: user.id }))
   }
 
   const handleEditCardClose = () => {
@@ -137,7 +137,7 @@ const UserProfileBankInfo = () => {
                 <Button
                   variant='contained'
                   sx={{ mr: 3 }}
-                  onClick={() => handleEditCardClickOpen(clabe)}
+                  onClick={() => handleDeleteCardClickOpen(clabe)}
                   color='primary'
                 >
                   Eliminar
