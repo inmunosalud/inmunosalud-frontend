@@ -536,7 +536,8 @@ const Network = () => {
                             '& .MuiChip-label': { mt: -0.25 },
                             mb: 1
                           }}
-                        />
+                        />{' '}
+                        <br />
                         Referido por: <br />
                         {user.recommenderName || 'N/A'} <br />
                         Consumo: <br />${user.lastTotalConsume || '0'}
