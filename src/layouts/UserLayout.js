@@ -68,7 +68,6 @@ const UserLayout = ({ children }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const { user } = useSelector(state => state.session)
   const { dataLoaded } = useSelector(state => state.dashboard.general)
-  const { userInfo } = useSelector(state => state.users)
 
   useEffect(() => {
     if (!localStorage.getItem('im-user')) {
@@ -77,8 +76,9 @@ const UserLayout = ({ children }) => {
     }
     if (localStorage.getItem('im-user') != '' && Object.keys(user).length === 0) {
       dispatch(loadSession())
+      dispatch(isDataLoaded(false))
     }
-    if (user) {
+    if (user && Object.keys(user).length > 0) {
       if (user.profile === 'Logistica') {
         router.push('/dashboards/logistics')
         dispatch(isDataLoaded(true))
@@ -86,7 +86,7 @@ const UserLayout = ({ children }) => {
       if (user.profile === 'Administrador General') {
         dispatch(isDataLoaded(true))
       }
-      if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && !dataLoaded && user)) {
+      if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && dataLoaded === false)) {
         dispatch(getCart(user.id))
         dispatch(paymentMethodsList(user.id))
         dispatch(addressList(user.id))

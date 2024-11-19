@@ -25,6 +25,8 @@ import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png'
 import BlancoLogotipo from 'public/images/logos/Blanco-Logotipo.png'
 import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 import NegroLogotipo from 'public/images/logos/Negro-Logotipo.png'
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+
 const Login = () => {
   const dispatch = useDispatch()
   const { settings, saveSettings } = useSettings()
@@ -40,6 +42,10 @@ const Login = () => {
     } else if (usuarioLocalStorage && user && usuarioLocalStorage !== 'undefined') {
       Router.push('/landing-page/home')
     }
+  }, [])
+
+  React.useEffect(() => {
+    dispatch(isDataLoaded(false))
   }, [])
 
   return (
