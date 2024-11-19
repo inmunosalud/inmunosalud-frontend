@@ -212,7 +212,7 @@ const AddCard = props => {
 
         <CardContent>
           <Grid container>
-            <Grid item xs={12} sm={6} sx={{ mb: { lg: 0, xs: 4 } }}>
+            <Grid item xs={12} sm={5} sx={{ mb: { lg: 0, xs: 4 } }}>
               <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                 Método de pago:
               </Typography>
@@ -232,7 +232,7 @@ const AddCard = props => {
                 Fecha: {selectedPayment?.expDate}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+            <Grid item xs={12} sm={5} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
               <div>
                 <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                   Dirección:
@@ -258,6 +258,37 @@ const AddCard = props => {
                   <Typography variant='body2'>Ciudad: {selectedAddress?.city}</Typography>
                 </CalcWrapper>
               </div>
+            </Grid>
+
+            <Grid item xs={12} sm={2} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+              <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
+                Precio Total
+              </Typography>
+              <CalcWrapper>
+                <Typography variant='body2'>Subtotal:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal}
+                </Typography>
+              </CalcWrapper>
+              <CalcWrapper>
+                <Typography variant='body2'>Monto de envío:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
+                </Typography>
+              </CalcWrapper>
+              <CalcWrapper>
+                <Typography variant='body2'>IVA:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.iva}
+                </Typography>
+              </CalcWrapper>
+              <Divider />
+              <CalcWrapper>
+                <Typography variant='body2'>Total:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal > 0 ? total.total : 0}
+                </Typography>
+              </CalcWrapper>
             </Grid>
           </Grid>
         </CardContent>
@@ -353,40 +384,6 @@ const AddCard = props => {
             </Grid>
           </Grid>
         </RepeaterWrapper>
-
-        <Divider />
-        <CardContent>
-          <Grid container>
-            <Grid item xs={12} sm={9} sx={{ order: { sm: 1, xs: 2 } }}></Grid>
-            <Grid item xs={12} sm={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-              <CalcWrapper>
-                <Typography variant='body2'>Subtotal:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Monto de envío:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>IVA:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.iva}
-                </Typography>
-              </CalcWrapper>
-              <Divider />
-              <CalcWrapper>
-                <Typography variant='body2'>Total:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.total : 0}
-                </Typography>
-              </CalcWrapper>
-            </Grid>
-          </Grid>
-        </CardContent>
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Fragment>
