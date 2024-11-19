@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { StackExchange } from 'mdi-material-ui'
 import Router from 'next/router'
 //api
+import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+
 import { USERS, api_post, api_get } from '../../services/api'
 // import { setUser } from '../dashboard/generalSlice'
 import { setUser } from '../users'
@@ -35,7 +37,7 @@ export const loadSession = createAsyncThunk('/session/loadSession', async thunkA
     return response.content
   } catch (error) {
     localStorage.removeItem('im-user')
-
+    thunkApi.dispatch(isDataLoaded(true))
     toast.error('Session expirada inicia sesión nuevamente')
     return thunkApi.rejectWithValue('error')
   }
