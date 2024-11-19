@@ -105,7 +105,7 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
             <span>tipo: {paymentMethod.cardType}</span>
           </Typography>
           <Typography>
-            <span> Numero: {paymentMethod.cardNumber}</span>
+            <span> Numero: XXXXXX{paymentMethod.cardNumber.slice(-4)}</span>
           </Typography>
         </Box>
       </Grid>

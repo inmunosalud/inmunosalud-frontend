@@ -19,7 +19,8 @@ import Grid from '@mui/material/Grid'
 import { styled, alpha, useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import CardContent from '@mui/material/CardContent'
-
+import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png'
+import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 // ** Icon Imports
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
@@ -38,6 +39,7 @@ import { getMonthlyPurchase } from 'src/store/monthlypurchase'
 import { setCvv } from 'src/store/orders'
 import { getConstants } from 'src/store/constants'
 import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -99,6 +101,7 @@ const AddCard = props => {
 
   // ** Hook
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const router = useRouter()
   // ** Deletes form
   const deleteForm = idProduct => {
@@ -180,14 +183,16 @@ const AddCard = props => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box sx={{ mb: 6, display: 'flex', alignItems: 'center' }}>
-                    <Typography
-                      variant='h6'
-                      sx={{ ml: 2.5, fontWeight: 600, lineHeight: 'normal', textTransform: 'uppercase' }}
-                    >
-                      {themeConfig.templateName}
-                    </Typography>
+                    <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
                   </Box>
-                  <Image src='/images/logos/openpay.png' alt='OpenPay Logo' layout='fixed' width={75} height={25} />
+                  <Image
+                    src='/images/logos/openpay.png'
+                    alt='OpenPay Logo'
+                    layout='fixed'
+                    height={25}
+                    width={150}
+                    style={{ width: 'auto', height: '100%' }}
+                  />
                 </Grid>
               </Box>
             </Grid>
@@ -226,7 +231,7 @@ const AddCard = props => {
                 Nombre: {selectedPayment?.nameOnCard}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
-                Numero: {selectedPayment?.cardNumber}
+                Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Fecha: {selectedPayment?.expDate}
