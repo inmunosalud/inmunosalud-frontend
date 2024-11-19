@@ -734,6 +734,7 @@ const Network = () => {
                       <Box sx={{ mt: '46px' }}>
                         <CardHeader
                           title={'Próximo corte: ' + (network.cutoffDate || '')}
+                          subheader={'El pago se vera reflejado durante los siguientes 7 días hábiles'}
                           action={
                             <Link href='/profile/?=&tab=tax'>
                               <Button
