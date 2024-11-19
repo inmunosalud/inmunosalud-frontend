@@ -526,7 +526,7 @@ const Network = () => {
                           skin='light'
                           size='small'
                           label={user.profile}
-                          color='primary'
+                          color={user?.profile === 'Afiliado' ? 'success' : 'primary'}
                           sx={{
                             height: 20,
                             fontSize: '0.875rem',
