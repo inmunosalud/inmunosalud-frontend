@@ -526,7 +526,7 @@ const Network = () => {
                           skin='light'
                           size='small'
                           label={user.profile}
-                          color='primary'
+                          color={user?.profile === 'Afiliado' ? 'success' : 'primary'}
                           sx={{
                             height: 20,
                             fontSize: '0.875rem',
@@ -536,7 +536,8 @@ const Network = () => {
                             '& .MuiChip-label': { mt: -0.25 },
                             mb: 1
                           }}
-                        />
+                        />{' '}
+                        <br />
                         Referido por: <br />
                         {user.recommenderName || 'N/A'} <br />
                         Consumo: <br />${user.lastTotalConsume || '0'}
@@ -733,6 +734,7 @@ const Network = () => {
                       <Box sx={{ mt: '46px' }}>
                         <CardHeader
                           title={'Próximo corte: ' + (network.cutoffDate || '')}
+                          subheader={'El pago se vera reflejado durante los siguientes 7 días hábiles'}
                           action={
                             <Link href='/profile/?=&tab=tax'>
                               <Button

@@ -34,6 +34,10 @@ const schema = yup.object().shape({
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .required('La contraseña es requerida'),
+  phone: yup
+    .string()
+    .matches(/^$|[0-9]{10}/, 'El número de teléfono debe tener 10 dígitos')
+    .required('El número de teléfono es requerido'),
   firstName: yup.string().required('El nombre es requerido'),
   lastName: yup.string().required('El apellido es requerido'),
   recommenderId: yup.string().required('El código de recomendado es requerido'),
@@ -56,6 +60,7 @@ export default function FormRegister() {
     resolver: yupResolver(schema),
     defaultValues: {
       email: '',
+      phone: '',
       password: '',
       firstName: '',
       lastName: '',
@@ -71,6 +76,7 @@ export default function FormRegister() {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
+      phone: data.phone,
       password: data.password,
       recommenderId: data.recommenderId,
       birthdate: moment(data.birthdate).format('YYYY-MM-DD'),
@@ -123,7 +129,7 @@ export default function FormRegister() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <Controller
                 name='email'
                 control={control}
@@ -135,6 +141,24 @@ export default function FormRegister() {
                     error={!!errors.email}
                     helperText={errors.email?.message}
                     autoComplete='off'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name='phone'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='Teléfono'
+                    fullWidth
+                    error={!!errors.phone}
+                    helperText={errors.phone?.message}
+                    inputProps={{
+                      maxLength: 10
+                    }}
                   />
                 )}
               />
@@ -180,6 +204,7 @@ export default function FormRegister() {
                     fullWidth
                     disabled={!!searchParams.get('id')}
                     error={!!errors.recommenderId}
+                    helperText={errors.recommenderId?.message}
                   />
                 )}
               />

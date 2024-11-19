@@ -19,7 +19,8 @@ import Grid from '@mui/material/Grid'
 import { styled, alpha, useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import CardContent from '@mui/material/CardContent'
-
+import BlancoIotipo from '/public/images/logos/Blanco-Isotipo.png'
+import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 // ** Icon Imports
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
@@ -38,6 +39,7 @@ import { getMonthlyPurchase } from 'src/store/monthlypurchase'
 import { setCvv } from 'src/store/orders'
 import { getConstants } from 'src/store/constants'
 import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const CalcWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -99,6 +101,7 @@ const AddCard = props => {
 
   // ** Hook
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const router = useRouter()
   // ** Deletes form
   const deleteForm = idProduct => {
@@ -180,14 +183,16 @@ const AddCard = props => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box sx={{ mb: 6, display: 'flex', alignItems: 'center' }}>
-                    <Typography
-                      variant='h6'
-                      sx={{ ml: 2.5, fontWeight: 600, lineHeight: 'normal', textTransform: 'uppercase' }}
-                    >
-                      {themeConfig.templateName}
-                    </Typography>
+                    <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
                   </Box>
-                  <Image src='/images/logos/openpay.png' alt='OpenPay Logo' layout='fixed' width={75} height={25} />
+                  <Image
+                    src='/images/logos/openpay.png'
+                    alt='OpenPay Logo'
+                    layout='fixed'
+                    height={25}
+                    width={150}
+                    style={{ width: 'auto', height: '100%' }}
+                  />
                 </Grid>
               </Box>
             </Grid>
@@ -212,7 +217,7 @@ const AddCard = props => {
 
         <CardContent>
           <Grid container>
-            <Grid item xs={12} sm={6} sx={{ mb: { lg: 0, xs: 4 } }}>
+            <Grid item xs={12} sm={5} sx={{ mb: { lg: 0, xs: 4 } }}>
               <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                 Método de pago:
               </Typography>
@@ -226,13 +231,13 @@ const AddCard = props => {
                 Nombre: {selectedPayment?.nameOnCard}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
-                Numero: {selectedPayment?.cardNumber}
+                Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
                 Fecha: {selectedPayment?.expDate}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+            <Grid item xs={12} sm={5} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
               <div>
                 <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                   Dirección:
@@ -258,6 +263,37 @@ const AddCard = props => {
                   <Typography variant='body2'>Ciudad: {selectedAddress?.city}</Typography>
                 </CalcWrapper>
               </div>
+            </Grid>
+
+            <Grid item xs={12} sm={2} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+              <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
+                Precio Total
+              </Typography>
+              <CalcWrapper>
+                <Typography variant='body2'>Subtotal:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal}
+                </Typography>
+              </CalcWrapper>
+              <CalcWrapper>
+                <Typography variant='body2'>Monto de envío:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
+                </Typography>
+              </CalcWrapper>
+              <CalcWrapper>
+                <Typography variant='body2'>IVA:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.iva}
+                </Typography>
+              </CalcWrapper>
+              <Divider />
+              <CalcWrapper>
+                <Typography variant='body2'>Total:</Typography>
+                <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                  ${total.subtotal > 0 ? total.total : 0}
+                </Typography>
+              </CalcWrapper>
             </Grid>
           </Grid>
         </CardContent>
@@ -353,40 +389,6 @@ const AddCard = props => {
             </Grid>
           </Grid>
         </RepeaterWrapper>
-
-        <Divider />
-        <CardContent>
-          <Grid container>
-            <Grid item xs={12} sm={9} sx={{ order: { sm: 1, xs: 2 } }}></Grid>
-            <Grid item xs={12} sm={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-              <CalcWrapper>
-                <Typography variant='body2'>Subtotal:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Monto de envío:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>IVA:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.iva}
-                </Typography>
-              </CalcWrapper>
-              <Divider />
-              <CalcWrapper>
-                <Typography variant='body2'>Total:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.total : 0}
-                </Typography>
-              </CalcWrapper>
-            </Grid>
-          </Grid>
-        </CardContent>
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Fragment>
