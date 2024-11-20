@@ -11,7 +11,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
-
+import EmailIcon from '@mui/icons-material/Email'
+import PhoneIcon from '@mui/icons-material/Phone'
 // ** Icons Imports
 import Check from 'mdi-material-ui/Check'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
@@ -121,8 +122,13 @@ const UserProfileLeft = ({ data }) => {
                   </IconButton>
                 </Typography>
               </Tooltip>
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                {data.email}
+              <Typography variant='h6' sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                <EmailIcon sx={{ mr: 1 }} color='primary' />
+                {data?.email}
+              </Typography>
+              <Typography variant='h6' sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                <PhoneIcon sx={{ mr: 1 }} color='primary' />
+                {data?.phone}
               </Typography>
               {
                 <CustomChip
