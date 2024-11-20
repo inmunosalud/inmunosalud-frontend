@@ -16,7 +16,9 @@ import {
   FormHelperText,
   Typography,
   CircularProgress,
-  Box
+  Box,
+  FormLabel,
+  Checkbox
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
@@ -67,6 +69,7 @@ const AddProduct = () => {
       yup.object().shape({
         product: yup.string().trim().required('El campo es requerido'),
         stock: yup.string().trim().required('El campo es requerido'),
+        isForAffiliated: yup.boolean(),
         content: yup.string().trim().required('El campo es requerido'),
         ingredients: yup.string().trim().required('El campo es requerido'),
         price: yup.string().trim().required('El campo es requerido'),
@@ -101,11 +104,11 @@ const AddProduct = () => {
     defaultValues: {
       product: '',
       stock: '',
+      isForAffiliated: false,
       content: '',
       ingredients: '',
       price: '',
       affiliatedPrice: '',
-      stock: '',
       description: '',
       benefits: [{ title: '', detail: '' }],
       studies: [{ title: '', pageName: '', url: '' }]
@@ -179,6 +182,7 @@ const AddProduct = () => {
         price: parseFloat(data.price),
         affiliatedPrice: parseFloat(data.affiliatedPrice),
         stock: parseInt(data.stock),
+        isForAffiliated: data.isForAffiliated,
         description: data.description,
         benefits: data.benefits.map(benefit => ({ title: benefit.title, detail: benefit.detail })),
         studies: data.studies.map(study => ({ title: study.title, pageName: study.pageName, url: study.url })),
@@ -216,6 +220,7 @@ const AddProduct = () => {
       reset({
         product: currentProduct.product,
         stock: currentProduct.stock,
+        isForAffiliated: currentProduct.isForAffiliated,
         content: currentProduct.content,
         benefits: currentProduct.benefits,
         studies: currentProduct.studies,
@@ -265,7 +270,7 @@ const AddProduct = () => {
             <Grid container spacing={5}>
               <Grid item xs={12} md={6}>
                 <Grid container spacing={5}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={5}>
                     <Controller
                       control={control}
                       name='product'
@@ -281,7 +286,7 @@ const AddProduct = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={3}>
                     <Controller
                       control={control}
                       name='stock'
@@ -298,6 +303,21 @@ const AddProduct = () => {
                         />
                       )}
                     />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Controller
+                      name='isForAffiliated'
+                      control={control}
+                      defaultValue={false}
+                      render={({ field }) => (
+                        <Checkbox
+                          {...field}
+                          checked={field.value}
+                          onChange={event => field.onChange(event.target.checked)}
+                        />
+                      )}
+                    />
+                    <FormLabel>Exclusivo de afiliados</FormLabel>
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Controller
