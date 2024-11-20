@@ -70,8 +70,6 @@ const Constants = () => {
         minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
         maintenanceCost: constants.maintenanceCost ?? 0
       })
-      setAssociateProductList(constants.affiliatedPackage)
-      isAddProductDisabled(constants.affiliatedPackage.length === products.content.length)
     }
   }, [loading])
   const generateRandomCharacters = () => {
@@ -131,26 +129,20 @@ const Constants = () => {
   const onSubmit = (data, event) => {
     event.preventDefault()
 
-    if (
-      associateProductList.length > 0 &&
-      associateProductList.every(associateProduct => associateProduct.product !== '')
-    ) {
-      setBody({
-        cutoffDay: data.cutoffDay,
-        iva: data.iva,
-        commissionPercentajePerLevel: {
-          1: (data[1] / 100).toFixed(4),
-          2: (data[2] / 100).toFixed(4),
-          3: (data[3] / 100).toFixed(4),
-          4: (data[4] / 100).toFixed(4)
-        },
-        shippingCost: data.shippingCost,
-        minimalAmountOfPurchase: data.minimalAmountOfPurchase,
-        maintenanceCost: data.maintenanceCost,
-        affiliatedPackage: associateProductList
-      })
-      handleModalConfirm()
-    }
+    setBody({
+      cutoffDay: data.cutoffDay,
+      iva: data.iva,
+      commissionPercentajePerLevel: {
+        1: (data[1] / 100).toFixed(4),
+        2: (data[2] / 100).toFixed(4),
+        3: (data[3] / 100).toFixed(4),
+        4: (data[4] / 100).toFixed(4)
+      },
+      shippingCost: data.shippingCost,
+      minimalAmountOfPurchase: data.minimalAmountOfPurchase,
+      maintenanceCost: data.maintenanceCost
+    })
+    handleModalConfirm()
   }
 
   return (
@@ -364,67 +356,8 @@ const Constants = () => {
                       />
                     )}
                   />
-                  <FormHelperText>Hello</FormHelperText>
                 </Grid>
-                <Grid item xs={12}>
-                  <Typography variant='h6'>Paquete de afiliados</Typography>
-                </Grid>
-                {associateProductList
-                  ? associateProductList.map((product, index) => (
-                      <Grid container item xs={12} spacing={5} key={product.id}>
-                        <Grid item xs={6}>
-                          <FormControl fullWidth error={product.product === ''}>
-                            <InputLabel id='product-label'>Producto *</InputLabel>
-                            <Select
-                              labelId='product-label'
-                              label='Producto'
-                              value={product.id}
-                              required={true}
-                              onChange={e => handleProductSelected(index, e.target.value)}
-                            >
-                              {products
-                                ? products.content.map(item => {
-                                    if (
-                                      item.id === product.id ||
-                                      !associateProductList.some(selectedProduct => selectedProduct.id === item.id)
-                                    ) {
-                                      return <MenuItem value={item.id}>{item.product}</MenuItem>
-                                    } else {
-                                      return null
-                                    }
-                                  })
-                                : null}
-                            </Select>
-                            {product.product === '' && (
-                              <FormHelperText sx={{ color: 'red' }}>Elige un producto</FormHelperText>
-                            )}
-                          </FormControl>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <TextField
-                            label='Cantidad'
-                            fullWidth
-                            type='number'
-                            required
-                            value={product.quantity}
-                            onChange={e => handleQuantityField(index, e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={1}>
-                          <Tooltip title='Eliminar' placement='top'>
-                            <Button onClick={() => handleDeleteProduct(product)} color='error' variant='outlined'>
-                              <Delete sx={{ mb: 2.5, mt: 2.5, fontSize: '1.125rem' }} />
-                            </Button>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-                    ))
-                  : null}
-                <Grid item xs={12}>
-                  <Button variant='contained' disabled={addProductDisabled} onClick={() => handleAddProduct()}>
-                    Agregar producto
-                  </Button>
-                </Grid>
+
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
