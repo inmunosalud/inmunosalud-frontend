@@ -80,12 +80,11 @@ export const updateUser = createAsyncThunk(
       const response = isAdministrator
         ? await api_patch(`${USERS}/users/admin/${uuid}`, body, auth)
         : await api_patch(`${USERS}/users/${uuid}`, body, auth)
-      thunkApi.dispatch(nextStep())
       thunkApi.dispatch(setModal(false))
+      thunkApi.dispatch(updateSession(response.content))
+
       // If param loadUserData values is true, load the user info again
-      loadUserData && thunkApi.dispatch(getUserInfo(uuid))
       thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-      //thunkApi.dispatch(usersList())
       return response
     } catch (error) {
       const errMessage = error?.response?.data?.message
