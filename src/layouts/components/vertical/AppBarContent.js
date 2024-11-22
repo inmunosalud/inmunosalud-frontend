@@ -52,9 +52,18 @@ const AppBarContent = props => {
             </Link>
           </Box>
           <Box sx={{ margin: { md: '0 auto' } }}>
-            <Link href={user.profile === 'Afiliado' ? '/network' : '/landing-page/join'} passHref>
+            <Link
+              href={
+                user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                  ? '/network'
+                  : '/landing-page/join'
+              }
+              passHref
+            >
               <Button size='small' variant={isActiveRoute('/landing-page/join') ? 'contained' : 'text'}>
-                {user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate'}
+                {user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                  ? 'Información de la Red'
+                  : 'Afíliate'}
               </Button>
             </Link>
           </Box>

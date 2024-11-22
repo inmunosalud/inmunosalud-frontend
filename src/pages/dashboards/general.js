@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
+import Link from 'next/link'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -22,10 +23,6 @@ const General = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { data } = useSelector(state => state.dashboard.general)
-
-  const handleClick = () => {
-    router.push('/admin/users/new-user')
-  }
 
   const antiquity = {
     stats: data?.antiquity,
@@ -72,9 +69,11 @@ const General = () => {
         </Grid>
 
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
-          <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }} onClick={() => handleClick()}>
-            Nuevo administrador
-          </Button>
+          <Link href='/admin/users/new-user'>
+            <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }}>
+              Nuevo administrador
+            </Button>
+          </Link>
         </Grid>
         <Grid item xs={12}>
           <TableUsers />

@@ -60,7 +60,7 @@ const TableUsers = () => {
         const row = params?.row
         return (
           <>
-            {row.profile.includes('Admin') ? (
+            {row?.profile?.includes('Admin') ? (
               <Button onClick={() => saveItemModal(row)} color='warning' size='small'>
                 <Pencil />
               </Button>
