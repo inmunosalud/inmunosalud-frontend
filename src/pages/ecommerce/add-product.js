@@ -342,7 +342,6 @@ const AddProduct = () => {
                                 </InputAdornment>
                               )
                             }}
-                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             onInput={handleInputFloat}
                           />
                         )
