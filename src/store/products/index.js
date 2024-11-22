@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 
 export const getProducts = createAsyncThunk('ProductsList', async thunkApi => {
   const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  const auth = token ? { headers: { Authorization: `Bearer ${token}` } } : {}
   try {
     const response = await api_get(`${PRODUCTS}/products`, auth)
     return response
