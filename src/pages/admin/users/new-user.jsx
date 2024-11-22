@@ -1,3 +1,4 @@
+import React from 'react'
 // ** React Imports
 import { forwardRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -45,7 +46,7 @@ const defaultValues = {
   password: '',
   phone: '',
   firstName: '',
-  recommenderId: ''
+  recommenderId: '75588721-dc46-4129-9e54-953cb13c42be'
 }
 
 const NewUser = () => {
@@ -78,10 +79,6 @@ const NewUser = () => {
     dispatch(sendNewUser(values))
   }
 
-  const handleChangePage = () => {
-    router.push('/dashboards/general/')
-  }
-
   const resetValues = () => {
     reset({
       email: '',
@@ -90,7 +87,7 @@ const NewUser = () => {
       password: '',
       phone: '',
       firstName: '',
-      recommenderId: ''
+      recommenderId: '75588721-dc46-4129-9e54-953cb13c42be'
     })
   }
 
@@ -103,7 +100,7 @@ const NewUser = () => {
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <CardHeader title='Nuevo Administrador' titleTypographyProps={{ variant: 'h6' }} />
-          <GoBackButton onChangePage={handleChangePage} />
+          <GoBackButton onChangePage={'/dashboards/general/'} />
         </div>
 
         <CardContent>
@@ -285,6 +282,7 @@ const NewUser = () => {
                       >
                         <MenuItem value='Administrador General'>Administrador General</MenuItem>
                         <MenuItem value='Administrador de Productos'>Administrador de Productos</MenuItem>
+                        <MenuItem value='Administrador de Logística'>Administrador de Logística</MenuItem>
                       </Select>
                     )}
                   />
@@ -304,6 +302,7 @@ const NewUser = () => {
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
+                        disabled
                         label='Código de recomendado'
                         onChange={onChange}
                         placeholder='32u4234-234234-234234-422'
