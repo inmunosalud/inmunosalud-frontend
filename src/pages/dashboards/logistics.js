@@ -41,9 +41,9 @@ const columns = [
   },
   {
     minWidth: 240,
-    field: 'colony',
+    field: 'neighborhood',
     headerName: 'Colonia',
-    valueGetter: params => params.row.address.colony
+    valueGetter: params => params.row.address.neighborhood
   },
   {
     minWidth: 130,
@@ -155,6 +155,6 @@ const AdminLogistics = () => {
   )
 }
 
-AdminLogistics.getLayout = page => <BlankLayout>{page}</BlankLayout>
+AdminLogistics.getLayout = page => (user?.profile === 'Logistica' ? <BlankLayout>{page}</BlankLayout> : null)
 
 export default AdminLogistics
