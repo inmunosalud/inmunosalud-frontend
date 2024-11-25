@@ -282,7 +282,7 @@ const NewUser = () => {
                       >
                         <MenuItem value='Administrador General'>Administrador General</MenuItem>
                         <MenuItem value='Administrador de Productos'>Administrador de Productos</MenuItem>
-                        <MenuItem value='Administrador de Logística'>Administrador de Logística</MenuItem>
+                        <MenuItem value='Logística'>Logística</MenuItem>
                       </Select>
                     )}
                   />

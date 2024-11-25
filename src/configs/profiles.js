@@ -71,7 +71,7 @@ export const PROFILES = {
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceAddProduct
   ],
-  Logistica: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts, PERMISSIONS.dashboardLogistics],
+  Logística: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts, PERMISSIONS.dashboardLogistics],
   'Administrador General': Object.values(PERMISSIONS),
   default: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts]
 }
@@ -105,5 +105,5 @@ export const PROFILES_USER = {
   productsAdmin: 'Administrador de Productos',
   consumerUser: 'Consumidor',
   affiliatedUser: 'Afiliado',
-  logisticsAdmin: 'Administrador de Logística'
+  logisticsAdmin: 'Logística'
 }

@@ -13,6 +13,10 @@ import { Typography } from '@mui/material'
 import { closeSnackBar } from 'src/store/notifications'
 import { Button } from '@mui/material'
 import { isDataLoaded } from 'src/store/dashboard/generalSlice'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import { setModal } from 'src/store/contactus'
+import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
+import { esES } from '@mui/x-data-grid/locales'
 
 import { getLogisticsOrders } from 'src/store/orders'
 
@@ -97,6 +101,11 @@ const AdminLogistics = () => {
     dispatch(isDataLoaded(true))
   }, [])
 
+  const handleLogout = () => {
+    localStorage.removeItem('im-user')
+    location.reload()
+  }
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -111,15 +120,27 @@ const AdminLogistics = () => {
 
   return (
     <>
-      <Card>
-        <CardHeader title='Pedidos' />
+      <Card sx={{ m: 10 }}>
+        <CardHeader
+          title='Pedidos'
+          action={
+            <>
+              <Button sx={{ mr: 4 }} variant='contained' color='secondary' onClick={() => dispatch(setModal(true))}>
+                Tengo un problema
+              </Button>
+              <Button variant='contained' onClick={handleLogout}>
+                Cerrar sesión
+              </Button>
+            </>
+          }
+        />
         <DataGrid
           autoHeight
           loading={isLoading}
+          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           rows={logisticsOrdersAll}
           disableColumnMenu={true}
           columns={columns}
-          sx={{ width: '100%' }}
           rowsPerPageOptions={[5, 10, 25]}
           pageSize={pageSize}
           onPageSizeChange={newPageSize => setPageSize(newPageSize)}
@@ -129,8 +150,11 @@ const AdminLogistics = () => {
         />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
+      <ProblemFormModal />
     </>
   )
 }
+
+AdminLogistics.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
 export default AdminLogistics
