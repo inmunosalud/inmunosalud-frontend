@@ -155,6 +155,6 @@ const AdminLogistics = () => {
   )
 }
 
-AdminLogistics.getLayout = page => (user?.profile === 'Logistica' ? <BlankLayout>{page}</BlankLayout> : null)
+AdminLogistics.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
 export default AdminLogistics
