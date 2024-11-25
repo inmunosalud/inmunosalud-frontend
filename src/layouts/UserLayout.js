@@ -79,7 +79,7 @@ const UserLayout = ({ children }) => {
       dispatch(isDataLoaded(false))
     }
     if (user && Object.keys(user).length > 0) {
-      if (user.profile === 'Logistica') {
+      if (user.profile === 'Logística') {
         router.push('/dashboards/logistics')
         dispatch(isDataLoaded(true))
       }
