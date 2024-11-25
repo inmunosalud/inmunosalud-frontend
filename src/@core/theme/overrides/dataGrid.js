@@ -49,10 +49,7 @@ const DataGrid = theme => {
         },
 
         virtualScrollerRenderZone: {
-          '& .MuiDataGrid-row': {
-            maxHeight: '50px !important',
-            minHeight: '50px !important'
-          }
+          '& .MuiDataGrid-row': {}
         },
         row: {
           '&:last-child': {
@@ -62,9 +59,6 @@ const DataGrid = theme => {
           }
         },
         cell: {
-          maxHeight: '50px !important',
-          minHeight: '50px !important',
-          lineHeight: '20px !important',
           borderColor: theme.palette.divider,
           '&:not(.MuiDataGrid-cellCheckbox)': {
             padding: theme.spacing(4),
