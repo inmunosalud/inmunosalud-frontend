@@ -65,7 +65,7 @@ const UserLayout = ({ children }) => {
   const router = useRouter()
 
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
   const { user } = useSelector(state => state.session)
   const { dataLoaded } = useSelector(state => state.dashboard.general)
 
