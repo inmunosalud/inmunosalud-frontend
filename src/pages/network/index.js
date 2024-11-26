@@ -591,8 +591,19 @@ const Network = () => {
     }
   }
   const handleCopyUrl = () => {
+    const url =
+      window.location.origin +
+      `/landing-page/join/?id=${user?.id}` +
+      `&fn=${btoa(unescape(encodeURIComponent(user?.firstName)))}` +
+      `&ln=${btoa(unescape(encodeURIComponent(user?.lastName)))}`
+
+    // Para descifrar:
+    // const id2Decoded = decodeURIComponent(escape(atob(id2)))
+    // const id3Decoded = decodeURIComponent(escape(atob(id3)))
+    // console.log(id2Decoded, id3Decoded)
+
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(`https://www.inmunosalud.mx/register/?id=${user?.id}`)
+      navigator.clipboard.writeText(url)
       setIsCopied2(true)
       setTimeout(() => setIsCopied2(false), 1000)
     }

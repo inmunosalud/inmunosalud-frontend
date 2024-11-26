@@ -87,7 +87,7 @@ export default function FormRegister() {
   }
 
   React.useEffect(() => {
-    const id = searchParams.get('id')
+    const id = sessionStorage.getItem('recommenderId')
     if (id) {
       setValue('recommenderId', id)
     }
@@ -200,9 +200,14 @@ export default function FormRegister() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label='Código de recomendado'
+                    label={
+                      !!sessionStorage.getItem('recommenderFirstName') &&
+                      !!sessionStorage.getItem('recommenderLastName')
+                        ? `Recomendado por: ${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderFirstName'))))} ${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderLastName'))))}`
+                        : 'Código de recomendado'
+                    }
                     fullWidth
-                    disabled={!!searchParams.get('id')}
+                    disabled={!!sessionStorage.getItem('recommenderId')}
                     error={!!errors.recommenderId}
                     helperText={errors.recommenderId?.message}
                   />
