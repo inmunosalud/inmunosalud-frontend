@@ -27,7 +27,7 @@ import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-
+import { CircularProgress } from '@mui/material'
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
@@ -345,11 +345,25 @@ const AddCard = props => {
                         </Box>
                       </Grid>
                       <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                        <Box>
+                        <Typography
+                          variant='body2'
+                          className='col-title'
+                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
+                        >
+                          Cantidad
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
+                          }}
+                        >
                           <TextField
                             size='small'
                             variant='standard'
-                            label='Cantidad'
                             type='text'
                             slotProps={{
                               inputLabel: {
@@ -423,9 +437,23 @@ const AddCard = props => {
                           height: '100%'
                         }}
                       >
-                        <IconButton size='small' onClick={e => deleteForm(product.id)}>
-                          <Close fontSize='small' />
-                        </IconButton>
+                        {isLoading ? (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              my: 0,
+                              height: '100%'
+                            }}
+                          >
+                            <CircularProgress size={30} thickness={2} />
+                          </Box>
+                        ) : (
+                          <IconButton size='small' onClick={e => deleteForm(product.id)}>
+                            <Close fontSize='small' />
+                          </IconButton>
+                        )}
                       </Box>
                     </InvoiceAction>
                   </RepeatingContent>
