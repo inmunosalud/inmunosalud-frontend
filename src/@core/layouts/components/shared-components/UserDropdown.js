@@ -34,7 +34,6 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 import { Account, Router, AccountCog, AccountCircle } from 'mdi-material-ui'
 import { PROFILES_USER } from 'src/configs/profiles'
-import { stripeRegister } from 'src/store/users'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 import { Link } from '@mui/material'
 
@@ -84,11 +83,6 @@ const UserDropdown = props => {
   const handleConvertProfile = () => {
     router.push({ pathname: '/landing-page/join' })
     handleDropdownClose()
-  }
-
-  const handleRegister = () => {
-    const id = user.id
-    dispatch(stripeRegister(id))
   }
 
   return (

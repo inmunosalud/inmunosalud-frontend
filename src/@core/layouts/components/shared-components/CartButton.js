@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 
 import { Badge } from '@mui/material'
 import { Cart } from 'mdi-material-ui'
+import { CircularProgress } from '@mui/material'
 
 // ** Icons Imports
 import IconButton from '@mui/material/IconButton'
@@ -12,7 +13,7 @@ const CartButton = props => {
   // ** Props
 
   // ** Selectors
-  const { products } = useSelector(state => state.cart)
+  const { products, isLoading } = useSelector(state => state.cart)
 
   const getQuantity = products.reduce((total, item) => {
     total += item.quantity
@@ -25,7 +26,10 @@ const CartButton = props => {
 
   return (
     <IconButton color='inherit' aria-haspopup='true' onClick={handleGoToCart}>
-      <Badge badgeContent={getQuantity} color='primary'>
+      <Badge
+        badgeContent={isLoading ? <CircularProgress color='inherit' size={9} thickness={5} /> : getQuantity}
+        color='primary'
+      >
         <Cart />
       </Badge>
     </IconButton>

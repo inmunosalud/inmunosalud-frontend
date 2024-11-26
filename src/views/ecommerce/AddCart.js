@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
+import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Collapse from '@mui/material/Collapse'
@@ -24,7 +25,9 @@ import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 // ** Icon Imports
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
-
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import { CircularProgress } from '@mui/material'
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
@@ -92,7 +95,7 @@ const AddCard = props => {
 
   // ** Selectors
   const monthlyPaymentProducts = useSelector(state => state.monthlyPurchase.products)
-  const { total, products, id, selectedPayment, selectedAddress } = useSelector(state => state.cart)
+  const { total, products, id, selectedPayment, selectedAddress, isLoading } = useSelector(state => state.cart)
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -278,7 +281,7 @@ const AddCard = props => {
               <CalcWrapper>
                 <Typography variant='body2'>Monto de envío:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
+                  ${total.shippingCost}
                 </Typography>
               </CalcWrapper>
               <CalcWrapper>
@@ -291,7 +294,7 @@ const AddCard = props => {
               <CalcWrapper>
                 <Typography variant='body2'>Total:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.total : 0}
+                  ${total.total}
                 </Typography>
               </CalcWrapper>
             </Grid>
@@ -329,7 +332,15 @@ const AddCard = props => {
                         >
                           Precio
                         </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
+                          }}
+                        >
                           <Typography sx={{ ml: 3 }}>${product.price}</Typography>
                         </Box>
                       </Grid>
@@ -341,18 +352,59 @@ const AddCard = props => {
                         >
                           Cantidad
                         </Typography>
-                        <TextField
-                          size='small'
-                          type='number'
-                          placeholder='1'
-                          defaultValue={product.quantity}
-                          InputProps={{
-                            inputProps: { min: 0 },
-                            onKeyDown: handleKeyDown,
-                            onKeyPress: handleKeyPress
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
                           }}
-                          onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
-                        />
+                        >
+                          <TextField
+                            size='small'
+                            variant='standard'
+                            type='text'
+                            slotProps={{
+                              inputLabel: {
+                                shrink: false
+                              }
+                            }}
+                            disabled={isLoading}
+                            placeholder='0'
+                            onChange={ev => {
+                              handleUpdate(product.id, ev.target.value)
+                            }}
+                            sx={{ mt: 1.5 }}
+                            value={product.quantity}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position='end'>
+                                  <IconButton
+                                    size='small'
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                      const newQuantity = product.quantity - 1
+                                      handleUpdate(product.id, newQuantity)
+                                    }}
+                                  >
+                                    <RemoveCircleOutlineIcon fontSize='small' />
+                                  </IconButton>
+                                  <IconButton
+                                    size='small'
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                      const newQuantity = product.quantity + 1
+                                      handleUpdate(product.id, newQuantity)
+                                    }}
+                                  >
+                                    <AddCircleOutlineIcon fontSize='small' />
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        </Box>
                       </Grid>
                       <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
                         <Typography
@@ -362,13 +414,47 @@ const AddCard = props => {
                         >
                           Total
                         </Typography>
-                        <Typography>${product.total}</Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
+                          }}
+                        >
+                          <Typography>${product.total}</Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                     <InvoiceAction>
-                      <IconButton size='small' onClick={e => deleteForm(product.id)}>
-                        <Close fontSize='small' />
-                      </IconButton>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          my: 0,
+                          height: '100%'
+                        }}
+                      >
+                        {isLoading ? (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              my: 0,
+                              height: '100%'
+                            }}
+                          >
+                            <CircularProgress size={30} thickness={2} />
+                          </Box>
+                        ) : (
+                          <IconButton size='small' onClick={e => deleteForm(product.id)}>
+                            <Close fontSize='small' />
+                          </IconButton>
+                        )}
+                      </Box>
                     </InvoiceAction>
                   </RepeatingContent>
                 </Grid>

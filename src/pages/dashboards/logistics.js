@@ -81,7 +81,7 @@ const columns = [
     valueGetter: params => params.row.address.refer
   },
   {
-    flex: 1.9,
+    flex: 2.5,
     field: 'email',
     headerName: 'Correo Electrónico',
     valueGetter: params => params.row.user.email

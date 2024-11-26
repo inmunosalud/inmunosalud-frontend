@@ -39,7 +39,7 @@ export const usersList = createAsyncThunk('user/list', async () => {
   return response
 })
 
-export const sendNewUser = createAsyncThunk('user/sendNewUser', async (body, thunkApi) => {
+export const sendNewUser = createAsyncThunk('user/send-new-user', async (body, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -136,7 +136,7 @@ export const createContract = createAsyncThunk('contracts/createContract', async
 //Recover Password
 export const sendPasswordVerificationCode = createAsyncThunk('users/verification-code', async (email, thunkApi) => {
   try {
-    const response = await api_post(`${USERS}/users/passwordRecoveryCode`, email)
+    const response = await api_post(`${USERS}/users/password-recovery-code`, email)
 
     toast.success('Se ha enviado un código de verificación a su correo electrónico')
     return response
@@ -150,7 +150,7 @@ export const validatePasswordRecoveryCode = createAsyncThunk(
   'users/validatePasswordRecoveryCode',
   async (body, thunkApi) => {
     try {
-      const response = await api_post(`${USERS}/users/validatePasswordRecoveryCode`, body)
+      const response = await api_post(`${USERS}/users/validate-password-recovery-code`, body)
       return response
     } catch (error) {
       toast.error('El código de verificación no es valido')
@@ -173,7 +173,7 @@ export const recoverPassword = createAsyncThunk('/users/password', async (body, 
 //validate Verification Code
 export const validateVerificationCode = createAsyncThunk('users/validateVerificationCode', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${USERS}/users/validateVerificationCode`, body)
+    const response = await api_post(`${USERS}/users/validate-verification-code`, body)
     return response
   } catch (error) {
     const errMessage = error?.response?.data?.message
@@ -197,18 +197,9 @@ export const getNetworkById = createAsyncThunk('user/networkUser', async id => {
   return response
 })
 
-//get link to register user in stripe
-export const stripeRegister = createAsyncThunk('user/stripeAccountLink', async id => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const response = await api_get(`${STRIPE}/users/stripeAccountLink/${id}`, auth)
-
-  return response
-})
-
 export const sendVerificationCode = createAsyncThunk('user/verificationCode', async (email, thunkApi) => {
   try {
-    const response = await api_post(`${USERS}/users/verificationCode`, email)
+    const response = await api_post(`${USERS}/users/verification-code`, email)
     alert('Se ha enviado un código de verificación a su correo electrónico')
     return response
   } catch (error) {
@@ -220,7 +211,7 @@ export const sendVerificationCode = createAsyncThunk('user/verificationCode', as
 
 export const validateNewUser = createAsyncThunk('user/validateNewUser', async (body, thunkApi) => {
   try {
-    const response = await api_post(`${USERS}/users/validateVerificationCode`, body)
+    const response = await api_post(`${USERS}/users/validate-verification-code`, body)
     localStorage.setItem('im-user', response.content.token)
 
     Router.push('/landing-page/home/')
@@ -449,14 +440,6 @@ export const usersSlice = createSlice({
     })
     builder.addCase(getNetworkById.rejected, (state, { payload }) => {
       state.isLoading = false
-    })
-    //get stripe link
-    builder.addCase(stripeRegister.fulfilled, (state, { payload }) => {
-      const { content } = payload
-
-      state.stripeLink = content.url
-
-      window.open(content.url, '_blank')
     })
     //Recover password
     builder.addCase(recoverPassword.pending, state => {

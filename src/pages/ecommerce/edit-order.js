@@ -32,13 +32,15 @@ const CustomInput = React.forwardRef(({ ...props }, ref) => {
 
 const defaultOrdersValues = {
   trackingUrl: '',
+  trackingID: '',
   company: '',
   validDeliveryDate: null,
   deliveryStatus: ''
 }
 
 const ordersSchema = yup.object().shape({
-  trackingUrl: yup.string().required(),
+  trackingUrl: yup.string(),
+  trackingID: yup.string().required(),
   company: yup.string().required(),
   validDeliveryDate: yup.string().required(),
   deliveryStatus: yup.string().required()
@@ -63,6 +65,7 @@ const EditOrder = () => {
     if (itemUpdated && Object.keys(itemUpdated).length) {
       reset({
         trackingUrl: itemUpdated.shipment?.trackingUrl,
+        trackingID: itemUpdated.shipment?.trackingID,
         company: itemUpdated.shipment?.company,
         validDeliveryDate: itemUpdated.validDeliveryDate,
         deliveryStatus: itemUpdated.deliveryStatus
@@ -77,6 +80,7 @@ const EditOrder = () => {
     body = {
       shipment: {
         trackingUrl: values.trackingUrl,
+        trackingID: values.trackingID,
         company: values.company,
         id: itemUpdated?.id
       },
@@ -126,18 +130,38 @@ const EditOrder = () => {
                 <Controller
                   name='trackingUrl'
                   control={control}
-                  rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <TextField
                       value={value}
-                      label='Guia del pedido'
+                      label='URL de rastreo'
                       onChange={onChange}
-                      //error={Boolean(ordersErrors.trackingUrl)}
                       aria-describedby='validation-basic-first-name'
                     />
                   )}
                 />
                 {ordersErrors.trackingUrl && (
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    This field is required
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <FormControl fullWidth>
+                <Controller
+                  name='trackingID'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      value={value}
+                      label='ID de rastreo'
+                      onChange={onChange}
+                      aria-describedby='validation-basic-first-name'
+                    />
+                  )}
+                />
+                {ordersErrors.trackingID && (
                   <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
                     This field is required
                   </FormHelperText>
