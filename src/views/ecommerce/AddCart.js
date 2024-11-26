@@ -332,7 +332,15 @@ const AddCard = props => {
                         >
                           Precio
                         </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
+                          }}
+                        >
                           <Typography sx={{ ml: 3 }}>${product.price}</Typography>
                         </Box>
                       </Grid>
@@ -392,13 +400,33 @@ const AddCard = props => {
                         >
                           Total
                         </Typography>
-                        <Typography>${product.total}</Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            my: 0,
+                            height: '100%'
+                          }}
+                        >
+                          <Typography>${product.total}</Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                     <InvoiceAction>
-                      <IconButton size='small' onClick={e => deleteForm(product.id)}>
-                        <Close fontSize='small' />
-                      </IconButton>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          my: 0,
+                          height: '100%'
+                        }}
+                      >
+                        <IconButton size='small' onClick={e => deleteForm(product.id)}>
+                          <Close fontSize='small' />
+                        </IconButton>
+                      </Box>
                     </InvoiceAction>
                   </RepeatingContent>
                 </Grid>
