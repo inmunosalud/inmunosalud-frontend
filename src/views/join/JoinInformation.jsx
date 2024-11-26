@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -14,14 +15,28 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { useDispatch, useSelector } from 'react-redux'
 import { createPartner } from 'src/store/users'
+import { useSearchParams } from 'next/navigation'
 
 const JoinInformation = ({ profile }) => {
   const dispatch = useDispatch()
+  const searchParams = useSearchParams()
+
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const { user } = useSelector(state => state.session)
   const submitPartner = values => {
     dispatch(createPartner({ id: user.id }))
   }
+
+  useEffect(() => {
+    const id = searchParams.get('id')
+    const firstName = searchParams.get('fn')
+    const lastName = searchParams.get('ln')
+    if (id) {
+      sessionStorage.setItem('recommenderId', id)
+      sessionStorage.setItem('recommenderFirstName', firstName)
+      sessionStorage.setItem('recommenderLastName', lastName)
+    }
+  }, [searchParams])
 
   return (
     <>
@@ -352,13 +367,19 @@ const JoinInformation = ({ profile }) => {
                   </Button>
                 ) : (
                   <Link
-                    href='https://wa.me/523334173934?text=¡Quiero%20un%20código!'
+                    href={
+                      sessionStorage.getItem('recommenderId') || searchParams.get('id')
+                        ? '/register'
+                        : 'https://wa.me/523334173934?text=¡Quiero%20un%20código!'
+                    }
                     passHref
-                    target='_blank'
-                    rel='noopener noreferrer'
+                    target={sessionStorage.getItem('recommenderId') || searchParams.get('id') ? '_self' : '_blank'}
+                    rel={sessionStorage.getItem('recommenderId') || searchParams.get('id') ? '' : 'noopener noreferrer'}
                   >
                     <Button variant='contained' size='large'>
-                      {'Obtén un código para registrarte'}
+                      {sessionStorage.getItem('recommenderId') || searchParams.get('id')
+                        ? 'Registrarse'
+                        : 'Obtén un código para registrarte'}
                     </Button>
                   </Link>
                 )}
