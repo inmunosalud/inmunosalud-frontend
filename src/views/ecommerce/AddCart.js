@@ -281,7 +281,7 @@ const AddCard = props => {
               <CalcWrapper>
                 <Typography variant='body2'>Monto de envío:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.shippingCost ?? 0 : 0}
+                  ${total.shippingCost}
                 </Typography>
               </CalcWrapper>
               <CalcWrapper>
@@ -294,7 +294,7 @@ const AddCard = props => {
               <CalcWrapper>
                 <Typography variant='body2'>Total:</Typography>
                 <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal > 0 ? total.total : 0}
+                  ${total.total}
                 </Typography>
               </CalcWrapper>
             </Grid>
