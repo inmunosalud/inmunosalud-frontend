@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
+import InputAdornment from '@mui/material/InputAdornment'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Collapse from '@mui/material/Collapse'
@@ -24,6 +25,8 @@ import NegroIotipo from '/public/images/logos/Negro-Isotipo.png'
 // ** Icon Imports
 import Plus from 'mdi-material-ui/Plus'
 import Close from 'mdi-material-ui/Close'
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -92,7 +95,7 @@ const AddCard = props => {
 
   // ** Selectors
   const monthlyPaymentProducts = useSelector(state => state.monthlyPurchase.products)
-  const { total, products, id, selectedPayment, selectedAddress } = useSelector(state => state.cart)
+  const { total, products, id, selectedPayment, selectedAddress, isLoading } = useSelector(state => state.cart)
   const { selectedPaymentMethod } = useSelector(state => state.paymentMethods)
   const { selectedAddressInCart } = useSelector(state => state.address)
   const { open, message, severity } = useSelector(state => state.notifications)
@@ -334,25 +337,52 @@ const AddCard = props => {
                         </Box>
                       </Grid>
                       <Grid item lg={2} md={2} xs={12} sx={{ px: 4, my: { lg: 0, xs: 4 } }}>
-                        <Typography
-                          variant='body2'
-                          className='col-title'
-                          sx={{ fontWeight: '600', mb: { md: 2, xs: 0 } }}
-                        >
-                          Cantidad
-                        </Typography>
-                        <TextField
-                          size='small'
-                          type='number'
-                          placeholder='1'
-                          defaultValue={product.quantity}
-                          InputProps={{
-                            inputProps: { min: 0 },
-                            onKeyDown: handleKeyDown,
-                            onKeyPress: handleKeyPress
-                          }}
-                          onChange={ev => handleUpdate(product.id, ev.target.value, product.canBeRemoved)}
-                        />
+                        <Box>
+                          <TextField
+                            size='small'
+                            variant='standard'
+                            label='Cantidad'
+                            type='text'
+                            slotProps={{
+                              inputLabel: {
+                                shrink: false
+                              }
+                            }}
+                            disabled={isLoading}
+                            placeholder='0'
+                            onChange={ev => {
+                              handleUpdate(product.id, ev.target.value)
+                            }}
+                            sx={{ mt: 1.5 }}
+                            value={product.quantity}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position='end'>
+                                  <IconButton
+                                    size='small'
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                      const newQuantity = product.quantity - 1
+                                      handleUpdate(product.id, newQuantity)
+                                    }}
+                                  >
+                                    <RemoveCircleOutlineIcon fontSize='small' />
+                                  </IconButton>
+                                  <IconButton
+                                    size='small'
+                                    disabled={isLoading}
+                                    onClick={() => {
+                                      const newQuantity = product.quantity + 1
+                                      handleUpdate(product.id, newQuantity)
+                                    }}
+                                  >
+                                    <AddCircleOutlineIcon fontSize='small' />
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        </Box>
                       </Grid>
                       <Grid item lg={2} md={1} xs={12} sx={{ px: 4, my: { lg: 0 }, mt: 2 }}>
                         <Typography

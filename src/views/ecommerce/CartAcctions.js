@@ -43,7 +43,7 @@ const CartActions = () => {
   const [open, setOpen] = useState(false)
   const { constants } = useSelector(state => state.constants)
 
-  const { selectedPayment, selectedAddress, products, total } = useSelector(state => state.cart)
+  const { selectedPayment, selectedAddress, products, total, isLoading } = useSelector(state => state.cart)
 
   const handleCheckout = () => {
     if (products.length === 0) {
@@ -118,7 +118,14 @@ const CartActions = () => {
       <Box>
         <Card sx={{ mb: 4 }}>
           <CardContent>
-            <Button fullWidth sx={{ mb: 3.5 }} variant='contained' startIcon={<SendOutline />} onClick={handleCheckout}>
+            <Button
+              disabled={isLoading}
+              fullWidth
+              sx={{ mb: 3.5 }}
+              variant='contained'
+              startIcon={<SendOutline />}
+              onClick={handleCheckout}
+            >
               Checkout
             </Button>
 
