@@ -605,7 +605,7 @@ const Network = () => {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(url)
       setIsCopied2(true)
-      setTimeout(() => setIsCopied2(false), 1000)
+      setTimeout(() => setIsCopied2(false), 800)
     }
   }
 
