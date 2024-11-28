@@ -20,24 +20,56 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import { updateCart } from 'src/store/cart'
 import RedirectModal from 'src/pages/components/modals/RedirectModal'
 import { setShowConfirmModal, setShowRedirectModal } from 'src/store/users'
-
+import { useSearchParams } from 'next/navigation'
+import { Share as ShareIcon } from '@mui/icons-material'
+import useMediaQuery from '@mui/material/useMediaQuery'
 export default function ProductPage() {
   const router = useRouter()
   const { id } = router.query
   const dispatch = useDispatch()
   const theme = useTheme()
   const { products } = useSelector(state => state.cart)
+  const searchParams = useSearchParams()
+  const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
   const [isAddToCart, setIsAddToCart] = React.useState(false)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
+  const [isCopied, setIsCopied] = React.useState(false)
 
   const { currentProduct, isLoading } = useSelector(state => state.products)
   const { user } = useSelector(state => state.session)
+
+  const handleShare = async () => {
+    const productUrl =
+      `${window.location.origin}/ecommerce/product/${id}/?id=${user?.id}` +
+      `&fn=${btoa(unescape(encodeURIComponent(user?.firstName)))}` +
+      `&ln=${btoa(unescape(encodeURIComponent(user?.lastName)))}`
+
+    try {
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 800)
+      await navigator.clipboard.writeText(productUrl)
+    } catch (error) {
+      console.error('Error copying to clipboard:', error)
+    }
+  }
+
   useEffect(() => {
     if (id) {
       dispatch(getProductById(id))
     }
   }, [dispatch, id])
+
+  useEffect(() => {
+    const id = searchParams.get('id')
+    const firstName = searchParams.get('fn')
+    const lastName = searchParams.get('ln')
+    if (id) {
+      sessionStorage.setItem('recommenderId', id)
+      sessionStorage.setItem('recommenderFirstName', firstName)
+      sessionStorage.setItem('recommenderLastName', lastName)
+    }
+  }, [searchParams])
 
   if (isLoading) {
     return (
@@ -90,11 +122,37 @@ export default function ProductPage() {
         <Grid item xs={12} md={6}>
           <Typography variant='h4'>{currentProduct?.product}</Typography>
           <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
-            {currentProduct?.content}
+            <div dangerouslySetInnerHTML={{ __html: currentProduct?.content }} />
           </Typography>
           <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
             Ingredientes activos: {currentProduct?.ingredients}
           </Typography>
+          <Box
+            sx={{
+              pt: '2rem',
+              display: 'flex',
+              flexDirection: mobile ? 'column' : 'column',
+              justifyContent: mobile ? 'center' : 'flex-end',
+              alignItems: mobile ? 'center' : undefined,
+              width: mobile ? '100%' : '50%'
+            }}
+          >
+            <Button
+              endIcon={<ShareIcon />}
+              color='primary'
+              size='large'
+              variant='outlined'
+              onClick={handleShare}
+              sx={{
+                gap: 1,
+                width: '100%',
+
+                mb: 2
+              }}
+            >
+              {isCopied ? 'Copiado' : 'Compartir producto'}
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -219,7 +277,7 @@ export default function ProductPage() {
           <Typography variant='body1'>
             <ul>
               {currentProduct?.benefits?.map(benefit => (
-                <li key={benefit.detail}>{benefit.detail}</li>
+                <li key={benefit.detail}>{<div dangerouslySetInnerHTML={{ __html: benefit.detail }} />}</li>
               ))}
             </ul>
           </Typography>

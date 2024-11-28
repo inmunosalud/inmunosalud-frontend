@@ -27,6 +27,10 @@ import DialogForm from 'src/views/components/dialogs/DialogForm'
 import RedirectModal from 'src/pages/components/modals/RedirectModal'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import Tooltip from '@mui/material/Tooltip'
+import { Share as ShareIcon } from '@mui/icons-material'
+import EastIcon from '@mui/icons-material/East'
+import { CardActions } from '@mui/material'
+
 export const ProductItem = props => {
   const dispatch = useDispatch()
   const router = useRouter()
@@ -38,6 +42,7 @@ export const ProductItem = props => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const { showConfirmModal, showRedirectModal } = useSelector(state => state.users)
   const [showModalDelete, setShowModalDelete] = React.useState(false)
+  const [isCopied, setIsCopied] = React.useState(false)
 
   const { productId } = useSelector(state => state.products)
 
@@ -45,6 +50,21 @@ export const ProductItem = props => {
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleShare = async () => {
+    const productUrl =
+      `${window.location.origin}/ecommerce/product/${props.id}/?id=${user?.id}` +
+      `&fn=${btoa(unescape(encodeURIComponent(user?.firstName)))}` +
+      `&ln=${btoa(unescape(encodeURIComponent(user?.lastName)))}`
+
+    try {
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 800)
+      await navigator.clipboard.writeText(productUrl)
+    } catch (error) {
+      console.error('Error copying to clipboard:', error)
+    }
   }
 
   const handleClose = () => {
@@ -118,71 +138,104 @@ export const ProductItem = props => {
   return (
     <Card id={props.id}>
       <Grid container spacing={2}>
-        {/* Título y menú */}
-        <Grid item xs={12}>
-          <CardHeader
-            title={
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
-                  {props.product}
-                </Typography>
-                {props.isEdit && (
-                  <IconButton onClick={handleClick}>
-                    <DotsVertical />
-                  </IconButton>
-                )}
-              </Box>
-            }
-          />
-
-          <MenuBasic {...listMenuProps} />
-        </Grid>
-
         {/* Contenido principal */}
         <Grid item xs={12} mb={6}>
-          <CardContent>
-            <Grid container spacing={2}>
-              {/* Columna izquierda: Información del producto */}
-              <Grid item xs={12} md={6}>
-                {props.isEdit && (
-                  <Typography variant='body2' sx={{ mb: 2 }}>
-                    <strong>{`Cantidad en almacén: ${props.stock}`}</strong>
-                  </Typography>
-                )}
-                <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
-                  {props.content}
-                </Typography>
-                <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
-                  {`Ingredientes: ${props.ingredients}`}
-                </Typography>
+          <Grid container spacing={2}>
+            {/* Columna izquierda: Información del producto */}
 
-                <Box
-                  style={{
-                    marginTop: '100px',
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                <CardHeader
+                  title={
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+                        {props.product}
+                      </Typography>
+                      {props.isEdit && (
+                        <IconButton onClick={handleClick}>
+                          <DotsVertical />
+                        </IconButton>
+                      )}
+                    </Box>
+                  }
+                  subheader={
+                    props.isEdit && (
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        <strong>{`Cantidad en almacén: ${props.stock}`}</strong>
+                      </Typography>
+                    )
+                  }
+                  action={
+                    <Box>
+                      <MenuBasic {...listMenuProps} />
+                    </Box>
+                  }
+                />
+                <CardContent
+                  sx={{
+                    flexGrow: 1,
                     display: 'flex',
-                    justifyContent: mobile ? 'center' : undefined,
-                    alignItems: mobile ? 'center' : undefined
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    my: 0
                   }}
                 >
-                  <Link href={`/ecommerce/product/${props.id}`} passHref>
-                    <Chip
-                      label='Ver producto'
-                      icon={<ChevronRightIcon style={{ fontSize: 16 }} />}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Typography variant='subtitle1' sx={{ mt: { xs: 2, sm: 4 } }}>
+                      <div dangerouslySetInnerHTML={{ __html: props.content }} />
+                    </Typography>
+                    <Typography variant='subtitle1' sx={{ mt: { xs: 2, sm: 4 } }}>
+                      {`Ingredientes: ${props.ingredients}`}
+                    </Typography>
+                  </Box>
+                </CardContent>
+                <CardActions>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      mt: 'auto',
+                      gap: 2,
+                      alignItems: 'stretch',
+                      width: '100%'
+                    }}
+                  >
+                    <Button
+                      endIcon={<EastIcon />}
+                      variant='contained'
                       color='primary'
-                      clickable
-                      component='a'
-                      style={{
-                        color: theme.palette.text.primary,
-                        cursor: 'pointer',
-                        transition: 'background-color 0.3s',
-                        marginBottom: '20px'
+                      size='large'
+                      component={Link}
+                      href={`/ecommerce/product/${props.id}`}
+                      underline='none'
+                      sx={{
+                        gap: 1,
+                        width: mobile ? '100%' : '50%'
                       }}
-                    />
-                  </Link>
-                </Box>
-              </Grid>
-              {/* Columna Derecha: Imagen */}
-              <Grid item xs={12} md={6}>
+                    >
+                      Ver más del producto
+                    </Button>
+                    <Button
+                      endIcon={<ShareIcon />}
+                      color='primary'
+                      size='large'
+                      variant='outlined'
+                      onClick={handleShare}
+                      sx={{
+                        gap: 1,
+                        width: mobile ? '100%' : '50%'
+                      }}
+                    >
+                      {isCopied ? 'Copiado' : 'Compartir producto'}
+                    </Button>
+                  </Box>
+                </CardActions>
+              </Box>
+            </Grid>
+
+            {/* Columna Derecha: Imagen */}
+            <Grid item xs={12} md={6}>
+              <CardContent>
                 <Link href={`/ecommerce/product/${props.id}`} passHref>
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <img loading='lazy' src={props.urlImages} alt={props.product} width='60%' />
@@ -268,7 +321,7 @@ export const ProductItem = props => {
                     disabled={isLoading}
                     sx={{
                       marginBottom: 2,
-                      width: '50%',
+                      width: mobile ? '100%' : '50%',
                       '&.Mui-disabled': {
                         backgroundColor: 'primary.main',
                         color: 'white'
@@ -284,7 +337,7 @@ export const ProductItem = props => {
                     disabled={isLoading}
                     sx={{
                       marginBottom: 2,
-                      width: '50%',
+                      width: mobile ? '100%' : '50%',
                       '&.Mui-disabled': {
                         borderColor: 'primary.main',
                         color: 'primary.main'
@@ -294,9 +347,9 @@ export const ProductItem = props => {
                     {isLoading && !isAddToCart ? 'agregado' : 'Agregar al Carrito'}
                   </Button>
                 </Box>
-              </Grid>
+              </CardContent>
             </Grid>
-          </CardContent>
+          </Grid>
         </Grid>
       </Grid>
       <Dialog
