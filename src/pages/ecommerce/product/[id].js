@@ -122,7 +122,7 @@ export default function ProductPage() {
         <Grid item xs={12} md={6}>
           <Typography variant='h4'>{currentProduct?.product}</Typography>
           <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
-            {currentProduct?.content}
+            <div dangerouslySetInnerHTML={{ __html: currentProduct?.content }} />
           </Typography>
           <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
             Ingredientes activos: {currentProduct?.ingredients}
@@ -277,7 +277,7 @@ export default function ProductPage() {
           <Typography variant='body1'>
             <ul>
               {currentProduct?.benefits?.map(benefit => (
-                <li key={benefit.detail}>{benefit.detail}</li>
+                <li key={benefit.detail}>{<div dangerouslySetInnerHTML={{ __html: benefit.detail }} />}</li>
               ))}
             </ul>
           </Typography>

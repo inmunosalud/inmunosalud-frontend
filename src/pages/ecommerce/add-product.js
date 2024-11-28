@@ -71,7 +71,7 @@ const AddProduct = () => {
         stock: yup.string().trim().required('El campo es requerido'),
         isForAffiliated: yup.boolean(),
         content: yup.string().trim().required('El campo es requerido'),
-        ingredients: yup.string().trim().required('El campo es requerido'),
+        ingredients: yup.string().trim(),
         price: yup.string().trim().required('El campo es requerido'),
         affiliatedPrice: yup.string().trim().required('El campo es requerido'),
         description: yup.string().trim().required('El campo es requerido'),
@@ -80,25 +80,19 @@ const AddProduct = () => {
           .of(yup.string())
           .min(1, 'Debes subir al menos una imagen')
           .required('Las imágenes son requeridas'),
-        benefits: yup
-          .array()
-          .of(
-            yup.object().shape({
-              title: yup.string().trim().required('El beneficio es requerido'),
-              detail: yup.string().trim().required('El detalle del beneficio es requerido')
-            })
-          )
-          .min(1, 'Debes agregar al menos un beneficio'),
-        studies: yup
-          .array()
-          .of(
-            yup.object().shape({
-              title: yup.string().trim().required('El título es requerido'),
-              pageName: yup.string().trim().required('El nombre de la página es requerido'),
-              url: yup.string().trim().url('Debe ser una URL válida').required('La URL es requerida')
-            })
-          )
-          .min(1, 'Debes agregar al menos un estudio')
+        benefits: yup.array().of(
+          yup.object().shape({
+            title: yup.string().trim(),
+            detail: yup.string().trim()
+          })
+        ),
+        studies: yup.array().of(
+          yup.object().shape({
+            title: yup.string().trim(),
+            pageName: yup.string().trim(),
+            url: yup.string().trim().url('Debe ser una URL válida')
+          })
+        )
       })
     ),
     defaultValues: {
@@ -110,8 +104,8 @@ const AddProduct = () => {
       price: '',
       affiliatedPrice: '',
       description: '',
-      benefits: [{ title: '', detail: '' }],
-      studies: [{ title: '', pageName: '', url: '' }]
+      benefits: [],
+      studies: []
     }
   })
   const benefits = watch('benefits')
@@ -235,7 +229,7 @@ const AddProduct = () => {
 
   const handleDeleteBenefit = index => {
     const currentBenefits = benefits
-    if (currentBenefits.length > 1) {
+    if (currentBenefits.length > 0) {
       const newBenefits = currentBenefits.filter((_, i) => i !== index)
       setValue('benefits', newBenefits)
     }
@@ -248,7 +242,7 @@ const AddProduct = () => {
 
   const handleDeleteStudy = index => {
     const currentStudies = studies
-    if (currentStudies.length > 1) {
+    if (currentStudies.length > 0) {
       const newStudies = currentStudies.filter((_, i) => i !== index)
       setValue('studies', newStudies)
     }
@@ -268,7 +262,7 @@ const AddProduct = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent>
             <Grid container spacing={5}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={12}>
                 <Grid container spacing={5}>
                   <Grid item xs={12} md={5}>
                     <Controller
@@ -380,23 +374,6 @@ const AddProduct = () => {
                   <Grid item xs={12} md={12}>
                     <Controller
                       control={control}
-                      name='content'
-                      rules={{ required: true }}
-                      render={({ field, fieldState }) => (
-                        <TextField
-                          error={!!errors.content}
-                          label='Contenido'
-                          fullWidth
-                          helperText={errors.content?.message}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={12}>
-                    <Controller
-                      control={control}
                       name='ingredients'
                       rules={{ required: true }}
                       render={({ field, fieldState }) => (
@@ -412,7 +389,30 @@ const AddProduct = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12} md={6}>
+                    <InputLabel
+                      id='content-label'
+                      sx={{
+                        mb: 2,
+                        color: errors.description ? 'error.main' : 'text.primary'
+                      }}
+                    >
+                      Contenido
+                    </InputLabel>
+                    <Controller
+                      control={control}
+                      name='content'
+                      rules={{ required: true }}
+                      render={({ field, fieldState }) => <RichTextEditor field={field} errors={errors} />}
+                    />
+                    {errors.content && (
+                      <FormHelperText sx={{ color: 'error.main', mt: '50px' }} id='stepper-linear-content'>
+                        {errors.content.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
                     <InputLabel
                       id='signature-label'
                       sx={{
@@ -437,8 +437,11 @@ const AddProduct = () => {
                 </Grid>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <InputLabel id='signature-label' sx={{ mb: 2, color: errors.images ? 'error.main' : 'text.primary' }}>
+              <Grid item xs={12} md={12}>
+                <InputLabel
+                  id='signature-label'
+                  sx={{ mt: '3rem', mb: 2, color: errors.images ? 'error.main' : 'text.primary' }}
+                >
                   Imágenes del producto
                 </InputLabel>
                 <Controller
@@ -478,8 +481,8 @@ const AddProduct = () => {
                 <Grid container item xs={12} spacing={5}>
                   <Grid item xs={12} sx={{ marginTop: '10px' }}>
                     {benefits?.map((field, index) => (
-                      <Grid container item xs={12} spacing={5} key={index}>
-                        <Grid item xs={3} sx={{ marginTop: '10px' }}>
+                      <Grid container item xs={12} spacing={5} key={index} sx={{ mb: '50px' }}>
+                        <Grid item xs={3} sx={{ marginTop: '30px' }}>
                           <Controller
                             name={`benefits[${index}].title`}
                             control={control}
@@ -497,29 +500,23 @@ const AddProduct = () => {
                             )}
                           />
                         </Grid>
-                        <Grid item xs={8} sx={{ marginTop: '10px' }}>
+                        <Grid item xs={8}>
+                          <InputLabel
+                            id='benefits-label'
+                            sx={{
+                              mb: 2
+                            }}
+                          >
+                            Detalles del Beneficio
+                          </InputLabel>
                           <Controller
-                            name={`benefits[${index}].detail`}
                             control={control}
-                            defaultValue={field.detail}
-                            rules={{ required: true }}
-                            render={({ field }) => (
-                              <TextField
-                                label='Detalles del Beneficio'
-                                variant='outlined'
-                                error={!!errors.benefits?.[index]?.detail}
-                                helperText={errors.benefits?.[index]?.detail?.message}
-                                fullWidth
-                                multiline
-                                minRows={6}
-                                maxRows={6}
-                                {...field}
-                              />
-                            )}
+                            name={`benefits[${index}].detail`}
+                            render={({ field, fieldState }) => <RichTextEditor field={field} errors={errors} />}
                           />
                         </Grid>
                         <Grid item xs={1} sx={{ display: 'flex', alignItems: 'center' }}>
-                          {benefits.length > 1 && (
+                          {benefits.length > 0 && (
                             <Button variant='text' color='error' onClick={() => handleDeleteBenefit(index)}>
                               Eliminar
                             </Button>
@@ -528,7 +525,7 @@ const AddProduct = () => {
                       </Grid>
                     ))}
                     <Grid item xs={12}>
-                      <Button color='primary' onClick={handleAddBenefit} sx={{ mt: 2, width: '100%' }}>
+                      <Button color='primary' onClick={handleAddBenefit} sx={{ width: '100%' }}>
                         <Plus /> Agregar Nuevo Beneficio
                       </Button>
                     </Grid>
@@ -599,7 +596,7 @@ const AddProduct = () => {
                           />
                         </Grid>
                         <Grid item xs={1} sx={{ display: 'flex', alignItems: 'center' }}>
-                          {studies.length > 1 && (
+                          {studies.length > 0 && (
                             <Button variant='text' color='error' onClick={() => handleDeleteStudy(index)}>
                               Eliminar
                             </Button>

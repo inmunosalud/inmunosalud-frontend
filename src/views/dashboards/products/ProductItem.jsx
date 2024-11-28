@@ -182,7 +182,7 @@ export const ProductItem = props => {
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <Typography variant='subtitle1' sx={{ mt: { xs: 2, sm: 4 } }}>
-                      {props.content}
+                      <div dangerouslySetInnerHTML={{ __html: props.content }} />
                     </Typography>
                     <Typography variant='subtitle1' sx={{ mt: { xs: 2, sm: 4 } }}>
                       {`Ingredientes: ${props.ingredients}`}
