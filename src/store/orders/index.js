@@ -30,7 +30,7 @@ export const getLogisticsOrders = createAsyncThunk('order/getLogisticsOrders', a
   }
 })
 
-export const getOrdersByUser = createAsyncThunk('order/getOrders', async (id, thunkApi) => {
+export const getOrdersByUser = createAsyncThunk('order/getOrdersByUser', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
@@ -163,32 +163,7 @@ export const ordersSlice = createSlice({
     })
     builder.addCase(getOrders.fulfilled, (state, { payload }) => {
       state.isLoading = false
-
-      const mappedOrders = payload.content.map(order => {
-        const deliveryDate = order.deliveryDate
-        let validDeliveryDate
-
-        if (deliveryDate) {
-          const [day, month, year] = deliveryDate.split('/')
-          validDeliveryDate = new Date(year, month - 1, day)
-        } else {
-          validDeliveryDate = new Date()
-        }
-
-        const cardNumberSplitted = order.paymentMethod.cardNumber.slice(4)
-        const paymentMethodMapped = `${order.paymentMethod.cardType} ${cardNumberSplitted}`
-        const shipmentMapped = `${order.shipment.company}`
-        const totalProducts = `${order.products.length}`
-
-        return {
-          ...order,
-          paymentMethodMapped,
-          shipmentMapped,
-          totalProducts,
-          validDeliveryDate
-        }
-      })
-      state.ordersAll = mappedOrders
+      state.ordersAll = payload.content
     })
     builder.addCase(getOrders.rejected, (state, { payload }) => {
       state.isLoading = false

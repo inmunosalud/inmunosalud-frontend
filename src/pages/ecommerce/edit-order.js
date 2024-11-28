@@ -32,15 +32,15 @@ const CustomInput = React.forwardRef(({ ...props }, ref) => {
 
 const defaultOrdersValues = {
   trackingUrl: '',
-  trackingID: '',
+  id: '',
   company: '',
   validDeliveryDate: null,
   deliveryStatus: ''
 }
 
 const ordersSchema = yup.object().shape({
-  trackingUrl: yup.string(),
-  trackingID: yup.string().required(),
+  trackingUrl: yup.string().url('Debe ser una URL válida'),
+  id: yup.string().required(),
   company: yup.string().required(),
   validDeliveryDate: yup.string().required(),
   deliveryStatus: yup.string().required()
@@ -65,7 +65,7 @@ const EditOrder = () => {
     if (itemUpdated && Object.keys(itemUpdated).length) {
       reset({
         trackingUrl: itemUpdated.shipment?.trackingUrl,
-        trackingID: itemUpdated.shipment?.trackingID,
+        id: itemUpdated.shipment?.id,
         company: itemUpdated.shipment?.company,
         validDeliveryDate: itemUpdated.validDeliveryDate,
         deliveryStatus: itemUpdated.deliveryStatus
@@ -75,12 +75,12 @@ const EditOrder = () => {
 
   const onSubmit = values => {
     let body
-    const formattedDate = format(new Date(values.validDeliveryDate), 'dd/MM/yyyy')
+    const formattedDate = format(new Date(values.validDeliveryDate), 'yyyy-MM-dd yyyy')
 
     body = {
       shipment: {
         trackingUrl: values.trackingUrl,
-        trackingID: values.trackingID,
+        id: values.id,
         company: values.company,
         id: itemUpdated?.id
       },
@@ -109,8 +109,8 @@ const EditOrder = () => {
                         <DatePicker
                           selected={value}
                           onChange={onChange}
-                          placeholderText='DD/MM/YYYY'
-                          dateFormat='dd/MM/yyyy'
+                          placeholderText='YYYY-MM-DD'
+                          dateFormat='yyyy-MM-dd'
                           customInput={<CustomInput label='Fecha de entrega' />}
                         />
                       </DatePickerWrapper>
@@ -149,7 +149,7 @@ const EditOrder = () => {
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Controller
-                  name='trackingID'
+                  name='id'
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
@@ -161,7 +161,7 @@ const EditOrder = () => {
                     />
                   )}
                 />
-                {ordersErrors.trackingID && (
+                {ordersErrors.id && (
                   <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
                     This field is required
                   </FormHelperText>
