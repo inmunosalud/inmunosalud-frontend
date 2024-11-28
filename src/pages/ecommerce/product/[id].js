@@ -275,11 +275,7 @@ export default function ProductPage() {
             Más información sobre los beneficios
           </Typography>
           <Typography variant='body1'>
-            <ul>
-              {currentProduct?.benefits?.map(benefit => (
-                <li key={benefit.detail}>{<div dangerouslySetInnerHTML={{ __html: benefit.detail }} />}</li>
-              ))}
-            </ul>
+            <div dangerouslySetInnerHTML={{ __html: currentProduct?.benefits[0].detail }} />
           </Typography>
         </Grid>
       </Grid>
