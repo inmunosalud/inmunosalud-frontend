@@ -78,7 +78,7 @@ export default function FormRegister() {
       email: data.email,
       phone: data.phone,
       password: data.password,
-      recommenderId: data.recommenderId,
+      recommenderId: sessionStorage.getItem('recommenderId'),
       birthdate: moment(data.birthdate).format('YYYY-MM-DD'),
       genre: data.genre
     }
@@ -89,7 +89,10 @@ export default function FormRegister() {
   React.useEffect(() => {
     const id = sessionStorage.getItem('recommenderId')
     if (id) {
-      setValue('recommenderId', id)
+      setValue(
+        'recommenderId',
+        `${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderFirstName'))))} ${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderLastName'))))}`
+      )
     }
   }, [searchParams])
 
@@ -203,7 +206,7 @@ export default function FormRegister() {
                     label={
                       !!sessionStorage.getItem('recommenderFirstName') &&
                       !!sessionStorage.getItem('recommenderLastName')
-                        ? `Recomendado por: ${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderFirstName'))))} ${decodeURIComponent(escape(atob(sessionStorage.getItem('recommenderLastName'))))}`
+                        ? `Recomendado por:`
                         : 'Código de recomendado'
                     }
                     fullWidth
