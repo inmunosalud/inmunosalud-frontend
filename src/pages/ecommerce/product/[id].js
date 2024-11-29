@@ -252,7 +252,7 @@ export default function ProductPage() {
           </Typography>
         </Grid>
       </Grid>
-      {currentProduct.benefits.length > 0 && (
+      {currentProduct?.benefits?.length > 0 && (
         <>
           <Grid container spacing={4} sx={{ marginTop: 30 }}>
             {/* Beneficios */}
