@@ -185,7 +185,7 @@ export const ProductItem = props => {
                       <div dangerouslySetInnerHTML={{ __html: props.content }} />
                     </Typography>
                     <Typography variant='subtitle1' sx={{ mt: { xs: 2, sm: 4 } }}>
-                      {`Ingredientes: ${props.ingredients}`}
+                      {props.ingredients && `Ingredientes: ${props.ingredients}`}
                     </Typography>
                   </Box>
                 </CardContent>

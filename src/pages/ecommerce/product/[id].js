@@ -124,35 +124,38 @@ export default function ProductPage() {
           <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
             <div dangerouslySetInnerHTML={{ __html: currentProduct?.content }} />
           </Typography>
-          <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
-            Ingredientes activos: {currentProduct?.ingredients}
-          </Typography>
-          <Box
-            sx={{
-              pt: '2rem',
-              display: 'flex',
-              flexDirection: mobile ? 'column' : 'column',
-              justifyContent: mobile ? 'center' : 'flex-end',
-              alignItems: mobile ? 'center' : undefined,
-              width: mobile ? '100%' : '50%'
-            }}
-          >
-            <Button
-              endIcon={<ShareIcon />}
-              color='primary'
-              size='large'
-              variant='outlined'
-              onClick={handleShare}
+          {!currentProduct?.ingredients?.trim() ? null : (
+            <Typography variant='subtitle1' sx={{ marginTop: 10 }}>
+              Ingredientes activos: {currentProduct?.ingredients}
+            </Typography>
+          )}
+          {user.profile === 'Afiliado' && (
+            <Box
               sx={{
-                gap: 1,
-                width: '100%',
-
-                mb: 2
+                pt: '2rem',
+                display: 'flex',
+                flexDirection: mobile ? 'column' : 'column',
+                justifyContent: mobile ? 'center' : 'flex-end',
+                alignItems: mobile ? 'center' : undefined,
+                width: mobile ? '100%' : '50%'
               }}
             >
-              {isCopied ? 'Copiado' : 'Compartir producto'}
-            </Button>
-          </Box>
+              <Button
+                endIcon={<ShareIcon />}
+                color='primary'
+                size='large'
+                variant='outlined'
+                onClick={handleShare}
+                sx={{
+                  gap: 1,
+                  width: '100%',
+                  mb: 2
+                }}
+              >
+                {isCopied ? 'Copiado' : 'Compartir producto'}
+              </Button>
+            </Box>
+          )}
         </Grid>
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -249,36 +252,39 @@ export default function ProductPage() {
           </Typography>
         </Grid>
       </Grid>
+      {currentProduct.benefits.length > 0 && (
+        <>
+          <Grid container spacing={4} sx={{ marginTop: 30 }}>
+            {/* Beneficios */}
+            <Grid item xs={12}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant='h5' gutterBottom sx={{ textAlign: 'left', width: '40%' }}>
+                  Beneficios de consumir este producto
+                </Typography>
+                <Typography variant='h5' sx={{ marginTop: 2, width: '60%' }}>
+                  <ul>
+                    {currentProduct?.benefits?.map(benefit => (
+                      <li key={benefit.title}>{benefit.title}</li>
+                    ))}
+                  </ul>
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={4} sx={{ marginTop: 30 }}>
-        {/* Beneficios */}
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant='h5' gutterBottom sx={{ textAlign: 'left', width: '40%' }}>
-              Beneficios de consumir este producto
-            </Typography>
-            <Typography variant='h5' sx={{ marginTop: 2, width: '60%' }}>
-              <ul>
-                {currentProduct?.benefits?.map(benefit => (
-                  <li key={benefit.title}>{benefit.title}</li>
-                ))}
-              </ul>
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={4} sx={{ marginTop: 30 }}>
-        {/* Más información sobre los beneficios */}
-        <Grid item xs={12}>
-          <Typography variant='h5' gutterBottom sx={{ textAlign: 'left', width: '50%' }}>
-            Más información sobre los beneficios
-          </Typography>
-          <Typography variant='body1'>
-            <div dangerouslySetInnerHTML={{ __html: currentProduct?.benefits[0].detail }} />
-          </Typography>
-        </Grid>
-      </Grid>
+          <Grid container spacing={4} sx={{ marginTop: 30 }}>
+            {/* Más información sobre los beneficios */}
+            <Grid item xs={12}>
+              <Typography variant='h5' gutterBottom sx={{ textAlign: 'left', width: '50%' }}>
+                Más información sobre los beneficios
+              </Typography>
+              <Typography variant='body1'>
+                <div dangerouslySetInnerHTML={{ __html: currentProduct?.benefits[0]?.detail }} />
+              </Typography>
+            </Grid>
+          </Grid>
+        </>
+      )}
 
       <Grid container spacing={4} sx={{ marginTop: 2 }}>
         {/* Estudios */}
