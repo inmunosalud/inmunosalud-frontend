@@ -215,19 +215,21 @@ export const ProductItem = props => {
                     >
                       Ver más del producto
                     </Button>
-                    <Button
-                      endIcon={<ShareIcon />}
-                      color='primary'
-                      size='large'
-                      variant='outlined'
-                      onClick={handleShare}
-                      sx={{
-                        gap: 1,
-                        width: mobile ? '100%' : '50%'
-                      }}
-                    >
-                      {isCopied ? 'Copiado' : 'Compartir producto'}
-                    </Button>
+                    {user.profile === 'Afiliado' && (
+                      <Button
+                        endIcon={<ShareIcon />}
+                        color='primary'
+                        size='large'
+                        variant='outlined'
+                        onClick={handleShare}
+                        sx={{
+                          gap: 1,
+                          width: mobile ? '100%' : '50%'
+                        }}
+                      >
+                        {isCopied ? 'Copiado' : 'Compartir producto'}
+                      </Button>
+                    )}
                   </Box>
                 </CardActions>
               </Box>
