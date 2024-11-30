@@ -225,20 +225,46 @@ const AddCard = props => {
                 Método de pago:
               </Typography>
               <Typography variant='body2' sx={{ mb: 2 }}>
-                Tarjeta: {selectedPayment?.cardType}
+                {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType}`}
               </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                Alias: {selectedPayment?.alias}
-              </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                Nombre: {selectedPayment?.nameOnCard}
-              </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
-              </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                Fecha: {selectedPayment?.expDate}
-              </Typography>
+              {selectedPayment?.id === 'store' ? (
+                <>
+                  <Box>
+                    {[
+                      { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
+                      { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
+                      { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
+                      { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
+                    ].map(store => (
+                      <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                    ))}
+                  </Box>
+                  <Box>
+                    {[
+                      { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
+                      { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
+                      { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
+                    ].map(store => (
+                      <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                    ))}
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    Alias: {selectedPayment?.alias}
+                  </Typography>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    Nombre: {selectedPayment?.nameOnCard}
+                  </Typography>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
+                  </Typography>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    Fecha: {selectedPayment?.expDate}
+                  </Typography>
+                </>
+              )}
             </Grid>
             <Grid item xs={12} sm={5} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
               <div>

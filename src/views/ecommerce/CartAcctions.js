@@ -50,19 +50,6 @@ const CartActions = () => {
       dispatch(openSnackBar({ open: true, message: 'Agregue productos al carrito', severity: 'error' }))
       return
     }
-    if (products[0].canBeRemoved === false) {
-      const cartPrice = total.total - total.shippingCost
-      if (cartPrice < constants.minimalAmountOfPurchase) {
-        dispatch(
-          openSnackBar({
-            open: true,
-            message: `Debes de superar el minimo de compra de $${cartPrice}`,
-            severity: 'error'
-          })
-        )
-        return
-      }
-    }
 
     if (!selectedPayment) {
       dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
@@ -70,6 +57,10 @@ const CartActions = () => {
     }
     if (!selectedAddress) {
       dispatch(openSnackBar({ open: true, message: 'Selecciona tu dirección y método de pago', severity: 'error' }))
+      return
+    }
+    if (selectedPayment.id === 'store') {
+      router.push('/ecommerce/checkout')
       return
     }
     setOpen(true)
