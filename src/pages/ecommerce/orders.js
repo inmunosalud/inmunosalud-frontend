@@ -40,6 +40,7 @@ import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 
 import { setModal } from 'src/store/contactus'
 import { getUserInfo } from 'src/store/users'
+import { store } from 'src/store'
 
 const RepeatingContent = styled(Grid)(({ theme }) => ({
   paddingRight: 0,
@@ -269,7 +270,6 @@ const Cards = props => {
     dispatch(getUserInfo(user?.id))
     setOpenModal(false)
   }
-
   return (
     <>
       <Card sx={{ margin: '20px 0px' }}>
@@ -340,6 +340,16 @@ const Cards = props => {
               <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
                 <Actions onHandleModal={handleOpenModal} />
               </CardActions>
+            </AccordionActions>
+          )}
+          {props.type === 'store' && (
+            <AccordionActions>
+              <Button
+                variant='contained'
+                onClick={() => window.open(props.paymentMethod, '_blank', 'noopener,noreferrer')}
+              >
+                Ver referencia de pago
+              </Button>
             </AccordionActions>
           )}
         </Accordion>
