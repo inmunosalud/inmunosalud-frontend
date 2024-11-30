@@ -64,7 +64,8 @@ const InvoicePreview = ({}) => {
   const handleConfirmOrder = () => {
     const body = {
       idAddress: selectedAddress.id,
-      idPaymentMethod: selectedPayment.id,
+      type: selectedPayment.id === 'store' ? 'store' : 'card',
+      idPaymentMethod: selectedPayment.id === 'store' ? '' : selectedPayment.id,
       products: products.map(product => {
         return { id: product.id, quantity: product.quantity }
       })

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Router from 'next/router'
 import { ORDERS, api_post, api_get, api_patch, api_delete } from '../../services/api'
 import { getState } from 'redux'
-
+import toast from 'react-hot-toast'
 import { openSnackBar } from '../notifications'
 import { getCart } from '../cart'
 
@@ -66,9 +66,13 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
   }
   try {
     const response = await api_post(`${ORDERS}/orders/${idUser}`, bodyOrder, auth)
-    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    toast.success('Orden creada exitosamente')
     thunkApi.dispatch(getCart(idUser))
     if (Array.isArray(response.content)) {
+      if (bodyOrder.type === 'store') {
+        thunkApi.dispatch(setStoreOrder(response.content[0]))
+        return response
+      }
       Router.push(`/ecommerce/orders/?id=${response.content[0].openpay.id}`)
     } else if (
       response.content &&
@@ -126,7 +130,7 @@ const initialState = {
   cvv: '',
   itemUpdated: null,
   isUpdate: false,
-
+  storeOrder: null,
   openModalEdit: false
 }
 
@@ -143,6 +147,9 @@ export const ordersSlice = createSlice({
     },
     setCvv: (state, { payload }) => {
       state.cvv = payload
+    },
+    setStoreOrder: (state, { payload }) => {
+      state.storeOrder = payload
     }
   },
   extraReducers: builder => {
@@ -206,5 +213,5 @@ export const ordersSlice = createSlice({
     })
   }
 })
-export const { setUpdatedOrder, setModal, setCvv } = ordersSlice.actions
+export const { setUpdatedOrder, setModal, setCvv, setStoreOrder } = ordersSlice.actions
 export default ordersSlice.reducer

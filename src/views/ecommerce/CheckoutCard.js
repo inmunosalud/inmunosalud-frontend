@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -96,6 +96,7 @@ const CheckoutCard = ({ data }) => {
   const theme = useTheme()
   const { user } = useSelector(state => state.session)
   const { total, products, selectedPayment, selectedAddress } = useSelector(state => state.cart)
+  const { storeOrder } = useSelector(state => state.orders)
   // ** Selectors
 
   // ** Ref
@@ -156,17 +157,55 @@ const CheckoutCard = ({ data }) => {
                     <Typography variant='body2'>{user.phone ? formatPhoneNumber(user.phone) : null}</Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box>
-                    <Typography variant='h6' sx={{ mb: 1 }}>
-                      Método de pago
-                    </Typography>
-                    <Typography variant='body2' sx={{ mb: 1 }}>
-                      {selectedPayment
-                        ? `${selectedPayment.cardType} - XXXXXX${selectedPayment.cardNumber.slice(-4)}`
-                        : null}
-                    </Typography>
-                  </Box>
+                <Grid item xs={12} sm={4} sx={{ mb: { lg: 0, xs: 4 } }}>
+                  <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
+                    Método de pago:
+                  </Typography>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType}`}
+                  </Typography>
+                  {selectedPayment?.id === 'store' ? (
+                    <>
+                      <Box>
+                        {[
+                          { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
+                          { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
+                          { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
+                          { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
+                        ].map(store => (
+                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                        ))}
+                      </Box>
+                      <Box>
+                        {[
+                          { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
+                          {
+                            id: 'store6',
+                            image: '/images/logos/farmacias-guadalajara.svg',
+                            name: 'farmaciasGuadalajara'
+                          },
+                          { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
+                        ].map(store => (
+                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                        ))}
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Alias: {selectedPayment?.alias}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Nombre: {selectedPayment?.nameOnCard}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Fecha: {selectedPayment?.expDate}
+                      </Typography>
+                    </>
+                  )}
                 </Grid>
               </>
             ) : null}
