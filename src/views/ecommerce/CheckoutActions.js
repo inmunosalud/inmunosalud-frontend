@@ -25,7 +25,8 @@ const CheckoutActions = ({ onHandleConfirmOrder = () => {} }) => {
               variant='contained'
               startIcon={<CurrencyUsd />}
               href={storeOrder.paymentMethod}
-              download
+              target='_blank'
+              rel='noopener noreferrer'
             >
               Descargar ficha de pago
             </Button>

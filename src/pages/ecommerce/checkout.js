@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Grid from '@mui/material/Grid'
 import CheckoutCard from 'src/views/ecommerce/CheckoutCard'
 import CheckoutActions from 'src/views/ecommerce/CheckoutActions'
-import { createOrder } from 'src/store/orders'
+import { createOrder, setStoreOrder } from 'src/store/orders'
 import { getUserInfo } from 'src/store/users'
 import { loadSession } from 'src/store/session'
 import { updateCart } from 'src/store/cart'
@@ -16,6 +16,7 @@ import BackDropLoader from 'src/views/components/loaders/BackDropLoader'
 import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 import { OPENPAY_ID, OPENPAY_KEY } from 'src/services/api'
 import { openSnackBar } from 'src/store/notifications'
+import { Box, CircularProgress, Typography } from '@mui/material'
 
 const InvoicePreview = ({}) => {
   const dispatch = useDispatch()
@@ -72,6 +73,12 @@ const InvoicePreview = ({}) => {
     }
     dispatch(createOrder({ idUser: user.id, body, cvv }))
   }
+
+  useEffect(() => {
+    return () => {
+      dispatch(setStoreOrder(null))
+    }
+  }, [dispatch])
 
   useEffect(() => {
     const timestampInSeconds = Math.floor(Date.now() / 1000)
@@ -197,6 +204,22 @@ const InvoicePreview = ({}) => {
       )
   }, [maxRetriesReached2, maxRetriesReached1])
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh'
+        }}
+      >
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Generando orden, no cierre ni cambie de ventana.</Typography>
+      </Box>
+    )
+  }
+
   return (
     <>
       <Grid container spacing={6}>
@@ -213,7 +236,6 @@ const InvoicePreview = ({}) => {
         </Grid>
       </Grid>
 
-      <BackDropLoader isLoading={isLoading} />
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </>
   )
