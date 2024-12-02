@@ -332,24 +332,16 @@ const Cards = props => {
               </Box>
             </CardContent>
           </AccordionDetails>
-          {
-            //cancelable
-          }
-          {props.deliveryStatus === 'Confirmando el Pago' && isCancelable && (
-            <AccordionActions>
-              <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
-                <Actions onHandleModal={handleOpenModal} />
-              </CardActions>
-            </AccordionActions>
-          )}
           {props.type === 'store' && (
             <AccordionActions>
-              <Button
-                variant='contained'
-                onClick={() => window.open(props.paymentMethod, '_blank', 'noopener,noreferrer')}
-              >
-                Ver referencia de pago
-              </Button>
+              <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
+                <Button
+                  variant='contained'
+                  onClick={() => window.open(props.paymentMethod, '_blank', 'noopener,noreferrer')}
+                >
+                  Descargar ficha de pago
+                </Button>
+              </CardActions>
             </AccordionActions>
           )}
         </Accordion>
