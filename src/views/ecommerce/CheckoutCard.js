@@ -133,7 +133,7 @@ const CheckoutCard = ({ data }) => {
               </Box>
               <Image src='/images/logos/openpay.png' alt='OpenPay Logo' layout='fixed' height={50} width={200} />
             </Grid>
-            {user && selectedPayment && selectedAddress ? (
+            {storeOrder === null && user && selectedPayment && selectedAddress ? (
               <>
                 <Grid item xs={12} sm={4}>
                   <Box sx={{ mb: 2 }}>
@@ -209,95 +209,100 @@ const CheckoutCard = ({ data }) => {
                 </Grid>
               </>
             ) : null}
-            <Grid item sm={4} xs={12}>
-              <Table sx={{ maxWidth: '200px' }}>
+            {!storeOrder && (
+              <Grid item sm={4} xs={12}>
+                <Table sx={{ maxWidth: '200px' }}>
+                  <TableBody>
+                    <TableRow>
+                      <MUITableCell>
+                        <Typography variant='h6'>Checkout</Typography>
+                      </MUITableCell>
+                    </TableRow>
+                    <TableRow>
+                      <MUITableCell>
+                        <Typography variant='body2'>Fecha: {getCurrentDate()}</Typography>
+                      </MUITableCell>
+                      <MUITableCell>
+                        <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                          {/* {data.invoice.issuedDate} */}
+                        </Typography>
+                      </MUITableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Grid>
+            )}
+          </Grid>
+        </CardContent>
+        {!storeOrder && (
+          <>
+            <Divider />
+
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>Producto</TableCell>
+                    <TableCell>Cantidad</TableCell>
+                    <TableCell>Precio</TableCell>
+                    <TableCell>Total</TableCell>
+                  </TableRow>
+                </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <MUITableCell>
-                      <Typography variant='h6'>Checkout</Typography>
-                    </MUITableCell>
-                  </TableRow>
-                  <TableRow>
-                    <MUITableCell>
-                      <Typography variant='body2'>Fecha: {getCurrentDate()}</Typography>
-                    </MUITableCell>
-                    <MUITableCell>
-                      <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                        {/* {data.invoice.issuedDate} */}
-                      </Typography>
-                    </MUITableCell>
-                  </TableRow>
+                  {products.map(product => {
+                    return (
+                      <TableRow key={product.id}>
+                        <TableCell>
+                          <img width={30} height={40} alt='img' src={product.urlImage} />
+                        </TableCell>
+                        <TableCell>{product.product}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>${product.price}</TableCell>
+                        <TableCell>${product.total}</TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
-            </Grid>
-          </Grid>
-        </CardContent>
+            </TableContainer>
 
-        <Divider />
-
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Producto</TableCell>
-                <TableCell>Cantidad</TableCell>
-                <TableCell>Precio</TableCell>
-                <TableCell>Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {products.map(product => {
-                return (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <img width={30} height={40} alt='img' src={product.urlImage} />
-                    </TableCell>
-                    <TableCell>{product.product}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>${product.price}</TableCell>
-                    <TableCell>${product.total}</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <CardContent>
-          <Grid container>
-            <Grid item xs={12} sm={7} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
-              <Typography variant='body2'>Gracias por su compra</Typography>
-            </Grid>
-            <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-              <CalcWrapper>
-                <Typography variant='body2'>Subtotal:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Monto de envío:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.shippingCost}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>IVA:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.iva}
-                </Typography>
-              </CalcWrapper>
-              <Divider />
-              <CalcWrapper>
-                <Typography variant='body2'>Total:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.total}
-                </Typography>
-              </CalcWrapper>
-            </Grid>
-          </Grid>
-        </CardContent>
+            <CardContent>
+              <Grid container>
+                <Grid item xs={12} sm={7} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
+                  <Typography variant='body2'>Gracias por su compra</Typography>
+                </Grid>
+                <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+                  <CalcWrapper>
+                    <Typography variant='body2'>Subtotal:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.subtotal}
+                    </Typography>
+                  </CalcWrapper>
+                  <CalcWrapper>
+                    <Typography variant='body2'>Monto de envío:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.shippingCost}
+                    </Typography>
+                  </CalcWrapper>
+                  <CalcWrapper>
+                    <Typography variant='body2'>IVA:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.iva}
+                    </Typography>
+                  </CalcWrapper>
+                  <Divider />
+                  <CalcWrapper>
+                    <Typography variant='body2'>Total:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.total}
+                    </Typography>
+                  </CalcWrapper>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </>
+        )}
       </Box>
     </Card>
   )

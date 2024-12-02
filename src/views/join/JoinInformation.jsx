@@ -44,7 +44,22 @@ const JoinInformation = ({ profile }) => {
         <Grid container spacing={20}>
           <Grid item xs={12} md={12}>
             <Box sx={{ textAlign: 'center' }}>
-              <CardHeader title={<Typography variant='h4'>Conviértete en socio</Typography>} />
+              <CardHeader
+                title={
+                  user.profile === 'Consumidor' ? (
+                    <Button onClick={submitPartner} variant='contained'>
+                      Afiliate ya!
+                    </Button>
+                  ) : (
+                    mobile && (
+                      <Link href={'/ecommerce/products/'} passHref>
+                        <Button variant='contained'>Conoce nuestros productos</Button>
+                      </Link>
+                    )
+                  )
+                }
+                subheader={user.profile === 'Consumidor' && 'Aquí abajo puedes leer como funciona…'}
+              />
             </Box>
             <CardMedia
               sx={{
