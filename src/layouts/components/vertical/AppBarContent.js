@@ -47,7 +47,7 @@ const AppBarContent = props => {
           <Box sx={{ margin: { md: '0 auto' } }}>
             <Link href={'/ecommerce/products'} passHref>
               <Button size='small' variant={isActiveRoute('/ecommerce/products') ? 'contained' : 'text'}>
-                Productos
+                {user.profile ? 'productos' : 'conoce el producto'}
               </Button>
             </Link>
           </Box>
@@ -60,10 +60,21 @@ const AppBarContent = props => {
               }
               passHref
             >
-              <Button size='small' variant={isActiveRoute('/landing-page/join') ? 'contained' : 'text'}>
+              <Button
+                size='small'
+                variant={
+                  isActiveRoute(
+                    user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                      ? '/network'
+                      : '/landing-page/join'
+                  )
+                    ? 'contained'
+                    : 'text'
+                }
+              >
                 {user.profile === 'Afiliado' || user.profile === 'Administrador General'
                   ? 'Información de la Red'
-                  : 'Afíliate'}
+                  : 'Conviertete en socio y obtén tus descuentos'}
               </Button>
             </Link>
           </Box>
