@@ -54,9 +54,6 @@ export const HistoryNetwork = ({ network }) => {
               indicatorColor='primary'
               textColor='primary'
               centered
-              sx={{
-                mt: '10px'
-              }}
             >
               {Object.keys(network || {}).map(year => (
                 <Tab id={year} key={year} label={year} value={year} />
@@ -65,7 +62,7 @@ export const HistoryNetwork = ({ network }) => {
           </Box>
           <Box
             sx={{
-              mt: '70px'
+              mt: '20px'
             }}
           >
             <HistoryNetworkGraphic dataSeriesNetworkHistory={dataSeriesNetworkHistory} />
