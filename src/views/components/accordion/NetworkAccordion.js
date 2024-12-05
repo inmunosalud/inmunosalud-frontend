@@ -266,19 +266,18 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                         <strong>Tipo:</strong> {order.type === 'store' ? 'Tienda' : 'Tarjeta'}
                                       </Typography>
                                       {/* Seguimiento del envío */}
-                                      {order.shipmentTrackingUrl && (
-                                        <Box sx={{ mt: 2 }}>
-                                          <Button
-                                            variant='outlined'
-                                            color='primary'
-                                            href={order.shipmentTrackingUrl}
-                                            target='_blank'
-                                            rel='noopener noreferrer'
-                                          >
-                                            Ver Seguimiento
-                                          </Button>
-                                        </Box>
-                                      )}
+                                      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button
+                                          variant='outlined'
+                                          color='primary'
+                                          href={order.shipmentTrackingUrl}
+                                          target='_blank'
+                                          disabled={!order.shipmentTrackingUrl}
+                                          rel='noopener noreferrer'
+                                        >
+                                          Ver Seguimiento
+                                        </Button>
+                                      </Box>
                                     </CardContent>
                                   </Card>
                                 </Grid>
