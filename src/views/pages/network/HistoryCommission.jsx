@@ -228,20 +228,13 @@ export const HistoryCommission = () => {
             indicatorColor='primary'
             textColor='primary'
             centered
-            sx={{
-              mt: '10px'
-            }}
           >
             {Object.keys(network?.commissionHistory || {}).map(year => {
               return <Tab id={year} key={year} label={year} value={year} />
             })}
           </Tabs>
         </Box>
-        <Box
-          sx={{
-            mt: '70px'
-          }}
-        >
+        <Box>
           <ReactApexcharts
             options={!mobile ? chartOptionsCommissionsHistoryY : chartOptionsCommissionsHistoryX}
             series={dataSeriesCommissionsHistory}
