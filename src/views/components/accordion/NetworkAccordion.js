@@ -108,7 +108,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                       skin='light'
                       size='small'
                       label={`$${item.lastTotalConsume}`}
-                      color='warning'
+                      color={item.lastTotalConsume > 0 ? 'success' : 'error'}
                       sx={{
                         height: 20,
                         fontSize: '0.875rem',
@@ -280,7 +280,9 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                               ? 'success'
                                               : order.deliveryStatus === 'Cancelado'
                                                 ? 'error'
-                                                : 'primary'
+                                                : order.deliveryStatus === 'Está en camino'
+                                                  ? 'info'
+                                                  : 'primary'
                                           }
                                           sx={{
                                             height: 20,
