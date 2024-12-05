@@ -124,8 +124,17 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
             <Divider />
             <AccordionDetails sx={{ minHeight: '650px' }}>
               {loadingDetails[item.id] ? (
-                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2 }}>
-                  <CircularProgress color='primary' size={80} />
+                <Box
+                  sx={{
+                    height: '60vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <CircularProgress color='primary' size={50} />
                 </Box>
               ) : (
                 <>
@@ -173,14 +182,16 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                   <strong>Dirección de Envío:</strong>
                                 </Typography>
 
-                                <Typography variant='body2'>
-                                  {`${networkDetails[item.id]?.user.shippingAddress.street} ${networkDetails[item.id]?.user.shippingAddress.extNumber}, 
-                              ${networkDetails[item.id]?.user.shippingAddress.neighborhood}, 
-                              ${networkDetails[item.id]?.user.shippingAddress.city}, 
-                              ${networkDetails[item.id]?.user.shippingAddress.federalEntity}, 
-                              CP: ${networkDetails[item.id]?.user.shippingAddress.zipCode}, 
-                              ${networkDetails[item.id]?.user.shippingAddress.country}`}
-                                </Typography>
+                                {networkDetails[item.id]?.user.shippingAddress.street && (
+                                  <Typography variant='body2'>
+                                    {`${networkDetails[item.id]?.user.shippingAddress.street} ${networkDetails[item.id]?.user.shippingAddress.extNumber}, 
+                                ${networkDetails[item.id]?.user.shippingAddress.neighborhood}, 
+                                ${networkDetails[item.id]?.user.shippingAddress.city}, 
+                                ${networkDetails[item.id]?.user.shippingAddress.federalEntity}, 
+                                CP: ${networkDetails[item.id]?.user.shippingAddress.zipCode}, 
+                                ${networkDetails[item.id]?.user.shippingAddress.country}`}
+                                  </Typography>
+                                )}
 
                                 <Typography variant='body2' sx={{ mt: 4 }}>
                                   <strong>Referencia:</strong> {networkDetails[item.id]?.user.shippingAddress.refer}
@@ -228,7 +239,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                     )}
                     {selectedTab === (selectedLevel === 4 ? 2 : 3) && (
                       <Grid item xs={12}>
-                        <Box sx={{ pt: '50px' }}>
+                        <Box sx={{ pt: '50px', mb: '-400px' }}>
                           <Typography variant='h6' color='textPrimary' textAlign={'center'}>
                             <strong>Crecimiento de la red</strong>
                           </Typography>
@@ -259,7 +270,26 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                       </Typography>
                                       {/* Estado de entrega */}
                                       <Typography variant='body2' color='textSecondary'>
-                                        <strong>Estado de Entrega:</strong> {order.deliveryStatus}
+                                        <strong>Estado de Entrega:</strong>
+                                        <CustomChip
+                                          skin='light'
+                                          size='small'
+                                          label={order.deliveryStatus}
+                                          color={
+                                            order.deliveryStatus === 'Entregado'
+                                              ? 'success'
+                                              : order.deliveryStatus === 'Cancelado'
+                                                ? 'error'
+                                                : 'primary'
+                                          }
+                                          sx={{
+                                            height: 20,
+                                            fontSize: '0.875rem',
+                                            fontWeight: 600,
+                                            borderRadius: '5px',
+                                            textTransform: 'capitalize'
+                                          }}
+                                        />
                                       </Typography>
                                       {/* Tipo de pedido */}
                                       <Typography variant='body2' color='textSecondary'>
