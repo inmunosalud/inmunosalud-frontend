@@ -70,14 +70,15 @@ export const Commission = () => {
                 }}
                 variant='caption'
               >
-                Este monto es la cantidad que se esta generando de las compras que hacen tus referidos
+                Este monto es la cantidad que se esta generando de las compras que hacen tus referidos descontando el
+                impuesto al valor agregado (IVA).
               </Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={12}>
             <Box
               sx={{
-                mt: '46px'
+                mt: '30px'
               }}
             >
               <CardHeader
