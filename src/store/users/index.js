@@ -182,6 +182,19 @@ export const validateVerificationCode = createAsyncThunk('users/validateVerifica
   }
 })
 
+//get user network details
+export const getNetworkDetails = createAsyncThunk('user/network-detail', async (id, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+
+  try {
+    const response = await api_get(`${USERS}/users/network/detail/${id}`, auth)
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    return thunkApi.rejectWithValue('error')
+  }
+})
 //get user info
 export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')
@@ -291,6 +304,9 @@ const initialState = {
   lastName: '',
   //email
   email: '',
+
+  networkDetails: {}, // { [userId]: data }
+  loadingDetails: {},
 
   stripeLink: '',
 
@@ -441,6 +457,14 @@ export const usersSlice = createSlice({
     builder.addCase(getNetworkById.rejected, (state, { payload }) => {
       state.isLoading = false
     })
+    builder.addCase(getNetworkDetails.pending, (state, action) => {
+      state.loadingDetails[action.meta.arg] = true
+    })
+    builder.addCase(getNetworkDetails.fulfilled, (state, { payload }) => {
+      state.loadingDetails[payload.content.user.id] = false
+      state.networkDetails[payload.content.user.id] = payload.content
+    })
+    builder.addCase(getNetworkDetails.rejected, (state, { payload }) => {})
     //Recover password
     builder.addCase(recoverPassword.pending, state => {
       state.isLoading = true
