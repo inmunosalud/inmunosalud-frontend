@@ -50,13 +50,13 @@ const Constants = () => {
       4: 0.0,
       shippingCost: 0,
       minimalAmountOfPurchase: 0,
-      maintenanceCost: 0
+      maintenanceCost: 0,
+      shippingCostFreeFor: 0
     }
   })
 
   useEffect(() => {
     if (loading === 'idle') {
-      dispatch(getProducts())
       dispatch(getConstants())
     } else if (loading === 'finished') {
       reset({
@@ -68,7 +68,8 @@ const Constants = () => {
         4: (constants.commissionPercentajePerLevel[4] * 100).toFixed(2) ?? 0,
         shippingCost: constants.shippingCost,
         minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
-        maintenanceCost: constants.maintenanceCost ?? 0
+        maintenanceCost: constants.maintenanceCost ?? 0,
+        shippingCostFreeFor: constants.shippingCostFreeFor
       })
     }
   }, [loading])
@@ -139,8 +140,8 @@ const Constants = () => {
         4: (data[4] / 100).toFixed(4)
       },
       shippingCost: data.shippingCost,
-      minimalAmountOfPurchase: data.minimalAmountOfPurchase,
-      maintenanceCost: data.maintenanceCost
+      maintenanceCost: data.maintenanceCost,
+      shippingCostFreeFor: data.shippingCostFreeFor
     })
     handleModalConfirm()
   }
@@ -149,9 +150,7 @@ const Constants = () => {
     <Fragment>
       <Card>
         <CardHeader title={'Editar constantes del sistema'} titleTypographyProps={{ variant: 'h6' }} />
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
+        <Divider />
 
         {isLoading ? (
           <Backdrop open={isLoading}>
@@ -272,6 +271,30 @@ const Constants = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
+                  <Controller
+                    control={control}
+                    name='shippingCostFreeFor'
+                    rules={{
+                      required: 'Este campo es requerido',
+                      min: { value: 0, message: 'No se aceptan valores negativos' }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        label='Costo para envió gratis '
+                        fullWidth
+                        required
+                        type='number'
+                        error={!!errors.shippingCostFreeFor}
+                        InputProps={{
+                          startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                        }}
+                        {...field}
+                        helperText={errors.shippingCostFreeFor && errors.shippingCostFreeFor.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <Typography variant='h6'>Porcentaje de comisión</Typography>
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -361,7 +384,7 @@ const Constants = () => {
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
-                <Grid item alignItems={'end'} xs={12}>
+                <Grid item display={'flex'} justifyContent={'flex-end'} xs={12}>
                   <Button variant='contained' type='submit' size='large'>
                     Guardar Cambios
                   </Button>

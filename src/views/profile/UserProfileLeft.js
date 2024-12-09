@@ -74,7 +74,6 @@ const UserProfileLeft = ({ data }) => {
     setShowConfirmationModal(!showConfirmationModal)
   }
 
-  console.log(user)
   const renderUserAvatar = () => {
     if (data) {
       return (
