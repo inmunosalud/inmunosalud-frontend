@@ -33,11 +33,10 @@ export const createMethod = createAsyncThunk('paymentMethods/newMethod', async (
     const tokenBody = {
       card_number: body.cardNumber,
       holder_name: body.nameOnCard,
-      expiration_year: body.year.slice(2),
-      expiration_month: body.month,
+      expiration_year: body.expiry.split('/')[1],
+      expiration_month: body.expiry.split('/')[0],
       cvv2: body.cvc
     }
-
     var openpayTokenId
     const tokenPromise = new Promise((resolve, reject) => {
       openPay.token.create(
