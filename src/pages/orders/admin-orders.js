@@ -18,14 +18,12 @@ const columns = [
   {
     width: 160,
     headerName: 'Fecha de compra',
-    field: 'purchaseDate',
-    renderCell: params => {}
+    field: 'purchaseDate'
   },
   {
-    width: 250,
-    field: 'c',
-    headerName: 'Usuario',
-    renderCell: params => params.row.userEmail
+    minWidth: 300,
+    field: 'userEmail',
+    headerName: 'Usuario'
   },
   {
     width: 180,

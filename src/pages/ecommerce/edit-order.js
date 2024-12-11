@@ -103,17 +103,15 @@ const EditOrder = () => {
 
   const onSubmit = values => {
     let body
-    const formattedDate = format(new Date(values.validDeliveryDate), 'yyyy-MM-dd yyyy')
 
     body = {
       shipment: {
         trackingUrl: values.trackingUrl,
         id: values.id,
-        company: values.company,
-        id: itemUpdated?.id
+        company: values.company
       },
       deliveryStatus: values.deliveryStatus,
-      deliveryDate: formattedDate,
+      deliveryDate: values.validDeliveryDate,
       idParam: itemUpdated?.id
     }
     dispatch(updateOrder(body))
@@ -164,6 +162,11 @@ const EditOrder = () => {
                       value={value}
                       label='URL de rastreo'
                       onChange={onChange}
+                      disabled={
+                        watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
+                          ? false
+                          : true
+                      }
                       aria-describedby='validation-basic-first-name'
                     />
                   )}
@@ -184,6 +187,11 @@ const EditOrder = () => {
                     <TextField
                       value={value}
                       label='ID de rastreo'
+                      disabled={
+                        watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
+                          ? false
+                          : true
+                      }
                       onChange={onChange}
                       aria-describedby='validation-basic-first-name'
                     />
@@ -205,6 +213,11 @@ const EditOrder = () => {
                     <TextField
                       value={value}
                       label='Compañía de entrega'
+                      disabled={
+                        watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
+                          ? false
+                          : true
+                      }
                       onChange={onChange}
                       aria-describedby='validation-basic-last-name'
                       //error={Boolean(ordersErrors.company)}
@@ -229,6 +242,11 @@ const EditOrder = () => {
                         <DatePicker
                           selected={value}
                           onChange={onChange}
+                          disabled={
+                            watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
+                              ? false
+                              : true
+                          }
                           placeholderText='YYYY-MM-DD'
                           dateFormat='yyyy-MM-dd'
                           customInput={<CustomInput label='Fecha de entrega' />}
