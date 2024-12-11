@@ -41,8 +41,17 @@ const schema = yup.object().shape({
   firstName: yup.string().required('El nombre es requerido'),
   lastName: yup.string().required('El apellido es requerido'),
   recommenderId: yup.string().required('El código de recomendado es requerido'),
-  birthdate: yup.date().required('La fecha de nacimiento es requerida'),
+  birthdate: yup
+    .date()
+    .required('La fecha de nacimiento es requerida')
+    .test('adult', 'Debes ser mayor de edad', value => {
+      const now = moment()
+      const age = now.diff(value, 'years')
+
+      return age > 18
+    }),
   gender: yup.string().required('El género es requerido'),
+
   acceptTerms: yup.boolean().oneOf([true], 'Debes aceptar los términos y condiciones').required()
 })
 
