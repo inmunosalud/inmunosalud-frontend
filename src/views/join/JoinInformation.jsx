@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -14,12 +15,14 @@ import CardMedia from '@mui/material/CardMedia'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPartner } from 'src/store/users'
+import { createPartner, setIsAffiliated } from 'src/store/users'
 import { useSearchParams } from 'next/navigation'
+import { FormHelperText } from '@mui/material'
 
 const JoinInformation = ({ profile }) => {
   const dispatch = useDispatch()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const { user } = useSelector(state => state.session)
@@ -381,22 +384,80 @@ const JoinInformation = ({ profile }) => {
                     {'Convertirme en afiliado'}
                   </Button>
                 ) : (
-                  <Link
-                    href={
-                      sessionStorage.getItem('recommenderId') || searchParams.get('id')
-                        ? '/register'
-                        : 'https://wa.me/523334173934?text=¡Quiero%20un%20código!'
-                    }
-                    passHref
-                    target={sessionStorage.getItem('recommenderId') || searchParams.get('id') ? '_self' : '_blank'}
-                    rel={sessionStorage.getItem('recommenderId') || searchParams.get('id') ? '' : 'noopener noreferrer'}
-                  >
-                    <Button variant='contained' size='large'>
-                      {sessionStorage.getItem('recommenderId') || searchParams.get('id')
-                        ? 'Registrarse'
-                        : 'Obtén un código para registrarte'}
-                    </Button>
-                  </Link>
+                  profile !== 'Afiliado' && (
+                    <>
+                      {!sessionStorage.getItem('recommenderId') && !searchParams.get('id') ? (
+                        <Link
+                          href='https://wa.me/523334173934?text=¡Quiero%20un%20código!'
+                          passHref
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          <Button variant='contained' size='large'>
+                            Obtén un código para registrarte
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} md={6}>
+                            <Box
+                              sx={{
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <Button
+                                variant='contained'
+                                size='large'
+                                color='secondary'
+                                sx={{ width: '100%' }}
+                                onClick={() => {
+                                  dispatch(setIsAffiliated(false))
+                                  router.push('/register')
+                                }}
+                              >
+                                Registrarme como consumidor
+                              </Button>
+
+                              <FormHelperText sx={{ textAlign: 'center' }}>
+                                Podrás afiliarte en cualquier momento para contar con estos beneficios.
+                              </FormHelperText>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} md={6}>
+                            <Box
+                              sx={{
+                                textAlign: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <Button
+                                variant='contained'
+                                size='large'
+                                sx={{ width: '100%' }}
+                                onClick={() => {
+                                  dispatch(setIsAffiliated(true))
+                                  router.push('/register')
+                                }}
+                              >
+                                Registrarme como afiliado
+                              </Button>
+
+                              <FormHelperText sx={{ textAlign: 'center' }}>
+                                Empieza a recomendar, obtendrás increíbles beneficios y descuentos.
+                              </FormHelperText>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      )}
+                    </>
+                  )
                 )}
               </Box>
             </CardActions>

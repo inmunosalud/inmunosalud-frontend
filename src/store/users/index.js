@@ -277,6 +277,7 @@ const initialState = {
   // register
   isLoadingRegister: false,
   registerErrors: null,
+  isAffiliated: null,
   /* users table */
   users: [],
   loading: false,
@@ -332,6 +333,9 @@ export const usersSlice = createSlice({
     },
     setModal: (state, { payload }) => {
       state.showModal = payload
+    },
+    setIsAffiliated: (state, { payload }) => {
+      state.isAffiliated = payload
     },
     setModalRow: (state, { payload }) => {
       state.modalRow = payload
@@ -559,5 +563,6 @@ export const {
   setUser,
   setShowConfirmModal,
   setShowRedirectModal,
-  setRecoveryCode
+  setRecoveryCode,
+  setIsAffiliated
 } = usersSlice.actions

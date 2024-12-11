@@ -25,7 +25,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { createUser } from 'src/store/users'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'next/navigation'
 
 const schema = yup.object().shape({
@@ -57,7 +57,7 @@ const schema = yup.object().shape({
 
 export default function FormRegister() {
   const [showPassword, setShowPassword] = React.useState(false)
-
+  const { isAffiliated } = useSelector(state => state.users)
   const dispatch = useDispatch()
   const searchParams = useSearchParams()
   const {
@@ -89,7 +89,8 @@ export default function FormRegister() {
       password: data.password,
       recommenderId: sessionStorage.getItem('recommenderId'),
       birthdate: moment(data.birthdate).format('YYYY-MM-DD'),
-      gender: data.gender
+      gender: data.gender,
+      isAffiliated: isAffiliated === true ? true : false
     }
 
     dispatch(createUser(body))
@@ -107,7 +108,15 @@ export default function FormRegister() {
 
   return (
     <Card>
-      <CardHeader title='Registrarse' />
+      <CardHeader
+        title={
+          isAffiliated === null
+            ? 'Registrarse'
+            : isAffiliated
+              ? 'Registrarse como Afiliado'
+              : 'Registrarse como Consumidor'
+        }
+      />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
