@@ -17,11 +17,15 @@ import {
   Button,
   Box
 } from '@mui/material'
-
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { OPENPAY_ID, OPENPAY_KEY } from 'src/services/api'
 import { openSnackBar, closeSnackBar } from 'src/store/notifications'
 import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import moment from 'moment'
+import 'moment/locale/es' // Importar el idioma español
 
+moment.locale('es')
 import { setDeviceSessionId, setOpenPay } from 'src/store/paymentMethods'
 
 export default function DialogBilling({
@@ -188,12 +192,11 @@ export default function DialogBilling({
   }, [maxRetriesReached2, maxRetriesReached1])
 
   const generateToken = async () => {
-    const { cardNumber, nameOnCard, month, year, cvc } = getValues()
+    const { cardNumber, nameOnCard, expiry, cvc } = getValues()
     if (
       cardNumber &&
       nameOnCard &&
-      month &&
-      year &&
+      expiry &&
       cvc &&
       window.OpenPay &&
       window.OpenPay.deviceData &&
@@ -207,8 +210,8 @@ export default function DialogBilling({
         const tokenBody = {
           card_number: cardNumber,
           holder_name: nameOnCard,
-          expiration_year: String(year).slice(-2),
-          expiration_month: month,
+          expiration_year: expiry.split('/')[1],
+          expiration_month: expiry.split('/')[0],
           cvv2: cvc
         }
 
@@ -233,6 +236,7 @@ export default function DialogBilling({
           return
         } catch (error) {
           console.log('error', error)
+          console.log('deviceSessionId', deviceSessionId)
           return
         }
       }
@@ -259,109 +263,50 @@ export default function DialogBilling({
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='alias'
+                    name='nameOnCard'
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Alias'
+                        label='Titular de la tarjeta'
                         onChange={onChange}
-                        placeholder='Alias'
-                        error={Boolean(paymentErrors['alias'])}
-                        aria-describedby='stepper-linear-payment-alias'
+                        placeholder='Titular de la tarjeta'
+                        error={Boolean(paymentErrors['nameOnCard'])}
+                        aria-describedby='stepper-linear-payment-nameOnCard'
                       />
                     )}
                   />
-                  {paymentErrors['alias'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
+                  {paymentErrors['nameOnCard'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-nameOnCard'>
                       El campo es requerido
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel
-                    id='stepper-linear-payment-country'
-                    error={Boolean(paymentErrors.country)}
-                    htmlFor='stepper-linear-payment-country'
-                  >
-                    MM
-                  </InputLabel>
                   <Controller
-                    name='month'
+                    name='expiry'
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
-                      <Select
-                        value={value}
-                        label='MM'
-                        onChange={onChange}
-                        error={Boolean(paymentErrors.month)}
-                        labelId='stepper-linear-payment-month'
-                        aria-describedby='stepper-linear-payment-month-helper'
-                      >
-                        <MenuItem value='01'>01</MenuItem>
-                        <MenuItem value='02'>02</MenuItem>
-                        <MenuItem value='03'>03</MenuItem>
-                        <MenuItem value='04'>04</MenuItem>
-                        <MenuItem value='05'>05</MenuItem>
-                        <MenuItem value='06'>06</MenuItem>
-                        <MenuItem value='07'>07</MenuItem>
-                        <MenuItem value='08'>08</MenuItem>
-                        <MenuItem value='09'>09</MenuItem>
-                        <MenuItem value='10'>10</MenuItem>
-                        <MenuItem value='11'>11</MenuItem>
-                        <MenuItem value='12'>12</MenuItem>
-                      </Select>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          views={['year', 'month']}
+                          label='Fecha de expiración'
+                          value={value ? moment(value, 'MM/YY') : null} // Convertir a formato MM/YY si existe un valor inicial
+                          onChange={newValue => {
+                            // Formatear a MM/YY
+                            const formattedValue = newValue ? newValue.format('MM/YY') : ''
+                            onChange(formattedValue)
+                          }}
+                          format='MM/YY' //
+                        />
+                      </LocalizationProvider>
                     )}
                   />
-                  {paymentErrors.month && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-month-helper'>
-                      El campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel
-                    id='stepper-linear-payment-country'
-                    error={Boolean(paymentErrors.country)}
-                    htmlFor='stepper-linear-payment-country'
-                  >
-                    YY
-                  </InputLabel>
-                  <Controller
-                    name='year'
-                    control={paymentControl}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <Select
-                        value={value}
-                        label='AA'
-                        onChange={onChange}
-                        placeholder='AA'
-                        error={Boolean(paymentErrors['year'])}
-                        aria-describedby='stepper-linear-payment-year'
-                      >
-                        {options.map((year, _) => {
-                          return (
-                            <MenuItem key={year} value={year.value}>
-                              {year.label}
-                            </MenuItem>
-                          )
-                        })}
-                      </Select>
-                    )}
-                  />
-                  {paymentErrors['year'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-year'>
-                      {paymentErrors['year'] ? paymentErrors['year'].message : 'El campo es requerido'}
-                    </FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
@@ -432,22 +377,22 @@ export default function DialogBilling({
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <Controller
-                    name='nameOnCard'
+                    name='alias'
                     control={paymentControl}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
                         value={value}
-                        label='Titular de la tarjeta'
+                        label='Alias'
                         onChange={onChange}
-                        placeholder='Titular de la tarjeta'
-                        error={Boolean(paymentErrors['nameOnCard'])}
-                        aria-describedby='stepper-linear-payment-nameOnCard'
+                        placeholder='Alias'
+                        error={Boolean(paymentErrors['alias'])}
+                        aria-describedby='stepper-linear-payment-alias'
                       />
                     )}
                   />
-                  {paymentErrors['nameOnCard'] && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-nameOnCard'>
+                  {paymentErrors['alias'] && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-payment-alias'>
                       El campo es requerido
                     </FormHelperText>
                   )}

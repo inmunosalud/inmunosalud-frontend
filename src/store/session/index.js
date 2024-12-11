@@ -15,7 +15,7 @@ export const loginCall = createAsyncThunk('/session/login', async (body, thunkAp
     const response = await api_post(`${USERS}/users/login`, body)
 
     thunkApi.dispatch(setUser(response.content))
-    if (response.content.user.active === false) {
+    if (response.content.user.isActive === false) {
       Router.push({ pathname: '/register/welcome' })
       return response
     } else {

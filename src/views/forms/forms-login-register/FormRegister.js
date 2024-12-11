@@ -42,7 +42,7 @@ const schema = yup.object().shape({
   lastName: yup.string().required('El apellido es requerido'),
   recommenderId: yup.string().required('El código de recomendado es requerido'),
   birthdate: yup.date().required('La fecha de nacimiento es requerida'),
-  genre: yup.string().required('El género es requerido'),
+  gender: yup.string().required('El género es requerido'),
   acceptTerms: yup.boolean().oneOf([true], 'Debes aceptar los términos y condiciones').required()
 })
 
@@ -66,7 +66,7 @@ export default function FormRegister() {
       lastName: '',
       recommenderId: '',
       birthdate: null,
-      genre: '',
+      gender: '',
       acceptTerms: false
     }
   })
@@ -80,7 +80,7 @@ export default function FormRegister() {
       password: data.password,
       recommenderId: sessionStorage.getItem('recommenderId'),
       birthdate: moment(data.birthdate).format('YYYY-MM-DD'),
-      genre: data.genre
+      gender: data.gender
     }
 
     dispatch(createUser(body))
@@ -236,7 +236,7 @@ export default function FormRegister() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name='genre'
+                name='gender'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <TextField {...field} select fullWidth label='Género' error={!!error} helperText={error?.message}>

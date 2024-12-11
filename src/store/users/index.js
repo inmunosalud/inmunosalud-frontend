@@ -48,8 +48,9 @@ export const sendNewUser = createAsyncThunk('user/send-new-user', async (body, t
     Router.push('/dashboards/general/')
     return response
   } catch (error) {
+    console.log(error)
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
@@ -71,30 +72,26 @@ export const createPartner = createAsyncThunk('/join/register', async ({ body, i
   }
 })
 
-export const updateUser = createAsyncThunk(
-  'user/updateUser',
-  async ({ body, uuid, loadUserData, isAdministrator }, thunkApi) => {
-    const token = localStorage.getItem('im-user')
-    const auth = { headers: { Authorization: `Bearer ${token}` } }
-    try {
-      const response = isAdministrator
-        ? await api_patch(`${USERS}/users/admin/${uuid}`, body, auth)
-        : await api_patch(`${USERS}/users/${uuid}`, body, auth)
-      thunkApi.dispatch(setModal(false))
-      thunkApi.dispatch(updateSession(response.content))
+export const updateUser = createAsyncThunk('user/updateUser', async ({ body, uuid, isAdministrator }, thunkApi) => {
+  const token = localStorage.getItem('im-user')
+  const auth = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    const response = isAdministrator
+      ? await api_patch(`${USERS}/users/admin/${uuid}`, body, auth)
+      : await api_patch(`${USERS}/users/${uuid}`, body, auth)
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(updateSession(response.content))
 
-      // If param loadUserData values is true, load the user info again
-      thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-      return response
-    } catch (error) {
-      const errMessage = error?.response?.data?.message
-      thunkApi.dispatch(setModal(false))
-      thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
+    return response
+  } catch (error) {
+    const errMessage = error?.response?.data?.message
+    thunkApi.dispatch(setModal(false))
+    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
 
-      return thunkApi.rejectWithValue('error')
-    }
+    return thunkApi.rejectWithValue('error')
   }
-)
+})
 
 export const deleteUser = createAsyncThunk('user/deleteUser', async ({ body, headers }, thunkApi) => {
   const token = localStorage.getItem('im-user')

@@ -47,8 +47,7 @@ const CARD_LOGOS = {
 
 const defaultPaymentValues = {
   alias: '',
-  month: '',
-  year: '',
+  expiry: '',
   cardUse: 'Pago',
   nameOnCard: '',
   cardNumber: '',
@@ -56,20 +55,14 @@ const defaultPaymentValues = {
 }
 const defautlPaymentEditValues = {
   alias: '',
-  month: '',
-  year: '',
+  expiry: '',
   nameOnCard: ''
 }
 
 const paymentSchema = yup.object().shape({
   alias: yup.string().required(),
-  month: yup.string().required(),
-  year: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo dígitos')
-    .min(4, 'Deben ser 4 dígitos')
-    .max(4, 'Deben ser 4 dígitos'),
+  expiry: yup.string().required(),
+
   cardNumber: yup
     .string()
     .required()
@@ -87,13 +80,7 @@ const paymentSchema = yup.object().shape({
 
 const paymentSchemaEdit = yup.object().shape({
   alias: yup.string().required(),
-  month: yup.string().required(),
-  year: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo dígitos')
-    .min(4, 'Deben ser 4 dígitos')
-    .max(4, 'Deben ser 4 dígitos'),
+  expiry: yup.string().required(),
   nameOnCard: yup.string().required()
 })
 
@@ -123,7 +110,7 @@ const UserProfileBilling = () => {
   const onPaymentSubmit = values => {
     const body = {
       ...values,
-      expDate: `${values.month}/${values.year}`
+      expDate: values.expiry
     }
     if (editItem && Object.keys(editItem).length) {
       dispatch(updateMethod({ body, uuid: user.id, idPaymentMethod: editItem?.id }))
@@ -138,8 +125,8 @@ const UserProfileBilling = () => {
     setEditItem(item)
     reset({
       alias: item.alias,
-      month: item.expDate.split('/')[0],
-      year: `20${item.expDate.slice(-2)}`,
+      expiry: item.expDate,
+
       nameOnCard: item.nameOnCard
     })
 

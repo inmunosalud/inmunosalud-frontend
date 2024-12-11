@@ -174,7 +174,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
 
                                 {/* Género */}
                                 <Typography variant='body1' sx={{ mt: 4 }}>
-                                  <strong>Género:</strong> {networkDetails[item.id]?.user.genre}
+                                  <strong>Género:</strong> {networkDetails[item.id]?.user.gender}
                                 </Typography>
 
                                 {/* Dirección de Envío */}

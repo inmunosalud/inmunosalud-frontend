@@ -25,8 +25,7 @@ import { setOpenPaymentsModal } from 'src/store/cart'
 
 const defaultPaymentValues = {
   alias: '',
-  month: '',
-  year: '',
+  expiry: '',
   cardUse: 'Pago',
   nameOnCard: '',
   cardNumber: '',
@@ -35,14 +34,8 @@ const defaultPaymentValues = {
 
 const paymentSchema = yup.object().shape({
   alias: yup.string().required(),
-  month: yup.string().required(),
+  expiry: yup.string().required(),
   cardUse: yup.string().required(),
-  year: yup
-    .string()
-    .required()
-    .matches(/^[0-9]+$/, 'Solo dígitos')
-    .min(4, 'Deben ser 4 dígitos')
-    .max(4, 'Deben ser 4 dígitos'),
   cardNumber: yup
     .string()
     .required()
@@ -100,7 +93,7 @@ const CardsModal = () => {
   const onPaymentSubmit = values => {
     const body = {
       ...values,
-      expDate: `${values.month}/${values.year}`
+      expDate: values.expiry
     }
     dispatch(createMethod({ body, uuid: user.id }))
     handleEditCardClose()

@@ -1,6 +1,5 @@
-// ** React Imports
 import * as React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 // ** MUI Imports
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -15,6 +14,7 @@ import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import Box from '@mui/material/Box'
 
 import { CloseCircle } from 'mdi-material-ui'
 
@@ -30,6 +30,12 @@ const PROFILES = [
   { label: 'Consumidor', value: 'Consumidor' }
 ]
 
+const GENDERS = [
+  { label: 'Hombre', value: 'Hombre' },
+  { label: 'Mujer', value: 'Mujer' },
+  { label: 'Otro', value: 'Otro' }
+]
+
 const AvailableOptions = () => {
   return PROFILES.map((profile, i) => (
     <MenuItem disabled key={i} value={profile.value}>
@@ -37,31 +43,17 @@ const AvailableOptions = () => {
     </MenuItem>
   ))
 }
-//New param showOnlyName to show only name and lastname at user name edition
-const Modal = ({
-  label = '',
-  open = false,
-  handleModal = () => {},
-  item = {},
-  showOnlyName = false,
-  isAdministrator = false
-}) => {
-  const dispatch = useDispatch()
-  //Check showOnlyName, if true only define names, if false define entire user info
-  const defaultValues = showOnlyName
-    ? {
-        firstName: '',
-        lastName: ''
-      }
-    : {
-        firstName: '',
-        lastName: '',
-        phone: '',
-        profile: '',
-        recommenderId: ''
-      }
 
-  // ** Hooks
+const Modal = ({ label = '', open = false, handleModal = () => {}, item = {}, isAdministrator = false }) => {
+  const dispatch = useDispatch()
+
+  const defaultValues = {
+    firstName: '',
+    lastName: '',
+    phone: '',
+    gender: ''
+  }
+
   const {
     control,
     handleSubmit,
@@ -76,7 +68,6 @@ const Modal = ({
     const form = {
       body: values,
       uuid: uuid,
-      loadUserData: true,
       isAdministrator: isAdministrator
     }
     dispatch(updateUser(form))
@@ -84,19 +75,12 @@ const Modal = ({
 
   React.useEffect(() => {
     if (item && Object.keys(item).length) {
-      //Check showOnlyName, if true only define names, if false define entire user info
-      const resetValues = showOnlyName
-        ? {
-            firstName: item?.firstName,
-            lastName: item?.lastName
-          }
-        : {
-            firstName: item?.firstName,
-            lastName: item?.lastName,
-            phone: item?.phone,
-            profile: item?.profile,
-            recommenderId: item?.recommenderId
-          }
+      const resetValues = {
+        firstName: item?.firstName,
+        lastName: item?.lastName,
+        phone: item?.phone,
+        gender: item?.gender
+      }
       reset(resetValues)
     }
   }, [item])
@@ -123,18 +107,16 @@ const Modal = ({
                     name='firstName'
                     control={control}
                     rules={{ required: true, maxLength: 60 }}
-                    render={({ field: { value, onChange } }) => {
-                      return (
-                        <TextField
-                          value={value}
-                          label='Nombre'
-                          onChange={onChange}
-                          placeholder='Nombre..'
-                          error={Boolean(errors.firstName)}
-                          aria-describedby='validation-basic-first-name'
-                        />
-                      )
-                    }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        value={value}
+                        label='Nombre'
+                        onChange={onChange}
+                        placeholder='Nombre..'
+                        error={Boolean(errors.firstName)}
+                        aria-describedby='validation-basic-first-name'
+                      />
+                    )}
                   />
                   {errors.firstName?.type === 'required' && (
                     <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
@@ -156,111 +138,85 @@ const Modal = ({
                         onChange={onChange}
                         placeholder='Apellido..'
                         error={Boolean(errors.lastName)}
-                        aria-describedby='validation-basic-first-name'
+                        aria-describedby='validation-basic-last-name'
                       />
                     )}
                   />
                   {errors.lastName?.type === 'required' && (
-                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-last-name'>
                       El campo es requerido
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
-              {/* Check showOnlyName value, if true hide unnecessary inputs, if false show all inputs*/}
-              {!showOnlyName && (
-                <>
-                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                    <FormControl fullWidth>
-                      <Controller
-                        name='phone'
-                        control={control}
-                        rules={{ required: true, maxLength: 10 }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            type='tel'
-                            value={value}
-                            label='Telefono'
-                            onChange={onChange}
-                            error={Boolean(errors.phone)}
-                            placeholder='3321409021'
-                            aria-describedby='validation-basic-phone'
-                          />
-                        )}
+              <Grid item xs={12} sx={{ margin: '7px auto' }}>
+                <FormControl fullWidth>
+                  <Controller
+                    name='phone'
+                    control={control}
+                    rules={{ required: true, maxLength: 10 }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        type='tel'
+                        value={value}
+                        label='Teléfono'
+                        onChange={onChange}
+                        error={Boolean(errors.phone)}
+                        placeholder='3321409021'
+                        aria-describedby='validation-basic-phone'
                       />
-                      {errors.phone?.type === 'required' && (
-                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
-                          El campo es requerido
-                        </FormHelperText>
-                      )}
-                      {errors.phone?.type === 'maxLength' && (
-                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-first-name'>
-                          El telefono debe tener 10 caracteres
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                    <FormControl fullWidth>
-                      <InputLabel
-                        id='validation-basic-select'
-                        error={Boolean(errors.select)}
-                        htmlFor='validation-basic-select'
+                    )}
+                  />
+                  {errors.phone?.type === 'required' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                  {errors.phone?.type === 'maxLength' && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-phone'>
+                      El teléfono debe tener 10 caracteres
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ margin: '7px auto' }}>
+                <FormControl fullWidth>
+                  <InputLabel id='validation-basic-gender'>Género</InputLabel>
+                  <Controller
+                    name='gender'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <Select
+                        value={value}
+                        label='Género'
+                        onChange={onChange}
+                        error={Boolean(errors.gender)}
+                        aria-describedby='validation-basic-gender'
                       >
-                        Perfil
-                      </InputLabel>
-                      <Controller
-                        disabled
-                        name='profile'
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <Select
-                            value={value}
-                            label='Perfil'
-                            onChange={onChange}
-                            error={Boolean(errors.profile)}
-                            labelId='validation-basic-profile'
-                            aria-describedby='validation-basic-profile'
-                            disabled={() => (item && item.profile !== 'Consumidor' ? true : false)}
-                          >
-                            {item && Object.keys(item).length ? AvailableOptions() : null}
-                          </Select>
-                        )}
-                      />
-                      {errors.select && (
-                        <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-select'>
-                          El campo es requerido
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                    <FormControl fullWidth>
-                      <Controller
-                        name='recommenderId'
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            value={value}
-                            label='Codigo de Recomendado'
-                            onChange={onChange}
-                            placeholder='32u4234-234234-234234-422'
-                            aria-describedby='validation-basic-recommenderId'
-                            disabled={item?.recommenderId ? true : false}
-                          />
-                        )}
-                      />
-                    </FormControl>
-                  </Grid>
-                </>
-              )}
+                        {GENDERS.map((gender, i) => (
+                          <MenuItem key={i} value={gender.value}>
+                            {gender.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                  {errors.gender && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='validation-basic-gender'>
+                      El campo es requerido
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
             </Grid>
             <DialogActions className='dialog-actions-dense'>
-              <Grid item xs={12} sx={{ margin: '7px auto' }}>
-                <Button size='large' type='submit' variant='contained'>
-                  Editar
-                </Button>
+              <Grid item xs={12} sx={{ marginTop: '2rem' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button type='submit' variant='contained'>
+                    confirmar
+                  </Button>
+                </Box>
               </Grid>
             </DialogActions>
           </form>

@@ -81,7 +81,7 @@ export const NetworkList = ({ users, firstLevel }) => {
                         }}
                       />
                       <br />
-                      Referido por: <br />
+                      Recomendado por: <br />
                       {user.recommenderName || 'N/A'} <br />
                       Consumo: <br />${user.lastTotalConsume || '0'}
                     </>
