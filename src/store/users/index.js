@@ -48,8 +48,9 @@ export const sendNewUser = createAsyncThunk('user/send-new-user', async (body, t
     Router.push('/dashboards/general/')
     return response
   } catch (error) {
+    console.log(error)
     const errMessage = error?.response?.data?.message
-    thunkApi.dispatch(openSnackBar({ open: true, message: errMessage, severity: 'error' }))
+    toast.error(errMessage)
     return thunkApi.rejectWithValue('error')
   }
 })
