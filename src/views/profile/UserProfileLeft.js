@@ -150,8 +150,8 @@ const UserProfileLeft = ({ data }) => {
               <CustomChip
                 skin='light'
                 size='small'
-                label={user?.isActive ? isActive : isInactive}
-                color={user?.isActive ? 'success' : 'error'}
+                label={user?.isValid ? isActive : isInactive}
+                color={user?.isValid ? 'success' : 'error'}
                 sx={{
                   height: 20,
                   fontSize: '0.875rem',
