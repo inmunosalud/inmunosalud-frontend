@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -23,7 +24,7 @@ const BoxWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const Welcome = () => {
-  const { email } = useSelector(state => state.users)
+  const { email, isLoading } = useSelector(state => state.users)
   const [verificationCode, setVerificationCode] = useState('')
   const { open, message, severity } = useSelector(state => state.notifications)
   const dispatch = useDispatch()
@@ -46,50 +47,63 @@ const Welcome = () => {
 
   return (
     <Box className='content-center'>
-      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <BoxWrapper>
-          <Box sx={{ mb: 5.75, textAlign: 'center' }}>
-            <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
-              Bienvenido a Inmunosalud
-            </Typography>
-            <Typography variant='body2'>Tu registro ha sido exitoso.</Typography>
-            <Typography variant='body2'>Te enviamos un código a tu correo para verificar tu cuenta.</Typography>
-          </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <VerificationInput
-                classNames={{
-                  container: 'container',
-                  character: 'character',
-                  characterInactive: 'character--inactive',
-                  characterSelected: 'character--selected'
-                }}
-                onChange={value => {
-                  setVerificationCode(value)
-                  if (value.length === 6) {
-                    handleSubmit()
-                  }
-                }}
-                validChars='0-9'
-                inputProps={{ inputMode: 'numeric' }}
-              />
+      {!isLoading ? (
+        <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <BoxWrapper>
+            <Box sx={{ mb: 5.75, textAlign: 'center' }}>
+              <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
+                Bienvenido a Inmunosalud
+              </Typography>
+              <Typography variant='body2'>Tu registro ha sido exitoso.</Typography>
+              <Typography variant='body2'>Te enviamos un código a tu correo para verificar tu cuenta.</Typography>
             </Box>
-            <Box Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
-              <Button type='submit' variant='contained' sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }} onClick={handleSubmit}>
-                Verificar
-              </Button>
-              <Button
-                type='submit'
-                variant='outlined'
-                sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }}
-                onClick={resendVerificationCode}
-              >
-                Reenviar código
-              </Button>
-            </Box>
-          </form>
-        </BoxWrapper>
-      </Box>
+            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <VerificationInput
+                  classNames={{
+                    container: 'container',
+                    character: 'character',
+                    characterInactive: 'character--inactive',
+                    characterSelected: 'character--selected'
+                  }}
+                  onChange={value => {
+                    setVerificationCode(value)
+                    if (value.length === 6) {
+                      handleSubmit()
+                    }
+                  }}
+                  validChars='0-9'
+                  inputProps={{ inputMode: 'numeric' }}
+                />
+              </Box>
+              <Box Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+                <Button type='submit' variant='contained' sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }} onClick={handleSubmit}>
+                  Verificar
+                </Button>
+                <Button
+                  type='submit'
+                  variant='outlined'
+                  sx={{ ml: 2.5, pl: 5.5, pr: 5.5 }}
+                  onClick={resendVerificationCode}
+                >
+                  Reenviar código
+                </Button>
+              </Box>
+            </form>
+          </BoxWrapper>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+            justifyContent: 'center'
+          }}
+        >
+          <CircularProgress color='primary' />
+        </Box>
+      )}
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
     </Box>
   )

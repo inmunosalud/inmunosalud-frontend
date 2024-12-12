@@ -10,6 +10,7 @@ import DialogDelete from 'src/views/components/dialogs/DialogDelete'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getLocaleText } from '../../../configs/defaultLocaleText'
 import { Button } from '@mui/material'
+import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
 
 import { Pencil, Delete } from 'mdi-material-ui'
 
@@ -79,21 +80,7 @@ const TableUsers = () => {
   return (
     <>
       <Card>
-        <CardHeader title='Usuarios en el Sistema' />
-        <DataGrid
-          autoHeight
-          rows={users}
-          getRowId={row => `${row.id}${row.firstName}`}
-          columns={config}
-          pageSize={pageSize}
-          rowsPerPageOptions={[7, 10, 25, 50]}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          localeText={getLocaleText()}
-          loading={loading}
-          components={{
-            Toolbar: GridToolbar
-          }}
-        />
+        <BasicDataGrid data={users} columns={config} loading={loading} title='Usuarios en el Sistema' />
       </Card>
       <DialogDelete
         item={modalRow}

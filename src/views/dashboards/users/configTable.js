@@ -25,9 +25,20 @@ const getNumber = row => {
 export const columns = [
   {
     flex: 0.125,
-    field: 'email',
-    minWidth: 140,
+    field: 'name',
+    minWidth: 240,
     headerName: 'Usuario',
+    renderCell: params => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {`${params.row.firstName} ${params.row.lastName}`}
+      </Typography>
+    )
+  },
+  {
+    flex: 0.125,
+    field: 'email',
+    minWidth: 340,
+    headerName: 'Correo Electrónico',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.email}
@@ -49,38 +60,12 @@ export const columns = [
   },
   {
     flex: 0.125,
-    field: 'weight',
-    minWidth: 200,
-    headerName: 'Peso Cartera',
-    renderCell: params => {
-      const value = params.row?.portfolio?.weight
-      return (
-        <Box sx={{ height: '80px' }}>
-          <GraphRow type='W' value={value} />
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.125,
-    field: 'score',
-    minWidth: 80,
-    headerName: 'Score',
-    renderCell: params => (
-      <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.portfolio?.score}
-      </Typography>
-    )
-  },
-
-  {
-    flex: 0.125,
-    field: 'last',
+    field: 'commission',
     minWidth: 100,
     headerName: 'Comisión',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row?.commission?.last}
+        ${params.row?.commission}
       </Typography>
     )
   },
@@ -103,10 +88,10 @@ export const columns = [
     flex: 0.175,
     minWidth: 120,
     headerName: 'Estatus',
-    field: 'valid',
+    field: 'isValid',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.valid ? <AccountCheckOutline /> : <AccountCancelOutline />}
+        {params.row.isValid ? <AccountCheckOutline /> : <AccountCancelOutline />}
       </Typography>
     )
   },
@@ -170,19 +155,7 @@ export const columns = [
       )
     }
   },
-  // {
-  //   flex: 0.175,
-  //   minWidth: 140,
-  //   headerName: 4,
-  //   field: 4,
-  //   renderCell: params => {
-  //     return (
-  //       <Box sx={{ height: '80px' }}>
-  //         <GraphRow type={4} params={params} />
-  //       </Box>
-  //     )
-  //   }
-  // },
+
   {
     flex: 0.125,
     minWidth: 140,
@@ -192,19 +165,6 @@ export const columns = [
       return (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row.antiquity}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.125,
-    minWidth: 140,
-    field: 'balance',
-    headerName: 'Saldo a favor',
-    renderCell: params => {
-      return (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          ${params.row.balance}
         </Typography>
       )
     }

@@ -83,10 +83,16 @@ const UserLayout = ({ children }) => {
         router.push('/dashboards/logistics')
         dispatch(isDataLoaded(true))
       }
-      if (user.profile === 'Administrador General') {
+      if (user.profile === 'Administrador General' && dataLoaded === false) {
+        dispatch(getCart(user.id))
+        dispatch(paymentMethodsList(user.id))
+        dispatch(addressList(user.id))
         dispatch(isDataLoaded(true))
       }
-      if (user.profile === 'Consumidor' || (user.profile === 'Afiliado' && dataLoaded === false)) {
+      if (
+        (user.profile === 'Consumidor' && dataLoaded === false) ||
+        (user.profile === 'Afiliado' && dataLoaded === false)
+      ) {
         dispatch(getCart(user.id))
         dispatch(paymentMethodsList(user.id))
         dispatch(addressList(user.id))

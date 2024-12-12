@@ -509,9 +509,16 @@ export const usersSlice = createSlice({
       state.patchPassword = false
     })
     //Validate new user
+    builder.addCase(validateNewUser.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(validateNewUser.fulfilled, (state, { payload }) => {
       const { content } = payload
       state.user = content
+      state.isLoading = false
+    })
+    builder.addCase(validateNewUser.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     //Taxinfo
     builder.addCase(getTaxInfo.pending, (state, action) => {
