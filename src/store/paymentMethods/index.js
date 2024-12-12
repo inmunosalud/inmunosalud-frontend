@@ -309,11 +309,17 @@ export const paymentMethodsSlice = createSlice({
     builder.addCase(updateMethod.rejected, (state, action) => {
       state.isLoading = false
     })
+    builder.addCase(deleteMethod.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(deleteMethod.fulfilled, (state, { payload }) => {
       state.isLoading = false
       state.paymentMethods = payload.paymentMethods
       state.clabe = payload.clabe ?? ''
       state.selectedPaymentMethod = payload.paymentMethods[0]
+    })
+    builder.addCase(deleteMethod.rejected, (state, { payload }) => {
+      state.isLoading = false
     })
     builder.addCase(setMonthlyPaymentMethod.pending, state => {
       state.isLoading = false
