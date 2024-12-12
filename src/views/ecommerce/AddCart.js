@@ -224,46 +224,58 @@ const AddCard = props => {
               <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                 Método de pago:
               </Typography>
-              <Typography variant='body2' sx={{ mb: 2 }}>
-                {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType}`}
-              </Typography>
-              {selectedPayment?.id === 'store' ? (
-                <>
-                  <Box>
-                    {[
-                      { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-                      { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
-                      { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-                      { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
-                    ].map(store => (
-                      <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                    ))}
-                  </Box>
-                  <Box>
-                    {[
-                      { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-                      { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
-                      { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
-                    ].map(store => (
-                      <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                    ))}
-                  </Box>
-                </>
+              {selectedPayment ? (
+                <Box>
+                  <Typography variant='body2' sx={{ mb: 2 }}>
+                    {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType || ''}`}
+                  </Typography>
+                  {selectedPayment?.id === 'store' ? (
+                    <>
+                      <Box>
+                        {[
+                          { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
+                          { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
+                          { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
+                          { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
+                        ].map(store => (
+                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                        ))}
+                      </Box>
+                      <Box>
+                        {[
+                          { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
+                          {
+                            id: 'store6',
+                            image: '/images/logos/farmacias-guadalajara.svg',
+                            name: 'farmaciasGuadalajara'
+                          },
+                          { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
+                        ].map(store => (
+                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                        ))}
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Alias: {selectedPayment?.alias}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Nombre: {selectedPayment?.nameOnCard}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Numero: {selectedPayment?.cardNumber && `XXXXXX${selectedPayment?.cardNumber.slice(-4)}`}
+                      </Typography>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        Fecha: {selectedPayment?.expDate}
+                      </Typography>
+                    </>
+                  )}
+                </Box>
               ) : (
-                <>
-                  <Typography variant='body2' sx={{ mb: 2 }}>
-                    Alias: {selectedPayment?.alias}
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 2 }}>
-                    Nombre: {selectedPayment?.nameOnCard}
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 2 }}>
-                    Numero: XXXXXX{selectedPayment?.cardNumber.slice(-4)}
-                  </Typography>
-                  <Typography variant='body2' sx={{ mb: 2 }}>
-                    Fecha: {selectedPayment?.expDate}
-                  </Typography>
-                </>
+                <Typography variant='body2' sx={{ mb: 2 }}>
+                  Seleccione un método de pago.
+                </Typography>
               )}
             </Grid>
             <Grid item xs={12} sm={5} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
@@ -271,26 +283,32 @@ const AddCard = props => {
                 <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                   Dirección:
                 </Typography>
-                <CalcWrapper>
-                  <Typography variant='body2'>Calle: {selectedAddress?.street}</Typography>
-                </CalcWrapper>
-                <CalcWrapper>
-                  <Typography variant='body2'>Núm. Ext: {selectedAddress?.extNumber}</Typography>
-                </CalcWrapper>
-                {selectedAddress?.intNumber ? (
-                  <CalcWrapper>
-                    <Typography variant='body2'>Núm. Int: {selectedAddress?.intNumber}</Typography>
-                  </CalcWrapper>
-                ) : null}
-                <CalcWrapper>
-                  <Typography variant='body2'>Colonia: {selectedAddress?.neighborhood}</Typography>
-                </CalcWrapper>
-                <CalcWrapper>
-                  <Typography variant='body2'>CP: {selectedAddress?.zipCode}</Typography>
-                </CalcWrapper>
-                <CalcWrapper>
-                  <Typography variant='body2'>Ciudad: {selectedAddress?.city}</Typography>
-                </CalcWrapper>
+                {selectedAddress ? (
+                  <Box>
+                    <CalcWrapper>
+                      <Typography variant='body2'>Calle: {selectedAddress?.street}</Typography>
+                    </CalcWrapper>
+                    <CalcWrapper>
+                      <Typography variant='body2'>Núm. Ext: {selectedAddress?.extNumber}</Typography>
+                    </CalcWrapper>
+                    {selectedAddress?.intNumber ? (
+                      <CalcWrapper>
+                        <Typography variant='body2'>Núm. Int: {selectedAddress?.intNumber}</Typography>
+                      </CalcWrapper>
+                    ) : null}
+                    <CalcWrapper>
+                      <Typography variant='body2'>Colonia: {selectedAddress?.neighborhood}</Typography>
+                    </CalcWrapper>
+                    <CalcWrapper>
+                      <Typography variant='body2'>CP: {selectedAddress?.zipCode}</Typography>
+                    </CalcWrapper>
+                    <CalcWrapper>
+                      <Typography variant='body2'>Ciudad: {selectedAddress?.city}</Typography>
+                    </CalcWrapper>
+                  </Box>
+                ) : (
+                  <Typography variant='body2'>Seleccione una dirección.</Typography>
+                )}
               </div>
             </Grid>
 
@@ -298,31 +316,37 @@ const AddCard = props => {
               <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
                 Precio Total
               </Typography>
-              <CalcWrapper>
-                <Typography variant='body2'>Subtotal:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.subtotal}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>Monto de envío:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.shippingCost}
-                </Typography>
-              </CalcWrapper>
-              <CalcWrapper>
-                <Typography variant='body2'>IVA:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.iva}
-                </Typography>
-              </CalcWrapper>
-              <Divider />
-              <CalcWrapper>
-                <Typography variant='body2'>Total:</Typography>
-                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                  ${total.total}
-                </Typography>
-              </CalcWrapper>
+              {total.subtotal > 0 ? (
+                <Box>
+                  <CalcWrapper>
+                    <Typography variant='body2'>Subtotal:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.subtotal}
+                    </Typography>
+                  </CalcWrapper>
+                  <CalcWrapper>
+                    <Typography variant='body2'>Monto de envío:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.shippingCost}
+                    </Typography>
+                  </CalcWrapper>
+                  <CalcWrapper>
+                    <Typography variant='body2'>IVA:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.iva}
+                    </Typography>
+                  </CalcWrapper>
+                  <Divider />
+                  <CalcWrapper>
+                    <Typography variant='body2'>Total:</Typography>
+                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                      ${total.total}
+                    </Typography>
+                  </CalcWrapper>
+                </Box>
+              ) : (
+                <Typography variant='body2'>Agregue artículos al carrito.</Typography>
+              )}
             </Grid>
           </Grid>
         </CardContent>
