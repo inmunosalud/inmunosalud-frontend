@@ -1,4 +1,5 @@
 import axios from 'axios'
+import toast from 'react-hot-toast'
 export const USERS = process.env.USERS
 export const CART = process.env.CART
 export const MONTHLY_PURCHASE = process.env.MONTHLY_PURCHASE
@@ -35,12 +36,11 @@ axiosInstance.interceptors.response.use(
         'Existe un problema con el servicio, intente de nuevo mas tarde, si el problema persiste contacte a soporte.'
     }
 
-    // if (error.response.status === 401) {
-    //   console.error('RESPONSE 401')
-    // localStorage.removeItem('persist:root')
-    // window.location.href = '/login'
-    //   return Promise.reject(message)
-    // }
+    if (error.response.status === 401) {
+      localStorage.removeItem('im-user')
+      toast.error('La sesión caduco inicie nuevamente')
+      window.location.href = '/login'
+    }
 
     console.error('Axios Response Error: ', error.response, message)
     return Promise.reject(error)
