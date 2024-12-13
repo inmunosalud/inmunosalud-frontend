@@ -41,7 +41,7 @@ import FallbackSpinner from 'src/@core/components/spinner'
 
 const CARD_LOGOS = {
   visa: '/images/logos/visa.png',
-  amex: '/images/logos/american-express.png',
+  american_express: '/images/logos/american-express.png',
   mastercard: '/images/logos/mastercard.png'
 }
 
