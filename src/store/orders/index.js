@@ -23,7 +23,7 @@ export const getLogisticsOrders = createAsyncThunk('order/getLogisticsOrders', a
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    const response = await api_get(`${ORDERS}/orders/logistics/`, auth)
+    const response = await api_get(`${ORDERS}/orders/logistics`, auth)
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')

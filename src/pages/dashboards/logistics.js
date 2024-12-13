@@ -18,70 +18,71 @@ import { setModal } from 'src/store/contactus'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 import { esES } from '@mui/x-data-grid/locales'
 import { getLogisticsOrders } from 'src/store/orders'
+import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
 
 const columns = [
   {
-    flex: 1,
+    width: 200,
     field: 'date',
     headerName: 'Fecha',
     valueGetter: params => params.row.purchaseDate
   },
   {
-    flex: 1,
+    width: 200,
     field: 'contact',
     headerName: 'Contacto',
     valueGetter: params => params.row.user.name || 'Sin Datos'
   },
   {
-    flex: 1,
+    width: 150,
     field: 'address',
     headerName: 'Dirección',
     valueGetter: params => params.row.address.streetAndNumber
   },
   {
-    flex: 1,
+    width: 200,
     field: 'description',
     headerName: 'Descripción',
     valueGetter: params => params.row.description
   },
   {
-    flex: 1.2,
+    width: 200,
     field: 'neighborhood',
     headerName: 'Colonia',
     valueGetter: params => params.row.address.neighborhood
   },
   {
-    flex: 1,
+    width: 150,
     field: 'city',
     headerName: 'Ciudad',
     valueGetter: params => params.row.address.city
   },
   {
-    flex: 0.8,
+    width: 100,
     field: 'zipCode',
     headerName: 'CP',
     valueGetter: params => params.row.address.zipCode
   },
   {
-    flex: 1,
+    width: 100,
     field: 'state',
     headerName: 'Estado',
     valueGetter: params => params.row.address.federalEntity
   },
   {
-    flex: 1.1,
+    width: 150,
     field: 'phone',
     headerName: 'Teléfono',
     valueGetter: params => params.row.user.phone || 'Sin Datos'
   },
   {
-    flex: 1,
+    width: 200,
     field: 'reference',
     headerName: 'Referencia',
     valueGetter: params => params.row.address.refer
   },
   {
-    flex: 2.5,
+    width: 350,
     field: 'email',
     headerName: 'Correo Electrónico',
     valueGetter: params => params.row.user.email
@@ -150,30 +151,7 @@ const AdminLogistics = () => {
             </>
           }
         />
-        <DataGrid
-          getRowHeight={() => 'auto'}
-          autosizeOptions={autosizeOptions}
-          checkboxSelection
-          disableRowSelectionOnClick
-          loading={isLoading}
-          includeOutliers
-          localeText={esES.components.MuiDataGrid.defaultProps.localeText}
-          rows={logisticsOrdersAll}
-          disableColumnMenu={true}
-          columns={columns}
-          rowsPerPageOptions={[5, 10, 25]}
-          pageSize={pageSize}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          components={{
-            Toolbar: CustomToolbar
-          }}
-          sx={{
-            height: '80vh',
-            [`& .${gridClasses.cell}`]: {
-              py: 0.5
-            }
-          }}
-        />
+        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={columns} />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <ProblemFormModal />

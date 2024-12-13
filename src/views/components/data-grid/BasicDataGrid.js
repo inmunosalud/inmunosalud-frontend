@@ -25,7 +25,7 @@ import { esES } from '@mui/x-data-grid/locales'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
-export const BasicDataGrid = ({ isLoading, data, columns, title }) => {
+export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
   const [pageSize, setPageSize] = React.useState(100)
 
   function CustomToolbar() {
