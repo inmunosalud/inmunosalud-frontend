@@ -111,7 +111,7 @@ const EditOrder = () => {
         company: values.company
       },
       deliveryStatus: values.deliveryStatus,
-      deliveryDate: values.validDeliveryDate,
+      deliveryDate: values.validDeliveryDate ? format(new Date(values.validDeliveryDate), 'yyyy-MM-dd') : '',
       idParam: itemUpdated?.id
     }
     dispatch(updateOrder(body))
