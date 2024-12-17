@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
         'Existe un problema con el servicio, intente de nuevo mas tarde, si el problema persiste contacte a soporte.'
     }
 
-    if (error.response.status === 401) {
+    if (error.response.status === 498) {
       localStorage.removeItem('im-user')
       toast.error('La sesión caduco inicie nuevamente')
       window.location.href = '/login'
