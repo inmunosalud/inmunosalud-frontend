@@ -144,14 +144,14 @@ const AdminLogistics = () => {
   const config = [
     ...columns,
     {
-      minWidth: 20,
+      width: 150,
       field: 'actions',
       headerName: 'Acciones',
       renderCell: params => {
         const row = params?.row
         return (
-          <Button onClick={() => handleOpenModalEdit(row)} color='warning' size='small'>
-            <Pencil />
+          <Button onClick={() => handleOpenModalEdit(row)} color='info' size='small' variant='contained'>
+            Actualizar
           </Button>
         )
       }
