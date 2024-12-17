@@ -70,7 +70,7 @@ const NumberUsers = ({ data = null }) => {
 
   const getSeries = () => {
     if (!data) {
-      return [10,20]
+      return [0, 0]
     }
 
     return [data.users.valid, data.users.invalid]
@@ -113,11 +113,19 @@ const NumberUsers = ({ data = null }) => {
                 <Typography variant='h6'>{data?.users.total ?? 0}</Typography>
               </Box>
             </Box>
-            <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column'}}>
-              <Typography variant='body2'>Administradores Generales: <b>{data?.countByProfile.admin ?? 0}</b></Typography>
-              <Typography variant='body2'>Administradores de Productos: <b>{data?.countByProfile.productsAdmin ?? 0}</b></Typography>
-              <Typography variant='body2'>Consumidores: <b>{data?.countByProfile.consumerUser ?? 0}</b></Typography>
-              <Typography variant='body2'>Afiliados: <b>{data?.countByProfile.affiliatedUser ?? 0}</b></Typography>
+            <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column' }}>
+              <Typography variant='body2'>
+                Administradores Generales: <b>{data?.countByProfile.admin ?? 0}</b>
+              </Typography>
+              <Typography variant='body2'>
+                Administradores de Productos: <b>{data?.countByProfile.productsAdmin ?? 0}</b>
+              </Typography>
+              <Typography variant='body2'>
+                Consumidores: <b>{data?.countByProfile.consumerUser ?? 0}</b>
+              </Typography>
+              <Typography variant='body2'>
+                Afiliados: <b>{data?.countByProfile.affiliatedUser ?? 0}</b>
+              </Typography>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Grid container>
@@ -139,7 +147,6 @@ const NumberUsers = ({ data = null }) => {
               </Grid>
             </Grid>
           </Grid>
-
         </Grid>
       </CardContent>
     </Card>

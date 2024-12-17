@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid'
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-import { Button } from '@mui/material'
+import { Button, Box } from '@mui/material'
 
 import NumberUsers from 'src/views/general/NumberUsers'
 import CardNumber from 'src/views/general/CardNumber'
@@ -25,20 +25,17 @@ const General = () => {
   const { data } = useSelector(state => state.dashboard.general)
 
   const antiquity = {
-    stats: data?.antiquity,
+    stats: data?.antiquity || 0,
     title: 'Antigüedad promedio'
   }
   const performance = {
-    stats: data?.performance,
+    stats: `$${data?.performance || 0}`,
     title: 'Rendimiento'
   }
-  const nextConsumption = {
-    stats: data?.nextConsumption,
-    title: 'Saldo por cobrar'
-  }
+
   const nextComission = {
-    stats: data?.nextConsumption,
-    title: 'Saldo por entregar'
+    stats: `$${data?.nextCommission || 0}`,
+    title: 'Comisiones por Pagar'
   }
 
   useEffect(() => {
@@ -51,21 +48,31 @@ const General = () => {
         <Grid item xs={12} md={6}>
           <NumberUsers data={data} />
         </Grid>
-        <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
-          <CardNumber data={performance} />
-
-          <CardNumber data={antiquity} />
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={6}>
+            <Grid item container xs={12} md={6}>
+              <Box sx={{ width: '100%' }}>
+                <CardNumber data={performance} />
+              </Box>
+            </Grid>
+            <Grid item container xs={12} md={6}>
+              <Box sx={{ width: '100%' }}>
+                <CardNumber data={nextComission} />
+              </Box>
+            </Grid>
+            <Grid item container xs={12} md={12}>
+              <Box sx={{ width: '100%', mt: 9 }}>
+                <CardNumber data={antiquity} />
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item display='flex' container direction='column' justifyContent='space-between' xs={12} sm={6} md={3}>
-          <CardNumber data={nextConsumption} />
 
-          <CardNumber data={nextComission} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={12}>
           <WalletAverage title='Estatus' subtitle={subtitle} percentage={data?.status} />
         </Grid>
         <Grid item xs={12} md={8}>
-          <AverageEfectiveness score={data?.score} />
+          {/* <AverageEfectiveness score={data?.score} /> */}
         </Grid>
 
         <Grid item display='flex' justifyContent='flex-end' xs={12}>
