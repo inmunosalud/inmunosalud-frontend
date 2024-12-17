@@ -19,6 +19,7 @@ import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 import { esES } from '@mui/x-data-grid/locales'
 import { getLogisticsOrders } from 'src/store/orders'
 import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
+import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
   {
@@ -112,6 +113,11 @@ const AdminLogistics = () => {
     location.reload()
   }
 
+  const handleOpenModalEdit = item => {
+    dispatch(setUpdatedOrder(item))
+    router.push('/ecommerce/edit-order-logistic')
+  }
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -135,6 +141,23 @@ const AdminLogistics = () => {
     }
   }, [apiRef, autosizeOptions])
 
+  const config = [
+    ...columns,
+    {
+      minWidth: 20,
+      field: 'actions',
+      headerName: 'Acciones',
+      renderCell: params => {
+        const row = params?.row
+        return (
+          <Button onClick={() => handleOpenModalEdit(row)} color='warning' size='small'>
+            <Pencil />
+          </Button>
+        )
+      }
+    }
+  ]
+
   return (
     <>
       <Card sx={{ m: 10 }}>
@@ -142,16 +165,29 @@ const AdminLogistics = () => {
           title='Pedidos'
           action={
             <>
-              <Button sx={{ mr: 4 }} variant='contained' color='secondary' onClick={() => dispatch(setModal(true))}>
-                Tengo un problema
-              </Button>
-              <Button variant='contained' onClick={handleLogout}>
-                Cerrar sesión
-              </Button>
+              {user.profile === 'Administrador General' ? (
+                <Button
+                  sx={{ mr: 4 }}
+                  variant='contained'
+                  color='primary'
+                  onClick={() => router.push('/landing-page/home')}
+                >
+                  Volver
+                </Button>
+              ) : (
+                <>
+                  <Button sx={{ mr: 4 }} variant='contained' color='secondary' onClick={() => dispatch(setModal(true))}>
+                    Tengo un problema
+                  </Button>
+                  <Button variant='contained' onClick={handleLogout}>
+                    Cerrar sesión
+                  </Button>
+                </>
+              )}
             </>
           }
         />
-        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={columns} />
+        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={config} />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <ProblemFormModal />

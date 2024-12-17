@@ -84,6 +84,7 @@ export const ROUTES_PERMISSION = {
   ['/dashboards/users']: PERMISSIONS.dashboardUsers,
   ['/dashboards/comissions']: PERMISSIONS.dashboardComissions,
   ['/dashboards/logistics']: PERMISSIONS.dashboardLogistics,
+  ['/ecommerce/edit-order-logistic']: PERMISSIONS.dashboardLogistics,
   ['/dashboards/constants']: PERMISSIONS.dashboardConstants,
   ['/profile']: PERMISSIONS.dashboardProfile,
   ['/network']: PERMISSIONS.network,
