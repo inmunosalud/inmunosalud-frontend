@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateOrder } from 'src/store/orders'
 import { format } from 'date-fns'
 
-import { useRouter } from 'next/router'
+import { router } from 'next/router'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -73,7 +73,6 @@ const validationSchema = yup.object().shape({
 })
 
 const EditOrderLogistic = () => {
-  const router = useRouter()
   const dispatch = useDispatch()
   const { itemUpdated } = useSelector(state => state.orders)
   const {
@@ -146,13 +145,12 @@ const EditOrderLogistic = () => {
                       <MenuItem disabled value='Preparando el Pedido'>
                         Preparando el Pedido
                       </MenuItem>
-                      <MenuItem
-                        disabled={watch('deliveryStatus') === 'Entregado' ? true : false}
-                        value='Está en camino'
-                      >
+                      <MenuItem disabled={itemUpdated.status === 'Entregado' ? true : false} value='Está en camino'>
                         Está en camino
                       </MenuItem>
-                      <MenuItem value='Entregado'>Entregado</MenuItem>
+                      <MenuItem disabled={itemUpdated.status === 'Está en camino' ? false : true} value='Entregado'>
+                        Entregado
+                      </MenuItem>
                     </Select>
                   )}
                 />
