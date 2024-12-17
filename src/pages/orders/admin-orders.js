@@ -147,7 +147,7 @@ const AdminOrders = () => {
 
   React.useEffect(() => {
     dispatch(getOrders())
-  }, [dispatch])
+  }, [])
 
   const handleOpenModalEdit = item => {
     dispatch(setUpdatedOrder(item))
