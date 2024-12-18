@@ -37,7 +37,6 @@ import Image from 'next/image'
 import { closeSnackBar } from 'src/store/notifications'
 import { Flag } from 'mdi-material-ui'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
-
 import { setModal } from 'src/store/contactus'
 import { getUserInfo } from 'src/store/users'
 import { store } from 'src/store'
@@ -83,6 +82,7 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
 }
 
 const DeliveryInfo = ({ allOrderInfo, address }) => {
+  const theme = useTheme()
   return (
     <Grid container>
       <Grid xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
@@ -104,19 +104,49 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
         </Typography>
         {allOrderInfo?.type === 'store' ? (
           <>
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-              {[
-                { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-                { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
-                { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-                { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' },
-                { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-                { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
-                { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
-              ].map(store => (
-                <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-              ))}
-            </Box>
+            {allOrderInfo.deliveryStatus === 'Confirmando el Pago' && (
+              <Box sx={{ width: '100%', display: 'flex' }}>
+                {[
+                  { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
+                  { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
+                  { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
+                  { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' },
+                  { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
+                  { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
+                  { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
+                ].map(store => (
+                  <Tooltip key={store.id} title={store?.name}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 70,
+                        height: 70,
+                        border: `1px solid ${theme.palette.divider}`,
+                        borderRadius: 2,
+                        padding: 1,
+                        backgroundColor: {
+                          dark: theme.palette.grey[800],
+                          light: theme.palette.grey[100]
+                        }[theme.palette.mode],
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        margin: '10px 10px 10px 0'
+                      }}
+                    >
+                      <img
+                        height='auto'
+                        width='50px'
+                        alt={store?.name}
+                        src={store.image}
+                        style={{ objectFit: 'contain', maxHeight: '70px' }}
+                      />
+                    </Box>
+                  </Tooltip>
+                ))}
+              </Box>
+            )}
           </>
         ) : (
           <>
