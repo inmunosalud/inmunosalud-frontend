@@ -24,10 +24,15 @@ import { getLocaleText } from 'src/configs/defaultLocaleText'
 
 const COLUMNS = [
   {
+    width: 200,
+    field: 'folio',
+    headerName: 'Folio'
+  },
+  {
     flex: 0.175,
     minWidth: 110,
     field: 'userEmail',
-    headerName: 'Correo electronico',
+    headerName: 'Correo electrónico',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
         {params.row.userEmail}

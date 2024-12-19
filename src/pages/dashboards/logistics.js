@@ -24,6 +24,11 @@ import { getOrders, setUpdatedOrder } from 'src/store/orders'
 const columns = [
   {
     width: 200,
+    field: 'folio',
+    headerName: 'Folio'
+  },
+  {
+    width: 200,
     field: 'date',
     headerName: 'Fecha',
     valueGetter: params => params.row.purchaseDate
@@ -142,7 +147,6 @@ const AdminLogistics = () => {
   }, [apiRef, autosizeOptions])
 
   const config = [
-    ...columns,
     {
       width: 150,
       field: 'actions',
@@ -155,7 +159,8 @@ const AdminLogistics = () => {
           </Button>
         )
       }
-    }
+    },
+    ...columns
   ]
 
   return (

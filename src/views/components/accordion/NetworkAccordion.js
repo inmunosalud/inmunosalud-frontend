@@ -262,6 +262,9 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                       </Typography>
                                       {/* Fecha de compra */}
                                       <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
+                                        <strong>Folio:</strong> {order.folio}
+                                      </Typography>
+                                      <Typography variant='body2' color='textSecondary'>
                                         <strong>Fecha de Compra:</strong> {order.purchaseDate}
                                       </Typography>
                                       {/* Total */}

@@ -51,7 +51,6 @@ const TableUsers = () => {
   }
 
   const config = [
-    ...columns,
     {
       flex: 0.125,
       minWidth: 150,
@@ -74,7 +73,8 @@ const TableUsers = () => {
           </>
         )
       }
-    }
+    },
+    ...columns
   ]
 
   return (

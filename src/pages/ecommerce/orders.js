@@ -324,7 +324,15 @@ const Cards = props => {
             id={`panel${props.index + 1}-header`}
           >
             <Grid container spacing={4}>
-              <Grid item xs={5} md={4}>
+              <Grid item xs={5} md={2}>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
+                    <strong>Folio</strong>
+                  </Typography>
+                  <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.folio}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={5} md={3}>
                 <Box sx={{ flexShrink: 0 }}>
                   <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
                     <strong>Pedido realizado</strong>
@@ -332,7 +340,7 @@ const Cards = props => {
                   <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.purchaseDate}</Typography>
                 </Box>
               </Grid>
-              <Grid item xs={7} md={8}>
+              <Grid item xs={7} md={6}>
                 <Grid container>
                   {props.deliveryStatus !== 'Entregado' && (
                     <Grid item xs={12} md={6}>

@@ -16,6 +16,11 @@ import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 const columns = [
   {
+    width: 200,
+    field: 'folio',
+    headerName: 'Folio'
+  },
+  {
     width: 160,
     headerName: 'Fecha de compra',
     field: 'purchaseDate'
@@ -155,7 +160,6 @@ const AdminOrders = () => {
   }
 
   const config = [
-    ...columns,
     {
       minWidth: 20,
       field: 'actions',
@@ -168,7 +172,8 @@ const AdminOrders = () => {
           </Button>
         )
       }
-    }
+    },
+    ...columns
   ]
 
   return (
