@@ -21,7 +21,6 @@ const CardNumber = ({ data, userInfo = {} }) => {
   const { title, chipColor, chipText, src, stats, trend, trendNumber } = data
   const isActive = 'Usuario Activo'
   const isInactive = 'Usuario Inactivo'
-  console.log(data)
   return (
     <Card sx={{ overflow: 'visible', position: 'relative' }}>
       <CardContent>
