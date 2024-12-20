@@ -1,32 +1,56 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
-
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CustomSnackbar from 'src/views/components/snackbar/CustomSnackbar'
+import React, { useEffect } from 'react'
 import {
   DataGrid,
   GridToolbarContainer,
-  GridToolbarExport,
+  GridToolbarQuickFilter,
   gridClasses,
   GridToolbarColumnsButton,
-  GridToolbarQuickFilter,
   GridToolbarFilterButton,
-  GridToolbarDensitySelector
+  GridToolbarExport
 } from '@mui/x-data-grid'
-
-import { Pencil } from 'mdi-material-ui'
-import { Typography, IconButton, Box, Tooltip } from '@mui/material'
-import { closeSnackBar } from 'src/store/notifications'
-import { Button } from '@mui/material'
+import { Typography, Box } from '@mui/material'
 import { esES } from '@mui/x-data-grid/locales'
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
-import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
+  const storageKey = 'datagrid-settings'
+
+  // Función para cargar configuración específica de la tabla
+  const loadSettings = key => {
+    console.log(localStorage.getItem(storageKey))
+    const savedSettings = localStorage.getItem(storageKey)
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings)
+      return (
+        settings[key] || {
+          filters: { items: [] },
+          sort: [],
+          columnVisibility: {}
+        }
+      )
+    }
+    return { filters: { items: [] }, sort: [], columnVisibility: {} }
+  }
+
+  // Función para guardar configuración específica de la tabla
+  const saveSettings = (key, settings) => {
+    const savedSettings = localStorage.getItem(storageKey)
+    const currentSettings = savedSettings ? JSON.parse(savedSettings) : {}
+    currentSettings[key] = settings
+    localStorage.setItem(storageKey, JSON.stringify(currentSettings))
+  }
+
   const [pageSize, setPageSize] = React.useState(100)
+  const [filterModel, setFilterModel] = React.useState(() => loadSettings(title).filters)
+  const [sortModel, setSortModel] = React.useState(() => loadSettings(title).sort)
+  const [columnVisibilityModel, setColumnVisibilityModel] = React.useState(() => loadSettings(title).columnVisibility)
+
+  useEffect(() => {
+    saveSettings(title, {
+      filters: filterModel,
+      sort: sortModel,
+      columnVisibility: columnVisibilityModel
+    })
+  }, [filterModel, sortModel, columnVisibilityModel])
 
   function CustomToolbar() {
     return (
@@ -38,7 +62,6 @@ export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
         <Box>
           <GridToolbarColumnsButton />
           <GridToolbarFilterButton />
-          {/* <GridToolbarDensitySelector /> */}
           <GridToolbarExport
             csvOptions={{
               utf8WithBom: true
@@ -48,6 +71,7 @@ export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
       </GridToolbarContainer>
     )
   }
+
   return (
     <DataGrid
       getRowHeight={() => 'auto'}
@@ -62,6 +86,12 @@ export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
       rowsPerPageOptions={[5, 10, 25]}
       pageSize={pageSize}
       onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+      filterModel={filterModel}
+      onFilterModelChange={newFilterModel => setFilterModel(newFilterModel)}
+      sortModel={sortModel}
+      onSortModelChange={newSortModel => setSortModel(newSortModel)}
+      columnVisibilityModel={columnVisibilityModel}
+      onColumnVisibilityModelChange={newColumnVisibilityModel => setColumnVisibilityModel(newColumnVisibilityModel)}
       components={{
         Toolbar: CustomToolbar
       }}

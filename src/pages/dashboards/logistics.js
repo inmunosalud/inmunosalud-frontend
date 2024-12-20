@@ -192,7 +192,7 @@ const AdminLogistics = () => {
             </>
           }
         />
-        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={config} />
+        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={config} title='Logística' />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <ProblemFormModal />
