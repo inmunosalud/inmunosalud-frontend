@@ -18,7 +18,7 @@ import { setModal } from 'src/store/contactus'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 import { esES } from '@mui/x-data-grid/locales'
 import { getLogisticsOrders } from 'src/store/orders'
-import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
+import { BasicDataGridHistory } from 'src/views/components/data-grid/BasicDataGridHistory'
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
@@ -106,12 +106,13 @@ const AdminLogistics = () => {
   const { logisticsOrdersAll, isLoading } = useSelector(state => state.orders)
 
   React.useEffect(() => {
-    dispatch(getLogisticsOrders())
-  }, [dispatch])
-
-  React.useEffect(() => {
     dispatch(isDataLoaded(true))
   }, [])
+
+  const fetchData = queryParam => {
+    console.log('fetchData', queryParam)
+    dispatch(getLogisticsOrders(queryParam))
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('im-user')
@@ -192,7 +193,13 @@ const AdminLogistics = () => {
             </>
           }
         />
-        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={config} title='Logística' />
+        <BasicDataGridHistory
+          loading={isLoading}
+          data={logisticsOrdersAll}
+          columns={config}
+          title='Logística'
+          fetchData={fetchData}
+        />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <ProblemFormModal />

@@ -19,16 +19,21 @@ export const getOrders = createAsyncThunk('order/getAllOrders', async thunkApi =
   }
 })
 
-export const getLogisticsOrders = createAsyncThunk('order/getLogisticsOrders', async thunkApi => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
-  try {
-    const response = await api_get(`${ORDERS}/orders/logistics`, auth)
-    return response
-  } catch (error) {
-    return thunkApi.rejectWithValue('error')
+export const getLogisticsOrders = createAsyncThunk(
+  'order/getLogisticsOrders',
+  async ({ startDate, endDate }, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    const queryString = new URLSearchParams({ startDate, endDate }).toString()
+
+    try {
+      const response = await api_get(`${ORDERS}/orders/logistics?${queryString}`, auth)
+      return response
+    } catch (error) {
+      return thunkApi.rejectWithValue('error')
+    }
   }
-})
+)
 
 export const getOrdersByUser = createAsyncThunk('order/getOrdersByUser', async (id, thunkApi) => {
   const token = localStorage.getItem('im-user')
