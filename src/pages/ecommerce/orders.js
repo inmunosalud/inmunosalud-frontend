@@ -105,7 +105,11 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
           Método de pago:
         </Typography>
         <Typography variant='body2' sx={{ mb: 2 }}>
-          {allOrderInfo?.type === 'store' ? 'Efectivo' : `Tarjeta: `}
+          {allOrderInfo?.type === 'store'
+            ? 'Efectivo'
+            : allOrderInfo?.type === 'mercado-pago'
+              ? 'Mercado Pago'
+              : `Tarjeta: `}
         </Typography>
         {allOrderInfo?.type === 'store' ? (
           <>
@@ -154,11 +158,13 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
             )}
           </>
         ) : (
-          <>
-            <Typography variant='body2' sx={{ mb: 2 }}>
-              {allOrderInfo?.paymentMethod}
-            </Typography>
-          </>
+          allOrderInfo?.type === 'card' && (
+            <>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                {allOrderInfo?.paymentMethod}
+              </Typography>
+            </>
+          )
         )}
       </Grid>
       <Grid
