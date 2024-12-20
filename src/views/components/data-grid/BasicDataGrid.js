@@ -16,7 +16,6 @@ export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
 
   // Función para cargar configuración específica de la tabla
   const loadSettings = key => {
-    console.log(localStorage.getItem(storageKey))
     const savedSettings = localStorage.getItem(storageKey)
     if (savedSettings) {
       const settings = JSON.parse(savedSettings)
