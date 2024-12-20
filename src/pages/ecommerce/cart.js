@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Demo Components Imports
 import AddCard from 'src/views/ecommerce/AddCart'
@@ -18,6 +20,7 @@ import { closeSnackBar } from 'src/store/notifications'
 
 const Cart = () => {
   const dispatch = useDispatch()
+  const { isLoading: isLoadingOrder } = useSelector(state => state.orders)
 
   const { open, message, severity } = useSelector(state => state.notifications)
   // ** State
@@ -26,6 +29,21 @@ const Cart = () => {
   const [clients, setClients] = useState([])
   const [openAddressModal, setOpenAddressModal] = useState(false)
   const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
+
+  if (isLoadingOrder) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createOrder } from 'src/store/orders'
 
 // ** Next Import
 import Link from 'next/link'
@@ -38,6 +39,7 @@ const CartActions = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { cvv } = useSelector(state => state.orders)
+  const { user } = useSelector(state => state.session)
   const [cvvInput, setCvvInput] = useState('')
   const [cvvError, setCvvError] = useState(false)
   const [open, setOpen] = useState(false)
@@ -61,6 +63,17 @@ const CartActions = () => {
     }
     if (selectedPayment.id === 'store') {
       router.push('/ecommerce/checkout')
+      return
+    }
+    if (selectedPayment.id === 'mercado-pago') {
+      const body = {
+        idAddress: selectedAddress.id,
+        type: selectedPayment.id,
+        products: products.map(product => {
+          return { id: product.id, quantity: product.quantity }
+        })
+      }
+      dispatch(createOrder({ idUser: user.id, body }))
       return
     }
     setOpen(true)

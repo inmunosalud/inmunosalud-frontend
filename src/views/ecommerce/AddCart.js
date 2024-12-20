@@ -187,27 +187,17 @@ const AddCard = props => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box sx={{ mb: 6, display: 'flex', alignItems: 'center' }}>
-                    <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
+                    <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
+                      Carrito
+                    </Typography>
                   </Box>
-                  <Image
-                    src='/images/logos/openpay.png'
-                    alt='OpenPay Logo'
-                    layout='fixed'
-                    height={25}
-                    width={150}
-                    style={{ width: 'auto', height: '100%' }}
-                  />
+                  <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
                 </Grid>
               </Box>
             </Grid>
             <Grid item xl={12} xs={12}>
               <DatePickerWrapper sx={{ '& .react-datepicker-wrapper': { width: 'auto' } }}>
                 <Box>
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
-                      Carrito
-                    </Typography>
-                  </Box>
                   <Typography variant='body2'>
                     Los pagos son procesados de manera segura por medio de Openpay
                   </Typography>
@@ -228,7 +218,9 @@ const AddCard = props => {
               {selectedPayment ? (
                 <Box>
                   <Typography variant='body2' sx={{ mb: 2 }}>
-                    {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType || ''}`}
+                    {selectedPayment?.id === 'store'
+                      ? 'Efectivo'
+                      : selectedPayment?.id !== 'mercado-pago' && `Tarjeta: ${selectedPayment?.cardType || ''}`}
                   </Typography>
                   {selectedPayment?.id === 'store' ? (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -267,6 +259,12 @@ const AddCard = props => {
                         </Tooltip>
                       ))}
                     </Box>
+                  ) : selectedPayment?.id === 'mercado-pago' ? (
+                    <>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        {selectedPayment?.alias}
+                      </Typography>
+                    </>
                   ) : (
                     <>
                       <Typography variant='body2' sx={{ mb: 2 }}>

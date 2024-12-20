@@ -1,16 +1,14 @@
-// ** React Imports
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material'
-// ** Custom Components
 import Image from 'next/image'
 import { setPayment } from 'src/store/cart'
 import Tooltip from '@mui/material/Tooltip'
+
 export const PaymentMethods = ({ onClose }) => {
   const dispatch = useDispatch()
   const theme = useTheme()
@@ -22,7 +20,7 @@ export const PaymentMethods = ({ onClose }) => {
     onClose()
   }
 
-  const addInStorePaymentOption = () => [
+  const addCustomPaymentOptions = () => [
     {
       id: 'store',
       alias: 'Pago en efectivo',
@@ -36,12 +34,18 @@ export const PaymentMethods = ({ onClose }) => {
         { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'Bodega Aurrera' }
       ]
     },
+    {
+      id: 'mercado-pago',
+      alias: 'Mercado Pago',
+      image: '/images/logos/mercado-pago.png',
+      description: 'Paga con tu cuenta de Mercado Pago'
+    },
     ...paymentMethods
   ]
 
   const extendedPaymentMethods =
     typeof window !== 'undefined' && window.location.pathname === '/ecommerce/cart/'
-      ? addInStorePaymentOption()
+      ? addCustomPaymentOptions()
       : paymentMethods
 
   return (
@@ -109,6 +113,21 @@ export const PaymentMethods = ({ onClose }) => {
                       ))}
                     </Box>
                   </Box>
+                ) : item.id === 'mercado-pago' ? (
+                  <Box>
+                    <Typography sx={{ mt: 2, fontWeight: 500 }}>{item.alias}</Typography>
+                    <img
+                      src={item.image}
+                      alt={item.alias}
+                      style={{
+                        width: '100px',
+                        objectFit: 'contain'
+                      }}
+                    />
+                    <Typography variant='body2' sx={{ mt: 1 }}>
+                      {item.description}
+                    </Typography>
+                  </Box>
                 ) : (
                   <Box>
                     <Image
@@ -143,7 +162,7 @@ export const PaymentMethods = ({ onClose }) => {
                 >
                   {selectedPayment === item || selectedPayment?.id === item.id ? 'Seleccionado' : 'Seleccionar'}
                 </Button>
-                {item.id !== 'store' && (
+                {item.id !== 'store' && item.id !== 'mercado-pago' && (
                   <Typography variant='body2' sx={{ mt: 10, mr: '-15px' }}>
                     Expira el {item.expDate}
                   </Typography>
