@@ -220,7 +220,7 @@ const AddCard = props => {
                   <Typography variant='body2' sx={{ mb: 2 }}>
                     {selectedPayment?.id === 'store'
                       ? 'Efectivo'
-                      : selectedPayment?.id !== 'mercado-pago' && `Tarjeta: ${selectedPayment?.cardType || ''}`}
+                      : selectedPayment?.id !== 'mercadoPago' && `Tarjeta: ${selectedPayment?.cardType || ''}`}
                   </Typography>
                   {selectedPayment?.id === 'store' ? (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -259,7 +259,7 @@ const AddCard = props => {
                         </Tooltip>
                       ))}
                     </Box>
-                  ) : selectedPayment?.id === 'mercado-pago' ? (
+                  ) : selectedPayment?.id === 'mercadoPago' ? (
                     <>
                       <Typography variant='body2' sx={{ mb: 2 }}>
                         {selectedPayment?.alias}

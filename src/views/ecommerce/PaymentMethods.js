@@ -35,9 +35,9 @@ export const PaymentMethods = ({ onClose }) => {
       ]
     },
     {
-      id: 'mercado-pago',
+      id: 'mercadoPago',
       alias: 'Mercado Pago',
-      image: '/images/logos/mercado-pago.png',
+      image: '/images/logos/mercadoPago.png',
       description: 'Paga con tu cuenta de Mercado Pago'
     },
     ...paymentMethods
@@ -113,7 +113,7 @@ export const PaymentMethods = ({ onClose }) => {
                       ))}
                     </Box>
                   </Box>
-                ) : item.id === 'mercado-pago' ? (
+                ) : item.id === 'mercadoPago' ? (
                   <Box>
                     <Typography sx={{ mt: 2, fontWeight: 500 }}>{item.alias}</Typography>
                     <img
@@ -162,7 +162,7 @@ export const PaymentMethods = ({ onClose }) => {
                 >
                   {selectedPayment === item || selectedPayment?.id === item.id ? 'Seleccionado' : 'Seleccionar'}
                 </Button>
-                {item.id !== 'store' && item.id !== 'mercado-pago' && (
+                {item.id !== 'store' && item.id !== 'mercadoPago' && (
                   <Typography variant='body2' sx={{ mt: 10, mr: '-15px' }}>
                     Expira el {item.expDate}
                   </Typography>
