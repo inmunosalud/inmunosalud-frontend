@@ -65,7 +65,7 @@ const CartActions = () => {
       router.push('/ecommerce/checkout')
       return
     }
-    if (selectedPayment.id === 'mercado-pago') {
+    if (selectedPayment.id === 'mercadoPago') {
       const body = {
         idAddress: selectedAddress.id,
         type: selectedPayment.id,

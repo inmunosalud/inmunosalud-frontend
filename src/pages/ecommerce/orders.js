@@ -107,7 +107,7 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
         <Typography variant='body2' sx={{ mb: 2 }}>
           {allOrderInfo?.type === 'store'
             ? 'Efectivo'
-            : allOrderInfo?.type === 'mercado-pago'
+            : allOrderInfo?.type === 'mercadoPago'
               ? 'Mercado Pago'
               : `Tarjeta: `}
         </Typography>

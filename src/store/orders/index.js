@@ -78,7 +78,7 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
         thunkApi.dispatch(setStoreOrder(response.content[0]))
         return response
       }
-      if (bodyOrder.type === 'mercado-pago') {
+      if (bodyOrder.type === 'mercadoPago') {
         thunkApi.dispatch(setStoreOrder(response.content[0]))
         const isDevelopment = process.env.ENVIRONMENT === 'development'
         const initPoint = isDevelopment
