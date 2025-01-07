@@ -37,7 +37,7 @@ export const PaymentMethods = ({ onClose }) => {
     {
       id: 'mercadoPago',
       alias: 'Mercado Pago',
-      image: '/images/logos/mercadoPago.png',
+      image: '/images/logos/mercado-pago.png',
       description: 'Paga con tu cuenta de Mercado Pago'
     },
     ...paymentMethods
