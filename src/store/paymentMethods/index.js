@@ -176,7 +176,7 @@ export const paymentMethodsList = createAsyncThunk('paymentMethods/loadProfile',
   }
 })
 
-export const methodsList = createAsyncThunk('user/list', async uuid => {
+export const methodsList = createAsyncThunk('paymentMethods/list', async uuid => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
 

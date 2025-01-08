@@ -14,6 +14,7 @@ import Collapse from '@mui/material/Collapse'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
 import InputLabel from '@mui/material/InputLabel'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -186,27 +187,17 @@ const AddCard = props => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Box sx={{ mb: 6, display: 'flex', alignItems: 'center' }}>
-                    <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
+                    <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
+                      Carrito
+                    </Typography>
                   </Box>
-                  <Image
-                    src='/images/logos/openpay.png'
-                    alt='OpenPay Logo'
-                    layout='fixed'
-                    height={25}
-                    width={150}
-                    style={{ width: 'auto', height: '100%' }}
-                  />
+                  <Image src={theme.palette.mode === 'dark' ? BlancoIotipo : NegroIotipo} alt='Isotipo' height={50} />
                 </Grid>
               </Box>
             </Grid>
             <Grid item xl={12} xs={12}>
               <DatePickerWrapper sx={{ '& .react-datepicker-wrapper': { width: 'auto' } }}>
                 <Box>
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant='h6' sx={{ mr: 2, width: '105px' }}>
-                      Carrito
-                    </Typography>
-                  </Box>
                   <Typography variant='body2'>
                     Los pagos son procesados de manera segura por medio de Openpay
                   </Typography>
@@ -227,33 +218,52 @@ const AddCard = props => {
               {selectedPayment ? (
                 <Box>
                   <Typography variant='body2' sx={{ mb: 2 }}>
-                    {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType || ''}`}
+                    {selectedPayment?.id === 'store'
+                      ? 'Efectivo'
+                      : selectedPayment?.id !== 'mercadoPago' && `Tarjeta: ${selectedPayment?.cardType || ''}`}
                   </Typography>
                   {selectedPayment?.id === 'store' ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                      {['store1', 'store2', 'store3', 'store4', 'store5', 'store6', 'store7'].map(storeId => (
+                        <Tooltip
+                          key={storeId}
+                          title={selectedPayment?.stores.find(store => store.id === storeId)?.name}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 70,
+                              height: 70,
+                              border: `1px solid ${theme.palette.divider}`,
+                              borderRadius: 2,
+                              padding: 1,
+                              backgroundColor: {
+                                dark: theme.palette.grey[800],
+                                light: theme.palette.grey[100]
+                              }[theme.palette.mode],
+                              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                              margin: '10px 10px 10px 0'
+                            }}
+                          >
+                            <img
+                              height='auto'
+                              width='80%'
+                              alt={selectedPayment?.stores.find(store => store.id === storeId)?.name}
+                              src={selectedPayment?.stores.find(store => store.id === storeId)?.image}
+                              style={{ objectFit: 'contain', maxHeight: '70px' }}
+                            />
+                          </Box>
+                        </Tooltip>
+                      ))}
+                    </Box>
+                  ) : selectedPayment?.id === 'mercadoPago' ? (
                     <>
-                      <Box>
-                        {[
-                          { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-                          { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
-                          { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-                          { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
-                        ].map(store => (
-                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                        ))}
-                      </Box>
-                      <Box>
-                        {[
-                          { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-                          {
-                            id: 'store6',
-                            image: '/images/logos/farmacias-guadalajara.svg',
-                            name: 'farmaciasGuadalajara'
-                          },
-                          { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
-                        ].map(store => (
-                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                        ))}
-                      </Box>
+                      <Typography variant='body2' sx={{ mb: 2 }}>
+                        {selectedPayment?.alias}
+                      </Typography>
                     </>
                   ) : (
                     <>

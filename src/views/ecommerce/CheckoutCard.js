@@ -14,6 +14,8 @@ import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import Typography from '@mui/material/Typography'
+import Tooltip from '@mui/material/Tooltip'
+
 import Box from '@mui/material/Box'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
@@ -165,31 +167,42 @@ const CheckoutCard = ({ data }) => {
                     {selectedPayment?.id === 'store' ? 'Efectivo' : `Tarjeta: ${selectedPayment?.cardType}`}
                   </Typography>
                   {selectedPayment?.id === 'store' ? (
-                    <>
-                      <Box>
-                        {[
-                          { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-                          { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
-                          { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-                          { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' }
-                        ].map(store => (
-                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                        ))}
-                      </Box>
-                      <Box>
-                        {[
-                          { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-                          {
-                            id: 'store6',
-                            image: '/images/logos/farmacias-guadalajara.svg',
-                            name: 'farmaciasGuadalajara'
-                          },
-                          { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
-                        ].map(store => (
-                          <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-                        ))}
-                      </Box>
-                    </>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                      {['store1', 'store2', 'store3', 'store4', 'store5', 'store6', 'store7'].map(storeId => (
+                        <Tooltip
+                          key={storeId}
+                          title={selectedPayment?.stores.find(store => store.id === storeId)?.name}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 70,
+                              height: 70,
+                              border: `1px solid ${theme.palette.divider}`,
+                              borderRadius: 2,
+                              padding: 1,
+                              backgroundColor: {
+                                dark: theme.palette.grey[800],
+                                light: theme.palette.grey[100]
+                              }[theme.palette.mode],
+                              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                              margin: '10px 10px 10px 0'
+                            }}
+                          >
+                            <img
+                              height='auto'
+                              width='80%'
+                              alt={selectedPayment?.stores.find(store => store.id === storeId)?.name}
+                              src={selectedPayment?.stores.find(store => store.id === storeId)?.image}
+                              style={{ objectFit: 'contain', maxHeight: '70px' }}
+                            />
+                          </Box>
+                        </Tooltip>
+                      ))}
+                    </Box>
                   ) : (
                     <>
                       <Typography variant='body2' sx={{ mb: 2 }}>

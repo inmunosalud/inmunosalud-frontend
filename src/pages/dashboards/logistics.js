@@ -18,9 +18,15 @@ import { setModal } from 'src/store/contactus'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
 import { esES } from '@mui/x-data-grid/locales'
 import { getLogisticsOrders } from 'src/store/orders'
-import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
+import { BasicDataGridHistory } from 'src/views/components/data-grid/BasicDataGridHistory'
+import { getOrders, setUpdatedOrder } from 'src/store/orders'
 
 const columns = [
+  {
+    width: 200,
+    field: 'folio',
+    headerName: 'Folio'
+  },
   {
     width: 200,
     field: 'date',
@@ -100,16 +106,22 @@ const AdminLogistics = () => {
   const { logisticsOrdersAll, isLoading } = useSelector(state => state.orders)
 
   React.useEffect(() => {
-    dispatch(getLogisticsOrders())
-  }, [dispatch])
-
-  React.useEffect(() => {
     dispatch(isDataLoaded(true))
   }, [])
+
+  const fetchData = queryParam => {
+    console.log('fetchData', queryParam)
+    dispatch(getLogisticsOrders(queryParam))
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('im-user')
     location.reload()
+  }
+
+  const handleOpenModalEdit = item => {
+    dispatch(setUpdatedOrder(item))
+    router.push('/ecommerce/edit-order-logistic')
   }
 
   function CustomToolbar() {
@@ -135,6 +147,23 @@ const AdminLogistics = () => {
     }
   }, [apiRef, autosizeOptions])
 
+  const config = [
+    {
+      width: 150,
+      field: 'actions',
+      headerName: 'Acciones',
+      renderCell: params => {
+        const row = params?.row
+        return (
+          <Button onClick={() => handleOpenModalEdit(row)} color='info' size='small' variant='contained'>
+            Actualizar
+          </Button>
+        )
+      }
+    },
+    ...columns
+  ]
+
   return (
     <>
       <Card sx={{ m: 10 }}>
@@ -142,16 +171,35 @@ const AdminLogistics = () => {
           title='Pedidos'
           action={
             <>
-              <Button sx={{ mr: 4 }} variant='contained' color='secondary' onClick={() => dispatch(setModal(true))}>
-                Tengo un problema
-              </Button>
-              <Button variant='contained' onClick={handleLogout}>
-                Cerrar sesión
-              </Button>
+              {user.profile === 'Administrador General' ? (
+                <Button
+                  sx={{ mr: 4 }}
+                  variant='contained'
+                  color='primary'
+                  onClick={() => router.push('/landing-page/home')}
+                >
+                  Volver
+                </Button>
+              ) : (
+                <>
+                  <Button sx={{ mr: 4 }} variant='contained' color='secondary' onClick={() => dispatch(setModal(true))}>
+                    Tengo un problema
+                  </Button>
+                  <Button variant='contained' onClick={handleLogout}>
+                    Cerrar sesión
+                  </Button>
+                </>
+              )}
             </>
           }
         />
-        <BasicDataGrid loading={isLoading} data={logisticsOrdersAll} columns={columns} />
+        <BasicDataGridHistory
+          loading={isLoading}
+          data={logisticsOrdersAll}
+          columns={config}
+          title='Logística'
+          fetchData={fetchData}
+        />
       </Card>
       <CustomSnackbar open={open} message={message} severity={severity} handleClose={() => dispatch(closeSnackBar())} />
       <ProblemFormModal />

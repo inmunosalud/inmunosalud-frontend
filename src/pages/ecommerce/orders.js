@@ -37,7 +37,6 @@ import Image from 'next/image'
 import { closeSnackBar } from 'src/store/notifications'
 import { Flag } from 'mdi-material-ui'
 import ProblemFormModal from 'src/views/ecommerce/ProblemFormModal'
-
 import { setModal } from 'src/store/contactus'
 import { getUserInfo } from 'src/store/users'
 import { store } from 'src/store'
@@ -83,9 +82,10 @@ const Modal = ({ open = false, onHandleOpenModal = () => {}, onSubmitDelete = ()
 }
 
 const DeliveryInfo = ({ allOrderInfo, address }) => {
+  const theme = useTheme()
   return (
     <Grid container>
-      <Grid xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
+      <Grid xs={12} lg={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
         <Box>
           <Typography>
             <strong>Dirección de envío</strong>
@@ -95,45 +95,91 @@ const DeliveryInfo = ({ allOrderInfo, address }) => {
           <Typography>{`${address.city}, ${address.federalEntity}, ${address.zipCode}`}</Typography>
         </Box>
       </Grid>
-      <Grid item xs={12} sm={3} sx={{ mb: { lg: 0, xs: 4 } }}>
+      <Grid
+        item
+        xs={12}
+        lg={allOrderInfo.deliveryStatus === 'Confirmando el Pago' ? 5.9 : 3}
+        sx={{ mb: { lg: 0, xs: 4 } }}
+      >
         <Typography variant='body1' sx={{ mb: 3.5, fontWeight: 600 }}>
           Método de pago:
         </Typography>
         <Typography variant='body2' sx={{ mb: 2 }}>
-          {allOrderInfo?.type === 'store' ? 'Efectivo' : `Tarjeta: `}
+          {allOrderInfo?.type === 'store'
+            ? 'Efectivo'
+            : allOrderInfo?.type === 'mercadoPago'
+              ? 'Mercado Pago'
+              : `Tarjeta: `}
         </Typography>
         {allOrderInfo?.type === 'store' ? (
           <>
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-              {[
-                { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-                { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
-                { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-                { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' },
-                { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-                { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
-                { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
-              ].map(store => (
-                <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
-              ))}
-            </Box>
+            {allOrderInfo.deliveryStatus === 'Confirmando el Pago' && (
+              <Box sx={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
+                  { id: 'store2', image: '/images/logos/kiosko.png', name: 'Kiosko' },
+                  { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
+                  { id: 'store4', image: '/images/logos/sams-club.png', name: 'Sams' },
+                  { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'Farmacias del Ahorro' },
+                  { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'Farmacias Guadalajara' },
+                  { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'Bodega Aurrera' }
+                ].map(store => (
+                  <Tooltip key={store.id} title={store?.name}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 70,
+                        height: 70,
+                        border: `1px solid ${theme.palette.divider}`,
+                        borderRadius: 2,
+                        padding: 1,
+                        backgroundColor: {
+                          dark: theme.palette.grey[800],
+                          light: theme.palette.grey[100]
+                        }[theme.palette.mode],
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        margin: '10px 10px 10px 0'
+                      }}
+                    >
+                      <img
+                        height='auto'
+                        width='50px'
+                        alt={store?.name}
+                        src={store.image}
+                        style={{ objectFit: 'contain', maxHeight: '70px' }}
+                      />
+                    </Box>
+                  </Tooltip>
+                ))}
+              </Box>
+            )}
           </>
         ) : (
-          <>
-            <Typography variant='body2' sx={{ mb: 2 }}>
-              {allOrderInfo?.paymentMethod}
-            </Typography>
-          </>
+          allOrderInfo?.type === 'card' && (
+            <>
+              <Typography variant='body2' sx={{ mb: 2 }}>
+                {allOrderInfo?.paymentMethod}
+              </Typography>
+            </>
+          )
         )}
       </Grid>
-      <Grid item xs={12} md={3} sx={{ mb: { md: '0px', xs: '15px' } }}>
+      <Grid
+        item
+        xs={12}
+        lg={allOrderInfo.deliveryStatus === 'Confirmando el Pago' ? 0.1 : 3}
+        sx={{ mb: { md: '0px', xs: '15px' } }}
+      >
         <Box>
           {(allOrderInfo.deliveryStatus === 'Está en camino' || allOrderInfo.deliveryStatus === 'Entregado') && (
             <Box sx={{ width: '100%' }}>
               <Typography>
                 <strong>Envío:</strong>
               </Typography>
-              <Typography>Compañia: {allOrderInfo.shipment.company}</Typography>
+              <Typography>Compañía: {allOrderInfo.shipment.company}</Typography>
               <Typography>
                 Guía de envío: <Link href={allOrderInfo.shipment.trackingUrl}>{allOrderInfo.shipment.id}</Link>
               </Typography>
@@ -284,7 +330,15 @@ const Cards = props => {
             id={`panel${props.index + 1}-header`}
           >
             <Grid container spacing={4}>
-              <Grid item xs={5} md={4}>
+              <Grid item xs={5} md={2}>
+                <Box sx={{ flexShrink: 0 }}>
+                  <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
+                    <strong>Folio</strong>
+                  </Typography>
+                  <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.folio}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={5} md={3}>
                 <Box sx={{ flexShrink: 0 }}>
                   <Typography sx={{ fontSize: { md: '16px', xs: '15px' } }}>
                     <strong>Pedido realizado</strong>
@@ -292,7 +346,7 @@ const Cards = props => {
                   <Typography sx={{ fontSize: { md: '14px', xs: '13px' } }}>{props.purchaseDate}</Typography>
                 </Box>
               </Grid>
-              <Grid item xs={7} md={8}>
+              <Grid item xs={7} md={6}>
                 <Grid container>
                   {props.deliveryStatus !== 'Entregado' && (
                     <Grid item xs={12} md={6}>
@@ -318,12 +372,13 @@ const Cards = props => {
               </Grid>
             </Grid>
           </AccordionSummary>
+          <Divider />
           <AccordionDetails>
             <CardContent>
               <Box>
                 <DeliveryInfo allOrderInfo={props} address={address} />
-
                 <Divider />
+
                 <Box sx={{ width: '100%' }}>
                   <RepeaterWrapper>
                     <Product products={products} />

@@ -1,15 +1,13 @@
-// ** React Imports
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material'
-// ** Custom Components
 import Image from 'next/image'
 import { setPayment } from 'src/store/cart'
+import Tooltip from '@mui/material/Tooltip'
 
 export const PaymentMethods = ({ onClose }) => {
   const dispatch = useDispatch()
@@ -22,26 +20,32 @@ export const PaymentMethods = ({ onClose }) => {
     onClose()
   }
 
-  const addInStorePaymentOption = () => [
+  const addCustomPaymentOptions = () => [
     {
       id: 'store',
       alias: 'Pago en efectivo',
       stores: [
         { id: 'store1', image: '/images/logos/seven-eleven.png', name: '7-Eleven' },
-        { id: 'store2', image: '/images/logos/kiosko.png', name: 'kiosko' },
+        { id: 'store2', image: '/images/logos/kiosko.png', name: 'Kiosko' },
         { id: 'store3', image: '/images/logos/walmart.jpg', name: 'Walmart' },
-        { id: 'store4', image: '/images/logos/sams-club.png', name: 'sams' },
-        { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'farmaciasAhorro' },
-        { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'farmaciasGuadalajara' },
-        { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'bodegaAurrera' }
+        { id: 'store4', image: '/images/logos/sams-club.png', name: 'Sams' },
+        { id: 'store5', image: '/images/logos/farmacias-del-ahorro.png', name: 'Farmacias del Ahorro' },
+        { id: 'store6', image: '/images/logos/farmacias-guadalajara.svg', name: 'Farmacias Guadalajara' },
+        { id: 'store7', image: '/images/logos/bodega-aurrera.png', name: 'Bodega Aurrera' }
       ]
+    },
+    {
+      id: 'mercadoPago',
+      alias: 'Mercado Pago',
+      image: '/images/logos/mercado-pago.png',
+      description: 'Paga con tu cuenta de Mercado Pago'
     },
     ...paymentMethods
   ]
 
   const extendedPaymentMethods =
     typeof window !== 'undefined' && window.location.pathname === '/ecommerce/cart/'
-      ? addInStorePaymentOption()
+      ? addCustomPaymentOptions()
       : paymentMethods
 
   return (
@@ -67,13 +71,62 @@ export const PaymentMethods = ({ onClose }) => {
             <Grid xs={6} md={8} item>
               <Box>
                 {item.id === 'store' ? (
-                  <Box sx={{ height: '100px' }}>
+                  <Box
+                    sx={{
+                      height: {
+                        xs: '400px',
+                        lg: '200px'
+                      }
+                    }}
+                  >
                     <Typography sx={{ fontWeight: 500 }}>{item.alias}</Typography>
-                    <Box sx={{ mt: 8, display: 'flex', gap: 2 }}>
+                    <Box sx={{ mt: 8, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                       {item.stores.map(store => (
-                        <img key={store.id} height={50} width='auto' alt={store.name} src={store.image} />
+                        <Tooltip key={store.id} title={store.name}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 70,
+                              height: 70,
+                              border: `1px solid ${theme.palette.divider}`,
+                              borderRadius: 2,
+                              padding: 1,
+                              backgroundColor: {
+                                dark: theme.palette.grey[800],
+                                light: theme.palette.grey[100]
+                              }[theme.palette.mode],
+                              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
+                            <img
+                              height='auto'
+                              width='80%'
+                              alt={store.name}
+                              src={store.image}
+                              style={{ objectFit: 'contain', maxHeight: '70px' }}
+                            />
+                          </Box>
+                        </Tooltip>
                       ))}
                     </Box>
+                  </Box>
+                ) : item.id === 'mercadoPago' ? (
+                  <Box>
+                    <Typography sx={{ mt: 2, fontWeight: 500 }}>{item.alias}</Typography>
+                    <img
+                      src={item.image}
+                      alt={item.alias}
+                      style={{
+                        width: '100px',
+                        objectFit: 'contain'
+                      }}
+                    />
+                    <Typography variant='body2' sx={{ mt: 1 }}>
+                      {item.description}
+                    </Typography>
                   </Box>
                 ) : (
                   <Box>
@@ -109,7 +162,7 @@ export const PaymentMethods = ({ onClose }) => {
                 >
                   {selectedPayment === item || selectedPayment?.id === item.id ? 'Seleccionado' : 'Seleccionar'}
                 </Button>
-                {item.id !== 'store' && (
+                {item.id !== 'store' && item.id !== 'mercadoPago' && (
                   <Typography variant='body2' sx={{ mt: 10, mr: '-15px' }}>
                     Expira el {item.expDate}
                   </Typography>

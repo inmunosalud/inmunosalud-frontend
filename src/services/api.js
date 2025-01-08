@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from 'next/router'
 import toast from 'react-hot-toast'
 export const USERS = process.env.USERS
 export const CART = process.env.CART
@@ -36,12 +37,15 @@ axiosInstance.interceptors.response.use(
         'Existe un problema con el servicio, intente de nuevo mas tarde, si el problema persiste contacte a soporte.'
     }
 
-    if (error.response.status === 401) {
+    if (error.response.status === 498) {
       localStorage.removeItem('im-user')
       toast.error('La sesión caduco inicie nuevamente')
-      window.location.href = '/login'
+      router.push('/login')
     }
 
+    if (error.response.status === 500) {
+      toast.error('Por favor intenté más tarde, si el error persiste contacte al soporte de Inmunosalud.')
+    }
     console.error('Axios Response Error: ', error.response, message)
     return Promise.reject(error)
   }
