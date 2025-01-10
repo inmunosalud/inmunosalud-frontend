@@ -44,7 +44,9 @@ const columns = [
               ? 'error'
               : params.row.deliveryStatus === 'Está en camino'
                 ? 'info'
-                : 'primary'
+                : params.row.deliveryStatus === 'Confirmando el Pago'
+                  ? 'warning'
+                  : 'primary'
         }
         sx={{
           height: 20,
