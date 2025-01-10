@@ -399,6 +399,24 @@ const Cards = props => {
               </CardActions>
             </AccordionActions>
           )}
+          {props.type === 'mercadoPago' && props.deliveryStatus === 'Confirmando el Pago' && (
+            <AccordionActions>
+              <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    const isDevelopment = process.env.ENVIRONMENT === 'development'
+                    const initPoint = isDevelopment
+                      ? props.mercadoPago.sandbox_init_point
+                      : props.mercadoPago.init_point
+                    window.open(initPoint, '_blank')
+                  }}
+                >
+                  Pagar
+                </Button>
+              </CardActions>
+            </AccordionActions>
+          )}
         </Accordion>
       </Card>
 
