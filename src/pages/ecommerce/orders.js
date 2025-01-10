@@ -405,11 +405,7 @@ const Cards = props => {
                 <Button
                   variant='contained'
                   onClick={() => {
-                    const isDevelopment = process.env.ENVIRONMENT === 'development'
-                    const initPoint = isDevelopment
-                      ? props.mercadoPago.sandbox_init_point
-                      : props.mercadoPago.init_point
-                    window.open(initPoint, '_blank')
+                    window.open(props.mercadoPago.init_point, '_blank')
                   }}
                 >
                   Pagar
