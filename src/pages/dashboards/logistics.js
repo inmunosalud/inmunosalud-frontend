@@ -20,12 +20,41 @@ import { esES } from '@mui/x-data-grid/locales'
 import { getLogisticsOrders } from 'src/store/orders'
 import { BasicDataGridHistory } from 'src/views/components/data-grid/BasicDataGridHistory'
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
+import CustomChip from 'src/@core/components/mui/chip'
 
 const columns = [
   {
     width: 200,
     field: 'folio',
     headerName: 'Folio'
+  },
+  {
+    width: 200,
+    field: 'deliveryStatus',
+    headerName: 'Estatus',
+    renderCell: params => (
+      <CustomChip
+        skin='light'
+        size='small'
+        label={params.row.deliveryStatus}
+        color={
+          params.row.deliveryStatus === 'Entregado'
+            ? 'success'
+            : params.row.deliveryStatus === 'Cancelado'
+              ? 'error'
+              : params.row.deliveryStatus === 'Está en camino'
+                ? 'info'
+                : 'primary'
+        }
+        sx={{
+          height: 20,
+          fontSize: '0.875rem',
+          fontWeight: 600,
+          borderRadius: '5px',
+          textTransform: 'capitalize'
+        }}
+      />
+    )
   },
   {
     width: 200,
@@ -110,7 +139,6 @@ const AdminLogistics = () => {
   }, [])
 
   const fetchData = queryParam => {
-    console.log('fetchData', queryParam)
     dispatch(getLogisticsOrders(queryParam))
   }
 
