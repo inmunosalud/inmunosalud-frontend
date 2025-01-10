@@ -80,8 +80,9 @@ export const createOrder = createAsyncThunk('order/createOrder', async ({ idUser
       }
       if (bodyOrder.type === 'mercadoPago') {
         thunkApi.dispatch(setStoreOrder(response.content[0]))
-        const initPoint = response.content[0].mercadoPago.init_point
-        Router.push(initPoint)
+        const isDevelopment = process.env.ENVIRONMENT === 'development'
+        window.open(response.content[0].mercadoPago.init_point, '_blank')
+        Router.push(`/ecommerce/orders/?id=${response.content[0].openpay.id}`)
         return response
       }
       Router.push(`/ecommerce/orders/?id=${response.content[0].openpay.id}`)

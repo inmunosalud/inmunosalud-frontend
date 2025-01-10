@@ -399,6 +399,20 @@ const Cards = props => {
               </CardActions>
             </AccordionActions>
           )}
+          {props.type === 'mercadoPago' && props.deliveryStatus === 'Confirmando el Pago' && (
+            <AccordionActions>
+              <CardActions sx={{ mx: { xs: 'auto', md: '0' } }}>
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    window.open(props.mercadoPago.init_point, '_blank')
+                  }}
+                >
+                  Pagar
+                </Button>
+              </CardActions>
+            </AccordionActions>
+          )}
         </Accordion>
       </Card>
 

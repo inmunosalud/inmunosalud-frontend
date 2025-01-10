@@ -14,6 +14,8 @@ import { closeSnackBar } from 'src/store/notifications'
 import { getOrders, setUpdatedOrder } from 'src/store/orders'
 import { BasicDataGrid } from 'src/views/components/data-grid/BasicDataGrid'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
+import CustomChip from 'src/@core/components/mui/chip'
+
 const columns = [
   {
     width: 200,
@@ -31,7 +33,7 @@ const columns = [
     headerName: 'Usuario'
   },
   {
-    width: 180,
+    width: 200,
     field: 'deliveryStatus',
     headerName: 'Estatus',
     renderCell: params => {
@@ -48,7 +50,31 @@ const columns = [
           </Button>
         )
       }
-      return params.row.deliveryStatus
+      return (
+        <CustomChip
+          skin='light'
+          size='small'
+          label={params.row.deliveryStatus}
+          color={
+            params.row.deliveryStatus === 'Entregado'
+              ? 'success'
+              : params.row.deliveryStatus === 'Cancelado'
+                ? 'error'
+                : params.row.deliveryStatus === 'Está en camino'
+                  ? 'info'
+                  : params.row.deliveryStatus === 'Confirmando el Pago'
+                    ? 'warning'
+                    : 'primary'
+          }
+          sx={{
+            height: 20,
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            borderRadius: '5px',
+            textTransform: 'capitalize'
+          }}
+        />
+      )
     }
   },
   {

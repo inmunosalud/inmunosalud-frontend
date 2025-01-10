@@ -285,7 +285,9 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                                 ? 'error'
                                                 : order.deliveryStatus === 'Está en camino'
                                                   ? 'info'
-                                                  : 'primary'
+                                                  : order.deliveryStatus === 'Confirmando el Pago'
+                                                    ? 'warning'
+                                                    : 'primary'
                                           }
                                           sx={{
                                             height: 20,
