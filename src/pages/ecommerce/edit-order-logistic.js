@@ -145,10 +145,20 @@ const EditOrderLogistic = () => {
                       <MenuItem disabled value='Preparando el Pedido'>
                         Preparando el Pedido
                       </MenuItem>
-                      <MenuItem disabled={itemUpdated.status === 'Entregado' ? true : false} value='Está en camino'>
+                      <MenuItem
+                        disabled={
+                          itemUpdated.deliveryStatus === 'Entregado' || itemUpdated.deliveryStatus === 'Está en camino'
+                            ? true
+                            : false
+                        }
+                        value='Está en camino'
+                      >
                         Está en camino
                       </MenuItem>
-                      <MenuItem disabled={itemUpdated.status === 'Está en camino' ? false : true} value='Entregado'>
+                      <MenuItem
+                        disabled={itemUpdated.deliveryStatus === 'Está en camino' ? false : true}
+                        value='Entregado'
+                      >
                         Entregado
                       </MenuItem>
                     </Select>

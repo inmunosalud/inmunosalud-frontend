@@ -52,7 +52,7 @@ export const updateOrder = createAsyncThunk('order/editOrder', async (body, thun
   try {
     const response = await api_patch(`${ORDERS}/orders/${body.idParam}`, body, auth)
     thunkApi.dispatch(openSnackBar({ open: true, message: response.message, severity: 'success' }))
-    Router.push('/orders/admin-orders')
+    Router.back()
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
