@@ -23,7 +23,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { useForm, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { InputLabel, MenuItem, Select } from '@mui/material'
+import { InputLabel, MenuItem, Select, Box, CircularProgress } from '@mui/material'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 const CustomInput = React.forwardRef(({ ...props }, ref) => {
@@ -74,7 +74,7 @@ const validationSchema = yup.object().shape({
 
 const EditOrderLogistic = () => {
   const dispatch = useDispatch()
-  const { itemUpdated } = useSelector(state => state.orders)
+  const { itemUpdated, isLoading } = useSelector(state => state.orders)
   const {
     reset,
     control,
@@ -112,6 +112,21 @@ const EditOrderLogistic = () => {
       idParam: itemUpdated?.id
     }
     dispatch(updateOrder(body))
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return (
