@@ -82,11 +82,11 @@ const navigation = () => {
           path: '/dashboards/logistics',
           permission: PERMISSIONS.dashboardLogistics
         },
-        {
-          title: 'Facturación',
-          path: '/ecommerce/billing',
-          permission: PERMISSIONS.ecommerceBilling
-        },
+        // {
+        //   title: 'Facturación',
+        //   path: '/ecommerce/billing',
+        //   permission: PERMISSIONS.ecommerceBilling,
+        // },
         {
           title: 'Constantes',
           path: '/dashboards/constants',
