@@ -34,7 +34,7 @@ const defaultOrdersValues = {
   trackingUrl: '',
   id: '',
   company: '',
-  validDeliveryDate: '',
+  deliveryDate: '',
   deliveryStatus: ''
 }
 
@@ -58,7 +58,7 @@ const validationSchema = yup.object().shape({
     then: schema => schema.required('La compañía es obligatoria'),
     otherwise: schema => schema.nullable()
   }),
-  validDeliveryDate: yup.string().when('deliveryStatus', {
+  deliveryDate: yup.string().when('deliveryStatus', {
     is: val => val === 'Entregado',
     then: schema =>
       schema
@@ -80,6 +80,7 @@ const EditOrderLogistic = () => {
     control,
     handleSubmit,
     watch,
+    setValue: setOrderValue,
     formState: { errors: ordersErrors }
   } = useForm({
     defaultValues: defaultOrdersValues,
@@ -92,7 +93,7 @@ const EditOrderLogistic = () => {
         trackingUrl: itemUpdated.shipment?.trackingUrl,
         id: itemUpdated.shipment?.id,
         company: itemUpdated.shipment?.company,
-        validDeliveryDate: itemUpdated.validDeliveryDate,
+        deliveryDate: itemUpdated.deliveryDate,
         deliveryStatus: itemUpdated.deliveryStatus
       })
     }
@@ -108,11 +109,25 @@ const EditOrderLogistic = () => {
         company: values.company
       },
       deliveryStatus: values.deliveryStatus,
-      deliveryDate: values.validDeliveryDate ? format(new Date(values.validDeliveryDate), 'yyyy-MM-dd') : '',
+      deliveryDate: values.deliveryDate ? format(new Date(values.deliveryDate), 'yyyy-MM-dd') : '',
       idParam: itemUpdated?.id
     }
     dispatch(updateOrder(body))
   }
+
+  React.useEffect(() => {
+    const deliveryStatus = watch('deliveryStatus')
+    const company = watch('company')
+
+    if (deliveryStatus === 'Está en camino') {
+      setOrderValue('company', 'DHL')
+    }
+
+    if (company === 'DHL') {
+      const id = watch('id')
+      setOrderValue('trackingUrl', `https://www.dhl.com/mx-es/home/rastreo.html?tracking-id=${id}`)
+    }
+  }, [watch('deliveryStatus'), watch('company'), watch('id')])
 
   if (isLoading) {
     return (
@@ -189,32 +204,6 @@ const EditOrderLogistic = () => {
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Controller
-                  name='trackingUrl'
-                  control={control}
-                  render={({ field: { value, onChange } }) => (
-                    <TextField
-                      value={value}
-                      label='URL de rastreo'
-                      onChange={onChange}
-                      disabled={
-                        watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
-                          ? false
-                          : true
-                      }
-                      aria-describedby='validation-basic-first-name'
-                    />
-                  )}
-                />
-                {ordersErrors.trackingUrl && (
-                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                    {ordersErrors.trackingUrl.message}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <FormControl fullWidth>
-                <Controller
                   name='id'
                   control={control}
                   render={({ field: { value, onChange } }) => (
@@ -234,6 +223,34 @@ const EditOrderLogistic = () => {
                 {ordersErrors.id && (
                   <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
                     {ordersErrors.id.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <FormControl fullWidth>
+                <Controller
+                  name='trackingUrl'
+                  control={control}
+                  render={({ field: { value, onChange } }) => {
+                    return (
+                      <TextField
+                        value={value}
+                        label='URL de rastreo'
+                        onChange={onChange}
+                        disabled={
+                          watch('deliveryStatus') === 'Está en camino' || watch('deliveryStatus') === 'Entregado'
+                            ? false
+                            : true
+                        }
+                        aria-describedby='validation-basic-first-name'
+                      />
+                    )
+                  }}
+                />
+                {ordersErrors.trackingUrl && (
+                  <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                    {ordersErrors.trackingUrl.message}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -282,7 +299,7 @@ const EditOrderLogistic = () => {
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Controller
-                  name='validDeliveryDate'
+                  name='deliveryDate'
                   control={control}
                   render={({ field: { value, onChange } }) => {
                     return (
@@ -300,9 +317,9 @@ const EditOrderLogistic = () => {
                   }}
                 />
 
-                {ordersErrors.validDeliveryDate && (
+                {ordersErrors.deliveryDate && (
                   <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                    {ordersErrors.validDeliveryDate.message}
+                    {ordersErrors.deliveryDate.message}
                   </FormHelperText>
                 )}
               </FormControl>
