@@ -64,7 +64,9 @@ const AppBarContent = props => {
                 size='small'
                 variant={
                   isActiveRoute(
-                    user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                    user.profile === 'Afiliado' ||
+                      user.profile === 'Administrador General' ||
+                      user.profile === 'Supervisor de Usuarios'
                       ? '/network'
                       : '/landing-page/join'
                   )
@@ -72,7 +74,9 @@ const AppBarContent = props => {
                     : 'text'
                 }
               >
-                {user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                {user.profile === 'Afiliado' ||
+                user.profile === 'Administrador General' ||
+                user.profile === 'Supervisor de Usuarios'
                   ? 'Información de la Red'
                   : 'Conviertete en socio y obtén tus descuentos'}
               </Button>

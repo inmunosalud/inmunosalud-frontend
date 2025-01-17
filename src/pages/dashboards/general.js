@@ -43,50 +43,36 @@ const General = () => {
   }, [])
 
   return (
-    <ApexChartWrapper>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={6}>
-          <NumberUsers data={data} />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Grid container spacing={6}>
-            <Grid item container xs={12} md={6}>
-              <Box sx={{ width: '100%' }}>
-                <CardNumber data={performance} />
-              </Box>
-            </Grid>
-            <Grid item container xs={12} md={6}>
-              <Box sx={{ width: '100%' }}>
-                <CardNumber data={nextComission} />
-              </Box>
-            </Grid>
-            <Grid item container xs={12} md={12}>
-              <Box sx={{ width: '100%', mt: 9 }}>
-                <CardNumber data={antiquity} />
-              </Box>
-            </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={6}>
+        <NumberUsers data={data} />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Grid container spacing={6}>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ width: '100%' }}>
+              <CardNumber data={performance} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ width: '100%' }}>
+              <CardNumber data={nextComission} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Box sx={{ width: '100%', mt: 9 }}>
+              <CardNumber data={antiquity} />
+            </Box>
           </Grid>
         </Grid>
-
-        <Grid item xs={12} sm={6} md={12}>
-          <WalletAverage title='Estatus' subtitle={subtitle} percentage={data?.status} />
-        </Grid>
-        <Grid item xs={12} md={8}>
-          {/* <AverageEfectiveness score={data?.score} /> */}
-        </Grid>
-
-        <Grid item display='flex' justifyContent='flex-end' xs={12}>
-          <Link href='/admin/users/new-user'>
-            <Button variant='contained' sx={{ mb: 0, whiteSpace: 'nowrap' }}>
-              Nuevo administrador
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item xs={12}>
-          <TableUsers />
-        </Grid>
       </Grid>
-    </ApexChartWrapper>
+      <Grid item xs={12} sm={6} md={12}>
+        <WalletAverage title='Estatus' subtitle={subtitle} percentage={data?.status} />
+      </Grid>
+      <Grid item xs={12} md={8}>
+        {/* <AverageEfectiveness score={data?.score} /> */}
+      </Grid>
+    </Grid>
   )
 }
 

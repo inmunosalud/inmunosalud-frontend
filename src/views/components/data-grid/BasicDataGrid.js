@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import Link from 'next/link'
 import {
   DataGrid,
   GridToolbarContainer,
@@ -8,12 +9,14 @@ import {
   GridToolbarFilterButton,
   GridToolbarExport
 } from '@mui/x-data-grid'
-import { Typography, Box } from '@mui/material'
-import { esES } from '@mui/x-data-grid/locales'
+import { useSelector } from 'react-redux'
 
+import { Typography, Box, Button } from '@mui/material'
+import { esES } from '@mui/x-data-grid/locales'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
   const storageKey = 'datagrid-settings'
-
+  const { user } = useSelector(state => state.session)
   // Función para cargar configuración específica de la tabla
   const loadSettings = key => {
     const savedSettings = localStorage.getItem(storageKey)
@@ -66,6 +69,14 @@ export const BasicDataGrid = ({ isLoading, data, columns, title = '' }) => {
               utf8WithBom: true
             }}
           />
+
+          {user.profile === 'Administrador General' && title === 'Usuarios en el Sistema' ? (
+            <Link href='/admin/users/new-user'>
+              <Button size='small' startIcon={<PersonAddIcon />}>
+                Crear administrador
+              </Button>
+            </Link>
+          ) : null}
         </Box>
       </GridToolbarContainer>
     )
