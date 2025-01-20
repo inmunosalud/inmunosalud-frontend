@@ -3,10 +3,9 @@ import { Card, CardContent, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { HistoryNetworkGraphic } from 'src/views/components/graphics/HistoryNetworkGraphic'
 
-export const HistoryNetwork = ({ network }) => {
+export const HistoryNetwork = ({ users, cutoffDay }) => {
   const theme = useTheme()
   const today = new Date()
-  const cutoffDay = 18
 
   // Determine the selected year and month based on the cutoff date
   const calculateDefaultYearMonth = () => {
@@ -33,13 +32,13 @@ export const HistoryNetwork = ({ network }) => {
   ])
 
   const handleNetworkYearChange = (event, newValue) => {
-    if (network && newValue) {
+    if (users && newValue) {
       setSelectedNetworkYear(newValue)
 
       const data = [
         {
           name: newValue,
-          data: network[newValue]
+          data: users[newValue]
         }
       ]
       setDataSeriesNetworkHistory(data)
@@ -47,16 +46,16 @@ export const HistoryNetwork = ({ network }) => {
   }
 
   useEffect(() => {
-    if (network) {
+    if (users) {
       const data = [
         {
           name: selectedNetworkYear,
-          data: network?.[selectedNetworkYear] || []
+          data: users?.[selectedNetworkYear] || []
         }
       ]
       setDataSeriesNetworkHistory(data)
     }
-  }, [network, selectedNetworkYear])
+  }, [users, selectedNetworkYear])
 
   return (
     <CardContent>
@@ -69,7 +68,7 @@ export const HistoryNetwork = ({ network }) => {
             textColor='primary'
             centered
           >
-            {Object.keys(network || {}).map(year => (
+            {Object.keys(users || {}).map(year => (
               <Tab id={year} key={year} label={year} value={year} />
             ))}
           </Tabs>

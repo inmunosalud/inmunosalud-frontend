@@ -200,8 +200,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                               <Grid item xs={12} lg={6}>
                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                   <Typography variant='h5' color='primary' sx={{ fontSize: '1.5rem' }}>
-                                    <strong>Comisión Generada:</strong> $
-                                    {networkDetails[item.id]?.myCommissionFromUser.toFixed(2)}
+                                    <strong>Comisión Generada:</strong> ${networkDetails[item.id]?.myCommissionFromUser}
                                   </Typography>
                                 </Box>
                               </Grid>

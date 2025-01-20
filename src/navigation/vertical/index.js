@@ -28,9 +28,17 @@ const navigation = () => {
     {
       icon: AccountGroupIcon,
       title:
-        user.profile === 'Afiliado' || user.profile === 'Supervisor de Usuarios' ? 'Información de la Red' : 'Afíliate',
+        user.profile === 'Afiliado' ||
+        user.profile === 'Supervisor de Usuarios' ||
+        user.profile === 'Administrador General'
+          ? 'Información de la Red'
+          : 'Afíliate',
       path:
-        user.profile === 'Afiliado' || user.profile === 'Supervisor de Usuarios' ? '/network' : '/landing-page/join',
+        user.profile === 'Afiliado' ||
+        user.profile === 'Supervisor de Usuarios' ||
+        user.profile === 'Administrador General'
+          ? '/network'
+          : '/landing-page/join',
       permission: PERMISSIONS.join,
       visible: isMobile
     },
