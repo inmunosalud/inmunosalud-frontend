@@ -1,6 +1,7 @@
 // ** React Import
 import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Link from 'next/link'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
@@ -26,6 +27,7 @@ const TableUsers = () => {
 
   const { showModal, modalRow, showDelete, users, loading } = useSelector(state => state.users)
   const { open, message, severity } = useSelector(state => state.notifications)
+  const { user } = useSelector(state => state.session)
 
   React.useEffect(() => {
     dispatch(usersList())
@@ -80,7 +82,12 @@ const TableUsers = () => {
   return (
     <>
       <Card>
-        <BasicDataGrid data={users} columns={config} loading={loading} title='Usuarios en el Sistema' />
+        <BasicDataGrid
+          data={users}
+          columns={user.profile === 'Administrador General' ? config : columns}
+          loading={loading}
+          title='Usuarios en el Sistema'
+        />
       </Card>
       <DialogDelete
         item={modalRow}

@@ -30,7 +30,9 @@ export const columns = [
     headerName: 'Usuario',
     renderCell: params => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {`${params.row.firstName} ${params.row.lastName}`}
+        {params.row.firstName && params.row.lastName
+          ? `${params.row.firstName} ${params.row.lastName}`
+          : params.row.name}
       </Typography>
     )
   },

@@ -1,5 +1,3 @@
-import { Netflix } from 'mdi-material-ui'
-
 export const PERMISSIONS = {
   home: 'home',
   join: 'join',
@@ -39,7 +37,6 @@ export const PROFILES = {
     PERMISSIONS.home,
     PERMISSIONS.join,
     PERMISSIONS.network,
-    PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
@@ -53,7 +50,6 @@ export const PROFILES = {
     PERMISSIONS.home,
     PERMISSIONS.join,
     PERMISSIONS.network,
-    PERMISSIONS.dashboardUsers,
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceCart,
@@ -70,6 +66,20 @@ export const PROFILES = {
     PERMISSIONS.dashboardProfile,
     PERMISSIONS.ecommerceProducts,
     PERMISSIONS.ecommerceAddProduct
+  ],
+  'Supervisor de Usuarios': [
+    PERMISSIONS.home,
+    PERMISSIONS.join,
+    PERMISSIONS.network,
+    PERMISSIONS.dashboardUsers,
+    PERMISSIONS.dashboardProfile,
+    PERMISSIONS.ecommerceProducts,
+    PERMISSIONS.ecommerceCart,
+    PERMISSIONS.ecommerceCheckout,
+    PERMISSIONS.ecommerceOrders,
+    PERMISSIONS.ecommerceEditOrders,
+    PERMISSIONS.ecommerceMonthlyPurchase,
+    PERMISSIONS.ecommerceBilling
   ],
   Logística: [PERMISSIONS.home, PERMISSIONS.join, PERMISSIONS.ecommerceProducts, PERMISSIONS.dashboardLogistics],
   'Administrador General': Object.values(PERMISSIONS),
@@ -106,5 +116,6 @@ export const PROFILES_USER = {
   productsAdmin: 'Administrador de Productos',
   consumerUser: 'Consumidor',
   affiliatedUser: 'Afiliado',
-  logisticsAdmin: 'Logística'
+  logisticsAdmin: 'Logística',
+  usersManager: 'Supervisor de Usuarios'
 }

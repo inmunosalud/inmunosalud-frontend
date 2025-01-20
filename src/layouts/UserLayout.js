@@ -91,7 +91,9 @@ const UserLayout = ({ children }) => {
       }
       if (
         (user.profile === 'Consumidor' && dataLoaded === false) ||
-        (user.profile === 'Afiliado' && dataLoaded === false)
+        (user.profile === 'Afiliado' && dataLoaded === false) ||
+        (user.profile === 'Administrador de Productos' && dataLoaded === false) ||
+        (user.profile === 'Supervisor de Usuarios' && dataLoaded === false)
       ) {
         dispatch(getCart(user.id))
         dispatch(paymentMethodsList(user.id))

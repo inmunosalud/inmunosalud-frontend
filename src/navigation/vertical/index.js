@@ -27,8 +27,10 @@ const navigation = () => {
     },
     {
       icon: AccountGroupIcon,
-      title: user.profile === 'Afiliado' ? 'Información de la Red' : 'Afíliate',
-      path: user.profile === 'Afiliado' ? '/network' : '/landing-page/join',
+      title:
+        user.profile === 'Afiliado' || user.profile === 'Supervisor de Usuarios' ? 'Información de la Red' : 'Afíliate',
+      path:
+        user.profile === 'Afiliado' || user.profile === 'Supervisor de Usuarios' ? '/network' : '/landing-page/join',
       permission: PERMISSIONS.join,
       visible: isMobile
     },
@@ -57,11 +59,11 @@ const navigation = () => {
           path: '/dashboards/general',
           permission: PERMISSIONS.dashboardGeneral
         },
-        // {
-        //   title: 'Usuarios',
-        //   path: '/dashboards/users',
-        //   permission: PERMISSIONS.dashboardUsers
-        // },
+        {
+          title: 'Usuarios',
+          path: '/dashboards/users',
+          permission: PERMISSIONS.dashboardUsers
+        },
         // {
         //   title: 'Compra mensual',
         //   path: '/ecommerce/monthly-purchase/',
