@@ -1,44 +1,86 @@
-import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// ** MUI Imports
-import Grid from '@mui/material/Grid'
-import { ContentCopy, FileUpload } from 'mdi-material-ui'
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
+// ** MUI Imports
+import { Box, Card, CircularProgress } from '@mui/material'
+import CardHeader from '@mui/material/CardHeader'
 // ** Styled Component Import
-import { useTheme } from '@mui/material/styles'
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 //actions
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
-  Tab,
-  Tabs,
-  Typography
-} from '@mui/material'
-import CardHeader from '@mui/material/CardHeader'
-import { getComissionsByUser } from 'src/store/comissions'
-import { loadSession } from 'src/store/session'
-import { getUserInfo } from 'src/store/users'
-import TableUsers from 'src/views/dashboards/users/TableUsers'
+import { usersList, setModal, setModalRow, setModalDelete, setShowConfirmModal } from 'src/store/users'
+
+//Components
+import UsersAccordion from 'src/views/components/accordion/UsersAccordion.js'
+import SimpleHeader from 'src/views/components/headers/SimpleHeader.js'
+import SimplePagination from 'src/views/components/pagination/SimplePagination.js'
+import SimpleTabs from 'src/views/components/tabs/SimpleTabs.js'
 
 const Users = () => {
   const dispatch = useDispatch()
-  const { isLoading } = useSelector(state => state.users)
-  return !isLoading ? (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <TableUsers />
-      </Grid>
-    </Grid>
+  const { showModal, modalRow, showDelete, users, loading } = useSelector(state => state.users)
+  const { user } = useSelector(state => state.session)
+  const [page, setPage] = useState(1)
+  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [expandedAccordions, setExpandedAccordions] = useState({})
+  const headers = [
+    { name: 'Nombre', xs: 1, lg: 1.5 },
+    { name: 'Correo', xs: 3, lg: 2 },
+    { name: 'Perfil', xs: 2, lg: 1 },
+    { name: 'Recomendado por', xs: 3, lg: 2 },
+    { name: 'Consumo', xs: 3, lg: 1.5 },
+    { name: 'Commission', xs: 3, lg: 1.5 },
+    { name: 'Estatus', xs: 3, lg: 1.5 },
+    ...(user.profile === 'Administrador General' ? [{ name: 'Acciones', xs: 3, lg: 1 }] : [])
+  ]
+  const itemsPerPage = 10
+
+  const handleTabChange = level => {
+    setSelectedLevel(level)
+    setPage(1)
+    setExpandedAccordions({})
+  }
+
+  const handlePageChange = newPage => {
+    setPage(newPage)
+    setExpandedAccordions({})
+  }
+
+  const handleAccordionChange = id => {
+    setExpandedAccordions(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  useEffect(() => {
+    dispatch(usersList())
+  }, [dispatch])
+
+  const accordionData = users || []
+  const paginatedData = accordionData.slice((page - 1) * itemsPerPage, page * itemsPerPage)
+
+  return !loading ? (
+    <Box sx={{ mt: '10px' }}>
+      <Card>
+        <CardHeader title='Usuarios' />
+        {accordionData.length > itemsPerPage && (
+          <SimplePagination
+            totalItems={accordionData.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={page}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </Card>
+      <Card sx={{ mt: '5px', mb: '2px' }}>
+        <SimpleHeader headers={headers} />
+      </Card>
+      <Box>
+        <UsersAccordion
+          data={paginatedData}
+          selectedLevel={selectedLevel}
+          expandedAccordions={expandedAccordions}
+          onAccordionChange={handleAccordionChange}
+        />
+      </Box>
+    </Box>
   ) : (
     <Box
       style={{
