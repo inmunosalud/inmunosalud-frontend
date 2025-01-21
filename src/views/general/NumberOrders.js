@@ -20,9 +20,8 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-import { Account } from 'mdi-material-ui'
-
-const NumberUsers = ({ data = null }) => {
+import LocalShippingIcon from '@mui/icons-material/LocalShipping'
+const NumberOrders = ({ data = null }) => {
   // ** Hook
   const theme = useTheme()
 
@@ -30,11 +29,17 @@ const NumberUsers = ({ data = null }) => {
     chart: {
       sparkline: { enabled: true }
     },
-    colors: [theme.palette.primary.main, theme.palette.customColors.bodyBg],
+    colors: [
+      theme.palette.secondary.main,
+      theme.palette.primary.main,
+      theme.palette.info.main,
+      theme.palette.success.main,
+      theme.palette.error.main
+    ],
     stroke: { width: 0 },
     legend: { show: false },
     dataLabels: { enabled: false },
-    labels: ['Activos', 'Inactivos'],
+    labels: ['Confirmación de pago', 'Preparación de pedido', 'En camino', 'Entregado', 'Cancelado'],
     states: {
       hover: {
         filter: { type: 'none' }
@@ -59,7 +64,7 @@ const NumberUsers = ({ data = null }) => {
             },
             total: {
               show: true,
-              label: 'Usuarios',
+              label: 'Pedidos',
               formatter: value => `${value.globals.seriesTotals.reduce((total, num) => total + num)}`
             }
           }
@@ -70,16 +75,22 @@ const NumberUsers = ({ data = null }) => {
 
   const getSeries = () => {
     if (!data) {
-      return [0, 0]
+      return [0, 0, 0, 0, 0]
     }
 
-    return [data.valid, data.invalid]
+    return [
+      data.currentCutoff.byStatus.confirmingPayment,
+      data.currentCutoff.byStatus.preparingOrder,
+      data.currentCutoff.byStatus.onWay,
+      data.currentCutoff.byStatus.delivered,
+      data.currentCutoff.byStatus.cancelled
+    ]
   }
 
   return (
-    <Card>
+    <Card sx={{ height: '100%' }}>
       <CardHeader
-        title='Usuarios'
+        title='Pedidos'
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
@@ -106,54 +117,35 @@ const NumberUsers = ({ data = null }) => {
           <Grid item xs={12} sm={6} sx={{ my: 'auto' }}>
             <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
               <CustomAvatar skin='light' sx={{ mr: 3 }} variant='rounded'>
-                <Account sx={{ color: 'primary.main' }} />
+                <LocalShippingIcon sx={{ color: 'primary.main' }} />
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography variant='body2'>Número de usuarios</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant='h6'>{data?.total ?? 0}</Typography>
-                  <Typography variant='body2' sx={{ ml: 2, fontSize: '0.75rem' }}>
-                    Antigüedad promedio: {data?.antiquity ?? 0}
-                  </Typography>
-                </Box>
+                <Typography variant='body2'>Numero de Pedidos</Typography>
+                <Typography variant='h6'>{data?.currentCutoff.total ?? 0}</Typography>
               </Box>
             </Box>
             <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column' }}>
               <Typography variant='body2'>
-                Administradores Generales: <b>{data?.byProfile.admin ?? 0}</b>
+                <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.secondary.main }} /> Confirmación de pago:{' '}
+                <b>{data?.currentCutoff.byStatus.confirmingPayment ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
-                Administradores de Productos: <b>{data?.byProfile.productsAdmin ?? 0}</b>
+                <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.primary.main }} /> Preparación de pedido:{' '}
+                <b>{data?.currentCutoff.byStatus.preparingOrder ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
-                Administradores de Usuarios: <b>{data?.byProfile.usersManager ?? 0}</b>
+                <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.info.main }} /> En camino:{' '}
+                <b>{data?.currentCutoff.byStatus.onWay ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
-                Consumidores: <b>{data?.byProfile.consumerUser ?? 0}</b>
+                <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.success.main }} /> Entregado:{' '}
+                <b>{data?.currentCutoff.byStatus.delivered ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
-                Afiliados: <b>{data?.byProfile.affiliatedUser ?? 0}</b>
+                <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.error.main }} /> Cancelado:{' '}
+                <b>{data?.currentCutoff.byStatus.cancelled ?? 0}</b>
               </Typography>
             </Box>
-            <Divider sx={{ my: 4 }} />
-            <Grid container>
-              <Grid item xs={6} sx={{ mb: 4 }}>
-                <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center' }}>
-                  <Circle sx={{ mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }} />
-                  <Typography variant='body2'>Activos</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>{data?.valid}</Typography>
-              </Grid>
-              <Grid item xs={6} sx={{ mb: 4 }}>
-                <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center' }}>
-                  <Circle
-                    sx={{ mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.customColors.bodyBg, 0.7) }}
-                  />
-                  <Typography variant='body2'>Inactivos</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>{data?.invalid}</Typography>
-              </Grid>
-            </Grid>
           </Grid>
         </Grid>
       </CardContent>
@@ -161,4 +153,4 @@ const NumberUsers = ({ data = null }) => {
   )
 }
 
-export default NumberUsers
+export default NumberOrders
