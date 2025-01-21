@@ -54,7 +54,9 @@ const AppBarContent = props => {
           <Box sx={{ margin: { md: '0 auto' } }}>
             <Link
               href={
-                user.profile === 'Afiliado' || user.profile === 'Administrador General'
+                user.profile === 'Afiliado' ||
+                user.profile === 'Administrador General' ||
+                user.profile === 'Supervisor de Usuarios'
                   ? '/network'
                   : '/landing-page/join'
               }
@@ -78,7 +80,7 @@ const AppBarContent = props => {
                 user.profile === 'Administrador General' ||
                 user.profile === 'Supervisor de Usuarios'
                   ? 'Información de la Red'
-                  : 'Conviertete en socio y obtén tus descuentos'}
+                  : 'Conviértete en socio y obtén tus descuentos'}
               </Button>
             </Link>
           </Box>
