@@ -11,8 +11,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Button
+  Button,
+  Stack,
+  TextField
 } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import moment from 'moment'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CustomChip from 'src/@core/components/mui/chip'
 import SimpleTabs from 'src/views/components/tabs/SimpleTabs'
@@ -26,7 +30,11 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
   const dispatch = useDispatch()
   const theme = useTheme()
   const { networkDetails, loadingDetails } = useSelector(state => state.users)
+  const { isMobile } = useSelector(state => state.dashboard.general)
   const networkLevels = selectedLevel === 1 ? [1, 2, 3] : selectedLevel === 2 ? [1, 2] : [1]
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [disabled, setDisabled] = useState(true)
   const tabs =
     selectedLevel === 4
       ? ['informacion del usuario', 'Crecimiento de su red', 'Historial de pedidos']
@@ -38,7 +46,15 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
     onAccordionChange(userId)
 
     if (isExpanded && !networkDetails[userId]) {
-      dispatch(getNetworkDetails(userId))
+      dispatch(getNetworkDetails({ id: userId, startDate, endDate }))
+    }
+  }
+
+  const handleFilterSubmit = userId => {
+    if (startDate && endDate) {
+      const formatStartDate = moment(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      const formatEndDate = moment(endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      dispatch(getNetworkDetails({ id: userId, startDate: formatStartDate, endDate: formatEndDate }))
     }
   }
 
@@ -53,6 +69,12 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
     })
     setSelectedTabs(resetTabs)
   }, [selectedLevel, data])
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      setDisabled(false)
+    }
+  }, [startDate, endDate])
 
   return (
     <Box sx={{ minHeight: '500px' }}>
@@ -75,50 +97,58 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                     <Typography>{index + 1}</Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={3} lg={3}>
+
+                <Grid item xs={11} lg={3}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography>{item.name}</Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={2} lg={2}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CustomChip
-                      skin='light'
-                      size='small'
-                      label={item.profile}
-                      color={item.profile === 'Afiliado' ? 'success' : 'primary'}
-                      sx={{
-                        height: 20,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        borderRadius: '5px',
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={3}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography>{item.recommenderName}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={3}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CustomChip
-                      skin='light'
-                      size='small'
-                      label={`$${item.lastTotalConsume}`}
-                      color={item.lastTotalConsume > 0 ? 'success' : 'error'}
-                      sx={{
-                        height: 20,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        borderRadius: '5px',
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </Box>
-                </Grid>
+
+                {!isMobile && (
+                  <Grid item xs={2} lg={2}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CustomChip
+                        skin='light'
+                        size='small'
+                        label={item.profile}
+                        color={item.profile === 'Afiliado' ? 'success' : 'primary'}
+                        sx={{
+                          height: 20,
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          borderRadius: '5px',
+                          textTransform: 'capitalize'
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>{item.recommenderName}</Typography>
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CustomChip
+                        skin='light'
+                        size='small'
+                        label={`$${item.lastTotalConsume}`}
+                        color={item.lastTotalConsume > 0 ? 'success' : 'error'}
+                        sx={{
+                          height: 20,
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          borderRadius: '5px',
+                          textTransform: 'capitalize'
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                )}
               </Grid>
             </AccordionSummary>
             <Divider />
@@ -138,6 +168,49 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                 </Box>
               ) : (
                 <>
+                  <Stack
+                    direction={isMobile ? 'column' : 'row'}
+                    spacing={isMobile ? 2 : 0}
+                    sx={{
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'flex',
+                      '& > *': {
+                        marginBottom: isMobile ? 1 : 0
+                      }
+                    }}
+                  >
+                    <TextField
+                      label='Fecha de inicio'
+                      type='date'
+                      size='small'
+                      sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                      InputLabelProps={{ shrink: true }}
+                      value={startDate}
+                      onChange={e => setStartDate(e.target.value)}
+                      inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+                    />
+                    <TextField
+                      label='Fecha final'
+                      type='date'
+                      size='small'
+                      sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                      InputLabelProps={{ shrink: true }}
+                      value={endDate}
+                      onChange={e => setEndDate(e.target.value)}
+                      inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+                    />
+                    <Button
+                      disabled={disabled}
+                      size={'small'}
+                      color='primary'
+                      variant='outlined'
+                      startIcon={<SearchIcon />}
+                      onClick={() => handleFilterSubmit(item.id)}
+                    >
+                      Buscar
+                    </Button>
+                  </Stack>
                   {/* Tabs */}
                   <SimpleTabs
                     tabSelected={selectedTab}
@@ -160,6 +233,11 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                 {/* Correo Electrónico */}
                                 <Typography variant='body1' sx={{ mt: 4 }}>
                                   <strong>Correo Electrónico:</strong> {networkDetails[item.id]?.user.email}
+                                </Typography>
+
+                                {/* Recomendado por */}
+                                <Typography variant='body1' sx={{ mt: 4 }}>
+                                  <strong>Recomendado por:</strong> {item.recommenderName}
                                 </Typography>
 
                                 {/* Fecha de Nacimiento */}

@@ -9,16 +9,22 @@ import { NetworkList } from 'src/views/components/list/NetworkList.js'
 
 export const NetworkDetails = () => {
   const { network } = useSelector(state => state.users)
+  const { isMobile } = useSelector(state => state.dashboard.general)
   const [page, setPage] = useState(1)
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [expandedAccordions, setExpandedAccordions] = useState({})
-  const headers = [
-    { name: 'ID', xs: 1, lg: 1 },
-    { name: 'Nombre', xs: 3, lg: 3 },
-    { name: 'Perfil', xs: 2, lg: 2 },
-    { name: 'Recomendado por', xs: 3, lg: 3 },
-    { name: 'Consumo', xs: 3, lg: 3 }
-  ]
+  const headers = isMobile
+    ? [
+        { name: 'ID', xs: 1, lg: 1 },
+        { name: 'Nombre', xs: 11, lg: 3 }
+      ]
+    : [
+        { name: 'ID', xs: 1, lg: 1 },
+        { name: 'Nombre', xs: 3, lg: 3 },
+        { name: 'Perfil', xs: 2, lg: 2 },
+        { name: 'Recomendado por', xs: 3, lg: 3 },
+        { name: 'Consumo', xs: 3, lg: 3 }
+      ]
   const tabs = ['Nivel 1', 'Nivel 2', 'Nivel 3', 'Nivel 4']
   const itemsPerPage = 10
 
