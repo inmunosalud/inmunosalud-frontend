@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
-
+import moment from 'moment'
 // ** MUI Imports
-import { Box, Card, CircularProgress } from '@mui/material'
+import { Box, Card, CircularProgress, TextField, Grid, Button, IconButton, Tooltip, Stack } from '@mui/material'
 import CardHeader from '@mui/material/CardHeader'
+import SearchIcon from '@mui/icons-material/Search'
 // ** Styled Component Import
 
 //actions
@@ -22,16 +23,23 @@ const Users = () => {
   const [page, setPage] = useState(1)
   const [selectedLevel, setSelectedLevel] = useState(1)
   const [expandedAccordions, setExpandedAccordions] = useState({})
-  const headers = [
-    { name: 'Nombre', xs: 1, lg: 1.5 },
-    { name: 'Correo', xs: 3, lg: 2 },
-    { name: 'Perfil', xs: 2, lg: 1 },
-    { name: 'Recomendado por', xs: 3, lg: 2 },
-    { name: 'Consumo', xs: 3, lg: 1.5 },
-    { name: 'Commission', xs: 3, lg: 1.5 },
-    { name: 'Estatus', xs: 3, lg: 1.5 },
-    ...(user.profile === 'Administrador General' ? [{ name: 'Acciones', xs: 3, lg: 1 }] : [])
-  ]
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [disabled, setDisabled] = useState(true)
+  const { isMobile } = useSelector(state => state.dashboard.general)
+
+  const headers = isMobile
+    ? [{ name: 'Nombre', xs: 12, lg: 1 }]
+    : [
+        { name: 'Nombre', xs: 1, lg: 3 },
+        ...(user.profile === 'Administrador General' ? [{ name: 'Correo', xs: 3, lg: 3 }] : []),
+        { name: 'Perfil', xs: 2, lg: 2 },
+        ...(user.profile === 'Supervisor de Usuarios' ? [{ name: 'Recomendado por', xs: 3, lg: 3 }] : []),
+        { name: 'Consumo', xs: 3, lg: 1 },
+        { name: 'Commission', xs: 3, lg: 1 },
+        { name: 'Estatus', xs: 3, lg: 1 },
+        ...(user.profile === 'Administrador General' ? [{ name: 'Acciones', xs: 3, lg: 1 }] : [])
+      ]
   const itemsPerPage = 10
 
   const handleTabChange = level => {
@@ -49,9 +57,23 @@ const Users = () => {
     setExpandedAccordions(prev => ({ ...prev, [id]: !prev[id] }))
   }
 
+  const handleFilterSubmit = () => {
+    if (startDate && endDate) {
+      const formatStartDate = moment(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      const formatEndDate = moment(endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      dispatch(usersList({ startDate, endDate }))
+    }
+  }
+
   useEffect(() => {
-    dispatch(usersList())
+    dispatch(usersList({ startDate, endDate }))
   }, [dispatch])
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      setDisabled(false)
+    }
+  }, [startDate, endDate])
 
   const accordionData = users || []
   const paginatedData = accordionData.slice((page - 1) * itemsPerPage, page * itemsPerPage)
@@ -59,7 +81,54 @@ const Users = () => {
   return !loading ? (
     <Box sx={{ mt: '10px' }}>
       <Card>
-        <CardHeader title='Usuarios' />
+        <CardHeader
+          title='Usuarios'
+          action={
+            <Stack
+              direction={isMobile ? 'column' : 'row'}
+              spacing={isMobile ? 2 : 0}
+              sx={{
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                '& > *': {
+                  marginBottom: isMobile ? 1 : 0
+                }
+              }}
+            >
+              <TextField
+                label='Fecha de inicio'
+                type='date'
+                size='small'
+                sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                InputLabelProps={{ shrink: true }}
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+              />
+              <TextField
+                label='Fecha final'
+                type='date'
+                size='small'
+                sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                InputLabelProps={{ shrink: true }}
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+              />
+              <Button
+                disabled={disabled}
+                size={'small'}
+                color='primary'
+                variant='outlined'
+                startIcon={<SearchIcon />}
+                onClick={handleFilterSubmit}
+              >
+                Buscar
+              </Button>
+            </Stack>
+          }
+        />
         {accordionData.length > itemsPerPage && (
           <SimplePagination
             totalItems={accordionData.length}

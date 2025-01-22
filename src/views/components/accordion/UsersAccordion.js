@@ -9,8 +9,13 @@ import {
   CircularProgress,
   Divider,
   Grid,
-  Typography
+  Typography,
+  IconButton,
+  Tooltip,
+  TextField,
+  Stack
 } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 import { AccountCancelOutline, AccountCheckOutline } from 'mdi-material-ui'
 import { useEffect, useState } from 'react'
 
@@ -22,6 +27,7 @@ import { getNetworkDetails } from 'src/store/users'
 import { NetworkList } from 'src/views/components/list/NetworkList'
 import SimpleTabs from 'src/views/components/tabs/SimpleTabs'
 import { HistoryNetwork } from 'src/views/pages/network/HistoryNetwork'
+import moment from 'moment'
 
 // ** MUI Imports
 import { usersList, setModal, setModalRow, setModalDelete, setShowConfirmModal } from 'src/store/users'
@@ -35,13 +41,16 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
   const theme = useTheme()
   const { networkDetails, loadingDetails } = useSelector(state => state.users)
   const { showModal, modalRow, showDelete } = useSelector(state => state.users)
-
   const { user } = useSelector(state => state.session)
+  const { isMobile } = useSelector(state => state.dashboard.general)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [disabled, setDisabled] = useState(true)
   const networkLevels = selectedLevel === 1 ? [1, 2, 3] : selectedLevel === 2 ? [1, 2] : [1]
   const tabs =
     selectedLevel === 4
-      ? ['informacion del usuario', 'Crecimiento de su red', 'Historial de pedidos']
-      : ['Informacion del usuario', 'Red', 'Crecimiento de su red', 'Historial de pedidos']
+      ? ['información del usuario', 'Crecimiento de su red', 'Historial de pedidos']
+      : ['Información del usuario', 'Red', 'Crecimiento de su red', 'Historial de pedidos']
   // Estado local para controlar la pestaña seleccionada
   const [selectedTabs, setSelectedTabs] = useState({})
 
@@ -49,7 +58,15 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
     onAccordionChange(userId)
 
     if (isExpanded && !networkDetails[userId]) {
-      dispatch(getNetworkDetails(userId))
+      dispatch(getNetworkDetails({ id: userId, startDate, endDate }))
+    }
+  }
+
+  const handleFilterSubmit = userId => {
+    if (startDate && endDate) {
+      const formatStartDate = moment(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      const formatEndDate = moment(endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      dispatch(getNetworkDetails({ id: userId, startDate: formatStartDate, endDate: formatEndDate }))
     }
   }
 
@@ -83,6 +100,11 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
     setSelectedTabs(resetTabs)
   }, [selectedLevel, data])
 
+  useEffect(() => {
+    if (startDate && endDate) {
+      setDisabled(false)
+    }
+  }, [startDate, endDate])
   return (
     <Box sx={{ minHeight: '500px' }}>
       {data.map((item, index) => {
@@ -99,104 +121,108 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
               id={`panel${index}-header`}
             >
               <Grid container spacing={2}>
-                <Grid item xs={1} lg={1.5}>
+                <Grid item xs={12} lg={3}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography>{item.name}</Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={3} lg={2}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography>{item.email}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} lg={1}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CustomChip
-                      skin='light'
-                      size='small'
-                      label={item.profile}
-                      color={item.profile === 'Afiliado' ? 'success' : 'primary'}
-                      sx={{
-                        height: 20,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        borderRadius: '5px',
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={2}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography>{item.recommenderName}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={1.5}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CustomChip
-                      skin='light'
-                      size='small'
-                      label={`$${item.overallConsumption}`}
-                      color={item.overallConsumption > 0 ? 'success' : 'error'}
-                      sx={{
-                        height: 20,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        borderRadius: '5px',
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={1.5}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography>{item.commission}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={3} lg={1.5}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CustomChip
-                      skin='dark'
-                      size='small'
-                      label={item.isValid ? <AccountCheckOutline /> : <AccountCancelOutline />}
-                      color={item.isValid ? 'success' : 'error'}
-                      sx={{
-                        height: 25,
-                        fontSize: '0.875rem',
-                        fontWeight: 600,
-                        borderRadius: '5px',
-                        textTransform: 'capitalize'
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                {user.profile === 'Administrador General' && (
+                {!isMobile && user.profile === 'Administrador General' && (
+                  <Grid item xs={3} lg={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>{item.email}</Typography>
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={2} lg={2}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CustomChip
+                        skin='light'
+                        size='small'
+                        label={item.profile}
+                        color={item.profile === 'Afiliado' ? 'success' : 'primary'}
+                        sx={{
+                          height: 20,
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          borderRadius: '5px',
+                          textTransform: 'capitalize'
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && user.profile === 'Supervisor de Usuarios' && (
+                  <Grid item xs={3} lg={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>{item.recommenderName}</Typography>
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CustomChip
+                        skin='light'
+                        size='small'
+                        label={`$${item.overallConsumption}`}
+                        color={item.overallConsumption > 0 ? 'success' : 'error'}
+                        sx={{
+                          height: 20,
+                          fontSize: '0.875rem',
+                          fontWeight: 600,
+                          borderRadius: '5px',
+                          textTransform: 'capitalize'
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>${item.commission}</Typography>
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {item.isValid ? <AccountCheckOutline color='success' /> : <AccountCancelOutline color='error' />}
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && user.profile === 'Administrador General' && (
                   <Grid item xs={3} lg={1}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {item?.profile?.includes('Admin') ? (
-                        <Button
+                        <Tooltip title='Editar' placement='top'>
+                          <IconButton
+                            onClick={e => {
+                              e.stopPropagation()
+                              saveItemModal(item)
+                            }}
+                            color='warning'
+                            size='small'
+                          >
+                            <Pencil />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <IconButton disableRipple disabled />
+                      )}
+                      <Tooltip title='Eliminar' placement='top'>
+                        <IconButton
                           onClick={e => {
                             e.stopPropagation()
-                            saveItemModal(item)
+                            setItemDeleteModal(item)
                           }}
-                          color='warning'
+                          color='error'
                           size='small'
                         >
-                          <Pencil />
-                        </Button>
-                      ) : (
-                        <Button disableRipple disabled />
-                      )}
-                      <Button
-                        onClick={e => {
-                          e.stopPropagation()
-                          setItemDeleteModal(item)
-                        }}
-                        color='error'
-                        size='small'
-                      >
-                        <Delete />
-                      </Button>
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
                     </Box>
                   </Grid>
                 )}
@@ -219,6 +245,49 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
                 </Box>
               ) : (
                 <>
+                  <Stack
+                    direction={isMobile ? 'column' : 'row'}
+                    spacing={isMobile ? 2 : 0}
+                    sx={{
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'flex',
+                      '& > *': {
+                        marginBottom: isMobile ? 1 : 0
+                      }
+                    }}
+                  >
+                    <TextField
+                      label='Fecha de inicio'
+                      type='date'
+                      size='small'
+                      sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                      InputLabelProps={{ shrink: true }}
+                      value={startDate}
+                      onChange={e => setStartDate(e.target.value)}
+                      inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+                    />
+                    <TextField
+                      label='Fecha final'
+                      type='date'
+                      size='small'
+                      sx={{ width: '200px', mr: { xs: 0, lg: 2 } }}
+                      InputLabelProps={{ shrink: true }}
+                      value={endDate}
+                      onChange={e => setEndDate(e.target.value)}
+                      inputProps={{ pattern: '\\d{2}-\\d{2}-\\d{4}' }}
+                    />
+                    <Button
+                      disabled={disabled}
+                      size={'small'}
+                      color='primary'
+                      variant='outlined'
+                      startIcon={<SearchIcon />}
+                      onClick={() => handleFilterSubmit(item.id)}
+                    >
+                      Buscar
+                    </Button>
+                  </Stack>
                   {/* Tabs */}
                   <SimpleTabs
                     tabSelected={selectedTab}
@@ -241,6 +310,11 @@ const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionCh
                                 {/* Correo Electrónico */}
                                 <Typography variant='body1' sx={{ mt: 4 }}>
                                   <strong>Correo Electrónico:</strong> {networkDetails[item.id]?.user.email}
+                                </Typography>
+
+                                {/* Referido por */}
+                                <Typography variant='body1' sx={{ mt: 4 }}>
+                                  <strong>Referido por:</strong> {item.recommenderName}
                                 </Typography>
 
                                 {/* Fecha de Nacimiento */}
