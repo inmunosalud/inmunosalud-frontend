@@ -211,7 +211,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  5%
+                  25%
                 </Typography>
               </Button>
             </Box>
@@ -228,7 +228,7 @@ const JoinInformation = ({ profile }) => {
                 ...(mobile && { marginX: 'auto', textAlign: 'center' })
               }}
             >
-              <Typography variant='h6'>Obtienes el 5% de la compra total de las personas que recomiendes.</Typography>
+              <Typography variant='h6'>Obtienes el 25% de la compra total de las personas que recomiendes.</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={12}>
@@ -295,7 +295,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  15%
+                  5%
                 </Typography>
               </Button>
             </Box>
@@ -313,7 +313,7 @@ const JoinInformation = ({ profile }) => {
               }}
             >
               <Typography variant='h6'>
-                En caso de que los nuevos recomendados inviten a alguien mas recibes el 15% de sus compras.
+                En caso de que los nuevos recomendados inviten a alguien mas recibes el 5% de sus compras.
               </Typography>
             </Box>
           </Grid>
@@ -338,7 +338,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  15%
+                  5%
                 </Typography>
               </Button>
             </Box>
@@ -356,7 +356,7 @@ const JoinInformation = ({ profile }) => {
               }}
             >
               <Typography variant='h6'>
-                Y si estos recomendados traen más personas, recibirás el 15% de sus compras por cada uno de ellos.
+                Y si estos recomendados traen más personas, recibirás el 5% de sus compras por cada uno de ellos.
               </Typography>
             </Box>
           </Grid>
