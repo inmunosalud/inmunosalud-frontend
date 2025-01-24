@@ -59,9 +59,9 @@ const Users = () => {
 
   const handleFilterSubmit = () => {
     if (startDate && endDate) {
-      const formatStartDate = moment(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
-      const formatEndDate = moment(endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
-      dispatch(usersList({ startDate, endDate }))
+      dispatch(
+        usersList({ startDate: moment(startDate).format('YYYY-MM-DD'), endDate: moment(endDate).format('YYYY-MM-DD') })
+      )
     }
   }
 

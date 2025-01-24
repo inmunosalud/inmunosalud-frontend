@@ -52,9 +52,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
 
   const handleFilterSubmit = userId => {
     if (startDate && endDate) {
-      const formatStartDate = moment(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
-      const formatEndDate = moment(endDate, 'YYYY-MM-DD').format('DD-MM-YYYY')
-      dispatch(getNetworkDetails({ id: userId, startDate: formatStartDate, endDate: formatEndDate }))
+      dispatch(getNetworkDetails({ id: userId, startDate, endDate }))
     }
   }
 

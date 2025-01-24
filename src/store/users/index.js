@@ -190,10 +190,15 @@ export const getNetworkDetails = createAsyncThunk(
   async ({ id, startDate, endDate }, thunkApi) => {
     const token = localStorage.getItem('im-user')
     const auth = { headers: { Authorization: `Bearer ${token}` } }
-    const queryString = new URLSearchParams({ startDate, endDate }).toString()
+    let queryString = ''
+
+    if (startDate && endDate) {
+      queryString = new URLSearchParams({ startDate, endDate }).toString()
+      queryString = `?${queryString}`
+    }
 
     try {
-      const response = await api_get(`${USERS}/users/network/detail/${id}?${queryString}`, auth)
+      const response = await api_get(`${USERS}/users/network/detail/${id}${queryString}`, auth)
       return response
     } catch (error) {
       return thunkApi.rejectWithValue('error')
