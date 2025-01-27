@@ -8,10 +8,12 @@ import Grid from '@mui/material/Grid'
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-import { Button, Box } from '@mui/material'
-
+import { Button, Box, CardHeader, Card, Typography } from '@mui/material'
 import NumberUsers from 'src/views/general/NumberUsers'
 import CardNumber from 'src/views/general/CardNumber'
+import SalesCard from 'src/views/general/SalesCard'
+import GeneralHistoryCard from 'src/views/general/GeneralHistoryCard'
+import CommissionCard from 'src/views/general/CommissionCard'
 import AverageEfectiveness from 'src/views/general/AverageEfectiveness'
 import WalletAverage from 'src/views/general/WalletAverage'
 import TableUsers from 'src/views/dashboards/users/TableUsers'
@@ -41,13 +43,13 @@ const General = () => {
     },
     cutoffDate: '28 ene',
     commissions: {
-      total: {
+      totals: {
         count: 310,
-        amount: 22225
+        amount: 5225
       },
       currentCutoff: {
         count: 10,
-        amount: 2225
+        amount: 1225
       },
       byYear: {
         2024: {
@@ -305,29 +307,50 @@ const General = () => {
         byYear: {
           2024: {
             monthly: [8, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            totals: 11
+            total: 11
           },
           2025: {
             monthly: [5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            totals: 5
+            total: 5
           }
         }
       }
     }
   }
 
-  const antiquity = {
-    stats: data?.antiquity || 0,
-    title: 'Antigüedad promedio'
-  }
-  const performance = {
-    stats: `$${data?.performance || 0}`,
-    title: 'Rendimiento'
-  }
-
-  const nextComission = {
-    stats: `$${data?.nextCommission || 0}`,
-    title: 'Comisiones por Pagar'
+  const historyData = {
+    commissions: {
+      title: 'Comisiones',
+      categories: Object.keys(dashResponse.commissions.byYear),
+      series: Object.entries(dashResponse.commissions.byYear).map(([year, data]) => ({
+        year: year,
+        counts: data.monthly.map(m => m.count),
+        amounts: data.monthly.map(m => m.amount)
+      }))
+    },
+    sales: {
+      title: 'Ventas',
+      categories: Object.keys(dashResponse.sales.byYear),
+      series: Object.entries(dashResponse.sales.byYear).map(([year, data]) => ({
+        year: year,
+        counts: data.monthly.map(m => m.count),
+        amounts: data.monthly.map(m => m.amount)
+      }))
+    },
+    orders: {
+      title: 'Pedidos Entregados',
+      categories: Object.keys(dashResponse.orders.delivered.byYear),
+      series: Object.entries(dashResponse.orders.delivered.byYear).map(([year, data]) => ({
+        year: year,
+        counts: data.monthly, // Solo counts (ejemplo: [8,3,0,...])
+        amounts: [] // No hay amount en esta categoría
+      }))
+    },
+    users: {
+      title: 'Usuarios Activos',
+      categories: [], // Agregar lógica si tienes datos históricos de usuarios
+      series: [] // Ejemplo vacío (no hay datos mensuales en tu response actual)
+    }
   }
 
   useEffect(() => {
@@ -336,14 +359,29 @@ const General = () => {
 
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12} md={12}>
+        <Card>
+          <CardHeader
+            title='Dashboard General'
+            subheader={
+              <>
+                Fecha de corte:{' '}
+                <Typography variant='body' color='primary'>
+                  {dashResponse.cutoffDate}
+                </Typography>
+              </>
+            }
+          />
+        </Card>
+      </Grid>
       <Grid item xs={12} md={6}>
         <Box sx={{ width: '100%' }}>
-          <CardNumber data={performance} />
+          <SalesCard data={dashResponse.sales} />
         </Box>
       </Grid>
       <Grid item xs={12} md={6}>
         <Box sx={{ width: '100%' }}>
-          <CardNumber data={nextComission} />
+          <CommissionCard data={dashResponse.commissions} />
         </Box>
       </Grid>
       <Grid item xs={12} md={6}>
@@ -352,10 +390,9 @@ const General = () => {
       <Grid item xs={12} md={6}>
         <NumberOrders data={dashResponse.orders} />
       </Grid>
-
       <Grid item xs={12} md={12}>
         <Box sx={{ width: '100%' }}>
-          <CardNumber data={antiquity} />
+          <GeneralHistoryCard data={historyData} />
         </Box>
       </Grid>
     </Grid>
