@@ -3,30 +3,14 @@ import { Card, CardContent, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { HistoryNetworkGraphic } from 'src/views/components/graphics/HistoryNetworkGraphic'
 
-export const HistoryNetwork = ({ users, cutoffDay }) => {
+export const HistoryNetwork = ({ users }) => {
   const theme = useTheme()
-  const today = new Date()
+  const currentYear = new Date().getFullYear().toString()
 
-  // Determine the selected year and month based on the cutoff date
-  const calculateDefaultYearMonth = () => {
-    if (today.getDate() < cutoffDay) {
-      const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1)
-      return {
-        year: previousMonth.getFullYear().toString(),
-        month: (previousMonth.getMonth() + 1).toString().padStart(2, '0')
-      }
-    }
-    return {
-      year: today.getFullYear().toString(),
-      month: (today.getMonth() + 1).toString().padStart(2, '0')
-    }
-  }
-
-  const { year: defaultYear } = calculateDefaultYearMonth()
-  const [selectedNetworkYear, setSelectedNetworkYear] = useState(defaultYear)
+  const [selectedNetworkYear, setSelectedNetworkYear] = useState(currentYear)
   const [dataSeriesNetworkHistory, setDataSeriesNetworkHistory] = useState([
     {
-      name: defaultYear,
+      name: currentYear,
       data: []
     }
   ])
@@ -34,7 +18,6 @@ export const HistoryNetwork = ({ users, cutoffDay }) => {
   const handleNetworkYearChange = (event, newValue) => {
     if (users && newValue) {
       setSelectedNetworkYear(newValue)
-
       const data = [
         {
           name: newValue,
@@ -63,13 +46,13 @@ export const HistoryNetwork = ({ users, cutoffDay }) => {
         <Box>
           <Tabs
             value={selectedNetworkYear}
-            onChange={(event, newValue) => handleNetworkYearChange(event, newValue)}
+            onChange={handleNetworkYearChange}
             indicatorColor='primary'
             textColor='primary'
             centered
           >
             {Object.keys(users || {}).map(year => (
-              <Tab id={year} key={year} label={year} value={year} />
+              <Tab key={year} label={year} value={year} />
             ))}
           </Tabs>
         </Box>

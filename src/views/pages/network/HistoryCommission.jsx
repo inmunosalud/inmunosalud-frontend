@@ -3,24 +3,15 @@ import { CardContent, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { HistoryCommissionGraphic } from 'src/views/components/graphics/HistoryCommissionsGraphic'
 
-export const HistoryCommission = ({ commissions, cutoffDay }) => {
+export const HistoryCommission = ({ commissions }) => {
+  // Eliminamos cutoffDay de las props
   const theme = useTheme()
-  const today = new Date()
+  const currentYear = new Date().getFullYear().toString() // Obtenemos directamente el año actual
 
-  const calculateDefaultYearMonth = () => {
-    if (today.getDate() < cutoffDay) {
-      const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1)
-      return previousMonth.getFullYear().toString()
-    }
-    return today.getFullYear().toString()
-  }
-
-  const defaultYear = calculateDefaultYearMonth()
-
-  const [selectedCommissionsYear, setSelectedCommissionsYear] = useState(defaultYear)
+  const [selectedCommissionsYear, setSelectedCommissionsYear] = useState(currentYear)
   const [dataSeriesCommissionsHistory, setDataSeriesCommissionsHistory] = useState([
     {
-      name: defaultYear,
+      name: currentYear,
       data: []
     }
   ])
@@ -35,7 +26,12 @@ export const HistoryCommission = ({ commissions, cutoffDay }) => {
 
   useEffect(() => {
     if (commissions) {
-      const data = [{ name: selectedCommissionsYear, data: commissions?.[selectedCommissionsYear] || [] }]
+      const data = [
+        {
+          name: selectedCommissionsYear,
+          data: commissions?.[selectedCommissionsYear] || []
+        }
+      ]
       setDataSeriesCommissionsHistory(data)
     }
   }, [commissions, selectedCommissionsYear])
@@ -46,13 +42,13 @@ export const HistoryCommission = ({ commissions, cutoffDay }) => {
         <Box>
           <Tabs
             value={selectedCommissionsYear}
-            onChange={(event, newValue) => handleCommissionsYearChange(event, newValue)}
+            onChange={handleCommissionsYearChange}
             indicatorColor='primary'
             textColor='primary'
             centered
           >
             {Object.keys(commissions || {}).map(year => (
-              <Tab id={year} key={year} label={year} value={year} />
+              <Tab key={year} label={year} value={year} />
             ))}
           </Tabs>
         </Box>
