@@ -112,9 +112,6 @@ const NumberUsers = ({ data = null }) => {
                 <Typography variant='body2'>Número de usuarios</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography variant='h6'>{data?.total ?? 0}</Typography>
-                  <Typography variant='body2' sx={{ ml: 2, fontSize: '0.75rem' }}>
-                    Antigüedad promedio: {data?.antiquity ?? 0}
-                  </Typography>
                 </Box>
               </Box>
             </Box>
