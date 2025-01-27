@@ -21,7 +21,25 @@ import { loadGeneralData } from 'src/store/dashboard/generalSlice'
 import NumberOrders from 'src/views/general/NumberOrders'
 
 const subtitle = 'Porcentaje de usuarios activos en el aplicación'
+const getFullMonth = cutoffDate => {
+  const monthNames = {
+    ene: 'enero',
+    feb: 'febrero',
+    mar: 'marzo',
+    abr: 'abril',
+    may: 'mayo',
+    jun: 'junio',
+    jul: 'julio',
+    ago: 'agosto',
+    sep: 'septiembre',
+    oct: 'octubre',
+    nov: 'noviembre',
+    dic: 'diciembre'
+  }
 
+  const [day, monthAbbr] = cutoffDate.split(' ')
+  return `${day} de ${monthNames[monthAbbr.toLowerCase()] || monthAbbr}`
+}
 const General = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -367,7 +385,7 @@ const General = () => {
               <>
                 Fecha de corte:{' '}
                 <Typography variant='body' color='primary'>
-                  {dashResponse.cutoffDate}
+                  {getFullMonth(dashResponse.cutoffDate)}
                 </Typography>
               </>
             }
