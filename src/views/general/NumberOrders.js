@@ -1,3 +1,4 @@
+import react, { useMemo } from 'react'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -25,53 +26,59 @@ const NumberOrders = ({ data = null }) => {
   // ** Hook
   const theme = useTheme()
 
-  const options = {
-    chart: {
-      sparkline: { enabled: true }
-    },
-    colors: [
-      theme.palette.secondary.main,
-      theme.palette.primary.main,
-      theme.palette.info.main,
-      theme.palette.success.main,
-      theme.palette.error.main
-    ],
-    stroke: { width: 0 },
-    legend: { show: false },
-    dataLabels: { enabled: false },
-    labels: ['Confirmación de pago', 'Preparación de pedido', 'En camino', 'Entregado', 'Cancelado'],
-    states: {
-      hover: {
-        filter: { type: 'none' }
+  const options = useMemo(
+    () => ({
+      chart: {
+        sparkline: { enabled: true }
       },
-      active: {
-        filter: { type: 'none' }
-      }
-    },
-    plotOptions: {
-      pie: {
-        customScale: 0.9,
-        donut: {
-          size: '70%',
-          labels: {
-            show: true,
-            name: {
-              offsetY: 25
-            },
-            value: {
-              offsetY: -15,
-              formatter: value => `${value}`
-            },
-            total: {
+      colors: [
+        theme.palette.secondary.main,
+        theme.palette.primary.main,
+        theme.palette.info.main,
+        theme.palette.success.main,
+        theme.palette.error.main
+      ],
+      stroke: { width: 0 },
+      legend: { show: false },
+      dataLabels: { enabled: false },
+      labels: ['Confirmaci n de pago', 'Preparaci n de pedido', 'En camino', 'Entregado', 'Cancelado'],
+      states: {
+        hover: {
+          filter: { type: 'none' }
+        },
+        active: {
+          filter: { type: 'none' }
+        }
+      },
+      plotOptions: {
+        pie: {
+          customScale: 0.9,
+          donut: {
+            size: '70%',
+            labels: {
               show: true,
-              label: 'Pedidos',
-              formatter: value => `${value.globals.seriesTotals.reduce((total, num) => total + num)}`
+              name: {
+                offsetY: 25,
+                color: theme.palette.text.primary
+              },
+              value: {
+                offsetY: -15,
+                formatter: value => `${value}`,
+                color: theme.palette.text.primary
+              },
+              total: {
+                show: true,
+                label: 'Usuarios',
+                formatter: value => `${value.globals.seriesTotals.reduce((total, num) => total + num)}`,
+                color: theme.palette.text.primary
+              }
             }
           }
         }
       }
-    }
-  }
+    }),
+    [theme]
+  )
 
   const getSeries = () => {
     if (!data) {
