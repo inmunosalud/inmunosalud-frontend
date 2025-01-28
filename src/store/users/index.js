@@ -34,10 +34,17 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
 export const usersList = createAsyncThunk('user/list', async ({ startDate, endDate }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const queryString = new URLSearchParams({ startDate, endDate }).toString()
+  const queryString = []
+  if (startDate) {
+    queryString.push(`startDate=${startDate}`)
+  }
+  if (endDate) {
+    queryString.push(`endDate=${endDate}`)
+  }
+  const query = queryString.length ? `?${queryString.join('&')}` : ''
 
   try {
-    const response = await api_get(`${USERS}/users?${queryString}`, auth)
+    const response = await api_get(`${USERS}/users${query}`, auth)
     return response
   } catch (error) {
     return thunkApi.rejectWithValue('error')
