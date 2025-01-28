@@ -29,7 +29,21 @@ const Network = () => {
     }
   }, [user.id, isLoadingCommissions])
 
-  return !isLoading || !isLoadingCommissions ? (
+  if (isLoading || isLoadingCommissions) {
+    return (
+      <Box
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  return (
     <>
       <Grid xs={12} justifyContent='center'>
         <ApexChartWrapper>
@@ -63,7 +77,10 @@ const Network = () => {
                 <CardContent>
                   <CardHeader sx={{ textAlign: 'center' }} title='Crecimiento de la red' />
                 </CardContent>
-                <HistoryNetwork network={network.growingYourNetwork} />
+                <HistoryNetwork
+                  users={network.growingYourNetwork}
+                  cutoffDay={parseInt(network.cutoffDate?.split(' ')[0], 10)}
+                />
               </Card>
             </Grid>
             {/* Columna 2 */}
@@ -78,7 +95,10 @@ const Network = () => {
                 <CardContent>
                   <CardHeader sx={{ textAlign: 'center' }} title='Historial de comisiones' />
                 </CardContent>
-                <HistoryCommission />
+                <HistoryCommission
+                  commissions={network.commissionHistory}
+                  cutoffDay={parseInt(network.cutoffDate?.split(' ')[0], 10)}
+                />
               </Card>
             </Grid>
           </Grid>
@@ -89,16 +109,6 @@ const Network = () => {
         </ApexChartWrapper>
       </Grid>
     </>
-  ) : (
-    <Box
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <CircularProgress />
-    </Box>
   )
 }
 

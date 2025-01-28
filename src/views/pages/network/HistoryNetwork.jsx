@@ -3,43 +3,25 @@ import { Card, CardContent, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { HistoryNetworkGraphic } from 'src/views/components/graphics/HistoryNetworkGraphic'
 
-export const HistoryNetwork = ({ network }) => {
+export const HistoryNetwork = ({ users }) => {
   const theme = useTheme()
-  const today = new Date()
-  const cutoffDay = 18
+  const currentYear = new Date().getFullYear().toString()
 
-  // Determine the selected year and month based on the cutoff date
-  const calculateDefaultYearMonth = () => {
-    if (today.getDate() < cutoffDay) {
-      const previousMonth = new Date(today.getFullYear(), today.getMonth() - 1)
-      return {
-        year: previousMonth.getFullYear().toString(),
-        month: (previousMonth.getMonth() + 1).toString().padStart(2, '0')
-      }
-    }
-    return {
-      year: today.getFullYear().toString(),
-      month: (today.getMonth() + 1).toString().padStart(2, '0')
-    }
-  }
-
-  const { year: defaultYear } = calculateDefaultYearMonth()
-  const [selectedNetworkYear, setSelectedNetworkYear] = useState(defaultYear)
+  const [selectedNetworkYear, setSelectedNetworkYear] = useState(currentYear)
   const [dataSeriesNetworkHistory, setDataSeriesNetworkHistory] = useState([
     {
-      name: defaultYear,
+      name: currentYear,
       data: []
     }
   ])
 
   const handleNetworkYearChange = (event, newValue) => {
-    if (network && newValue) {
+    if (users && newValue) {
       setSelectedNetworkYear(newValue)
-
       const data = [
         {
           name: newValue,
-          data: network[newValue]
+          data: users[newValue]
         }
       ]
       setDataSeriesNetworkHistory(data)
@@ -47,16 +29,16 @@ export const HistoryNetwork = ({ network }) => {
   }
 
   useEffect(() => {
-    if (network) {
+    if (users) {
       const data = [
         {
           name: selectedNetworkYear,
-          data: network?.[selectedNetworkYear] || []
+          data: users?.[selectedNetworkYear] || []
         }
       ]
       setDataSeriesNetworkHistory(data)
     }
-  }, [network, selectedNetworkYear])
+  }, [users, selectedNetworkYear])
 
   return (
     <CardContent>
@@ -64,13 +46,13 @@ export const HistoryNetwork = ({ network }) => {
         <Box>
           <Tabs
             value={selectedNetworkYear}
-            onChange={(event, newValue) => handleNetworkYearChange(event, newValue)}
+            onChange={handleNetworkYearChange}
             indicatorColor='primary'
             textColor='primary'
             centered
           >
-            {Object.keys(network || {}).map(year => (
-              <Tab id={year} key={year} label={year} value={year} />
+            {Object.keys(users || {}).map(year => (
+              <Tab key={year} label={year} value={year} />
             ))}
           </Tabs>
         </Box>

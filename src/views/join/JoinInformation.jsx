@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
+import CircularProgress from '@mui/material/CircularProgress'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -23,7 +24,7 @@ const JoinInformation = ({ profile }) => {
   const dispatch = useDispatch()
   const searchParams = useSearchParams()
   const router = useRouter()
-
+  const { constants, isLoading } = useSelector(state => state.constants)
   const mobile = useMediaQuery(theme => theme.breakpoints.down('lg'))
   const { user } = useSelector(state => state.session)
   const submitPartner = values => {
@@ -41,6 +42,14 @@ const JoinInformation = ({ profile }) => {
     }
   }, [searchParams])
 
+  if (isLoading) {
+    return (
+      <Grid container justifyContent='center' alignItems='center' style={{ minHeight: '100vh' }}>
+        <CircularProgress />
+      </Grid>
+    )
+  }
+
   return (
     <>
       <Card>
@@ -51,7 +60,7 @@ const JoinInformation = ({ profile }) => {
                 title={
                   user.profile === 'Consumidor' ? (
                     <Button onClick={submitPartner} variant='contained'>
-                      Afiliate ya!
+                      AFÍLIATE ya!
                     </Button>
                   ) : (
                     mobile && (
@@ -150,8 +159,8 @@ const JoinInformation = ({ profile }) => {
                   <CardContent>
                     <Typography variant='h6'>
                       Para convertirte en socio de Inmunosalud, solo necesitas registrarte y podrás empezar a
-                      recomendar. Para recibir comisiones, es necesario realizar compras de al menos $800 en productos
-                      durante el mes.
+                      recomendar. Para recibir comisiones, es necesario realizar compras de al menos $
+                      {constants?.minimalAmountOfPurchase} en productos durante el mes.
                     </Typography>
                   </CardContent>
                 </Box>
@@ -211,7 +220,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  5%
+                  {`${(parseFloat(constants?.commissionPercentagePerLevel[1]) * 100).toFixed(0)}%`}
                 </Typography>
               </Button>
             </Box>
@@ -228,7 +237,10 @@ const JoinInformation = ({ profile }) => {
                 ...(mobile && { marginX: 'auto', textAlign: 'center' })
               }}
             >
-              <Typography variant='h6'>Obtienes el 5% de la compra total de las personas que recomiendes.</Typography>
+              <Typography variant='h6'>
+                Obtienes el {`${(parseFloat(constants?.commissionPercentagePerLevel[1]) * 100).toFixed(0)}%`} de la
+                compra total de las personas que recomiendes.
+              </Typography>
             </Box>
           </Grid>
           <Grid item xs={12} md={12}>
@@ -252,7 +264,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  10%
+                  {`${(parseFloat(constants?.commissionPercentagePerLevel[2]) * 100).toFixed(0)}%`}
                 </Typography>
               </Button>
             </Box>
@@ -270,7 +282,8 @@ const JoinInformation = ({ profile }) => {
               }}
             >
               <Typography variant='h6'>
-                Si sus recomendados invitan a mas personas ganas el 10% de sus compras.
+                Si sus recomendados invitan a mas personas ganas el{' '}
+                {`${(parseFloat(constants?.commissionPercentagePerLevel[2]) * 100).toFixed(0)}%`} de sus compras.
               </Typography>
             </Box>
           </Grid>
@@ -295,7 +308,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  15%
+                  {`${(parseFloat(constants?.commissionPercentagePerLevel[3]) * 100).toFixed(0)}%`}
                 </Typography>
               </Button>
             </Box>
@@ -313,7 +326,8 @@ const JoinInformation = ({ profile }) => {
               }}
             >
               <Typography variant='h6'>
-                En caso de que los nuevos recomendados inviten a alguien mas recibes el 15% de sus compras.
+                En caso de que los nuevos recomendados inviten a alguien mas recibes el{' '}
+                {`${(parseFloat(constants?.commissionPercentagePerLevel[3]) * 100).toFixed(0)}%`} de sus compras.
               </Typography>
             </Box>
           </Grid>
@@ -338,7 +352,7 @@ const JoinInformation = ({ profile }) => {
                 aria-text='Más información'
               >
                 <Typography variant='h5' fontWeight='bold' color='#fff'>
-                  15%
+                  {`${(parseFloat(constants?.commissionPercentagePerLevel[4]) * 100).toFixed(0)}%`}
                 </Typography>
               </Button>
             </Box>
@@ -356,7 +370,9 @@ const JoinInformation = ({ profile }) => {
               }}
             >
               <Typography variant='h6'>
-                Y si estos recomendados traen más personas, recibirás el 15% de sus compras por cada uno de ellos.
+                Y si estos recomendados traen más personas, recibirás el{' '}
+                {`${(parseFloat(constants?.commissionPercentagePerLevel[4]) * 100).toFixed(0)}%`} de sus compras por
+                cada uno de ellos.
               </Typography>
             </Box>
           </Grid>
@@ -371,8 +387,8 @@ const JoinInformation = ({ profile }) => {
                 }}
               >
                 <b>
-                  PARA RECIBIR COMISIONES POR TUS REFERENCIAS SOLO TIENES QUE HACER EL CONSUMO MINIMO MENSUAL, LAS
-                  COMISIONES SE PAGAN DE MANERA MENSUAL, LOS MESES QUE NO COMPRES EL MINIMO NO RECIBES LA COMISION
+                  PARA RECIBIR COMISIONES POR TUS REFERENCIAS SOLO TIENES QUE HACER EL CONSUMO MÍNIMO MENSUAL, LAS
+                  COMISIONES SE PAGAN DE MANERA MENSUAL, LOS MESES QUE NO COMPRES EL MÍNIMO NO RECIBES LA COMISIÓN
                   GENERADA DE ESE MES.
                 </b>
               </Typography>

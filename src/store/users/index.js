@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import Router from 'next/router'
 //api
 import { USERS, api_delete, api_get, api_patch, api_post } from '../../services/api'
-
 import { PROFILES_USER } from 'src/configs/profiles'
 import { openSnackBar } from '../notifications'
 import { nextStep, setActiveStep } from '../register'
@@ -32,11 +31,17 @@ export const createUser = createAsyncThunk('user/newUser', async (body, thunkApi
   }
 })
 
-export const usersList = createAsyncThunk('user/list', async () => {
+export const usersList = createAsyncThunk('user/list', async ({ startDate, endDate }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
-  const response = await api_get(`${USERS}/users`, auth)
-  return response
+  const queryString = new URLSearchParams({ startDate, endDate }).toString()
+
+  try {
+    const response = await api_get(`${USERS}/users?${queryString}`, auth)
+    return response
+  } catch (error) {
+    return thunkApi.rejectWithValue('error')
+  }
 })
 
 export const sendNewUser = createAsyncThunk('user/send-new-user', async (body, thunkApi) => {
@@ -180,18 +185,26 @@ export const validateVerificationCode = createAsyncThunk('users/validateVerifica
 })
 
 //get user network details
-export const getNetworkDetails = createAsyncThunk('user/network-detail', async (id, thunkApi) => {
-  const token = localStorage.getItem('im-user')
-  const auth = { headers: { Authorization: `Bearer ${token}` } }
+export const getNetworkDetails = createAsyncThunk(
+  'user/network-detail',
+  async ({ id, startDate, endDate }, thunkApi) => {
+    const token = localStorage.getItem('im-user')
+    const auth = { headers: { Authorization: `Bearer ${token}` } }
+    let queryString = ''
 
-  try {
-    const response = await api_get(`${USERS}/users/network/detail/${id}`, auth)
-    return response
-  } catch (error) {
-    const errMessage = error?.response?.data?.message
-    return thunkApi.rejectWithValue('error')
+    if (startDate && endDate) {
+      queryString = new URLSearchParams({ startDate, endDate }).toString()
+      queryString = `?${queryString}`
+    }
+
+    try {
+      const response = await api_get(`${USERS}/users/network/detail/${id}${queryString}`, auth)
+      return response
+    } catch (error) {
+      return thunkApi.rejectWithValue('error')
+    }
   }
-})
+)
 //get user info
 export const getUserInfo = createAsyncThunk('user/infoUser', async id => {
   const token = localStorage.getItem('im-user')

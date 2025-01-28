@@ -1,44 +1,56 @@
-import React, { useState, useEffect } from 'react'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
   Divider,
   Grid,
   Typography,
-  Box,
-  CircularProgress,
-  Card,
-  CardContent,
-  CardHeader,
-  Button,
-  Stack,
-  TextField
+  IconButton,
+  Tooltip,
+  TextField,
+  Stack
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import moment from 'moment'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import CustomChip from 'src/@core/components/mui/chip'
-import SimpleTabs from 'src/views/components/tabs/SimpleTabs'
-import { getNetworkDetails } from 'src/store/users'
-import { useDispatch, useSelector } from 'react-redux'
-import { NetworkList } from 'src/views/components/list/NetworkList'
-import { useTheme } from '@mui/material/styles'
-import { HistoryNetwork } from 'src/views/pages/network/HistoryNetwork'
+import { AccountCancelOutline, AccountCheckOutline } from 'mdi-material-ui'
+import { useEffect, useState } from 'react'
 
-const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionChange }) => {
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useTheme } from '@mui/material/styles'
+import { useDispatch, useSelector } from 'react-redux'
+import CustomChip from 'src/@core/components/mui/chip'
+import { getNetworkDetails } from 'src/store/users'
+import { NetworkList } from 'src/views/components/list/NetworkList'
+import SimpleTabs from 'src/views/components/tabs/SimpleTabs'
+import { HistoryNetwork } from 'src/views/pages/network/HistoryNetwork'
+import moment from 'moment'
+
+// ** MUI Imports
+import { usersList, setModal, setModalRow, setModalDelete, setShowConfirmModal } from 'src/store/users'
+import DialogDelete from 'src/views/components/dialogs/DialogDelete'
+import Modal from 'src/views/dashboards/users/Modal.js'
+
+import { Delete, Pencil } from 'mdi-material-ui'
+
+const UsersAccordion = ({ data, selectedLevel, expandedAccordions, onAccordionChange }) => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const { networkDetails, loadingDetails } = useSelector(state => state.users)
+  const { showModal, modalRow, showDelete } = useSelector(state => state.users)
+  const { user } = useSelector(state => state.session)
   const { isMobile } = useSelector(state => state.dashboard.general)
-  const networkLevels = selectedLevel === 1 ? [1, 2, 3] : selectedLevel === 2 ? [1, 2] : [1]
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [disabled, setDisabled] = useState(true)
+  const networkLevels = selectedLevel === 1 ? [1, 2, 3] : selectedLevel === 2 ? [1, 2] : [1]
   const tabs =
     selectedLevel === 4
-      ? ['informacion del usuario', 'Crecimiento de su red', 'Historial de pedidos']
-      : ['Informacion del usuario', 'Red', 'Crecimiento de su red', 'Historial de pedidos']
+      ? ['información del usuario', 'Crecimiento de su red', 'Historial de pedidos']
+      : ['Información del usuario', 'Red', 'Crecimiento de su red', 'Historial de pedidos']
   // Estado local para controlar la pestaña seleccionada
   const [selectedTabs, setSelectedTabs] = useState({})
 
@@ -59,6 +71,24 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
   const handleTabChange = (userId, newTab) => {
     setSelectedTabs(prev => ({ ...prev, [userId]: newTab }))
   }
+  const saveItemModal = row => {
+    dispatch(setModalRow(row))
+    dispatch(setModal(true))
+  }
+
+  const handleModal = () => {
+    dispatch(setModal(false))
+  }
+
+  const setItemDeleteModal = row => {
+    dispatch(setModalRow(row))
+    dispatch(setModalDelete(true))
+  }
+
+  const closeDelete = () => {
+    dispatch(setShowConfirmModal(false))
+    dispatch(setModalDelete(false))
+  }
 
   useEffect(() => {
     const resetTabs = {}
@@ -73,7 +103,6 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
       setDisabled(false)
     }
   }, [startDate, endDate])
-
   return (
     <Box sx={{ minHeight: '500px' }}>
       {data.map((item, index) => {
@@ -90,18 +119,18 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
               id={`panel${index}-header`}
             >
               <Grid container spacing={2}>
-                <Grid item xs={1} lg={1}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography>{index + 1}</Typography>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={11} lg={3}>
+                <Grid item xs={12} lg={3}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Typography>{item.name}</Typography>
                   </Box>
                 </Grid>
-
+                {!isMobile && user.profile === 'Administrador General' && (
+                  <Grid item xs={3} lg={3}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>{item.email}</Typography>
+                    </Box>
+                  </Grid>
+                )}
                 {!isMobile && (
                   <Grid item xs={2} lg={2}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -121,7 +150,7 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                     </Box>
                   </Grid>
                 )}
-                {!isMobile && (
+                {!isMobile && user.profile === 'Supervisor de Usuarios' && (
                   <Grid item xs={3} lg={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Typography>{item.recommenderName}</Typography>
@@ -129,13 +158,13 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                   </Grid>
                 )}
                 {!isMobile && (
-                  <Grid item xs={3} lg={3}>
+                  <Grid item xs={3} lg={1}>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <CustomChip
                         skin='light'
                         size='small'
-                        label={`$${item.lastTotalConsume}`}
-                        color={item.lastTotalConsume > 0 ? 'success' : 'error'}
+                        label={`$${item.overallConsumption}`}
+                        color={item.overallConsumption > 0 ? 'success' : 'error'}
                         sx={{
                           height: 20,
                           fontSize: '0.875rem',
@@ -144,6 +173,54 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                           textTransform: 'capitalize'
                         }}
                       />
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Typography>${item.commission}</Typography>
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {item.isValid ? <AccountCheckOutline color='success' /> : <AccountCancelOutline color='error' />}
+                    </Box>
+                  </Grid>
+                )}
+                {!isMobile && user.profile === 'Administrador General' && (
+                  <Grid item xs={3} lg={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {item?.profile?.includes('Admin') ? (
+                        <Tooltip title='Editar' placement='top'>
+                          <IconButton
+                            onClick={e => {
+                              e.stopPropagation()
+                              saveItemModal(item)
+                            }}
+                            color='warning'
+                            size='small'
+                          >
+                            <Pencil />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <IconButton disableRipple disabled />
+                      )}
+                      <Tooltip title='Eliminar' placement='top'>
+                        <IconButton
+                          onClick={e => {
+                            e.stopPropagation()
+                            setItemDeleteModal(item)
+                          }}
+                          color='error'
+                          size='small'
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
                     </Box>
                   </Grid>
                 )}
@@ -233,9 +310,9 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
                                   <strong>Correo Electrónico:</strong> {networkDetails[item.id]?.user.email}
                                 </Typography>
 
-                                {/* Recomendado por */}
+                                {/* Referido por */}
                                 <Typography variant='body1' sx={{ mt: 4 }}>
-                                  <strong>Recomendado por:</strong> {item.recommenderName}
+                                  <strong>Referido por:</strong> {item.recommenderName}
                                 </Typography>
 
                                 {/* Fecha de Nacimiento */}
@@ -421,8 +498,22 @@ const NetworkAccordion = ({ data, selectedLevel, expandedAccordions, onAccordion
           </Accordion>
         )
       })}
+      <DialogDelete
+        item={modalRow}
+        open={showDelete}
+        handleClose={closeDelete}
+        content='Estas seguro de eliminar al usuario?'
+        buttonText='Eliminar'
+      />
+      <Modal
+        label='Editar Administrador'
+        open={showModal}
+        handleModal={handleModal}
+        item={modalRow}
+        isAdministrator={true}
+      />
     </Box>
   )
 }
 
-export default NetworkAccordion
+export default UsersAccordion
