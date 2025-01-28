@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid'
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-import { Button, Box, CardHeader, Card, Typography } from '@mui/material'
+import { Button, Box, CardHeader, Card, Typography, CircularProgress } from '@mui/material'
 import NumberUsers from 'src/views/general/NumberUsers'
 import CardNumber from 'src/views/general/CardNumber'
 import SalesCard from 'src/views/general/SalesCard'
@@ -43,7 +43,7 @@ const getFullMonth = cutoffDate => {
 const General = () => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { data } = useSelector(state => state.dashboard.general)
+  const { data, isLoading } = useSelector(state => state.dashboard.general)
   const dashResponse = {
     users: {
       total: 55,
@@ -336,44 +336,65 @@ const General = () => {
     }
   }
 
-  const historyData = {
-    commissions: {
-      title: 'Comisiones',
-      categories: Object.keys(dashResponse.commissions.byYear),
-      series: Object.entries(dashResponse.commissions.byYear).map(([year, data]) => ({
-        year: year,
-        counts: data.monthly.map(m => m.count),
-        amounts: data.monthly.map(m => m.amount)
-      }))
-    },
-    sales: {
-      title: 'Ventas',
-      categories: Object.keys(dashResponse.sales.byYear),
-      series: Object.entries(dashResponse.sales.byYear).map(([year, data]) => ({
-        year: year,
-        counts: data.monthly.map(m => m.count),
-        amounts: data.monthly.map(m => m.amount)
-      }))
-    },
-    orders: {
-      title: 'Pedidos Entregados',
-      categories: Object.keys(dashResponse.orders.delivered.byYear),
-      series: Object.entries(dashResponse.orders.delivered.byYear).map(([year, data]) => ({
-        year: year,
-        counts: data.monthly, // Solo counts (ejemplo: [8,3,0,...])
-        amounts: [] // No hay amount en esta categoría
-      }))
-    },
-    users: {
-      title: 'Usuarios Activos',
-      categories: [], // Agregar lógica si tienes datos históricos de usuarios
-      series: [] // Ejemplo vacío (no hay datos mensuales en tu response actual)
+  const [historyData, setHistoryData] = useState({})
+
+  useEffect(() => {
+    if (data) {
+      setHistoryData({
+        commissions: {
+          title: 'Comisiones',
+          categories: Object.keys(data.commissions.byYear),
+          series: Object.entries(data.commissions.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data.monthly.map(m => m.count),
+            amounts: data.monthly.map(m => m.amount)
+          }))
+        },
+        sales: {
+          title: 'Ventas',
+          categories: Object.keys(data.sales.byYear),
+          series: Object.entries(data.sales.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data.monthly.map(m => m.count),
+            amounts: data.monthly.map(m => m.amount)
+          }))
+        },
+        orders: {
+          title: 'Pedidos Entregados',
+          categories: Object.keys(data.orders.delivered.byYear),
+          series: Object.entries(data.orders.delivered.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data.monthly,
+            amounts: []
+          }))
+        },
+        users: {
+          title: 'Usuarios Activos',
+          categories: [],
+          series: []
+        }
+      })
     }
-  }
+  }, [data])
 
   useEffect(() => {
     dispatch(loadGeneralData())
   }, [])
+
+  if (isLoading || !data) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <Grid container spacing={2}>
@@ -385,7 +406,7 @@ const General = () => {
               <>
                 Fecha de corte:{' '}
                 <Typography variant='body' color='primary'>
-                  {getFullMonth(dashResponse.cutoffDate)}
+                  {getFullMonth(data.cutoffDate)}
                 </Typography>
               </>
             }
@@ -394,24 +415,22 @@ const General = () => {
       </Grid>
       <Grid item xs={12} md={6}>
         <Box sx={{ width: '100%' }}>
-          <SalesCard data={dashResponse.sales} />
+          <SalesCard data={data.sales} />
         </Box>
       </Grid>
       <Grid item xs={12} md={6}>
         <Box sx={{ width: '100%' }}>
-          <CommissionCard data={dashResponse.commissions} />
+          <CommissionCard data={data.commissions} />
         </Box>
       </Grid>
       <Grid item xs={12} md={6}>
-        <NumberUsers data={dashResponse.users} />
+        <NumberUsers data={data.users} />
       </Grid>
       <Grid item xs={12} md={6}>
-        <NumberOrders data={dashResponse.orders} />
+        <NumberOrders data={data.orders} />
       </Grid>
       <Grid item xs={12} md={12}>
-        <Box sx={{ width: '100%' }}>
-          <GeneralHistoryCard data={historyData} />
-        </Box>
+        <Box sx={{ width: '100%' }}>{/* <GeneralHistoryCard data={historyData} /> */}</Box>
       </Grid>
     </Grid>
   )
