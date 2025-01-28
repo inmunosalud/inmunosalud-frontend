@@ -1,8 +1,10 @@
-import react, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Divider from '@mui/material/Divider'
 import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
@@ -22,9 +24,17 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
+
 const NumberOrders = ({ data = null }) => {
-  // ** Hook
+  // ** Hooks
   const theme = useTheme()
+  const [showTotals, setShowTotals] = useState(false)
+
+  // ** Datos dinámicos según el switch
+  const cutoffData = useMemo(() => {
+    if (!data) return null
+    return showTotals ? data.totals : data.currentCutoff
+  }, [showTotals])
 
   const options = useMemo(
     () => ({
@@ -41,7 +51,7 @@ const NumberOrders = ({ data = null }) => {
       stroke: { width: 0 },
       legend: { show: false },
       dataLabels: { enabled: false },
-      labels: ['Confirmaci n de pago', 'Preparaci n de pedido', 'En camino', 'Entregado', 'Cancelado'],
+      labels: ['Confirmación de pago', 'Preparación de pedido', 'En camino', 'Entregado', 'Cancelado'],
       states: {
         hover: {
           filter: { type: 'none' }
@@ -68,7 +78,7 @@ const NumberOrders = ({ data = null }) => {
               },
               total: {
                 show: true,
-                label: 'Usuarios',
+                label: 'Pedidos',
                 formatter: value => `${value.globals.seriesTotals.reduce((total, num) => total + num)}`,
                 color: theme.palette.text.primary
               }
@@ -81,16 +91,14 @@ const NumberOrders = ({ data = null }) => {
   )
 
   const getSeries = () => {
-    if (!data) {
-      return [0, 0, 0, 0, 0]
-    }
-
+    if (!cutoffData) return [0, 0, 0, 0, 0]
+    console.log(cutoffData)
     return [
-      data.currentCutoff.byStatus.confirmingPayment,
-      data.currentCutoff.byStatus.preparingOrder,
-      data.currentCutoff.byStatus.onWay,
-      data.currentCutoff.byStatus.delivered,
-      data.currentCutoff.byStatus.cancelled
+      cutoffData.byStatus.confirmingPayment,
+      cutoffData.byStatus.preparingOrder,
+      cutoffData.byStatus.onWay,
+      cutoffData.byStatus.delivered,
+      cutoffData.byStatus.cancelled
     ]
   }
 
@@ -98,6 +106,32 @@ const NumberOrders = ({ data = null }) => {
     <Card sx={{ height: '100%' }}>
       <CardHeader
         title='Pedidos'
+        action={
+          <Box display='flex' alignItems='center'>
+            <Typography
+              variant='caption'
+              sx={{
+                mr: 4,
+                color: !showTotals ? theme.palette.primary.main : theme.palette.text.secondary
+              }}
+            >
+              Fecha de corte
+            </Typography>
+            <FormControlLabel
+              control={<Switch checked={showTotals} onChange={e => setShowTotals(e.target.checked)} color='inherit' />}
+              label={
+                <Typography
+                  variant='caption'
+                  sx={{
+                    color: showTotals ? theme.palette.primary.main : theme.palette.text.secondary
+                  }}
+                >
+                  Histórico
+                </Typography>
+              }
+            />
+          </Box>
+        }
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
@@ -127,30 +161,30 @@ const NumberOrders = ({ data = null }) => {
                 <LocalShippingIcon sx={{ color: 'primary.main' }} />
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography variant='body2'>Numero de Pedidos</Typography>
-                <Typography variant='h6'>{data?.currentCutoff.total ?? 0}</Typography>
+                <Typography variant='body2'>Número de Pedidos</Typography>
+                <Typography variant='h6'>{cutoffData?.total ?? 0}</Typography>
               </Box>
             </Box>
             <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column' }}>
               <Typography variant='body2'>
                 <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.secondary.main }} /> Confirmación de pago:{' '}
-                <b>{data?.currentCutoff.byStatus.confirmingPayment ?? 0}</b>
+                <b>{cutoffData?.byStatus.confirmingPayment ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
                 <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.primary.main }} /> Preparación de pedido:{' '}
-                <b>{data?.currentCutoff.byStatus.preparingOrder ?? 0}</b>
+                <b>{cutoffData?.byStatus.preparingOrder ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
                 <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.info.main }} /> En camino:{' '}
-                <b>{data?.currentCutoff.byStatus.onWay ?? 0}</b>
+                <b>{cutoffData?.byStatus.onWay ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
                 <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.success.main }} /> Entregado:{' '}
-                <b>{data?.currentCutoff.byStatus.delivered ?? 0}</b>
+                <b>{cutoffData?.byStatus.delivered ?? 0}</b>
               </Typography>
               <Typography variant='body2'>
                 <Circle sx={{ mr: 1, fontSize: '0.5rem', color: theme.palette.error.main }} /> Cancelado:{' '}
-                <b>{data?.currentCutoff.byStatus.cancelled ?? 0}</b>
+                <b>{cutoffData?.byStatus.cancelled ?? 0}</b>
               </Typography>
             </Box>
           </Grid>
