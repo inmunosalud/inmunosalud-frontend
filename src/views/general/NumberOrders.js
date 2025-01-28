@@ -92,7 +92,6 @@ const NumberOrders = ({ data = null }) => {
 
   const getSeries = () => {
     if (!cutoffData) return [0, 0, 0, 0, 0]
-    console.log(cutoffData)
     return [
       cutoffData.byStatus.confirmingPayment,
       cutoffData.byStatus.preparingOrder,
