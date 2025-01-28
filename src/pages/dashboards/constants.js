@@ -62,10 +62,10 @@ const Constants = () => {
       reset({
         cutoffDay: constants.cutoffDay,
         iva: constants.iva,
-        1: (constants.commissionPercentajePerLevel[1] * 100).toFixed(2) ?? 0,
-        2: (constants.commissionPercentajePerLevel[2] * 100).toFixed(2) ?? 0,
-        3: (constants.commissionPercentajePerLevel[3] * 100).toFixed(2) ?? 0,
-        4: (constants.commissionPercentajePerLevel[4] * 100).toFixed(2) ?? 0,
+        1: (constants.commissionPercentagePerLevel[1] * 100).toFixed(2) ?? 0,
+        2: (constants.commissionPercentagePerLevel[2] * 100).toFixed(2) ?? 0,
+        3: (constants.commissionPercentagePerLevel[3] * 100).toFixed(2) ?? 0,
+        4: (constants.commissionPercentagePerLevel[4] * 100).toFixed(2) ?? 0,
         shippingCost: constants.shippingCost,
         minimalAmountOfPurchase: constants.minimalAmountOfPurchase,
         maintenanceCost: constants.maintenanceCost ?? 0,
@@ -133,7 +133,7 @@ const Constants = () => {
     setBody({
       cutoffDay: data.cutoffDay,
       iva: data.iva,
-      commissionPercentajePerLevel: {
+      commissionPercentagePerLevel: {
         1: (data[1] / 100).toFixed(4),
         2: (data[2] / 100).toFixed(4),
         3: (data[3] / 100).toFixed(4),
