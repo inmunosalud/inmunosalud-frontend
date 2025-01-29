@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { HistoryNetworkGraphic } from 'src/views/components/graphics/HistoryNetworkGraphic'
+import { HistoryLineGraphic } from 'src/views/components/graphics/HistoryLineGraphic'
 
 export const HistoryNetwork = ({ users }) => {
   const theme = useTheme()
@@ -57,7 +57,7 @@ export const HistoryNetwork = ({ users }) => {
           </Tabs>
         </Box>
         <Box sx={{ mt: '20px' }}>
-          <HistoryNetworkGraphic dataSeriesNetworkHistory={dataSeriesNetworkHistory} />
+          <HistoryLineGraphic dataSeriesHistory={dataSeriesNetworkHistory} />
         </Box>
       </Box>
     </CardContent>

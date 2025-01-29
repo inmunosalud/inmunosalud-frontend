@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid'
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-import { Button, Box, CardHeader, Card, Typography, CircularProgress } from '@mui/material'
+import { Button, Box, CardHeader, Card, Typography, CircularProgress, TextField, MenuItem } from '@mui/material'
 import NumberUsers from 'src/views/general/NumberUsers'
 import CardNumber from 'src/views/general/CardNumber'
 import SalesCard from 'src/views/general/SalesCard'
@@ -44,6 +44,10 @@ const General = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { data, isLoading } = useSelector(state => state.dashboard.general)
+  const currentYear = new Date().getFullYear()
+  const startYear = 2024
+  const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i)
+
   const dashResponse = {
     users: {
       total: 55,
@@ -370,12 +374,31 @@ const General = () => {
         },
         users: {
           title: 'Usuarios Activos',
-          categories: [],
-          series: []
+          categories: Object.keys(data.users.byYear),
+          series: Object.entries(data.users.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data
+          }))
+        },
+        products: {
+          title: 'Productos Vendidos',
+          categories: Object.keys(data.sales.ofProducts),
+          series: Object.entries(data.sales.ofProducts).map(([productName, productData]) => ({
+            product: productName,
+            yearlyData: Object.entries(productData.byYear).map(([year, data]) => ({
+              year: year,
+              counts: data.monthly,
+              total: data.total
+            }))
+          }))
         }
       })
     }
   }, [data])
+
+  useEffect(() => {
+    console.log(historyData)
+  }, [historyData])
 
   useEffect(() => {
     dispatch(loadGeneralData())
@@ -430,7 +453,26 @@ const General = () => {
         <NumberOrders data={data.orders} />
       </Grid>
       <Grid item xs={12} md={12}>
-        <Box sx={{ width: '100%' }}>{/* <GeneralHistoryCard data={historyData} /> */}</Box>
+        <Card>
+          <CardHeader
+            title='Datos Históricos'
+            action={
+              <TextField defaultValue={new Date().getFullYear()} size='small' label='Año' variant='outlined' select>
+                {years.map(year => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
+                <MenuItem value='all'>Todos</MenuItem>
+              </TextField>
+            }
+          />
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <Box sx={{ width: '100%' }}>
+          <GeneralHistoryCard data={historyData} />
+        </Box>
       </Grid>
     </Grid>
   )

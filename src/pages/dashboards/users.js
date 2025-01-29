@@ -152,10 +152,11 @@ const Users = () => {
     </Box>
   ) : (
     <Box
-      style={{
+      sx={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: '100vh'
       }}
     >
       <CircularProgress />
