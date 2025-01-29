@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-export const HistoryNetworkGraphic = ({ dataSeriesNetworkHistory }) => {
+export const HistoryLineGraphic = ({ dataSeriesHistory }) => {
   const theme = useTheme()
   // 1. Memoizar opciones del gráfico
   const chartOptionsNetworkHistory = useMemo(
@@ -82,13 +82,5 @@ export const HistoryNetworkGraphic = ({ dataSeriesNetworkHistory }) => {
     }),
     [theme]
   )
-  return (
-    <ReactApexcharts
-      options={chartOptionsNetworkHistory}
-      series={dataSeriesNetworkHistory}
-      type='line'
-      height={350}
-      key={dataSeriesNetworkHistory[0]?.name}
-    />
-  )
+  return <ReactApexcharts options={chartOptionsNetworkHistory} series={dataSeriesHistory} type='line' height={350} />
 }
