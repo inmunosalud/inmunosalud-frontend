@@ -345,6 +345,22 @@ const General = () => {
   useEffect(() => {
     if (data) {
       setHistoryData({
+        users: {
+          title: 'Usuarios',
+          categories: Object.keys(data.users.byYear),
+          series: Object.entries(data.users.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data
+          }))
+        },
+        orders: {
+          title: 'Pedidos Entregados',
+          categories: Object.keys(data.orders.delivered.byYear),
+          series: Object.entries(data.orders.delivered.byYear).map(([year, data]) => ({
+            year: year,
+            counts: data.monthly
+          }))
+        },
         commissions: {
           title: 'Comisiones',
           categories: Object.keys(data.commissions.byYear),
@@ -361,23 +377,6 @@ const General = () => {
             year: year,
             counts: data.monthly.map(m => m.count),
             amounts: data.monthly.map(m => m.amount)
-          }))
-        },
-        orders: {
-          title: 'Pedidos Entregados',
-          categories: Object.keys(data.orders.delivered.byYear),
-          series: Object.entries(data.orders.delivered.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data.monthly,
-            amounts: []
-          }))
-        },
-        users: {
-          title: 'Usuarios Activos',
-          categories: Object.keys(data.users.byYear),
-          series: Object.entries(data.users.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data
           }))
         },
         products: {
