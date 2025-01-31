@@ -19,6 +19,7 @@ import WalletAverage from 'src/views/general/WalletAverage'
 import TableUsers from 'src/views/dashboards/users/TableUsers'
 import { loadGeneralData } from 'src/store/dashboard/generalSlice'
 import NumberOrders from 'src/views/general/NumberOrders'
+import { selectedGridRowsCountSelector } from '@mui/x-data-grid'
 
 const subtitle = 'Porcentaje de usuarios activos en el aplicación'
 const getFullMonth = cutoffDate => {
@@ -44,6 +45,7 @@ const General = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { data, isLoading } = useSelector(state => state.dashboard.general)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const currentYear = new Date().getFullYear()
   const startYear = 2024
   const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i)
@@ -347,60 +349,72 @@ const General = () => {
       setHistoryData({
         users: {
           title: 'Usuarios',
-          categories: Object.keys(data.users.byYear),
-          series: Object.entries(data.users.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data
-          }))
+          series: data.users.byYear
         },
         orders: {
           title: 'Pedidos Entregados',
-          categories: Object.keys(data.orders.delivered.byYear),
-          series: Object.entries(data.orders.delivered.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data.monthly
-          }))
+          series: Object.entries(data.orders.delivered.byYear).reduce((acc, [year, yearData]) => {
+            acc[year] = { monthly: yearData.monthly }
+            return acc
+          }, {})
         },
         commissions: {
           title: 'Comisiones',
-          categories: Object.keys(data.commissions.byYear),
-          series: Object.entries(data.commissions.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data.monthly.map(m => m.count),
-            amounts: data.monthly.map(m => m.amount)
-          }))
+          series: Object.entries(data.commissions.byYear).reduce((acc, [year, yearData]) => {
+            acc[year] = {
+              counts: yearData.monthly.map(m => m.count),
+              amounts: yearData.monthly.map(m => m.amount)
+            }
+            return acc
+          }, {})
         },
         sales: {
           title: 'Ventas',
-          categories: Object.keys(data.sales.byYear),
-          series: Object.entries(data.sales.byYear).map(([year, data]) => ({
-            year: year,
-            counts: data.monthly.map(m => m.count),
-            amounts: data.monthly.map(m => m.amount)
-          }))
+          series: Object.entries(data.sales.byYear).reduce((acc, [year, yearData]) => {
+            acc[year] = {
+              counts: yearData.monthly.map(m => m.count),
+              amounts: yearData.monthly.map(m => m.amount)
+            }
+            return acc
+          }, {})
         },
         products: {
           title: 'Productos Vendidos',
-          categories: Object.keys(data.sales.ofProducts),
-          series: Object.entries(data.sales.ofProducts).map(([productName, productData]) => ({
-            product: productName,
-            yearlyData: Object.entries(productData.byYear).map(([year, data]) => ({
-              year: year,
-              counts: data.monthly,
-              total: data.total
-            }))
-          }))
+          series: Object.entries(data.sales.ofProducts).reduce((acc, [productName, productData]) => {
+            Object.entries(productData.byYear).forEach(([year, yearData]) => {
+              if (!acc[year]) acc[year] = []
+              acc[year].push({
+                product: productName,
+                yearlyData: Object.entries(productData.byYear).map(([y, d]) => ({
+                  year: y,
+                  counts: d.monthly
+                }))
+              })
+            })
+            return acc
+          }, {})
         }
       })
     }
   }, [data])
 
-  useEffect(() => {
-    console.log(historyData)
-  }, [historyData])
+  const getStartAndEndDateOfYear = year => {
+    if (year === 'all') {
+      return { startDate: null, endDate: null }
+    }
+    const startDate = new Date(year, 0, 1)
+    const endDate = new Date(year, 11, 31)
+    return { startDate: startDate.toISOString().slice(0, 10), endDate: endDate.toISOString().slice(0, 10) }
+  }
+
+  const handleYearChange = year => {
+    const { startDate, endDate } = getStartAndEndDateOfYear(year)
+    dispatch(loadGeneralData({ startDate, endDate }))
+  }
 
   useEffect(() => {
-    dispatch(loadGeneralData())
+    const currentYear = new Date().getFullYear()
+    handleYearChange(currentYear)
   }, [])
 
   if (isLoading || !data) {
@@ -456,7 +470,17 @@ const General = () => {
           <CardHeader
             title='Datos Históricos'
             action={
-              <TextField defaultValue={new Date().getFullYear()} size='small' label='Año' variant='outlined' select>
+              <TextField
+                value={selectedYear}
+                size='small'
+                label='Año'
+                variant='outlined'
+                select
+                onChange={e => {
+                  setSelectedYear(e.target.value)
+                  handleYearChange(e.target.value)
+                }}
+              >
                 {years.map(year => (
                   <MenuItem key={year} value={year}>
                     {year}
