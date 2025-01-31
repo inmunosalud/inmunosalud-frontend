@@ -88,6 +88,7 @@ const UserLayout = ({ children }) => {
         dispatch(paymentMethodsList(user.id))
         dispatch(addressList(user.id))
         dispatch(isDataLoaded(true))
+        router.push('/dashboards/general')
       }
       if (
         (user.profile === 'Consumidor' && dataLoaded === false) ||

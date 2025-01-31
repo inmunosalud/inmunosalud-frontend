@@ -22,11 +22,17 @@ export const loadSession = createAsyncThunk('general/loadSession', async (body, 
     return thunkApi.rejectWithValue('error')
   }
 })
-export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async (body, thunkApi) => {
+export const loadGeneralData = createAsyncThunk('general/loadGeneralData', async ({ startDate, endDate }, thunkApi) => {
   const token = localStorage.getItem('im-user')
   const auth = { headers: { Authorization: `Bearer ${token}` } }
+  let queryString = ''
+  if (startDate && endDate) {
+    queryString = new URLSearchParams({ startDate, endDate }).toString()
+    queryString = `?${queryString}`
+  }
+
   try {
-    const response = await api_get(`${USERS}/users/dashboard`, auth)
+    const response = await api_get(`${USERS}/users/dashboard${queryString}`, auth)
 
     return response
   } catch (error) {

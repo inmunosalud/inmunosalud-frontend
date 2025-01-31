@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, Tabs, Box, Tab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+
 export const HistoryLineGraphic = ({ dataSeriesHistory }) => {
   const theme = useTheme()
   // 1. Memoizar opciones del gráfico

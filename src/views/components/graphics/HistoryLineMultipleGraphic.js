@@ -20,7 +20,6 @@ const COLOR_PALETTE = [
 
 export const HistoryLineMultipleGraphic = ({ dataSeriesHistory }) => {
   const theme = useTheme()
-
   const chartOptionsNetworkHistory = useMemo(
     () => ({
       chart: {
@@ -72,7 +71,11 @@ export const HistoryLineMultipleGraphic = ({ dataSeriesHistory }) => {
         axisTicks: { show: true },
         tooltip: { enabled: true }
       },
-      yaxis: { show: true, labels: { style: { colors: theme.palette.text.secondary } } },
+      yaxis: {
+        show: true,
+        labels: { style: { colors: theme.palette.text.secondary } },
+        min: 0
+      },
       dataLabels: {
         enabled: false
       },
@@ -91,7 +94,7 @@ export const HistoryLineMultipleGraphic = ({ dataSeriesHistory }) => {
       },
       grid: {
         borderColor: theme.palette.divider,
-        strokeDashArray: 5,
+        strokeDashArray: 0,
         xaxis: { lines: { show: true } },
         yaxis: { lines: { show: true } }
       },
@@ -109,7 +112,7 @@ export const HistoryLineMultipleGraphic = ({ dataSeriesHistory }) => {
         }
       }
     }),
-    [theme]
+    [theme, dataSeriesHistory]
   )
 
   return <ReactApexcharts options={chartOptionsNetworkHistory} series={dataSeriesHistory} type='line' height={350} />
